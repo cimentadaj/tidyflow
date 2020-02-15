@@ -1,0 +1,16 @@
+Package: tidyflow
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Jorge",
+           family = "Cimentada",
+           role = c("aut", "cre"),
+           email = "cimentadaj@gmail.com",
+           comment = c(ORCID = "0000-0001-5594-1156"))
+Description: What the package does (one paragraph).
+License: `use_mit_license()`, `use_gpl3_license()` or friends to
+    pick a license
+Encoding: UTF-8
+Language: es
+LazyData: true
+Roxygen: list(markdown = TRUE)
