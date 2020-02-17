@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ## Introduction
 
-The idea of the statistical workflow should be simple. It should be useful holding only the minimum steps needed to perform a statistical analysis. The data, the formula and the model. For example:
+The idea of the statistical workflow should be simple. It should be useful for holding only the minimum steps needed to perform a statistical analysis. The data, the formula and the model. For example:
 
 ```{r }
 simple_wflow <-
@@ -33,7 +33,7 @@ simple_wflow %>%
 
 ```
 
-The steps are declaractive. Start with the data and workflow, specify the formula and specify the model. `fit` takes cares of running the steps. In more convoluted examples, iteration is a necessary part of the workflow (create a new column, refit the data, try a new model, refit the data, etc...). This type of iteration is somewhat at odds with most `tidyverse` packages where the order of operations is not important (`mutate` can be used at many different parts of an analysis, as well as `pivot_longer`). For statistical analysis, the order of operations is paramount: you simply cannot specify for a column to be created after a model is run. For example:
+The steps are declaractive. Start with the data and workflow, specify the formula and specify the model. `fit` takes cares of running the steps. In more convoluted examples, iteration is a necessary part of the workflow (create a new column, refit the data, try a new model, refit the data, etc...). Statistical iteration is somewhat at odds with some `tidyverse` packages where the order of operations is not important (`mutate` can be used at many different parts of an analysis, as well as `pivot_longer`, etc...). For statistical analysis, the order of operations is paramount: for example, you simply cannot specify for a column to be created after a model is run. For example:
 
 ```{r }
 simple_wflow <-
@@ -44,10 +44,15 @@ simple_wflow <-
 
 simple_wflow %>%
   fit() %>%
+  # Create a column after fitting the model
   step_mutate(cyl = log10(cyl))
 ```
 
-The operation over `cyl` is something that is specified after `fit`ting the model; it simply won't happen before the `fit`. This tension suggests that there are basic operations for statistical modelling that **need** to happen before fitting a model. However, the order of these operations is not necessarilly important as long as they happen **before** the modelling. For example:
+The operation over `cyl` is something that is specified after `fit`ting the model; it simply won't happen before the `fit`. This tension suggests that there are basic operations for statistical modelling that **need** to happen before fitting a model. In particular, there are some heuristics that force analysts to perform steps in a particular order. For example:
+
+`data` -> `split training` -> `preprocessing` -> `model`
+
+Preprocessing needs to happen before the modelling. You can iterate and alter columns after fitting the model but you'll need to run it again. Having said, if we have a somewhat established order of operations, as long as the workflow knows about the order, how the user declares the operations is not important:
 
 ```{r }
 simple_wflow <-
@@ -55,19 +60,21 @@ simple_wflow <-
   tflow() %>%
   recipe(mpg ~ .) %>% 
   set_engine(linear_reg(), "lm") %>%
+  # New step
   step_mutate(cyl = log10(cyl))
 
 simple_wflow %>%
-  initial_split(prop = 0.75)
+  # New step
+  initial_split(prop = 0.75) %>%
   fit()
 
 ```
 
-Two new steps have been added: create a new cyl column and split the data into training and testing. However, their order is unimportant. `cyl` was recreated after setting the model and the training/testing split was done after data creation, model specification, etc... I don't think it's a good idea to define a workflow this way but this illustrates the point that in theory, the order of steps doesn't matter, as long as `fit` knows the correct order. The correct order in this case is:
+Two new steps have been added: create a new cyl column and split the data into training and testing. For this case, their order is unimportant. `cyl` was recreated after setting the model and the training/testing split was done after data creation, model specification, etc... I don't think it's a good idea to define a workflow this way but this illustrates the point that in theory, the order of steps doesn't matter, as long as `fit` knows the correct order. The correct order in this case is:
 
 `data` -> `data split`-> `formula` -> `data wrangling` -> `model definition` -> `fit`
 
-`tflow` is a placeholder (or plan) of all these steps and reorders them for `fit` to execute them. The benefits of the placeholder strategy is that it allows both the ordered set of steps and interactivity. For example, we can fit a model with the initial workflow and add a new `step_*` for newer iterations:
+`tflow` is a placeholder (or plan) of all these steps and reorders them for `fit` to execute them. The benefits of the placeholder strategy is that it allows both an ordered set of steps and interactivity. For example, we can fit a model with the initial workflow and add a new `step_*` for newer iterations:
 
 ```{r }
 # Define main workflow
@@ -109,8 +116,8 @@ simple_wflow %>%
   step_mutate(cyl = log10(cyl)) %>%
   step_dummy(gear) %>%
   set_engine(rand_forest(), "ranger")
-  fit()
 
+fit()
 ```
 
 `tflow` has a predefined set of placeholders defined as:
@@ -123,9 +130,9 @@ If you specify a new recipe, it replaces the old one, if you specify a new data,
 
 # Abstracting the three placeholders
 
-## Updating the preprocessing step
+### Updating the preprocessing step
 
-A formula is always tied to your preprocessing. If you specify a new variable in your formula, you need not specify a new preprocessing step. However, if you specify a new step for a variable, you need to specify it in the formula. Since `tflow` is a placeholder of steps, updating formulas is just as easy with `step_add` and `step_rm`.
+A formula is always tied to your preprocessing. If you specify a new variable in your formula, you need not specify a new preprocessing step. However, if you specify a new step for a variable, you need to specify it in the formula. Since `tflow` is a placeholder of steps, adding new terms to formulas is just as easy with `step_add`.
 
 ```{r }
 # Define main workflow
@@ -149,7 +156,7 @@ simple_wflow %>%
 
 # Update the recipe to include one more term and add a step
 simple_wflow %>%
-  step_add(am)
+  step_add(am) %>%
   step_dummy(disp) %>% 
   fit()
 
@@ -159,38 +166,34 @@ simple_wflow %>%
   step_dummy(disp) %>% 
   fit()
 
-# Update the recipe to remove one term
-simple_wflow %>%
-  step_rm(gear) %>% 
-  fit()
-
 ```
 
-If the user's data exploration process is short, they can scroll up to the initial recipe and redefine it there. For more complicated workflows, `step_add` and `step_rm` make it very easy to iteratively update the initial specification and add subsequent steps to the workflow.
+If the user's data exploration process is short, they can scroll up to the initial recipe and redefine it there. For more complicated workflows, `step_add` can make it easy to iteratively update the initial specification and add subsequent steps to the workflow ^[`recipes` has an equivalent `step_rm` to remove columns from the recipe. However, the above has a problem: adding steps adds it to the formula but `step_rm` removes the final column from the already prepped recipe. `step_rm` is trickier because you're not removing something from the formula but you're removing it from the final prepped recipe. If you have `step_`'s that already use the term you want to remove, these steps won't be removed].
 
-Another issue is how to update `step_*`'s from the workflow. We can add/remove variables from the recipe but what if we want to keep a variable but remove a step we specified above.
-
-```{r}
-# Define main workflow
-simple_wflow <-
-  mtcars %>%
-  tflow() %>%
-  initial_split(prop = 0.75) %>% 
-  recipe(mpg ~ cyl + gear) %>% 
-  step_mutate(cyl = log10(cyl)) %>%
-  step_dummy(gear) %>%
-  set_engine(linear_reg(), "lm")
-
-# TODO: Have to think about this. See internal docs for tidyflow for your
-# thoughts on this.
-
-```
-
-## Updating the modelling workflow
-
-Setting models is somewhat easy, as was shown in the examples above. However, there are more complicated layers such as adding tuning parameters and grids of tuning parameters. Just as a formula is tied to the preprocessing step, tuning parameters are always tied to a model. I can't think of a scenario where you create a tuning grid that will **not** be tied to a model. This means that we can think of tuning parameters/grids as part of a model. Why have them separate? For example:
+Since this step is interactive, the user should be able to specify a workflow and extract the recipe prepped to explore the data:
 
 ```{r }
+simple_wflow <-
+  mtcars %>%
+  tflow() %>%
+  initial_split(prop = 0.75) %>% 
+  recipe(mpg ~ cyl + gear) %>% 
+  step_mutate(cyl = log10(cyl)) %>%
+  step_dummy(gear)
+
+# Visualize your changes and iterate until happy
+simple_wflow %>%
+  trained() %>%
+  ggplot(aes(cyl)) %>%
+  geom_histogram()
+
+```
+
+### Updating the modelling workflow
+
+Setting models is somewhat easy, as was shown in the examples above. However, there are more complicated layers such as adding tuning parameters and grids of tuning parameters. Just as a formula is tied to the preprocessing step, tuning parameters are usually tied to a model. This means that we can think of tuning parameters/grids as part of a model. Why have them separate? For example:
+
+```{r}
 
 # Define main workflow
 simple_wflow <-
@@ -202,7 +205,7 @@ simple_wflow <-
   step_dummy(gear) %>%
   set_engine(linear_reg(), "lm")
 
-# Redefine the model with some tuning parameters
+# Create the model with some tuning parameters
 simple_wflow %>%
   set_engine(linear_reg(penalty = 0.000001, mixture = 0.00002),
              engine = "glmnet") %>%
@@ -215,137 +218,315 @@ simple_wflow %>%
   grid_regular(levels = 10) %>% 
   fit()
 
-## You left off thinking about how `tidyflow` will handle tuning
-## parameters and whether it automatically adds a `tune()` statement
-## to parameters which are left empty.
-
+# Alternatively, fill all empty with tune()
+simple_wflow %>%
+  set_engine(rand_forest(trees = 2000), "ranger") %>%
+  # Fill unfilled params with `tune()`
+  set_all_params(tune()) %>%
+  # Create a tuning grid with everything defined above and run model
+  grid_regular(levels = 10) %>% 
+  fit()
 ```
 
-
-
-
-
-
-- Thoughts
-
-If no `initial_split` is set, the everything is performed on the main data. This is ok, as statistical analysis doesn't usually split into testing/training. However, if the user tries to use the method to test the analysis on the test data, an error should be raised saying that no initial split was performed. This shouldn't be very compromising as everything is done on the training and no leak to the test is every done. The user just needs to remake the above including the initial split.
-
+There are scenarios in which you'd like to also specify tuning parameters in your recipe as well as in your model. By specifying `tune()` in all empty parameters, as long as you specify the `grid_*` function, it should create a grid of values that are fed to `fit`.
 
 ```{r }
-library(AmesHousing)
-library(tidymodels)
 
-ames <- make_ames()
+simple_wflow <-
+  mtcars %>%
+  tflow() %>% 
+  initial_split() %>% 
+  recipe(mpg ~ cyl + gear + disp) %>% 
+  step_mutate(cyl = log10(cyl)) %>%
+  step_ns(disp, deg_free = tune()) %>%
+  set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), "ranger")
 
-ml_wflow <-
-  ames %>%
-  workflow() %>%
-  initial_split(prop = .75) %>%
-  recipe(Sale_Price ~ Longitude + Latitude + Neighborhood, data = ames) %>%
-  step_log(Sale_Price, base = 10) %>%
-  step_other(Neighborhood, threshold = 0.05) %>%
-  step_dummy(recipes::all_nominal()) %>%
-  step_scale(Sale_Price) %>%
-  step_scale(Latitude)
-
-mod1 <-
-  linear_reg(penalty = tune(), mixture = tune()) %>%
-  set_engine("glmnet") %>%
-  grid_regular(levels = 10)
-
-mod2 <-
-  rand_forest(mtry = tune(), trees = tune()) %>%
-  set_engine("glmnet") %>%
-  grid_regular(levels = 10)
-
-## The combination of empty parameter specification with any grid_*
-## should throw an error.
-
-ml_wflow %>%
-  add_model(mod1) %>%
+# This should create a grid of values for `deg_free`, `trees` and `min_n`
+simple_wflow %>%
   vfold_cv() %>%
+  grid_regular(levels = 3) %>%
   fit()
-
-# Add new recipes
-final_res <-
-  ml_wflow %>%
-  update_rcp(
-    .recipe %>% 
-    step_scale(Sale_Price) %>%
-    step_center(Sale_Price)
-  ) %>%
-  add_model(mod2) %>%
-  vfold_cv() %>% 
-  fit()
-
-## Add new variable
-ml_wflow %>%
-  update_frm(
-    ~ . + x2
-  ) %>% 
-  update_rcp(
-    .rcp %>% step_dummy(x2)
-  ) %>%
-  add_model(mod2) %>%
-  vfold_cv() %>% 
-  fit()
-
-## Replace y
-ml_wflow %>%
-  update_frm(
-    Latitude ~ .
-  ) %>% 
-  update_rcp(
-    .rcp %>% step_log(Latitude)
-  ) %>%
-  add_model(mod2) %>%
-  vfold_cv() %>% 
-  fit()
-
-## Update whole formula
-ml_wflow %>%
-  update_frm(
-    Latitude ~ Neighborhood + whatever
-  ) %>% 
-  update_rcp(
-    .rcp %>%
-    step_log(Latitude) %>%
-    step_dummy(Neighborhood) %>%
-    step_BoxCox(Whatever),
-    # Remove recipe and accept new one
-    new = TRUE
-  ) %>%
-  add_model(mod2) %>%
-  vfold_cv() %>% 
-  fit()
-
-
-
-final_res %>%
-  update_rcp(
-    -step_scale,
-    
-  )
-
-# ml_wflow shouldn't run anything -- it's just a specification
-# of all the different steps. `fit` should run everything
-ml_wflow <- fit(ml_wflow)
-
-# Plot results of tuning parameters
-ml_wflow %>%
-  autoplot()
-
-# Automatically extract best parameters and fit to the training data
-final_model <-
-  ml_wflow %>%
-  fit_best_model(metrics = metric_set(rmse))
-
-# Predict on the test data using the last model
-# Everything is bundled into a workflow object
-# and everything can be extracted with separate
-# functions with the same verb
-final_model %>%
-  holdout_error()
 
 ```
 
+The workflow showed so far takes care of returning all default metrics associated with a particular variable. That is, if no metric of fit is specified (root mean square error, R square, etc...), it returns the default when tuning the grid (this is controlled by `tune_grid`). However, this workflow allows to specify any metric for the model, as it will be saved together with the model.
+
+```{r }
+
+simple_wflow <-
+  mtcars %>%
+  tflow() %>% 
+  initial_split() %>% 
+  recipe(mpg ~ cyl + gear + disp) %>% 
+  step_mutate(cyl = log10(cyl)) %>%
+  step_ns(disp, deg_free = tune()) %>%
+  set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), "ranger") %>%
+  # Adds the metrics
+  metric_set(rmse, rsq)
+
+simple_wflow %>%
+  vfold_cv() %>%
+  grid_regular(levels = 3) %>%
+  fit()
+
+```
+
+Thanks to the fact that `tidymodels` defines pretty much every step (recipe, metrics, cross validation, grids, etc...) of the workflow with separate classes, each of these classes has a slot in the workflow and you can replace it interactively: no need for `add_*` or `remove_*` functions.
+
+```{r }
+
+simple_wflow <-
+  mtcars %>%
+  tflow() %>% 
+  initial_split() %>% 
+  recipe(mpg ~ cyl + gear + disp) %>% 
+  step_mutate(cyl = log10(cyl)) %>%
+  step_ns(disp, deg_free = tune()) %>%
+  set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), "ranger")
+
+simple_wflow %>%
+  # Replaces old model
+  set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet") %>%
+  vfold_cv() %>%
+  grid_regular(levels = 3) %>%
+  # Replace previous grid
+  grid_regular(levels = 10) %>% 
+  fit()
+```
+
+Finally, the process behind `tflow` should be somewhat transparent and the user should be able to print the workflow before fitting to see the order of steps. In particular, there should be a method that when ran on the object return a data frame along the lines of:
+
+```{r eval = TRUE, echo = FALSE}
+library(tibble)
+library(rlang)
+
+tflow <- tribble(
+  ~ "step", ~ "execution",
+  "data" , mtcars,
+  "split", quo(initial_split(mtcars)),
+  "vfold", quo(vfold_cv(training(initial_split(mtcars)))),
+  "recipe", quo(recipe(mpg ~ cyl + gear + disp, data = training(initial_split(mtcars))) %>% step_mutate(cyl = log10(cyl)) %>% step_ns(disp, deg_free = tune())),
+  "model", quo(set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), "ranger")),
+  "grid", quo(grid_regular(levels = 10))
+)
+
+tflow
+```
+
+where each step is accompanied by the captured expression to which it makes reference to. In addition, functions to extract specific objects such as the executed grid, the executed recipe, etc.. should be available to check whether the steps specified produced the results that were expected.
+
+Now finally, what does running `fit` return? It should return the same print out as the workflow with some additional information. In particular, it will have methods to extract the `vfold` tibble and explore metrics, an automatic method for plotting the metrics across cross-validation sets, a method to extract the best tuning parameters and another one to train the best tuning parameters on the whole training data and return the model.
+
+# Final thoughts
+
+This description is mostly based on a workflow for doing machine learning. This is the case simply because the core objective of tidymodels is to focus on machine learning. However, this workflow should be useful for doing other types of statistical analysis. For example, the statistical analysis workflow is very similar to the one described above without separating into training/testing, adding cross-validation and performing a grid search. You could in principle do the same for statistical inferece. As long as the result is not focused on choosing the best model but on visualizing coefficients:
+
+```{r }
+# Define main workflow
+simple_wflow <-
+  mtcars %>%
+  tflow() %>%
+  recipe(mpg ~ .) %>% 
+  set_engine(linear_reg(), "lm")
+
+# Run first model and explore
+simple_wflow %>%
+  fit()
+
+```
+
+Initiatives such as [Zelig](http://docs.zeligproject.org/index.html) could be adapted accept zelig statistical models. 
+
+All of the above is a prototype idea and none of it has been implemented.
+
+<!-- ## Thoughts -->
+
+<!-- - If no `initial_split` is set, the everything is performed on the main data. This is ok, as statistical analysis doesn't usually split into testing/training. However, if the user tries to use the method to test the analysis on the test data, an error should be raised saying that no initial split was performed. This shouldn't be very compromising as everything is done on the training and no leak to the test is every done. The user just needs to remake the above including the initial split. -->
+
+<!-- - If vfold is called and not initial_split it set, a warning should be raised saying: are you sure you want that? -->
+
+<!-- ```{r } -->
+<!-- library(AmesHousing) -->
+<!-- library(tidymodels) -->
+
+<!-- ames <- make_ames() -->
+
+<!-- ml_wflow <- -->
+<!--   ames %>% -->
+<!--   workflow() %>% -->
+<!--   initial_split(prop = .75) %>% -->
+<!--   recipe(Sale_Price ~ Longitude + Latitude + Neighborhood, data = ames) %>% -->
+<!--   step_log(Sale_Price, base = 10) %>% -->
+<!--   step_other(Neighborhood, threshold = 0.05) %>% -->
+<!--   step_dummy(recipes::all_nominal()) %>% -->
+<!--   step_scale(Sale_Price) %>% -->
+<!--   step_scale(Latitude) -->
+
+<!-- mod1 <- -->
+<!--   linear_reg(penalty = tune(), mixture = tune()) %>% -->
+<!--   set_engine("glmnet") %>% -->
+<!--   grid_regular(levels = 10) -->
+
+<!-- mod2 <- -->
+<!--   rand_forest(mtry = tune(), trees = tune()) %>% -->
+<!--   set_engine("glmnet") %>% -->
+<!--   grid_regular(levels = 10) -->
+
+<!-- ## The combination of empty parameter specification with any grid_* -->
+<!-- ## should throw an error. -->
+
+<!-- ml_wflow %>% -->
+<!--   add_model(mod1) %>% -->
+<!--   vfold_cv() %>% -->
+<!--   fit() -->
+
+<!-- # Add new recipes -->
+<!-- final_res <- -->
+<!--   ml_wflow %>% -->
+<!--   update_rcp( -->
+<!--     .recipe %>%  -->
+<!--       step_scale(Sale_Price) %>% -->
+<!--       step_center(Sale_Price) -->
+<!--   ) %>% -->
+<!--   add_model(mod2) %>% -->
+<!--   vfold_cv() %>%  -->
+<!--   fit() -->
+
+<!-- ## Add new variable -->
+<!-- ml_wflow %>% -->
+<!--   update_frm( -->
+<!--     ~ . + x2 -->
+<!--   ) %>%  -->
+<!--   update_rcp( -->
+<!--     .rcp %>% step_dummy(x2) -->
+<!--   ) %>% -->
+<!--   add_model(mod2) %>% -->
+<!--   vfold_cv() %>%  -->
+<!--   fit() -->
+
+<!-- ## Replace y -->
+<!-- ml_wflow %>% -->
+<!--   update_frm( -->
+<!--     Latitude ~ . -->
+<!--   ) %>%  -->
+<!--   update_rcp( -->
+<!--     .rcp %>% step_log(Latitude) -->
+<!--   ) %>% -->
+<!--   add_model(mod2) %>% -->
+<!--   vfold_cv() %>%  -->
+<!--   fit() -->
+
+<!-- ## Update whole formula -->
+<!-- ml_wflow %>% -->
+<!--   update_frm( -->
+<!--     Latitude ~ Neighborhood + whatever -->
+<!--   ) %>%  -->
+<!--   update_rcp( -->
+<!--     .rcp %>% -->
+<!--       step_log(Latitude) %>% -->
+<!--       step_dummy(Neighborhood) %>% -->
+<!--       step_BoxCox(Whatever), -->
+<!--     # Remove recipe and accept new one -->
+<!--     new = TRUE -->
+<!--   ) %>% -->
+<!--   add_model(mod2) %>% -->
+<!--   vfold_cv() %>%  -->
+<!--   fit() -->
+
+
+
+<!-- final_res %>% -->
+<!--   update_rcp( -->
+<!--     -step_scale, -->
+    
+<!--     ) -->
+
+<!-- # ml_wflow shouldn't run anything -- it's just a specification -->
+<!-- # of all the different steps. `fit` should run everything -->
+<!-- ml_wflow <- fit(ml_wflow) -->
+
+<!-- # Plot results of tuning parameters -->
+<!-- ml_wflow %>% -->
+<!--   autoplot() -->
+
+<!-- # Automatically extract best parameters and fit to the training data -->
+<!-- final_model <- -->
+<!--   ml_wflow %>% -->
+<!--   fit_best_model(metrics = metric_set(rmse)) -->
+
+<!-- # Predict on the test data using the last model -->
+<!-- # Everything is bundled into a workflow object -->
+<!-- # and everything can be extracted with separate -->
+<!-- # functions with the same verb -->
+<!-- final_model %>% -->
+<!--   holdout_error() -->
+
+<!-- ``` -->
+
+<!-- ```{r } -->
+<!-- library(AmesHousing) -->
+<!-- # devtools::install_github("tidymodels/tidymodels") -->
+<!-- library(tidymodels) -->
+
+<!-- ames <- make_ames() -->
+
+<!-- ############################# Data Partitioning ############################### -->
+<!-- ############################################################################### -->
+
+<!-- ames_split <- rsample::initial_split(ames, prop = .7) -->
+<!-- ames_train <- rsample::training(ames_split) -->
+<!-- ames_cv <- rsample::vfold_cv(ames_train) -->
+
+<!-- ############################# Preprocessing ################################### -->
+<!-- ############################################################################### -->
+
+<!-- mod_rec <- -->
+<!--   recipes::recipe(Central_Air ~ Longitude + Latitude + Neighborhood, -->
+<!--                   data = ames_train) %>% -->
+<!--   recipes::step_other(Neighborhood, threshold = 0.05) %>% -->
+<!--   ## recipes::step_dummy(all_predictors(), recipes::all_nominal()) -->
+
+
+<!-- ############################# Model Training/Tuning ########################### -->
+<!-- ############################################################################### -->
+
+<!-- ## Define a regularized regression and explicitly leave the tuning parameters -->
+<!-- ## empty for later tuning. -->
+<!-- lm_mod <- -->
+<!--   parsnip::rand_forest(mtry = 2, trees = 2000, min_n = 5) %>% -->
+<!--   set_mode("classification") %>%  -->
+<!--   parsnip::set_engine("ranger") -->
+
+<!-- ## Construct a workflow that combines your recipe and your model -->
+<!-- ml_wflow <- -->
+<!--   workflows::workflow() %>% -->
+<!--   workflows::add_recipe(mod_rec) %>% -->
+<!--   workflows::add_model(lm_mod) -->
+
+<!-- # Find best tuned model -->
+<!-- res <- -->
+<!--   ml_wflow %>% -->
+<!--   fit(data = ames_train) -->
+
+<!-- ############################# Validation ###################################### -->
+<!-- ############################################################################### -->
+<!-- # Select best parameters -->
+<!-- best_params <- -->
+<!--   res %>% -->
+<!--   tune::select_best(metric = "rmse", maximize = FALSE) -->
+
+<!-- # Refit using the entire training data -->
+<!-- reg_res <- -->
+<!--   ml_wflow %>% -->
+<!--   tune::finalize_workflow(best_params) %>% -->
+<!--   parsnip::fit(data = ames_train) -->
+
+<!-- # Predict on test data -->
+<!-- ames_test <- rsample::testing(ames_split) -->
+<!-- reg_res %>% -->
+<!--   parsnip::predict(new_data = recipes::bake(mod_rec, ames_test)) %>% -->
+<!--   bind_cols(ames_test, .) %>% -->
+<!--   mutate(Sale_Price = log10(Sale_Price)) %>%  -->
+<!--   select(Sale_Price, .pred) %>%  -->
+<!--   rmse(Sale_Price, .pred) -->
+<!-- ``` -->
