@@ -364,19 +364,19 @@ summary {
 
 <h1 class="title toc-ignore">tidyflow: a prototype for statistical workflows</h1>
 <h4 class="author">Jorge Cimentada</h4>
-<h4 class="date">17 February, 2020</h4>
+<h4 class="date">19 February, 2020</h4>
 
 </div>
 
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>The idea of the statistical workflow should be simple. It should be useful for holding only the minimum steps needed to perform a statistical analysis. The data, the formula and the model. For example:</p>
+<p>The idea of the statistical workflow should be simple. It should be useful for holding only the minimum steps needed to perform a statistical analysis. The data, the formula and the model. In particular, the data should play the main role in the analysis: you should specify it once and let the workflow take care of all the details. For example:</p>
 <pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  recipe(mpg ~ .) %&gt;% 
-  set_engine(linear_reg(), &quot;lm&quot;)
+  add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
+  add_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 simple_wflow %&gt;%
   fit()</code></pre>
@@ -384,77 +384,108 @@ simple_wflow %&gt;%
 <pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  recipe(mpg ~ .) %&gt;% 
-  set_engine(linear_reg(), &quot;lm&quot;)
+  add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
+  add_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 simple_wflow %&gt;%
   fit() %&gt;%
-  # Create a column after fitting the model
-  step_mutate(cyl = log10(cyl))</code></pre>
+  # `.x` is the already defined recipe in the workflow
+  update_recipe(~ .x %&gt;% step_mutate(cyl = log10(cyl)))</code></pre>
 <p>The operation over <code>cyl</code> is something that is specified after <code>fit</code>ting the model; it simply won’t happen before the <code>fit</code>. This tension suggests that there are basic operations for statistical modelling that <strong>need</strong> to happen before fitting a model. In particular, there are some heuristics that force analysts to perform steps in a particular order. For example:</p>
 <p><code>data</code> -&gt; <code>split training</code> -&gt; <code>preprocessing</code> -&gt; <code>model</code></p>
-<p>Preprocessing needs to happen before the modelling. You can iterate and alter columns after fitting the model but you’ll need to run it again. Having said, if we have a somewhat established order of operations, as long as the workflow knows about the order, how the user declares the operations is not important:</p>
+<p>Preprocessing needs to happen before the modelling. You can iterate and alter columns after fitting the model but you’ll need to run the model again. Having said that, if we have a somewhat established order of operations, as long as the workflow knows about the order, how the user declares the operations is not important:</p>
 <pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  recipe(mpg ~ .) %&gt;% 
-  set_engine(linear_reg(), &quot;lm&quot;) %&gt;%
-  # New step
-  step_mutate(cyl = log10(cyl))
+  add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
+  add_model(set_engine(linear_reg(), &quot;lm&quot;)) %&gt;%
+  # New_step
+  update_recipe(~ .x %&gt;% step_mutate(cyl = log10(cyl)))
 
 simple_wflow %&gt;%
-  # New step
-  initial_split(prop = 0.75) %&gt;%
+  # Split data into training/testing
+  add_split(prop = 0.75) %&gt;%
   fit()</code></pre>
-<p>Two new steps have been added: create a new cyl column and split the data into training and testing. For this case, their order is unimportant. <code>cyl</code> was recreated after setting the model and the training/testing split was done after data creation, model specification, etc… I don’t think it’s a good idea to define a workflow this way but this illustrates the point that in theory, the order of steps doesn’t matter, as long as <code>fit</code> knows the correct order. The correct order in this case is:</p>
+<p>Two new steps have been added: create a new <code>cyl</code> column and split the data into training and testing. For this case, their order is unimportant. <code>cyl</code> was recreated after setting the model and the training/testing split was done after data creation, model specification, etc… I don’t think it’s a good idea to define a workflow this way but this illustrates the point that in theory, the order of steps doesn’t matter, as long as <code>fit</code> knows the correct order. The correct order in this case is:</p>
 <p><code>data</code> -&gt; <code>data split</code>-&gt; <code>formula</code> -&gt; <code>data wrangling</code> -&gt; <code>model definition</code> -&gt; <code>fit</code></p>
 <p><code>tflow</code> is a placeholder (or plan) of all these steps and reorders them for <code>fit</code> to execute them. The benefits of the placeholder strategy is that it allows both an ordered set of steps and interactivity. For example, we can fit a model with the initial workflow and add a new <code>step_*</code> for newer iterations:</p>
-<pre class="r"><code># Define main workflow
-simple_wflow &lt;-
+<pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  initial_split(prop = 0.75) %&gt;% 
-  recipe(mpg ~ .) %&gt;% 
-  set_engine(linear_reg(), &quot;lm&quot;)
+  # Split data into training/testing
+  add_split(prop = 0.75) %&gt;%
+  # `add_recipe` recives your recipe and attaches the
+  # data already provided in `.x`
+  add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
+  add_model(set_engine(linear_reg(), &quot;lm&quot;))
 
-# Run first model and explore
+# Fit the workflow
 simple_wflow %&gt;%
   fit()
 
 # Refit model with one step
 simple_wflow %&gt;%
-  step_mutate(cyl = log10(cyl)) %&gt;% 
+  # Add more steps to the recipe. `.x` is the supplied
+  # recipe above.
+  update_recipe(~ .x %&gt;% step_mutate(cyl = log10(cyl)))
   fit()</code></pre>
 <p>This applies to any of the placeholders in <code>tflow</code>. For example, we can add a few more steps and also change the model:</p>
-<pre class="r"><code># Define main workflow
-simple_wflow &lt;-
+<pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  initial_split(prop = 0.75) %&gt;% 
-  recipe(mpg ~ .) %&gt;% 
-  set_engine(linear_reg(), &quot;lm&quot;)
+  # Split data into training/testing
+  add_split(prop = 0.75) %&gt;%
+  add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
+  add_model(set_engine(linear_reg(), &quot;lm&quot;))
 
-# Run first model and explore
+# Fit the workflow
 simple_wflow %&gt;%
   fit()
 
 # Refit model with newer steps and new model
-simple_wflow %&gt;%
-  step_mutate(cyl = log10(cyl)) %&gt;%
-  step_dummy(gear) %&gt;%
-  set_engine(rand_forest(), &quot;ranger&quot;)
+simple_wflow &lt;-
+  simple_wflow %&gt;%
+  update_recipe(~ {
+    .x %&gt;%
+      step_mutate(cyl = log10(cyl)) %&gt;%
+      step_dummy(gear)
+  }) %&gt;%
+  # Replaces the model all together
+  update_model(set_engine(rand_forest(), &quot;ranger&quot;))
 
-fit()</code></pre>
+simple_wflow %&gt;%
+  fit()</code></pre>
 <p><code>tflow</code> has a predefined set of placeholders defined as:</p>
 <ul>
 <li><code>data</code>: contains the data and split</li>
 <li><code>recipe</code>: contains the formula and steps</li>
 <li><code>modelling</code>: contains the model</li>
 </ul>
-<p>If you specify a new recipe, it replaces the old one, if you specify a new data, it replaces the old one, if you specify a new model it replaces the old one. Now, let’s think how this workflow works with more challenging examples.</p>
+<p>If you specify a recipe, you can either update it or provide a completely new recipe, if you update a new dataset, it replaces the old one, if you update a new model it replaces the old one. Now, let’s think how this workflow works with more challenging examples.</p>
 </div>
 <div id="abstracting-the-three-placeholders" class="section level1">
 <h1>Abstracting the three placeholders</h1>
+<div id="updating-the-data" class="section level3">
+<h3>Updating the data</h3>
+<p>The data should play the main role during the analysis. We risk a great deal by having many parts of our data laying around in our environment: the raw data, the training data, testing data and the cross-validated set. Having these many pieces around can induce mistakes such as adding the testing data to the cross-validation by mistake. Or specifying the training data for the model but mistakenly adding the testing data to the predict method. <code>tflow</code> aims to solve that by specifying the data only once. You can extract all of the pieces from the <code>tflow</code> such as the training/testing but that’s opted-in: <code>tflow</code> will never touch your testing and always pass it correctly to where it needs to go.</p>
+<p>A <code>tflow</code> should always define the data at first but it also gives the possibility of updating the data. This can be useful if you’ve defined a complete pipeline with a particular data source but an updated version of our data has just arrived:</p>
+<pre class="r"><code># Define main workflow with old data
+simple_wflow &lt;-
+  mtcars %&gt;%
+  tflow() %&gt;%
+  add_split(prop = 0.75) %&gt;%
+  add_recipe(~ {
+    recipe(mpg ~ cyl + gear, data = .x) %&gt;%
+      step_mutate(cyl = log10(cyl)) %&gt;%
+      step_dummy(gear)
+  }) %&gt;% 
+  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+
+# Update the data and fit everything
+simple_wflow %&gt;%
+  update_data(mtcars2) %&gt;% 
+  fit()</code></pre>
+</div>
 <div id="updating-the-preprocessing-step" class="section level3">
 <h3>Updating the preprocessing step</h3>
 <p>A formula is always tied to your preprocessing. If you specify a new variable in your formula, you need not specify a new preprocessing step. However, if you specify a new step for a variable, you need to specify it in the formula. Since <code>tflow</code> is a placeholder of steps, adding new terms to formulas is just as easy with <code>step_add</code>.</p>
@@ -462,11 +493,13 @@ fit()</code></pre>
 simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  initial_split(prop = 0.75) %&gt;% 
-  recipe(mpg ~ cyl + gear) %&gt;% 
-  step_mutate(cyl = log10(cyl)) %&gt;%
-  step_dummy(gear) %&gt;%
-  set_engine(linear_reg(), &quot;lm&quot;)
+  add_split(prop = 0.75) %&gt;%
+  add_recipe(~ {
+    recipe(mpg ~ cyl + gear, data = .x) %&gt;%
+      step_mutate(cyl = log10(cyl)) %&gt;%
+      step_dummy(gear)
+  }) %&gt;% 
+  add_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Run the model
 simple_wflow %&gt;%
@@ -474,35 +507,69 @@ simple_wflow %&gt;%
 
 # Update the recipe to include one more term
 simple_wflow %&gt;%
-  step_add(am) %&gt;% 
+  update_recipe(~ .x %&gt;% step_add(am)) %&gt;% 
   fit()
 
 # Update the recipe to include one more term and add a step
 simple_wflow %&gt;%
-  step_add(am) %&gt;%
-  step_dummy(disp) %&gt;% 
+  update_recipe(~ .x %&gt;% step_add(am) %&gt;% step_dummy(disp)) %&gt;% 
   fit()
 
 # Update the recipe to include many terms and add a step
 simple_wflow %&gt;%
-  step_add(am, carb, hp, drat) %&gt;% 
-  step_dummy(disp) %&gt;% 
+  update_recipe(~ {
+    .x %&gt;%
+      step_add(am, carb, hp, drat) %&gt;%
+      step_dummy(disp)
+  }) %&gt;% 
   fit()</code></pre>
 <p>If the user’s data exploration process is short, they can scroll up to the initial recipe and redefine it there. For more complicated workflows, <code>step_add</code> can make it easy to iteratively update the initial specification and add subsequent steps to the workflow <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
 <p>Since this step is interactive, the user should be able to specify a workflow and extract the recipe prepped to explore the data:</p>
 <pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  initial_split(prop = 0.75) %&gt;% 
-  recipe(mpg ~ cyl + gear) %&gt;% 
-  step_mutate(cyl = log10(cyl)) %&gt;%
-  step_dummy(gear)
+  add_split(prop = 0.75) %&gt;%
+  add_recipe(~ {
+    recipe(mpg ~ cyl + gear, data = .x) %&gt;%
+      step_mutate(cyl = log10(cyl)) %&gt;%
+      step_dummy(gear)
+  }) %&gt;% 
+  add_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Visualize your changes and iterate until happy
 simple_wflow %&gt;%
+  # trained will extract the prepped recipe on the data
+  # if `add_split` is specified, it will use the training data
+  # for everything.
   trained() %&gt;%
   ggplot(aes(cyl)) %&gt;%
   geom_histogram()</code></pre>
+<p>Another scenario is one in which the user wants to remove and update the complete formula. <code>update_recipe</code> will accept two things: either an anonymous function, which interprets to be an update, or a new recipe, which will replace the previous one. For example:</p>
+<pre class="r"><code>simple_wflow &lt;-
+  mtcars %&gt;%
+  tflow() %&gt;%
+  add_split(prop = 0.75) %&gt;%
+  add_recipe(~ {
+    recipe(mpg ~ cyl + gear, data = .x) %&gt;%
+      step_mutate(cyl = log10(cyl)) %&gt;%
+      step_dummy(gear)
+  }) %&gt;% 
+  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+
+# Update the complete recipe rather than only the
+# add new steps
+simple_wflow %&gt;%
+  update_recipe(
+    # This is an idea in-progress because `.x` has no binding value.
+    # Perhaps I can capture the unevaluated expression and replace
+    # .x with the data but specifying this makes it look like breaking
+    # the rules. One idea is to use the dummy `rlang::.data` as a place
+    # holder.
+    recipe(mpg ~ cyl + gear, data = .x) %&gt;%
+      step_center(cyl) %&gt;%
+      step_log(cyl, base = 10) %&gt;%
+      step_dummy(gear)
+  )</code></pre>
 </div>
 <div id="updating-the-modelling-workflow" class="section level3">
 <h3>Updating the modelling workflow</h3>
@@ -511,82 +578,129 @@ simple_wflow %&gt;%
 simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  initial_split(prop = 0.75) %&gt;% 
-  recipe(mpg ~ cyl + gear) %&gt;% 
-  step_mutate(cyl = log10(cyl)) %&gt;%
-  step_dummy(gear) %&gt;%
-  set_engine(linear_reg(), &quot;lm&quot;)
+  add_split(prop = 0.75) %&gt;%
+  add_recipe(~ {
+    recipe(mpg ~ cyl + gear, data = .x) %&gt;%
+      step_mutate(cyl = log10(cyl)) %&gt;%
+      step_dummy(gear)
+  }) %&gt;% 
+  add_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Create the model with some tuning parameters
 simple_wflow %&gt;%
-  set_engine(linear_reg(penalty = 0.000001, mixture = 0.00002),
-             engine = &quot;glmnet&quot;) %&gt;%
+  update_model(
+    set_engine(linear_reg(penalty = 0.000001, mixture = 0.00002),
+               engine = &quot;glmnet&quot;)
+  ) %&gt;%
   fit()
 
 # Redefine the model with empty parameters for the tuning grid
 simple_wflow %&gt;%
-  set_engine(linear_reg(penalty = tune(), mixture = tune()),
-             engine = &quot;glmnet&quot;) %&gt;%
-  grid_regular(levels = 10) %&gt;% 
+  update_model(
+    set_engine(linear_reg(penalty = tune(), mixture = tune()),
+               engine = &quot;glmnet&quot;)
+  ) %&gt;%
+  add_grid_regular(levels = 10) %&gt;% 
   fit()
 
-# Alternatively, fill all empty with tune()
 simple_wflow %&gt;%
-  set_engine(rand_forest(trees = 2000), &quot;ranger&quot;) %&gt;%
+  update_model(
+    set_engine(rand_forest(trees = 2000), &quot;ranger&quot;)
+  ) %&gt;%
   # Fill unfilled params with `tune()`
-  set_all_params(tune()) %&gt;%
-  # Create a tuning grid with everything defined above and run model
-  grid_regular(levels = 10) %&gt;% 
+  add_all_params(tune()) %&gt;%
+  add_grid_regular(levels = 10) %&gt;% 
   fit()</code></pre>
 <p>There are scenarios in which you’d like to also specify tuning parameters in your recipe as well as in your model. By specifying <code>tune()</code> in all empty parameters, as long as you specify the <code>grid_*</code> function, it should create a grid of values that are fed to <code>fit</code>.</p>
-<pre class="r"><code>simple_wflow &lt;-
+<pre class="r"><code># Define main workflow
+simple_wflow &lt;-
   mtcars %&gt;%
-  tflow() %&gt;% 
-  initial_split() %&gt;% 
-  recipe(mpg ~ cyl + gear + disp) %&gt;% 
-  step_mutate(cyl = log10(cyl)) %&gt;%
-  step_ns(disp, deg_free = tune()) %&gt;%
-  set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), &quot;ranger&quot;)
+  tflow() %&gt;%
+  add_split(prop = 0.75) %&gt;%
+  add_recipe(~ {
+    recipe(mpg ~ cyl + gear + disp, data = .x) %&gt;%
+      step_mutate(cyl = log10(cyl)) %&gt;%
+      step_dummy(gear) %&gt;%
+      step_ns(disp, deg_free = tune())
+  }) %&gt;% 
+  add_model(
+    set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), &quot;ranger&quot;)
+  )
+
 
 # This should create a grid of values for `deg_free`, `trees` and `min_n`
 simple_wflow %&gt;%
-  vfold_cv() %&gt;%
+  add_vfold_cv() %&gt;%
   grid_regular(levels = 3) %&gt;%
   fit()</code></pre>
-<p>The workflow showed so far takes care of returning all default metrics associated with a particular variable. That is, if no metric of fit is specified (root mean square error, R square, etc…), it returns the default when tuning the grid (this is controlled by <code>tune_grid</code>). However, this workflow allows to specify any metric for the model, as it will be saved together with the model.</p>
-<pre class="r"><code>simple_wflow &lt;-
+<p>The workflow showed so far takes care of returning all default metrics associated with a particular variable. That is, if no metric of fit is specified (root mean square error, R square, etc…), it returns the default when tuning the grid (this is controlled automatically by <code>tune_grid</code>). However, this workflow allows to specify any metric for the model, as it will be saved together with the model.</p>
+<pre class="r"><code># Define main workflow
+simple_wflow &lt;-
   mtcars %&gt;%
-  tflow() %&gt;% 
-  initial_split() %&gt;% 
-  recipe(mpg ~ cyl + gear + disp) %&gt;% 
-  step_mutate(cyl = log10(cyl)) %&gt;%
-  step_ns(disp, deg_free = tune()) %&gt;%
-  set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), &quot;ranger&quot;) %&gt;%
+  tflow() %&gt;%
+  add_split(prop = 0.75) %&gt;%
+  add_recipe(~ {
+    recipe(mpg ~ cyl + gear + disp, data = .x) %&gt;%
+      step_mutate(cyl = log10(cyl)) %&gt;%
+      step_dummy(gear) %&gt;%
+      step_ns(disp, deg_free = tune())
+  }) %&gt;% 
+  add_model(
+    set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), &quot;ranger&quot;)
+  ) %&gt;%
   # Adds the metrics
-  metric_set(rmse, rsq)
+  add_metric_set(rmse, rsq)
 
 simple_wflow %&gt;%
-  vfold_cv() %&gt;%
-  grid_regular(levels = 3) %&gt;%
+  add_vfold_cv() %&gt;%
+  add_grid_regular(levels = 3) %&gt;%
   fit()</code></pre>
-<p>Thanks to the fact that <code>tidymodels</code> defines pretty much every step (recipe, metrics, cross validation, grids, etc…) of the workflow with separate classes, each of these classes has a slot in the workflow and you can replace it interactively: no need for <code>add_*</code> or <code>remove_*</code> functions.</p>
-<pre class="r"><code>simple_wflow &lt;-
+<p>Thanks to the fact that <code>tidymodels</code> defines pretty much every step (recipe, metrics, cross validation, grids, etc…) of the workflow with separate classes, each of these classes has a slot in the workflow and you can explicitly add/update them with the <code>add_*</code> or <code>update_*</code> functions. It’s still not clear how the <code>add_*</code> or <code>update_*</code> functions will work since I want to make them memorable: they all work the same way and accept similar things. I need to think about this more.</p>
+<pre class="r"><code># Define main workflow
+simple_wflow &lt;-
   mtcars %&gt;%
-  tflow() %&gt;% 
-  initial_split() %&gt;% 
-  recipe(mpg ~ cyl + gear + disp) %&gt;% 
-  step_mutate(cyl = log10(cyl)) %&gt;%
-  step_ns(disp, deg_free = tune()) %&gt;%
-  set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), &quot;ranger&quot;)
+  tflow() %&gt;%
+  add_split(prop = 0.75) %&gt;%
+  add_recipe(~ {
+    recipe(mpg ~ cyl + gear + disp, data = .x) %&gt;%
+      step_mutate(cyl = log10(cyl)) %&gt;%
+      step_dummy(gear) %&gt;%
+      step_ns(disp, deg_free = tune())
+  }) %&gt;% 
+  add_model(
+    set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), &quot;ranger&quot;)
+  ) %&gt;%
+  # Adds the metrics
+  add_metric_set(rmse, rsq)
 
 simple_wflow %&gt;%
   # Replaces old model
-  set_engine(linear_reg(penalty = tune(), mixture = tune()), &quot;glmnet&quot;) %&gt;%
-  vfold_cv() %&gt;%
-  grid_regular(levels = 3) %&gt;%
+  update_model(
+    set_engine(linear_reg(penalty = tune(), mixture = tune()), &quot;glmnet&quot;)
+  ) %&gt;%
+  add_vfold_cv() %&gt;%
+  add_grid_regular(levels = 3) %&gt;%
   # Replace previous grid
-  grid_regular(levels = 10) %&gt;% 
-  fit()</code></pre>
+  update_grid_regular(levels = 10) %&gt;% 
+  fit()
+
+
+# Define main workflow
+simple_wflow &lt;-
+  mtcars %&gt;%
+  tflow() %&gt;%
+  add_split(initial_split, prop = 0.75) %&gt;%
+  add_recipe(~ {
+    recipe(mpg ~ cyl + gear + disp, data = .x) %&gt;%
+      step_mutate(cyl = log10(cyl)) %&gt;%
+      step_dummy(gear) %&gt;%
+      step_ns(disp, deg_free = tune())
+  }) %&gt;% 
+  add_model(
+    set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), &quot;ranger&quot;)
+  ) %&gt;%
+  # Adds the metrics
+  add_metric(rmse, rsq)</code></pre>
 <p>Finally, the process behind <code>tflow</code> should be somewhat transparent and the user should be able to print the workflow before fitting to see the order of steps. In particular, there should be a method that when ran on the object return a data frame along the lines of:</p>
 <pre><code>## # A tibble: 6 x 2
 ##   step   execution          
@@ -603,18 +717,18 @@ simple_wflow %&gt;%
 </div>
 <div id="final-thoughts" class="section level1">
 <h1>Final thoughts</h1>
-<p>This description is mostly based on a workflow for doing machine learning. This is the case simply because the core objective of tidymodels is to focus on machine learning. However, this workflow should be useful for doing other types of statistical analysis. For example, the statistical analysis workflow is very similar to the one described above without separating into training/testing, adding cross-validation and performing a grid search. You could in principle do the same for statistical inferece. As long as the result is not focused on choosing the best model but on visualizing coefficients:</p>
+<p>This description is mostly based on a workflow for doing machine learning. This is the case simply because the core objective of <code>tidymodels</code> is to focus on machine learning. However, this workflow should be useful for doing other types of statistical analysis. For example, the statistical analysis workflow is very similar to the one described above without separating into training/testing, adding cross-validation and performing a grid search. You could in principle do the same for statistical inferece. As long as the result is not focused on choosing the best model but on visualizing coefficients:</p>
 <pre class="r"><code># Define main workflow
 simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  recipe(mpg ~ .) %&gt;% 
-  set_engine(linear_reg(), &quot;lm&quot;)
+  add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
+  add_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Run first model and explore
 simple_wflow %&gt;%
   fit()</code></pre>
-<p>Initiatives such as <a href="http://docs.zeligproject.org/index.html">Zelig</a> could be adapted accept zelig statistical models.</p>
+<p>Initiatives such as <a href="http://docs.zeligproject.org/index.html">Zelig</a> could be adapted to <code>tflow</code> such that more statistical models can be used (as well as other standard statistical software such as <code>brms</code>, <code>rstanarm</code>, etc…).</p>
 <p>All of the above is a prototype idea and none of it has been implemented.</p>
 <!-- ## Thoughts -->
 <!-- - If no `initial_split` is set, the everything is performed on the main data. This is ok, as statistical analysis doesn't usually split into testing/training. However, if the user tries to use the method to test the analysis on the test data, an error should be raised saying that no initial split was performed. This shouldn't be very compromising as everything is done on the training and no leak to the test is every done. The user just needs to remake the above including the initial split. -->
@@ -775,7 +889,7 @@ simple_wflow %&gt;%
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p><code>recipes</code> has an equivalent <code>step_rm</code> to remove columns from the recipe. However, the above has a problem: adding steps adds it to the formula but <code>step_rm</code> removes the final column from the already prepped recipe. <code>step_rm</code> is trickier because you’re not removing something from the formula but you’re removing it from the final prepped recipe. If you have <code>step_</code>’s that already use the term you want to remove, these steps won’t be removed<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p><code>recipes</code> has an equivalent <code>step_rm</code> to remove columns from the recipe. However, the above has a problem: adding new variables will add it to the formula but <code>step_rm</code> removes the final column from the already prepped recipe. In other words, <code>step_rm</code> is trickier because you’re not removing something from the formula but you’re removing it from the final prepped recipe. If you have <code>step_*</code>’s that already use the term you want to remove, these steps won’t be removed and will be computed before the actual column is removed<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
