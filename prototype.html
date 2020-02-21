@@ -389,7 +389,7 @@ simple_wflow %&gt;%
 
 simple_wflow %&gt;%
   fit() %&gt;%
-  # complete_recipe will pass the already existing recipe to
+  # complement_recipe will pass the already existing recipe to
   # the main argument of the function
   complement_recipe(~ .x %&gt;% step_mutate(cyl = log10(cyl)))</code></pre>
 <p>The operation over <code>cyl</code> is something that is specified after <code>fit</code>ting the model; it simply won’t happen before the <code>fit</code>. This tension suggests that there are basic operations for statistical modelling that <strong>need</strong> to happen before fitting a model. In particular, there are some heuristics that force analysts to perform steps in a particular order. For example:</p>
@@ -401,7 +401,7 @@ simple_wflow %&gt;%
   add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
   add_model(set_engine(linear_reg(), &quot;lm&quot;)) %&gt;%
   # New_step
-  complete_recipe(~ .x %&gt;% step_mutate(cyl = log10(cyl)))
+  complement_recipe(~ .x %&gt;% step_mutate(cyl = log10(cyl)))
 
 simple_wflow %&gt;%
   # Split data into training/testing
@@ -747,7 +747,7 @@ Main Arguments:
   mixture = tune()
 
 Computational engine: glmnet </code></pre>
-<p>When <code>fit</code> is ran the same print out is returned with the response of the fitting (coefficients, lambdas, etc.. This captures the exact printout of the engine being run behind the scenes). However, the user will be able to extract N things out of the workflow: (1) the data frame with the metrics of fit for the training and cross-validation, (2) the best model fit on the complete training data, (3) the prediction of the best model fit on the training data for the test set, (4) the coefficients (if available, this is passed to <code>broom</code>).</p>
+<p>When <code>fit</code> is ran the same print out is returned with the response of the fitting (coefficients, lambdas, etc.. This captures the exact printout of the engine being run behind the scenes). However, the user will be able to extract 4 things out of the workflow: (1) the data frame with the metrics of fit for the training and cross-validation, (2) the best model fit on the complete training data, (3) the prediction of the best model fit on the training data for the test set, (4) the coefficients (if available, this is passed to <code>broom</code>).</p>
 <p>In particular, it will have methods to extract the <code>vfold</code> tibble and explore metrics, an automatic method for plotting the metrics across cross-validation sets, a method to extract the best tuning parameters and another one to train the best tuning parameters on the whole training data and return the model.</p>
 </div>
 </div>
