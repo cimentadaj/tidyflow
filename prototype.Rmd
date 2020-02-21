@@ -44,8 +44,9 @@ simple_wflow <-
 
 simple_wflow %>%
   fit() %>%
-  # `.x` is the already defined recipe in the workflow
-  update_recipe(~ .x %>% step_mutate(cyl = log10(cyl)))
+  # complete_recipe will pass the already existing recipe to
+  # the main argument of the function
+  complement_recipe(~ .x %>% step_mutate(cyl = log10(cyl)))
 
 ```
 
@@ -62,7 +63,7 @@ simple_wflow <-
   add_recipe(~ recipe(mpg ~ ., data = .x)) %>% 
   add_model(set_engine(linear_reg(), "lm")) %>%
   # New_step
-  update_recipe(~ .x %>% step_mutate(cyl = log10(cyl)))
+  complete_recipe(~ .x %>% step_mutate(cyl = log10(cyl)))
 
 simple_wflow %>%
   # Split data into training/testing
@@ -83,7 +84,7 @@ simple_wflow <-
   mtcars %>%
   tflow() %>%
   # Split data into training/testing
-  add_split(prop = 0.75) %>%
+  add_split(rsample::initial_split, prop = 0.75) %>%
   # `add_recipe` recives your recipe and attaches the
   # data already provided in `.x`
   add_recipe(~ recipe(mpg ~ ., data = .x)) %>% 
@@ -97,7 +98,7 @@ simple_wflow %>%
 simple_wflow %>%
   # Add more steps to the recipe. `.x` is the supplied
   # recipe above.
-  update_recipe(~ .x %>% step_mutate(cyl = log10(cyl)))
+  complement_recipe(~ .x %>% step_mutate(cyl = log10(cyl)))
   fit()
 
 ```
@@ -109,7 +110,7 @@ simple_wflow <-
   mtcars %>%
   tflow() %>%
   # Split data into training/testing
-  add_split(prop = 0.75) %>%
+  add_split(rsample::initial_split, prop = 0.75) %>%
   add_recipe(~ recipe(mpg ~ ., data = .x)) %>% 
   add_model(set_engine(linear_reg(), "lm"))
 
@@ -120,7 +121,7 @@ simple_wflow %>%
 # Refit model with newer steps and new model
 simple_wflow <-
   simple_wflow %>%
-  update_recipe(~ {
+  complement_recipe(~ {
     .x %>%
       step_mutate(cyl = log10(cyl)) %>%
       step_dummy(gear)
@@ -139,7 +140,7 @@ simple_wflow %>%
 * `recipe`: contains the formula and steps
 * `modelling`: contains the model
 
-If you specify a recipe, you can either update it or provide a completely new recipe, if you update a new dataset, it replaces the old one, if you update a new model it replaces the old one. Now, let's think how this workflow works with more challenging examples.
+If you specify a recipe, you can either update it with `complement_recipe` or provide a completely new recipe with `update_recipe`, if you update a new dataset, it replaces the old one, if you update a new model it replaces the old one. Now, let's think how this workflow works with more challenging examples.
 
 # Abstracting the three placeholders
 
@@ -154,7 +155,7 @@ A `tflow` should always define the data at first but it also gives the possibili
 simple_wflow <-
   mtcars %>%
   tflow() %>%
-  add_split(prop = 0.75) %>%
+  add_split(rsample::initial_split, prop = 0.75) %>%
   add_recipe(~ {
     recipe(mpg ~ cyl + gear, data = .x) %>%
       step_mutate(cyl = log10(cyl)) %>%
@@ -162,8 +163,8 @@ simple_wflow <-
   }) %>% 
   add_model(set_engine(linear_reg(), "lm"))
 
-# Update the data and fit everything
 simple_wflow %>%
+  # Replaces the old data and reruns everything
   update_data(mtcars2) %>% 
   fit()
 
@@ -178,7 +179,7 @@ A formula is always tied to your preprocessing. If you specify a new variable in
 simple_wflow <-
   mtcars %>%
   tflow() %>%
-  add_split(prop = 0.75) %>%
+  add_split(rsample::initial_split, prop = 0.75) %>%
   add_recipe(~ {
     recipe(mpg ~ cyl + gear, data = .x) %>%
       step_mutate(cyl = log10(cyl)) %>%
@@ -192,17 +193,17 @@ simple_wflow %>%
 
 # Update the recipe to include one more term
 simple_wflow %>%
-  update_recipe(~ .x %>% step_add(am)) %>% 
+  complement_recipe(~ .x %>% step_add(am)) %>% 
   fit()
 
 # Update the recipe to include one more term and add a step
 simple_wflow %>%
-  update_recipe(~ .x %>% step_add(am) %>% step_dummy(disp)) %>% 
+  complement_recipe(~ .x %>% step_add(am) %>% step_dummy(disp)) %>% 
   fit()
 
 # Update the recipe to include many terms and add a step
 simple_wflow %>%
-  update_recipe(~ {
+  complement_recipe(~ {
     .x %>%
       step_add(am, carb, hp, drat) %>%
       step_dummy(disp)
@@ -219,7 +220,7 @@ Since this step is interactive, the user should be able to specify a workflow an
 simple_wflow <-
   mtcars %>%
   tflow() %>%
-  add_split(prop = 0.75) %>%
+  add_split(rsample::initial_split, prop = 0.75) %>%
   add_recipe(~ {
     recipe(mpg ~ cyl + gear, data = .x) %>%
       step_mutate(cyl = log10(cyl)) %>%
@@ -238,14 +239,14 @@ simple_wflow %>%
 
 ```
 
-Another scenario is one in which the user wants to remove and update the complete formula. `update_recipe` will accept two things: either an anonymous function, which interprets to be an update, or a new recipe, which will replace the previous one. For example:
+Another scenario is one in which the user wants to remove and update the complete formula. `update_recipe` will always accept a function with one argument, which will be passed the data.
 
 ```{r }
 
 simple_wflow <-
   mtcars %>%
   tflow() %>%
-  add_split(prop = 0.75) %>%
+  add_split(rsample::initial_split, prop = 0.75) %>%
   add_recipe(~ {
     recipe(mpg ~ cyl + gear, data = .x) %>%
       step_mutate(cyl = log10(cyl)) %>%
@@ -257,17 +258,42 @@ simple_wflow <-
 # add new steps
 simple_wflow %>%
   update_recipe(
-    # This is an idea in-progress because `.x` has no binding value.
-    # Perhaps I can capture the unevaluated expression and replace
-    # .x with the data but specifying this makes it look like breaking
-    # the rules. One idea is to use the dummy `rlang::.data` as a place
-    # holder.
+    # in update_recipe, `.x` will always be the data
+    # in completement_recipe, `.x` will be the already defined recipe
     recipe(mpg ~ cyl + gear, data = .x) %>%
       step_center(cyl) %>%
       step_log(cyl, base = 10) %>%
       step_dummy(gear)
   )
 
+
+```
+
+All of the above also includes the option of adding a resamples specification. This means that you can add a cross-validation function that will be added to the plan. For example: 
+
+```{r }
+simple_wflow <-
+  mtcars %>%
+  tflow() %>%
+  add_split(rsample::initial_split, prop = 0.75) %>%
+  # adds cross-validation
+  add_resamples(rsample::vfold_cv) %>% 
+  add_recipe(~ {
+    recipe(mpg ~ cyl + gear, data = .x) %>%
+      step_mutate(cyl = log10(cyl)) %>%
+      step_dummy(gear)
+  }) %>% 
+  add_model(set_engine(linear_reg(), "lm"))
+
+# Run model and look at results
+simple_wflow %>%
+  fit()
+
+# Didn't like it? Rerun updating with another function
+simple_wflow %>%
+  # add a montecarlo cross-validation
+  update_resample(rsample::mc_cv) %>%
+  fit()
 
 ```
 
@@ -281,7 +307,7 @@ Setting models is somewhat easy, as was shown in the examples above. However, th
 simple_wflow <-
   mtcars %>%
   tflow() %>%
-  add_split(prop = 0.75) %>%
+  add_split(rsample::initial_sample, prop = 0.75) %>%
   add_recipe(~ {
     recipe(mpg ~ cyl + gear, data = .x) %>%
       step_mutate(cyl = log10(cyl)) %>%
@@ -290,56 +316,59 @@ simple_wflow <-
   add_model(set_engine(linear_reg(), "lm"))
 
 # Create the model with some tuning parameters
+mod1 <- set_engine(linear_reg(penalty = 0.000001, mixture = 0.00002),
+                   engine = "glmnet")
+
 simple_wflow %>%
-  update_model(
-    set_engine(linear_reg(penalty = 0.000001, mixture = 0.00002),
-               engine = "glmnet")
-  ) %>%
+  update_model(mod1) %>%
   fit()
 
 # Redefine the model with empty parameters for the tuning grid
+mod2 <- set_engine(linear_reg(penalty = tune(), mixture = tune()),
+                   engine = "glmnet")
+
 simple_wflow %>%
-  update_model(
-    set_engine(linear_reg(penalty = tune(), mixture = tune()),
-               engine = "glmnet")
-  ) %>%
+  update_model(mod2) %>%
+  # Add grid of values for empty parameters
   add_grid_regular(levels = 10) %>% 
   fit()
 
+mod3 <- set_engine(rand_forest(trees = 2000), "ranger")
 simple_wflow %>%
-  update_model(
-    set_engine(rand_forest(trees = 2000), "ranger")
-  ) %>%
-  # Fill unfilled params with `tune()`
+  update_model(mod1) %>%
+  # Fill unfilled params with `tune()`, such as min_n and ntry
   add_all_params(tune()) %>%
   add_grid_regular(levels = 10) %>% 
   fit()
 
 ```
 
+I haven't though the tuning/model integration really well but the above should be more flexible allowing you to create tuning grids with minimum/maximums along the grid space.
+
 There are scenarios in which you'd like to also specify tuning parameters in your recipe as well as in your model. By specifying `tune()` in all empty parameters, as long as you specify the `grid_*` function, it should create a grid of values that are fed to `fit`.
 
 ```{r }
+
+mod4 <- set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()),
+                   "ranger")
 
 # Define main workflow
 simple_wflow <-
   mtcars %>%
   tflow() %>%
-  add_split(prop = 0.75) %>%
+  add_split(rsample::initial_split, prop = 0.75) %>%
+  add_resample(rsample::bootstraps) %>%
   add_recipe(~ {
     recipe(mpg ~ cyl + gear + disp, data = .x) %>%
       step_mutate(cyl = log10(cyl)) %>%
       step_dummy(gear) %>%
+      # NOTE: see the tune() in the recipe?
       step_ns(disp, deg_free = tune())
   }) %>% 
-  add_model(
-    set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), "ranger")
-  )
-
+  add_model(mod4)
 
 # This should create a grid of values for `deg_free`, `trees` and `min_n`
 simple_wflow %>%
-  add_vfold_cv() %>%
   grid_regular(levels = 3) %>%
   fit()
 
@@ -349,25 +378,26 @@ The workflow showed so far takes care of returning all default metrics associate
 
 ```{r }
 
+mod5 <- set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()),
+                   "ranger")
+
 # Define main workflow
 simple_wflow <-
   mtcars %>%
   tflow() %>%
-  add_split(prop = 0.75) %>%
+  add_split(rsample::initial_split, prop = 0.75) %>%
+  add_resample(rsample::vfold_cv) %>% 
   add_recipe(~ {
     recipe(mpg ~ cyl + gear + disp, data = .x) %>%
       step_mutate(cyl = log10(cyl)) %>%
       step_dummy(gear) %>%
       step_ns(disp, deg_free = tune())
   }) %>% 
-  add_model(
-    set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), "ranger")
-  ) %>%
+  add_model(mod5) %>%
   # Adds the metrics
-  add_metric_set(rmse, rsq)
+  add_metric(metric_set(rmse, rsq))
 
 simple_wflow %>%
-  add_vfold_cv() %>%
   add_grid_regular(levels = 3) %>%
   fit()
 
@@ -376,52 +406,36 @@ simple_wflow %>%
 Thanks to the fact that `tidymodels` defines pretty much every step (recipe, metrics, cross validation, grids, etc...) of the workflow with separate classes, each of these classes has a slot in the workflow and you can explicitly add/update them with the `add_*` or `update_*` functions. It's still not clear how the `add_*` or `update_*` functions will work since I want to make them memorable: they all work the same way and accept similar things. I need to think about this more.
 
 ```{r }
+
+mod6 <- set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()),
+                   "ranger")
+
+
 # Define main workflow
 simple_wflow <-
   mtcars %>%
   tflow() %>%
-  add_split(prop = 0.75) %>%
+  add_split(rsample::initial_split, prop = 0.75) %>%
+  add_resample(rsample::vfold_cv)
   add_recipe(~ {
     recipe(mpg ~ cyl + gear + disp, data = .x) %>%
       step_mutate(cyl = log10(cyl)) %>%
       step_dummy(gear) %>%
       step_ns(disp, deg_free = tune())
   }) %>% 
-  add_model(
-    set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), "ranger")
-  ) %>%
+  add_model(mod6) %>%
   # Adds the metrics
-  add_metric_set(rmse, rsq)
+  add_metric(metric_set(rmse, rsq))
+
+mod7 <- set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet")
 
 simple_wflow %>%
   # Replaces old model
-  update_model(
-    set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet")
-  ) %>%
-  add_vfold_cv() %>%
+  update_model(mod7) %>%
   add_grid_regular(levels = 3) %>%
   # Replace previous grid
   update_grid_regular(levels = 10) %>% 
   fit()
-
-
-# Define main workflow
-simple_wflow <-
-  mtcars %>%
-  tflow() %>%
-  add_split(initial_split, prop = 0.75) %>%
-  add_recipe(~ {
-    recipe(mpg ~ cyl + gear + disp, data = .x) %>%
-      step_mutate(cyl = log10(cyl)) %>%
-      step_dummy(gear) %>%
-      step_ns(disp, deg_free = tune())
-  }) %>% 
-  add_model(
-    set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()), "ranger")
-  ) %>%
-  # Adds the metrics
-  add_metric(rmse, rsq)
-
 ```
 
 Finally, the process behind `tflow` should be somewhat transparent and the user should be able to print the workflow before fitting to see the order of steps. In particular, there should be a method that when ran on the object return a data frame along the lines of:
@@ -445,7 +459,43 @@ tflow
 
 where each step is accompanied by the captured expression to which it makes reference to. In addition, functions to extract specific objects such as the executed grid, the executed recipe, etc.. should be available to check whether the steps specified produced the results that were expected.
 
-Now finally, what does running `fit` return? It should return the same print out as the workflow with some additional information. In particular, it will have methods to extract the `vfold` tibble and explore metrics, an automatic method for plotting the metrics across cross-validation sets, a method to extract the best tuning parameters and another one to train the best tuning parameters on the whole training data and return the model.
+Now finally, what does running `fit` return? As for the printing, it should print something along the lines of:
+
+```{r}
+mtcars %>%
+  workflow() %>%
+  add_split(rsample::initial_split) %>%
+  add_resample(rsample::vfold_cv) %>%
+  add_recipe(~ recipe(mpg ~ cyl, data = .x) %>% step_log(cyl)) %>%
+  add_model(set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet"))
+```
+
+```
+══ Workflow ════════════════════════════════════════════════════════════════════
+Data: 32 rows x 11 columns; 0% missing values
+Preprocessor: Recipe
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+Split: initial_split w/ default args
+Resample: vfold_cv w/ default args
+1 Recipe Step
+
+● step_log()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Linear Regression Model Specification (regression)
+
+Main Arguments:
+  penalty = tune()
+  mixture = tune()
+
+Computational engine: glmnet 
+```
+
+When `fit` is ran the same print out is returned with the response of the fitting (coefficients, lambdas, etc.. This captures the exact printout of the engine being run behind the scenes). However, the user will be able to extract N things out of the workflow: (1) the data frame with the metrics of fit for the training and cross-validation, (2) the best model fit on the complete training data, (3) the prediction of the best model fit on the training data for the test set, (4) the coefficients (if available, this is passed to `broom`).
+
+In particular, it will have methods to extract the `vfold` tibble and explore metrics, an automatic method for plotting the metrics across cross-validation sets, a method to extract the best tuning parameters and another one to train the best tuning parameters on the whole training data and return the model.
 
 # Final thoughts
 
@@ -462,7 +512,6 @@ simple_wflow <-
 # Run first model and explore
 simple_wflow %>%
   fit()
-
 ```
 
 Initiatives such as [Zelig](http://docs.zeligproject.org/index.html) could be adapted to `tflow` such that more statistical models can be used (as well as other standard statistical software such as `brms`, `rstanarm`, etc...). 
