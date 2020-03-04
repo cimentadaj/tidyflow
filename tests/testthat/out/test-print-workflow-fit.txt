@@ -1,0 +1,3 @@
+> fit(workflow, mtcars)
+Error: `data` must be specified to fit a workflow; Do you need `add_data`?
+

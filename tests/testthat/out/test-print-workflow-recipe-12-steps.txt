@@ -1,0 +1,8 @@
+> add_recipe(workflow(), rcp_fun)
+== Workflow ====================================================================
+Data: None
+Preprocessor: Recipe
+Model: None
+
+-- Preprocessor ----------------------------------------------------------------
+
