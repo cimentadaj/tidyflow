@@ -1,4 +1,4 @@
 library(testthat)
 library(tidyflow)
 
-test_check("workflows")
+test_check("tidyflow")
