@@ -1,5 +1,5 @@
-Package: workflows
-Title: Modeling Workflows
+Package: tidyflow
+Title: Modeling Tidyflows
 Version: 0.1.0.9000
 Authors@R: 
     c(person(given = "Davis",
@@ -10,11 +10,11 @@ Authors@R:
              role = "cph"))
 Description: Managing both a 'parsnip' model and a preprocessor, such as a
     model formula or recipe from 'recipes', can often be challenging. The goal
-    of 'workflows' is to streamline this process by bundling the model alongside
+    of 'tidyflow' is to streamline this process by bundling the model alongside
     the preprocessor, all within the same object.
 License: MIT + file LICENSE
-URL: https://github.com/tidymodels/workflows
-BugReports: https://github.com/tidymodels/workflows/issues
+URL: https://github.com/tidymodels/tidyflow
+BugReports: https://github.com/tidymodels/tidyflow/issues
 Depends: 
     R (>= 3.2)
 Imports: 

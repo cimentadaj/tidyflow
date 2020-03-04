@@ -67,7 +67,7 @@ test_that("error if not a workflow", {
 })
 
 # ------------------------------------------------------------------------------
-# pull_workflow_fit()
+# pull_tflow_fit()
 
 test_that("can pull a model fit", {
   model <- parsnip::linear_reg()
@@ -80,21 +80,21 @@ test_that("can pull a model fit", {
   workflow <- fit(workflow)
 
   expect_equal(
-    pull_workflow_fit(workflow),
+    pull_tflow_fit(workflow),
     workflow$fit$fit
   )
 })
 
 test_that("error if no fit", {
   expect_error(
-    pull_workflow_fit(workflow()),
+    pull_tflow_fit(workflow()),
     "does not have a model fit. Have you called `fit[(][)]` yet?"
   )
 })
 
 test_that("error if not a workflow", {
   expect_error(
-    pull_workflow_fit(1),
+    pull_tflow_fit(1),
     "must be a workflow"
   )
 })

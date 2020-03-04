@@ -147,12 +147,12 @@ test_that("Formula works with add_split", {
   # on the splitted sample
   expect_equal(
     result$pre$mold$outcomes$mpg,
-    pull_workflow_fit(result)$fit$model[[1]]
+    pull_tflow_fit(result)$fit$model[[1]]
   )
 
   expect_equal(
     result$pre$mold$predictors$`log(cyl)`,
-    pull_workflow_fit(result)$fit$model[[2]]
+    pull_tflow_fit(result)$fit$model[[2]]
   )
   
 })

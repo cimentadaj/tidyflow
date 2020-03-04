@@ -56,7 +56,7 @@ Suppose you were modeling data on cars. Say...the fuel efficiency of 32 cars. Yo
 ```{r spline-rec, eval = FALSE}
 library(recipes)
 library(parsnip)
-library(workflows)
+library(tidyflow)
 
 spline_cars <- recipe(mpg ~ ., data = mtcars) %>% 
   step_ns(disp, deg_free = 10)

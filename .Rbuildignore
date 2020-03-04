@@ -1,0 +1,9 @@
+^LICENSE\.md$
+^README\.Rmd$
+^_pkgdown\.yml$
+^codecov\.yml$
+^cran-comments\.md$
+^prototype\.Rmd$
+^prototype\.html$
+^test\.R$
+^workflows\.Rproj$

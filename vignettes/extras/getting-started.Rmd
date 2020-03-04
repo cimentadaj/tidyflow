@@ -32,7 +32,7 @@ There are three partitions of the original data: training (n = 1009), validation
 Here is the training set:
 
 ```{r plot-data, message = FALSE}
-library(workflows)
+library(tidyflow)
 library(ggplot2)
 library(dplyr)
 

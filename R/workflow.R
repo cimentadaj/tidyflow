@@ -316,7 +316,7 @@ print_spec <- function(x) {
 }
 
 print_fit <- function(x) {
-  parsnip_fit <- pull_workflow_fit(x)
+  parsnip_fit <- pull_tflow_fit(x)
   fit <- parsnip_fit$fit
 
   output <- utils::capture.output(fit)

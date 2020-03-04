@@ -60,7 +60,7 @@ have a recipe to specify the spline:
 ``` r
 library(recipes)
 library(parsnip)
-library(workflows)
+library(tidyflow)
 
 spline_cars <- recipe(mpg ~ ., data = mtcars) %>% 
   step_ns(disp, deg_free = 10)

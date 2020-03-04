@@ -5,7 +5,7 @@
 \alias{pull_workflow_rawdata}
 \alias{pull_workflow_preprocessor}
 \alias{pull_workflow_spec}
-\alias{pull_workflow_fit}
+\alias{pull_tflow_fit}
 \alias{pull_workflow_mold}
 \alias{pull_workflow_prepped_recipe}
 \alias{pull_workflow_testing}
@@ -17,7 +17,7 @@ pull_workflow_preprocessor(x)
 
 pull_workflow_spec(x)
 
-pull_workflow_fit(x)
+pull_tflow_fit(x)
 
 pull_workflow_mold(x)
 
@@ -40,7 +40,7 @@ not exist yet, an error is thrown.
 \item \code{pull_workflow_preprocessor()} returns either the formula or recipe used
 for preprocessing.
 \item \code{pull_workflow_spec()} returns the parsnip model specification.
-\item \code{pull_workflow_fit()} returns the parsnip model fit.
+\item \code{pull_tflow_fit()} returns the parsnip model fit.
 \item \code{pull_workflow_mold()} returns the preprocessed "mold" object returned
 from \code{\link[hardhat:mold]{hardhat::mold()}}. It contains information about the preprocessing,
 including either the prepped recipe or the formula terms object.
@@ -81,7 +81,7 @@ pull_workflow_preprocessor(formula_workflow)
 # The `spec` is the parsnip spec before it has been fit.
 # The `fit` is the fit parsnip model.
 pull_workflow_spec(fit_formula_workflow)
-pull_workflow_fit(fit_formula_workflow)
+pull_tflow_fit(fit_formula_workflow)
 
 # The mold is returned from `hardhat::mold()`, and contains the
 # predictors, outcomes, and information about the preprocessing

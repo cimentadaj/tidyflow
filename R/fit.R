@@ -125,7 +125,7 @@ fit.workflow <- function(object, ..., control = control_workflow()) {
 #' @export
 .fit_model <- function(workflow, control) {
   action_model <- workflow[["fit"]][["actions"]][["model"]]
-  fit(action_model, workflow = workflow, control = control)
+  fit(action_model, wflow = workflow, control = control)
 }
 
 # ------------------------------------------------------------------------------

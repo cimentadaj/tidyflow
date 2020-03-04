@@ -11,7 +11,7 @@
 #'
 #' - `pull_workflow_spec()` returns the parsnip model specification.
 #'
-#' - `pull_workflow_fit()` returns the parsnip model fit.
+#' - `pull_tflow_fit()` returns the parsnip model fit.
 #'
 #' - `pull_workflow_mold()` returns the preprocessed "mold" object returned
 #'   from [hardhat::mold()]. It contains information about the preprocessing,
@@ -64,7 +64,7 @@
 #' # The `spec` is the parsnip spec before it has been fit.
 #' # The `fit` is the fit parsnip model.
 #' pull_workflow_spec(fit_formula_workflow)
-#' pull_workflow_fit(fit_formula_workflow)
+#' pull_tflow_fit(fit_formula_workflow)
 #'
 #' # The mold is returned from `hardhat::mold()`, and contains the
 #' # predictors, outcomes, and information about the preprocessing
@@ -125,7 +125,7 @@ pull_workflow_spec <- function(x) {
 
 #' @rdname workflow-extractors
 #' @export
-pull_workflow_fit <- function(x) {
+pull_tflow_fit <- function(x) {
   validate_is_workflow(x)
 
   if (has_fit(x)) {
