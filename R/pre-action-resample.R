@@ -6,7 +6,7 @@
 #'   functions which return an \code{rset} object will be allowed. See
 #'   package \code{\link[rsample]{rsample}} and the details section.
 #'
-#' - `remove_resample()` removes the resample specification from the tidyflow.
+#' - `drop_resample()` removes the resample specification from the tidyflow.
 #'   Note that it keeps other preprocessing steps such as the recipe.
 #'
 #' - `update_resample()` first removes the resample, then adds a new resample
@@ -53,7 +53,7 @@
 #'
 #' wf
 #'
-#' remove_resample(wf)
+#' drop_resample(wf)
 #'
 #' # New split function
 #' update_resample(wf, bootstraps)
@@ -75,7 +75,7 @@ add_resample <- function(x, .f, ...) {
 
 #' @rdname add_resample
 #' @export
-remove_resample <- function(x) {
+drop_resample <- function(x) {
   validate_is_tidyflow(x)
 
   if (!has_preprocessor_resample(x)) {
@@ -94,7 +94,7 @@ remove_resample <- function(x) {
 #' @rdname add_resample
 #' @export
 update_resample <- function(x, .f, ...) {
-  x <- remove_resample(x)
+  x <- drop_resample(x)
   .f <- enquo(.f)
   add_resample(x, !!.f, ...)
 }

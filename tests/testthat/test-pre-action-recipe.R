@@ -50,7 +50,7 @@ test_that("remove a recipe", {
                                      ~ recipes::recipe(mpg ~ cyl, .x)
                                      )
   
-  tidyflow_removed_recipe <- remove_recipe(tidyflow_with_recipe)
+  tidyflow_removed_recipe <- drop_recipe(tidyflow_with_recipe)
 
   expect_equal(tidyflow_no_recipe$pre, tidyflow_removed_recipe$pre)
 })
@@ -68,7 +68,7 @@ test_that("remove a recipe after model fit", {
   
   tidyflow_with_recipe <- fit(tidyflow_with_recipe)
 
-  tidyflow_removed_recipe <- remove_recipe(tidyflow_with_recipe)
+  tidyflow_removed_recipe <- drop_recipe(tidyflow_with_recipe)
 
   expect_equal(tidyflow_no_recipe$pre, tidyflow_removed_recipe$pre)
 })

@@ -6,7 +6,7 @@
 #'   functions which return a \code{recipe} object will be allowed. See
 #'   package \code{\link[recipes]{recipes}} for how to create a recipe.
 #'
-#' - `remove_recipe()` removes the recipe function from the tidyflow. Note
+#' - `drop_recipe()` removes the recipe function from the tidyflow. Note
 #'   that it keeps other preprocessing steps such as the split and resample.
 #'
 #' - `update_recipe()` first removes the recipe function, then adds the new
@@ -90,7 +90,7 @@ add_recipe <- function(x, .f, ..., blueprint = NULL) {
 
 #' @rdname add_recipe
 #' @export
-remove_recipe <- function(x) {
+drop_recipe <- function(x) {
   validate_is_tidyflow(x)
 
   if (!has_preprocessor_recipe(x)) {
@@ -110,7 +110,7 @@ remove_recipe <- function(x) {
 #' @export
 update_recipe <- function(x, .f, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
-  x <- remove_recipe(x)
+  x <- drop_recipe(x)
   add_recipe(x, .f, blueprint = blueprint)
 }
 

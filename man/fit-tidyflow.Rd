@@ -47,7 +47,7 @@ fit(formula_tidyflow)
 
 recipe_tidyflow <-
  formula_tidyflow \%>\%
- remove_formula() \%>\% 
+ drop_formula() \%>\% 
  add_recipe(~ recipe(mpg ~ cyl + disp, .x) \%>\% step_log(disp))
 
 fit(recipe_tidyflow)

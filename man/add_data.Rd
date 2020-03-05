@@ -2,13 +2,13 @@
 % Please edit documentation in R/data-raw_data.R
 \name{add_data}
 \alias{add_data}
-\alias{remove_data}
+\alias{drop_data}
 \alias{update_data}
 \title{Add a data to a tidyflow}
 \usage{
 add_data(x, data, ...)
 
-remove_data(x)
+drop_data(x)
 
 update_data(x, data, ...)
 }
@@ -26,7 +26,7 @@ update_data(x, data, ...)
 \itemize{
 \item \code{add_data()} specifies the raw data used in the analysis. This data is used
 for the preprocessing and fitting the model.
-\item \code{remove_data()} removes the data from the tidyflow.
+\item \code{drop_data()} removes the data from the tidyflow.
 \item \code{update_data()} first removes the data, then replaces the previous
 data with the new one. Any model that has already been fit based on this
 data will need to be refit.
@@ -41,7 +41,7 @@ wf <- tidyflow()
 wf <- add_data(wf, mtcars)
 wf
 
-remove_data(wf)
+drop_data(wf)
 
 update_data(wf, iris)
 

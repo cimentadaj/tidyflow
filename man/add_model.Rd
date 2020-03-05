@@ -2,13 +2,13 @@
 % Please edit documentation in R/fit-action-model.R
 \name{add_model}
 \alias{add_model}
-\alias{remove_model}
+\alias{drop_model}
 \alias{update_model}
 \title{Add a model to a tidyflow}
 \usage{
 add_model(x, spec, formula = NULL)
 
-remove_model(x)
+drop_model(x)
 
 update_model(x, spec, formula = NULL)
 }
@@ -31,7 +31,7 @@ used for those purposes.}
 \description{
 \itemize{
 \item \code{add_model()} adds a parsnip model to the tidyflow.
-\item \code{remove_model()} removes the model specification as well as any fitted
+\item \code{drop_model()} removes the model specification as well as any fitted
 model object. Any extra formulas are also removed. Doesn't remove any steps
 from the \code{pre} stage.
 \item \code{update_model()} first removes the model then adds the new specification to
@@ -56,14 +56,14 @@ wf
 wf <- add_formula(wf, mpg ~ .)
 wf
 
-remove_model(wf)
+drop_model(wf)
 
 fitted <- fit(wf)
 fitted
 
-remove_model(fitted)
+drop_model(fitted)
 
-remove_model(wf)
+drop_model(wf)
 
 update_model(wf, regularized_model)
 update_model(fitted, regularized_model)

@@ -233,11 +233,11 @@ test_that("can pull testing data", {
   check_testing(res)
 
   expect_error(
-    pull_tidyflow_testing(remove_recipe(res)),
+    pull_tidyflow_testing(drop_recipe(res)),
     "Tidyflow has not yet been trained. Do you need to call `fit()`?"
   )
 
-  res <- fit(add_formula(remove_recipe(res), mpg ~ cyl))
+  res <- fit(add_formula(drop_recipe(res), mpg ~ cyl))
   # The data is refit the same way with a formula
   check_testing(res)
 

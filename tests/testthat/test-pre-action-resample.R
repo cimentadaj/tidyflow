@@ -15,7 +15,7 @@ test_that("remove a resample specification", {
   tidyflow_with_resample <- add_resample(tidyflow_no_resample,
                                          rsample::bootstraps)
   
-  tidyflow_removed_resample <- remove_resample(tidyflow_with_resample)
+  tidyflow_removed_resample <- drop_resample(tidyflow_with_resample)
 
   expect_equal(tidyflow_no_resample$pre, tidyflow_removed_resample$pre)
 })
@@ -35,7 +35,7 @@ test_that("remove a resample specification", {
 ##   tidyflow_with_recipe  <- add_recipe(tidyflow_no_recipe, rec)
 ##   tidyflow_with_recipe <- fit(tidyflow_with_recipe, data = mtcars)
 
-##   tidyflow_removed_recipe <- remove_recipe(tidyflow_with_recipe)
+##   tidyflow_removed_recipe <- drop_recipe(tidyflow_with_recipe)
 
 ##   expect_equal(tidyflow_no_recipe$pre, tidyflow_removed_recipe$pre)
 ## })
@@ -103,7 +103,7 @@ test_that("Updating a resample after removing one, warns", {
   tidyflow <- add_resample(tidyflow(), rsample::bootstraps)
 
   expect_warning(
-    update_resample(remove_resample(tidyflow), rsample::vfold_cv),
+    update_resample(drop_resample(tidyflow), rsample::vfold_cv),
     "The tidyflow does not have a resample specification."
   )
 
@@ -133,13 +133,13 @@ test_that("Removing a resample doesn't remove anything else", {
   # The split
   tidyflow <- add_split(tidyflow(), rsample::initial_split)
   tidyflow <- add_resample(tidyflow, rsample::bootstraps)
-  tidyflow <- remove_resample(tidyflow)
+  tidyflow <- drop_resample(tidyflow)
   expect_true(has_preprocessor_split(tidyflow))
 
   # The recipe
   tidyflow <- add_recipe(tidyflow(), ~ recipes::recipe(mpg ~ cyl, data = .x))
   tidyflow <- add_resample(tidyflow, rsample::bootstraps)
-  tidyflow <- remove_resample(tidyflow)
+  tidyflow <- drop_resample(tidyflow)
   expect_true(has_preprocessor_recipe(tidyflow))
 
 })

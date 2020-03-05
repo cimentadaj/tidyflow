@@ -4,7 +4,7 @@
 #' - `add_formula()` specifies the terms of the model through the usage of a
 #'   formula.
 #'
-#' - `remove_formula()` removes the formula as well as any downstream objects
+#' - `drop_formula()` removes the formula as well as any downstream objects
 #'   that might get created after the formula is used for preprocessing, such as
 #'   terms. Additionally, if the model has already been fit, then the fit is
 #'   removed.
@@ -37,7 +37,7 @@
 #' tidyflow <- add_formula(tidyflow, mpg ~ cyl)
 #' tidyflow
 #'
-#' remove_formula(tidyflow)
+#' drop_formula(tidyflow)
 #'
 #' update_formula(tidyflow, mpg ~ disp)
 add_formula <- function(x, formula, ..., blueprint = NULL) {
@@ -48,7 +48,7 @@ add_formula <- function(x, formula, ..., blueprint = NULL) {
 
 #' @rdname add_formula
 #' @export
-remove_formula <- function(x) {
+drop_formula <- function(x) {
   validate_is_tidyflow(x)
 
   if (!has_preprocessor_formula(x)) {
@@ -68,7 +68,7 @@ remove_formula <- function(x) {
 #' @export
 update_formula <- function(x, formula, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
-  x <- remove_formula(x)
+  x <- drop_formula(x)
   add_formula(x, formula, blueprint = blueprint)
 }
 

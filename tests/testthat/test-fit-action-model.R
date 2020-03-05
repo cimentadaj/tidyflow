@@ -54,7 +54,7 @@ test_that("remove a model", {
   tidyflow_no_model <- add_formula(tidyflow_no_model, mpg ~ cyl)
 
   tidyflow_with_model  <- add_model(tidyflow_no_model, lm_model)
-  tidyflow_removed_model  <- remove_model(tidyflow_with_model)
+  tidyflow_removed_model  <- drop_model(tidyflow_with_model)
 
   expect_equal(tidyflow_no_model$fit, tidyflow_removed_model$fit)
 })
@@ -69,7 +69,7 @@ test_that("remove a model after model fit", {
   tidyflow_with_model  <- add_model(tidyflow_no_model, lm_model)
   tidyflow_with_model <- fit(tidyflow_with_model)
 
-  tidyflow_removed_model  <- remove_model(tidyflow_with_model)
+  tidyflow_removed_model  <- drop_model(tidyflow_with_model)
 
   expect_equal(tidyflow_no_model$fit, tidyflow_removed_model$fit)
   # The removed tidyflow still keeps the original mold

@@ -3,7 +3,7 @@
 #' @description
 #' - `add_model()` adds a parsnip model to the tidyflow.
 #'
-#' - `remove_model()` removes the model specification as well as any fitted
+#' - `drop_model()` removes the model specification as well as any fitted
 #'   model object. Any extra formulas are also removed. Doesn't remove any steps
 #'   from the `pre` stage.
 #'
@@ -44,14 +44,14 @@
 #' wf <- add_formula(wf, mpg ~ .)
 #' wf
 #'
-#' remove_model(wf)
+#' drop_model(wf)
 #'
 #' fitted <- fit(wf)
 #' fitted
 #'
-#' remove_model(fitted)
+#' drop_model(fitted)
 #'
-#' remove_model(wf)
+#' drop_model(wf)
 #'
 #' update_model(wf, regularized_model)
 #' update_model(fitted, regularized_model)
@@ -63,7 +63,7 @@ add_model <- function(x, spec, formula = NULL) {
 
 #' @rdname add_model
 #' @export
-remove_model <- function(x) {
+drop_model <- function(x) {
   validate_is_tidyflow(x)
 
   if (!has_spec(x)) {
@@ -83,7 +83,7 @@ remove_model <- function(x) {
 #' @rdname add_model
 #' @export
 update_model <- function(x, spec, formula = NULL) {
-  x <- remove_model(x)
+  x <- drop_model(x)
   add_model(x, spec, formula)
 }
 

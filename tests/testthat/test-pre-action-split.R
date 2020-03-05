@@ -13,7 +13,7 @@ test_that("split is validated", {
 test_that("remove a split specification", {
   tidyflow_no_split <- tidyflow()
   tidyflow_with_split <- add_split(tidyflow_no_split, rsample::initial_split)
-  tidyflow_removed_split <- remove_split(tidyflow_with_split)
+  tidyflow_removed_split <- drop_split(tidyflow_with_split)
 
   expect_equal(tidyflow_no_split$pre, tidyflow_removed_split$pre)
 })
@@ -41,7 +41,7 @@ test_that("remove a split after model fit", {
   tidyflow_with_split  <- add_split(tidyflow_no_split, rsample::initial_split)
   tidyflow_with_split <- fit(tidyflow_with_split)
 
-  tidyflow_removed_split <- remove_split(tidyflow_with_split)
+  tidyflow_removed_split <- drop_split(tidyflow_with_split)
 
   expect_equal(tidyflow_no_split$pre, tidyflow_removed_split$pre)
 })
@@ -104,7 +104,7 @@ test_that("Updating a split after removing one, warns", {
   tidyflow <- add_split(tidyflow(), rsample::initial_split)
 
   expect_warning(
-    update_split(remove_split(tidyflow), rsample::initial_time_split),
+    update_split(drop_split(tidyflow), rsample::initial_time_split),
     "The tidyflow does not have a split specification."
   )
 
@@ -132,13 +132,13 @@ test_that("Removing a split doesn't remove anything else", {
   # The recipe
   tidyflow <- add_recipe(tidyflow(), ~ recipes::recipe(mpg ~ cyl, data = .x))
   tidyflow <- add_split(tidyflow, rsample::initial_split)
-  tidyflow <- remove_split(tidyflow)
+  tidyflow <- drop_split(tidyflow)
   expect_true(has_preprocessor_recipe(tidyflow))
 
   # The CV fold
   tidyflow <- add_resample(tidyflow(), rsample::bootstraps)
   tidyflow <- add_split(tidyflow, rsample::initial_split)
-  tidyflow <- remove_split(tidyflow)
+  tidyflow <- drop_split(tidyflow)
   expect_true(has_preprocessor_resample(tidyflow))
 
 })

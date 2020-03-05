@@ -55,7 +55,7 @@ test_that("cannot add two formulas", {
 test_that("remove a formula", {
   tidyflow_no_formula <- tidyflow()
   tidyflow_with_formula <- add_formula(tidyflow_no_formula, mpg ~ cyl)
-  tidyflow_removed_formula <- remove_formula(tidyflow_with_formula)
+  tidyflow_removed_formula <- drop_formula(tidyflow_with_formula)
 
   expect_equal(tidyflow_no_formula$pre, tidyflow_removed_formula$pre)
 })
@@ -70,7 +70,7 @@ test_that("remove a formula after model fit", {
   tidyflow_with_formula  <- add_formula(tidyflow_no_formula, mpg ~ cyl)
   tidyflow_with_formula <- fit(tidyflow_with_formula)
 
-  tidyflow_removed_formula <- remove_formula(tidyflow_with_formula)
+  tidyflow_removed_formula <- drop_formula(tidyflow_with_formula)
 
   expect_equal(tidyflow_no_formula$data, tidyflow_removed_formula$pre$mold)
   expect_equal(tidyflow_no_formula$pre, tidyflow_removed_formula$pre)

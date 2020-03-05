@@ -2,13 +2,13 @@
 % Please edit documentation in R/pre-action-formula.R
 \name{add_formula}
 \alias{add_formula}
-\alias{remove_formula}
+\alias{drop_formula}
 \alias{update_formula}
 \title{Add formula terms to a tidyflow}
 \usage{
 add_formula(x, formula, ..., blueprint = NULL)
 
-remove_formula(x)
+drop_formula(x)
 
 update_formula(x, formula, ..., blueprint = NULL)
 }
@@ -31,7 +31,7 @@ If \code{NULL}, \code{\link[hardhat:default_formula_blueprint]{hardhat::default_
 \itemize{
 \item \code{add_formula()} specifies the terms of the model through the usage of a
 formula.
-\item \code{remove_formula()} removes the formula as well as any downstream objects
+\item \code{drop_formula()} removes the formula as well as any downstream objects
 that might get created after the formula is used for preprocessing, such as
 terms. Additionally, if the model has already been fit, then the fit is
 removed.
@@ -49,7 +49,7 @@ tidyflow <- tidyflow()
 tidyflow <- add_formula(tidyflow, mpg ~ cyl)
 tidyflow
 
-remove_formula(tidyflow)
+drop_formula(tidyflow)
 
 update_formula(tidyflow, mpg ~ disp)
 }

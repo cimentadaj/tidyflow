@@ -13,7 +13,7 @@ test_that("data is validated", {
 test_that("remove tidyflow data", {
   tidyflow_no_data <- tidyflow()
   tidyflow_with_data <- add_data(tidyflow_no_data, mtcars)
-  tidyflow_removed_data <- remove_data(tidyflow_with_data)
+  tidyflow_removed_data <- drop_data(tidyflow_with_data)
 
   expect_equal(tidyflow_no_data$data, tidyflow_removed_data$data)
   expect_equal(tidyflow_no_data$pre$mold, tidyflow_removed_data$pre$mold)

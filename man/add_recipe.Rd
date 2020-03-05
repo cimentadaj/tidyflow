@@ -2,13 +2,13 @@
 % Please edit documentation in R/pre-action-recipe.R
 \name{add_recipe}
 \alias{add_recipe}
-\alias{remove_recipe}
+\alias{drop_recipe}
 \alias{update_recipe}
 \title{Add a recipe to a tidyflow}
 \usage{
 add_recipe(x, .f, ..., blueprint = NULL)
 
-remove_recipe(x)
+drop_recipe(x)
 
 update_recipe(x, .f, ..., blueprint = NULL)
 }
@@ -38,7 +38,7 @@ If \code{NULL}, \code{\link[hardhat:default_recipe_blueprint]{hardhat::default_r
 accepts a function \code{.f} that will be applied to the data. Only
 functions which return a \code{recipe} object will be allowed. See
 package \code{\link[recipes]{recipes}} for how to create a recipe.
-\item \code{remove_recipe()} removes the recipe function from the tidyflow. Note
+\item \code{drop_recipe()} removes the recipe function from the tidyflow. Note
 that it keeps other preprocessing steps such as the split and resample.
 \item \code{update_recipe()} first removes the recipe function, then adds the new
 recipe function. Any model that has already been fit based on this

@@ -2,13 +2,13 @@
 % Please edit documentation in R/pre-action-resample.R
 \name{add_resample}
 \alias{add_resample}
-\alias{remove_resample}
+\alias{drop_resample}
 \alias{update_resample}
 \title{Add a resample specification to a tidyflow}
 \usage{
 add_resample(x, .f, ...)
 
-remove_resample(x)
+drop_resample(x)
 
 update_resample(x, .f, ...)
 }
@@ -33,7 +33,7 @@ as names, the user can specify both. See the example sections.}
 accepts a function \code{.f} that will be applied to the data. Only
 functions which return an \code{rset} object will be allowed. See
 package \code{\link[rsample]{rsample}} and the details section.
-\item \code{remove_resample()} removes the resample specification from the tidyflow.
+\item \code{drop_resample()} removes the resample specification from the tidyflow.
 Note that it keeps other preprocessing steps such as the recipe.
 \item \code{update_resample()} first removes the resample, then adds a new resample
 specification. Any model that has already been fit based on this
@@ -65,7 +65,7 @@ wf <- update_resample(wf, initial_split, v = 5, strata = cyl)
 
 wf
 
-remove_resample(wf)
+drop_resample(wf)
 
 # New split function
 update_resample(wf, bootstraps)

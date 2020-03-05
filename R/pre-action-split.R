@@ -7,7 +7,7 @@
 #'   package \code{\link[rsample]{rsample}} and the details section. If a model
 #'   has been fit before adding the split, it will need to be refit.
 #'
-#' - `remove_split()` removes the split specification from the tidyflow. Note
+#' - `drop_split()` removes the split specification from the tidyflow. Note
 #'   that it keeps other preprocessing steps such as the recipe.
 #'
 #' - `update_split()` first removes the split, then adds a new split 
@@ -54,7 +54,7 @@
 #'
 #' wf
 #'
-#' remove_split(wf)
+#' drop_split(wf)
 #'
 #' # New split function
 #' update_split(wf, initial_time_split)
@@ -85,7 +85,7 @@ add_split <- function(x, .f, ...) {
 
 #' @rdname add_split
 #' @export
-remove_split <- function(x) {
+drop_split <- function(x) {
   validate_is_tidyflow(x)
 
   if (!has_preprocessor_split(x)) {
@@ -104,7 +104,7 @@ remove_split <- function(x) {
 #' @rdname add_split
 #' @export
 update_split <- function(x, .f, ...) {
-  x <- remove_split(x)
+  x <- drop_split(x)
   .f <- enquo(.f)
   add_split(x, !!.f, ...)
 }

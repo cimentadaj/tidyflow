@@ -4,7 +4,7 @@
 #' - `add_data()` specifies the raw data used in the analysis. This data is used
 #'   for the preprocessing and fitting the model.
 #'
-#' - `remove_data()` removes the data from the tidyflow.
+#' - `drop_data()` removes the data from the tidyflow.
 #'
 #' - `update_data()` first removes the data, then replaces the previous
 #'   data with the new one. Any model that has already been fit based on this
@@ -30,7 +30,7 @@
 #' wf <- add_data(wf, mtcars)
 #' wf
 #'
-#' remove_data(wf)
+#' drop_data(wf)
 #'
 #' update_data(wf, iris)
 #'
@@ -54,7 +54,7 @@ add_data <- function(x, data, ...) {
 
 #' @rdname add_data
 #' @export
-remove_data <- function(x) {
+drop_data <- function(x) {
   validate_is_tidyflow(x)
 
   if (!has_raw_data(x)) {
@@ -77,6 +77,6 @@ remove_data <- function(x) {
 #' @export
 update_data <- function(x, data, ...) {
   ellipsis::check_dots_empty()
-  x <- remove_data(x)
+  x <- drop_data(x)
   add_data(x, data)
 }
