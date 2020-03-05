@@ -4,7 +4,7 @@
 \alias{add_resample}
 \alias{remove_resample}
 \alias{update_resample}
-\title{Add a resample specification to a workflow}
+\title{Add a resample specification to a tidyflow}
 \usage{
 add_resample(x, .f, ...)
 
@@ -13,9 +13,9 @@ remove_resample(x)
 update_resample(x, .f, ...)
 }
 \arguments{
-\item{x}{A workflow}
+\item{x}{A tidyflow}
 
-\item{.f}{A function to be applied to the dataset in the workflow. Must
+\item{.f}{A function to be applied to the dataset in the tidyflow. Must
 return an object of class \code{rset}. See package
 \code{\link[rsample]{rsample}}.}
 
@@ -33,7 +33,7 @@ as names, the user can specify both. See the example sections.}
 accepts a function \code{.f} that will be applied to the data. Only
 functions which return an \code{rset} object will be allowed. See
 package \code{\link[rsample]{rsample}} and the details section.
-\item \code{remove_resample()} removes the resample specification from the workflow.
+\item \code{remove_resample()} removes the resample specification from the tidyflow.
 Note that it keeps other preprocessing steps such as the recipe.
 \item \code{update_resample()} first removes the resample, then adds a new resample
 specification. Any model that has already been fit based on this
@@ -41,7 +41,7 @@ split will need to be refit.
 }
 }
 \details{
-The resample specification is an optional step in the workflow. You can add a
+The resample specification is an optional step in the tidyflow. You can add a
 dataframe, prepare a recipe and fit the model without splitting into
 training/testing.
 
@@ -52,7 +52,7 @@ of class \code{rset}. These are functions which come from the
 \examples{
 library(rsample)
 
-wf <- workflow()
+wf <- tidyflow()
 wf <- add_data(wf, mtcars)
 
 # Strata as string

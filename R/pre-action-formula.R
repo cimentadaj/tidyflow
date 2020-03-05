@@ -1,4 +1,4 @@
-#' Add formula terms to a workflow
+#' Add formula terms to a tidyflow
 #'
 #' @description
 #' - `add_formula()` specifies the terms of the model through the usage of a
@@ -14,10 +14,10 @@
 #'   formula will need to be refit.
 #'
 #' @details
-#' To fit a workflow, one of `add_formula()` or `add_recipe()` _must_ be
+#' To fit a tidyflow, one of `add_formula()` or `add_recipe()` _must_ be
 #' specified, but not both.
 #'
-#' @param x A workflow
+#' @param x A tidyflow
 #'
 #' @param formula A formula specifying the terms of the model. It is advised to
 #'   not do preprocessing in the formula, and instead use a recipe if that is
@@ -33,13 +33,13 @@
 #'
 #' @export
 #' @examples
-#' workflow <- workflow()
-#' workflow <- add_formula(workflow, mpg ~ cyl)
-#' workflow
+#' tidyflow <- tidyflow()
+#' tidyflow <- add_formula(tidyflow, mpg ~ cyl)
+#' tidyflow
 #'
-#' remove_formula(workflow)
+#' remove_formula(tidyflow)
 #'
-#' update_formula(workflow, mpg ~ disp)
+#' update_formula(tidyflow, mpg ~ disp)
 add_formula <- function(x, formula, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
   action <- new_action_formula(formula, blueprint)
@@ -49,13 +49,13 @@ add_formula <- function(x, formula, ..., blueprint = NULL) {
 #' @rdname add_formula
 #' @export
 remove_formula <- function(x) {
-  validate_is_workflow(x)
+  validate_is_tidyflow(x)
 
   if (!has_preprocessor_formula(x)) {
-    rlang::warn("The workflow has no formula preprocessor to remove.")
+    rlang::warn("The tidyflow has no formula preprocessor to remove.")
   }
 
-  new_workflow(
+  new_tidyflow(
     data = x$data,
     pre = new_stage_pre(purge_action_formula(x), mold = x$data),
     fit = new_stage_fit(actions = x$fit$actions),
@@ -74,17 +74,17 @@ update_formula <- function(x, formula, ..., blueprint = NULL) {
 
 # ------------------------------------------------------------------------------
 
-fit.action_formula <- function(object, workflow) {
+fit.action_formula <- function(object, tidyflow) {
   formula <- object$formula
   blueprint <- object$blueprint
   
   # TODO - Strip out the formula environment at some time?
-  workflow$pre$mold <- hardhat::mold(formula,
-                                     workflow$pre$mold,
+  tidyflow$pre$mold <- hardhat::mold(formula,
+                                     tidyflow$pre$mold,
                                      blueprint = blueprint)
   
-  # All pre steps return the `workflow`
-  workflow
+  # All pre steps return the `tidyflow`
+  tidyflow
 }
 
 # ------------------------------------------------------------------------------

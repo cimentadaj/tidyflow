@@ -1,25 +1,25 @@
-test_that("can add a model to a workflow", {
+test_that("can add a model to a tidyflow", {
   mod <- parsnip::linear_reg()
   mod <- parsnip::set_engine(mod, "lm")
 
-  workflow <- workflow()
-  workflow <- add_model(workflow, mod)
+  tidyflow <- tidyflow()
+  tidyflow <- add_model(tidyflow, mod)
 
-  expect_is(workflow$fit$actions$model, "action_model")
+  expect_is(tidyflow$fit$actions$model, "action_model")
 })
 
 test_that("model is validated", {
-  expect_error(add_model(workflow(), 1), "`spec` must be a `model_spec`")
+  expect_error(add_model(tidyflow(), 1), "`spec` must be a `model_spec`")
 })
 
 test_that("cannot add two models", {
   mod <- parsnip::linear_reg()
   mod <- parsnip::set_engine(mod, "lm")
 
-  workflow <- workflow()
-  workflow <- add_model(workflow, mod)
+  tidyflow <- tidyflow()
+  tidyflow <- add_model(tidyflow, mod)
 
-  expect_error(add_model(workflow, mod), "`model` action has already been added")
+  expect_error(add_model(tidyflow, mod), "`model` action has already been added")
 })
 
 test_that("can provide a model formula override", {
@@ -28,7 +28,7 @@ test_that("can provide a model formula override", {
 
   wflow <-
     mtcars %>%
-    workflow() %>%
+    tidyflow() %>%
     # disp is in the recipe, but excluded from the model formula
     add_recipe(~ {
       .x %>%
@@ -50,30 +50,30 @@ test_that("remove a model", {
   lm_model <- parsnip::linear_reg()
   lm_model <- parsnip::set_engine(lm_model, "lm")
 
-  workflow_no_model <- workflow()
-  workflow_no_model <- add_formula(workflow_no_model, mpg ~ cyl)
+  tidyflow_no_model <- tidyflow()
+  tidyflow_no_model <- add_formula(tidyflow_no_model, mpg ~ cyl)
 
-  workflow_with_model  <- add_model(workflow_no_model, lm_model)
-  workflow_removed_model  <- remove_model(workflow_with_model)
+  tidyflow_with_model  <- add_model(tidyflow_no_model, lm_model)
+  tidyflow_removed_model  <- remove_model(tidyflow_with_model)
 
-  expect_equal(workflow_no_model$fit, workflow_removed_model$fit)
+  expect_equal(tidyflow_no_model$fit, tidyflow_removed_model$fit)
 })
 
 test_that("remove a model after model fit", {
   lm_model <- parsnip::linear_reg()
   lm_model <- parsnip::set_engine(lm_model, "lm")
 
-  workflow_no_model <- workflow(mtcars)
-  workflow_no_model <- add_formula(workflow_no_model, mpg ~ cyl)
+  tidyflow_no_model <- tidyflow(mtcars)
+  tidyflow_no_model <- add_formula(tidyflow_no_model, mpg ~ cyl)
 
-  workflow_with_model  <- add_model(workflow_no_model, lm_model)
-  workflow_with_model <- fit(workflow_with_model)
+  tidyflow_with_model  <- add_model(tidyflow_no_model, lm_model)
+  tidyflow_with_model <- fit(tidyflow_with_model)
 
-  workflow_removed_model  <- remove_model(workflow_with_model)
+  tidyflow_removed_model  <- remove_model(tidyflow_with_model)
 
-  expect_equal(workflow_no_model$fit, workflow_removed_model$fit)
-  # The removed workflow still keeps the original mold
-  expect_false(identical(workflow_removed_model$data, workflow_removed_model$pre$mold))
+  expect_equal(tidyflow_no_model$fit, tidyflow_removed_model$fit)
+  # The removed tidyflow still keeps the original mold
+  expect_false(identical(tidyflow_removed_model$data, tidyflow_removed_model$pre$mold))
 })
 
 test_that("update a model", {
@@ -81,12 +81,12 @@ test_that("update a model", {
   lm_model <- parsnip::set_engine(lm_model, "lm")
   glmn_model <- parsnip::set_engine(lm_model, "glmnet")
 
-  workflow <- workflow()
-  workflow <- add_formula(workflow, mpg ~ cyl)
-  workflow <- add_model(workflow, lm_model)
-  workflow <- update_model(workflow, glmn_model)
+  tidyflow <- tidyflow()
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- add_model(tidyflow, lm_model)
+  tidyflow <- update_model(tidyflow, glmn_model)
 
-  expect_equal(workflow$fit$actions$model$spec$engine, "glmnet")
+  expect_equal(tidyflow$fit$actions$model$spec$engine, "glmnet")
 })
 
 
@@ -95,17 +95,17 @@ test_that("update a model after model fit", {
   lm_model <- parsnip::set_engine(lm_model, "lm")
   no_model <- parsnip::set_engine(lm_model, "lm", model = FALSE)
 
-  workflow <- workflow(mtcars)
-  workflow <- add_model(workflow, no_model)
-  workflow <- add_formula(workflow, mpg ~ cyl)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_model(tidyflow, no_model)
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
 
-  workflow <- fit(workflow)
-  workflow <- update_model(workflow, lm_model)
+  tidyflow <- fit(tidyflow)
+  tidyflow <- update_model(tidyflow, lm_model)
 
   # Should no longer have `model = FALSE` engine arg
-  engine_args <- workflow$fit$actions$model$spec$eng_args
+  engine_args <- tidyflow$fit$actions$model$spec$eng_args
   expect_false(any(names(engine_args) == "model"))
 
   # The fitted model should be removed
-  expect_null(workflow$fit$fit)
+  expect_null(tidyflow$fit$fit)
 })

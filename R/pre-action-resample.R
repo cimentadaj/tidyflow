@@ -1,4 +1,4 @@
-#' Add a resample specification to a workflow
+#' Add a resample specification to a tidyflow
 #'
 #' @description
 #' - `add_resample()` specifies the type of resample used in the analysis. It
@@ -6,7 +6,7 @@
 #'   functions which return an \code{rset} object will be allowed. See
 #'   package \code{\link[rsample]{rsample}} and the details section.
 #'
-#' - `remove_resample()` removes the resample specification from the workflow.
+#' - `remove_resample()` removes the resample specification from the tidyflow.
 #'   Note that it keeps other preprocessing steps such as the recipe.
 #'
 #' - `update_resample()` first removes the resample, then adds a new resample
@@ -14,7 +14,7 @@
 #'   split will need to be refit.
 #'
 #' @details
-#' The resample specification is an optional step in the workflow. You can add a
+#' The resample specification is an optional step in the tidyflow. You can add a
 #' dataframe, prepare a recipe and fit the model without splitting into
 #' training/testing.
 #'
@@ -22,9 +22,9 @@
 #' of class \code{rset}. These are functions which come from the
 #' \code{\link[rsample]{rsample}} package.
 #'
-#' @param x A workflow
+#' @param x A tidyflow
 #'
-#' @param .f A function to be applied to the dataset in the workflow. Must
+#' @param .f A function to be applied to the dataset in the tidyflow. Must
 #' return an object of class \code{rset}. See package
 #' \code{\link[rsample]{rsample}}.
 #'
@@ -40,7 +40,7 @@
 #' @examples
 #' library(rsample)
 #'
-#' wf <- workflow()
+#' wf <- tidyflow()
 #' wf <- add_data(wf, mtcars)
 #' 
 #' # Strata as string
@@ -76,13 +76,13 @@ add_resample <- function(x, .f, ...) {
 #' @rdname add_resample
 #' @export
 remove_resample <- function(x) {
-  validate_is_workflow(x)
+  validate_is_tidyflow(x)
 
   if (!has_preprocessor_resample(x)) {
-    rlang::warn("The workflow does not have a resample specification.")
+    rlang::warn("The tidyflow does not have a resample specification.")
   }
 
-  new_workflow(
+  new_tidyflow(
     data = x$data,
     pre = new_stage_pre(actions = purge_action_resample(x)),
     fit = new_stage_fit(actions = x$fit$actions),
@@ -103,7 +103,7 @@ update_resample <- function(x, .f, ...) {
 
 fit.action_resample <- function(object, wflow) {
 
-  # Since a workflow will alows need to have a formula or recipe
+  # Since a tidyflow will alows need to have a formula or recipe
   # the result of mold when it reaches a resample, will always be
   # a mold structure. Let's convert that to a data frame
   mold <- combine_outcome_preds(wflow$pre$mold)
@@ -137,7 +137,7 @@ new_action_resample <- function(.f, .dots, name_f) {
 
   new_action_pre(
     # Capture function name, function body and args for later to apply on
-    # data. The name of f is just for printing the workflow
+    # data. The name of f is just for printing the tidyflow
     !!name_f := .f,
     args = .dots,
     subclass = "action_resample"

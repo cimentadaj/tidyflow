@@ -1,6 +1,6 @@
 add_action <- function(x, action, name) {
-  if (!is_workflow(x)) {
-    abort("`x` must be a workflow.")
+  if (!is_tidyflow(x)) {
+    abort("`x` must be a tidyflow.")
   }
 
   check_conflicts(action, x)
@@ -59,7 +59,7 @@ check_conflicts.default <- function(action, x) {
 
 check_singleton <- function(actions, name) {
   if (name %in% names(actions)) {
-    glubort("A `{name}` action has already been added to this workflow")
+    glubort("A `{name}` action has already been added to this tidyflow")
   }
   invisible(actions)
 }

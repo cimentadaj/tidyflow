@@ -4,7 +4,7 @@
 \alias{add_recipe}
 \alias{remove_recipe}
 \alias{update_recipe}
-\title{Add a recipe to a workflow}
+\title{Add a recipe to a tidyflow}
 \usage{
 add_recipe(x, .f, ..., blueprint = NULL)
 
@@ -13,7 +13,7 @@ remove_recipe(x)
 update_recipe(x, .f, ..., blueprint = NULL)
 }
 \arguments{
-\item{x}{A workflow}
+\item{x}{A tidyflow}
 
 \item{.f}{A function or a formula
 
@@ -38,7 +38,7 @@ If \code{NULL}, \code{\link[hardhat:default_recipe_blueprint]{hardhat::default_r
 accepts a function \code{.f} that will be applied to the data. Only
 functions which return a \code{recipe} object will be allowed. See
 package \code{\link[recipes]{recipes}} for how to create a recipe.
-\item \code{remove_recipe()} removes the recipe function from the workflow. Note
+\item \code{remove_recipe()} removes the recipe function from the tidyflow. Note
 that it keeps other preprocessing steps such as the split and resample.
 \item \code{update_recipe()} first removes the recipe function, then adds the new
 recipe function. Any model that has already been fit based on this
@@ -46,7 +46,7 @@ recipe will need to be refit.
 }
 }
 \details{
-To fit a workflow, one of \code{add_formula()} or \code{add_recipe()} \emph{must} be
+To fit a tidyflow, one of \code{add_formula()} or \code{add_recipe()} \emph{must} be
 specified, but not both.
 }
 \examples{
@@ -62,7 +62,7 @@ recipe_fun <- function(.x) {
 # Specify an already created recipe function
 wflow <-
  mtcars \%>\%
- workflow() \%>\%
+ tidyflow() \%>\%
  add_recipe(recipe_fun) \%>\%
  add_model(set_engine(linear_reg(), "lm"))
 

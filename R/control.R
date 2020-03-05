@@ -1,29 +1,29 @@
-#' Control object for a workflow
+#' Control object for a tidyflow
 #'
-#' `control_workflow()` holds the control parameters for a workflow.
+#' `control_tidyflow()` holds the control parameters for a tidyflow.
 #'
 #' @param control_parsnip A parsnip control object. If `NULL`, a default control
 #'   argument is constructed from [parsnip::control_parsnip()].
 #'
 #' @return
-#' A `control_workflow` object for tweaking the workflow fitting process.
+#' A `control_tidyflow` object for tweaking the tidyflow fitting process.
 #'
 #' @export
 #' @examples
-#' control_workflow()
-control_workflow <- function(control_parsnip = NULL) {
+#' control_tidyflow()
+control_tidyflow <- function(control_parsnip = NULL) {
   control_parsnip <- check_control_parsnip(control_parsnip)
 
   data <- list(
     control_parsnip = control_parsnip
   )
 
-  structure(data, class = "control_workflow")
+  structure(data, class = "control_tidyflow")
 }
 
 #' @export
-print.control_workflow <- function(x, ...) {
-  cat("<control_workflow>")
+print.control_tidyflow <- function(x, ...) {
+  cat("<control_tidyflow>")
   invisible()
 }
 

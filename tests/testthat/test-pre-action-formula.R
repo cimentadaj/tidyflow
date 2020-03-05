@@ -1,22 +1,22 @@
-test_that("can add a formula to a workflow", {
-  workflow <- workflow()
-  workflow <- add_formula(workflow, mpg ~ cyl)
+test_that("can add a formula to a tidyflow", {
+  tidyflow <- tidyflow()
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
 
-  expect_is(workflow$pre$actions$formula, "action_formula")
+  expect_is(tidyflow$pre$actions$formula, "action_formula")
 })
 
 test_that("formula is validated", {
-  expect_error(add_formula(workflow(), 1), "`formula` must be a formula")
+  expect_error(add_formula(tidyflow(), 1), "`formula` must be a formula")
 })
 
 test_that("cannot add a formula if a recipe already exists", {
   rec <- ~ recipes::recipe(mpg ~ cyl, .x)
 
-  workflow <- workflow()
-  workflow <- add_recipe(workflow, rec)
+  tidyflow <- tidyflow()
+  tidyflow <- add_recipe(tidyflow, rec)
 
   expect_error(
-    add_formula(workflow, mpg ~ cyl),
+    add_formula(tidyflow, mpg ~ cyl),
     "cannot be added when a recipe already exists"
   )
 
@@ -26,11 +26,11 @@ test_that("formula preprocessing is executed upon `fit()`", {
   mod <- parsnip::linear_reg()
   mod <- parsnip::set_engine(mod, "lm")
 
-  workflow <- workflow(mtcars)
-  workflow <- add_formula(workflow, mpg ~ log(cyl))
-  workflow <- add_model(workflow, mod)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_formula(tidyflow, mpg ~ log(cyl))
+  tidyflow <- add_model(tidyflow, mod)
 
-  result <- fit(workflow)
+  result <- fit(tidyflow)
 
   expect_equal(
     result$pre$mold$outcomes$mpg,
@@ -45,63 +45,63 @@ test_that("formula preprocessing is executed upon `fit()`", {
 })
 
 test_that("cannot add two formulas", {
-  workflow <- workflow()
-  workflow <- add_formula(workflow, mpg ~ cyl)
+  tidyflow <- tidyflow()
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
 
-  expect_error(add_formula(workflow, mpg ~ cyl),
+  expect_error(add_formula(tidyflow, mpg ~ cyl),
                "`formula` action has already been added")
 })
 
 test_that("remove a formula", {
-  workflow_no_formula <- workflow()
-  workflow_with_formula <- add_formula(workflow_no_formula, mpg ~ cyl)
-  workflow_removed_formula <- remove_formula(workflow_with_formula)
+  tidyflow_no_formula <- tidyflow()
+  tidyflow_with_formula <- add_formula(tidyflow_no_formula, mpg ~ cyl)
+  tidyflow_removed_formula <- remove_formula(tidyflow_with_formula)
 
-  expect_equal(workflow_no_formula$pre, workflow_removed_formula$pre)
+  expect_equal(tidyflow_no_formula$pre, tidyflow_removed_formula$pre)
 })
 
 test_that("remove a formula after model fit", {
   lm_model <- parsnip::linear_reg()
   lm_model <- parsnip::set_engine(lm_model, "lm")
 
-  workflow_no_formula <- workflow(mtcars)
-  workflow_no_formula <- add_model(workflow_no_formula, lm_model)
+  tidyflow_no_formula <- tidyflow(mtcars)
+  tidyflow_no_formula <- add_model(tidyflow_no_formula, lm_model)
 
-  workflow_with_formula  <- add_formula(workflow_no_formula, mpg ~ cyl)
-  workflow_with_formula <- fit(workflow_with_formula)
+  tidyflow_with_formula  <- add_formula(tidyflow_no_formula, mpg ~ cyl)
+  tidyflow_with_formula <- fit(tidyflow_with_formula)
 
-  workflow_removed_formula <- remove_formula(workflow_with_formula)
+  tidyflow_removed_formula <- remove_formula(tidyflow_with_formula)
 
-  expect_equal(workflow_no_formula$data, workflow_removed_formula$pre$mold)
-  expect_equal(workflow_no_formula$pre, workflow_removed_formula$pre)
-  expect_null(workflow_removed_formula$fit$fit)
+  expect_equal(tidyflow_no_formula$data, tidyflow_removed_formula$pre$mold)
+  expect_equal(tidyflow_no_formula$pre, tidyflow_removed_formula$pre)
+  expect_null(tidyflow_removed_formula$fit$fit)
 })
 
 test_that("update a formula", {
-  workflow <- workflow()
-  workflow <- add_formula(workflow, mpg ~ cyl)
-  workflow <- update_formula(workflow, mpg ~ disp)
+  tidyflow <- tidyflow()
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- update_formula(tidyflow, mpg ~ disp)
 
-  expect_equal(workflow$pre$actions$formula$formula, mpg ~ disp)
+  expect_equal(tidyflow$pre$actions$formula$formula, mpg ~ disp)
 })
 
 test_that("update a formula after model fit", {
   lm_model <- parsnip::linear_reg()
   lm_model <- parsnip::set_engine(lm_model, "lm")
 
-  workflow <- workflow(mtcars)
-  workflow <- add_model(workflow, lm_model)
-  workflow <- add_formula(workflow, mpg ~ cyl)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_model(tidyflow, lm_model)
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
 
-  workflow <- fit(workflow)
+  tidyflow <- fit(tidyflow)
 
   # Should clear fitted model
-  workflow <- update_formula(workflow, mpg ~ disp)
+  tidyflow <- update_formula(tidyflow, mpg ~ disp)
 
-  expect_equal(workflow$pre$actions$formula$formula, mpg ~ disp)
+  expect_equal(tidyflow$pre$actions$formula$formula, mpg ~ disp)
 
-  expect_equal(workflow$fit$actions$model$spec, lm_model)
-  expect_equal(workflow$data, workflow$pre$mold)
+  expect_equal(tidyflow$fit$actions$model$spec, lm_model)
+  expect_equal(tidyflow$data, tidyflow$pre$mold)
 })
 
 test_that("can pass a blueprint through to hardhat::mold()", {
@@ -110,24 +110,24 @@ test_that("can pass a blueprint through to hardhat::mold()", {
 
   blueprint <- hardhat::default_formula_blueprint(intercept = TRUE)
 
-  workflow <- workflow(mtcars)
-  workflow <- add_model(workflow, lm_model)
-  workflow <- add_formula(workflow, mpg ~ cyl, blueprint = blueprint)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_model(tidyflow, lm_model)
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl, blueprint = blueprint)
 
-  workflow <- fit(workflow)
+  tidyflow <- fit(tidyflow)
 
-  expect_true("(Intercept)" %in% colnames(workflow$pre$mold$predictors))
-  expect_equal(workflow$pre$actions$formula$blueprint, blueprint)
-  expect_true(workflow$pre$mold$blueprint$intercept)
+  expect_true("(Intercept)" %in% colnames(tidyflow$pre$mold$predictors))
+  expect_equal(tidyflow$pre$actions$formula$blueprint, blueprint)
+  expect_true(tidyflow$pre$mold$blueprint$intercept)
 })
 
 test_that("can only use a 'formula_blueprint' blueprint", {
   blueprint <- hardhat::default_recipe_blueprint()
 
-  workflow <- workflow()
+  tidyflow <- tidyflow()
 
   expect_error(
-    add_formula(workflow, mpg ~ cyl, blueprint = blueprint),
+    add_formula(tidyflow, mpg ~ cyl, blueprint = blueprint),
     "must be a hardhat 'formula_blueprint'"
   )
 })
@@ -136,12 +136,12 @@ test_that("Formula works with add_split", {
   mod <- parsnip::linear_reg()
   mod <- parsnip::set_engine(mod, "lm")
 
-  workflow <- workflow(mtcars)
-  workflow <- add_split(workflow, rsample::initial_split)
-  workflow <- add_formula(workflow, mpg ~ log(cyl))
-  workflow <- add_model(workflow, mod)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_split(tidyflow, rsample::initial_split)
+  tidyflow <- add_formula(tidyflow, mpg ~ log(cyl))
+  tidyflow <- add_model(tidyflow, mod)
 
-  result <- fit(workflow)
+  result <- fit(tidyflow)
 
   # This makes sure that the final model is fit
   # on the splitted sample

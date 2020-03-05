@@ -1,4 +1,4 @@
-#' Add a split specification to a workflow
+#' Add a split specification to a tidyflow
 #'
 #' @description
 #' - `add_split()` specifies the type of splitting used in the analysis. It
@@ -7,7 +7,7 @@
 #'   package \code{\link[rsample]{rsample}} and the details section. If a model
 #'   has been fit before adding the split, it will need to be refit.
 #'
-#' - `remove_split()` removes the split specification from the workflow. Note
+#' - `remove_split()` removes the split specification from the tidyflow. Note
 #'   that it keeps other preprocessing steps such as the recipe.
 #'
 #' - `update_split()` first removes the split, then adds a new split 
@@ -15,7 +15,7 @@
 #'   split will need to be refit.
 #'
 #' @details
-#' The split specification is an optional step in the workflow. You can add a
+#' The split specification is an optional step in the tidyflow. You can add a
 #' dataframe, prepare a recipe and fit the model without splitting into
 #' training/testing.
 #'
@@ -23,9 +23,9 @@
 #' of class \code{rsplit}. These are functions which come from the
 #' \code{\link[rsample]{rsample}} package.
 #'
-#' @param x A workflow
+#' @param x A tidyflow
 #'
-#' @param .f A function to be applied to the dataset in the workflow. Must
+#' @param .f A function to be applied to the dataset in the tidyflow. Must
 #' return an object of class \code{rsplit}. See package
 #' \code{\link[rsample]{rsample}}.
 #'
@@ -41,7 +41,7 @@
 #' @examples
 #' library(rsample)
 #'
-#' wf <- workflow()
+#' wf <- tidyflow()
 #' wf <- add_data(wf, mtcars)
 #' 
 #' # Strata as string
@@ -66,7 +66,7 @@ add_split <- function(x, .f, ...) {
   x <- update_fit(x)
 
   ## if (has_preprocessor_resample(x)) {
-  ##   abort("A workflow must never have a resample before splitting the data")
+  ##   abort("A tidyflow must never have a resample before splitting the data")
   ## }
 
   .dots <- enquos(...)
@@ -86,13 +86,13 @@ add_split <- function(x, .f, ...) {
 #' @rdname add_split
 #' @export
 remove_split <- function(x) {
-  validate_is_workflow(x)
+  validate_is_tidyflow(x)
 
   if (!has_preprocessor_split(x)) {
-    rlang::warn("The workflow does not have a split specification.")
+    rlang::warn("The tidyflow does not have a split specification.")
   }
 
-  new_workflow(
+  new_tidyflow(
     data = x$data,
     pre = new_stage_pre(actions = purge_action_split(x), mold = x$data),
     fit = new_stage_fit(actions = x$fit$actions),
@@ -110,7 +110,7 @@ update_split <- function(x, .f, ...) {
 }
 
 # ------------------------------------------------------------------------------
-fit.action_split <- function(object, workflow) {
+fit.action_split <- function(object, tidyflow) {
 
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)
@@ -119,7 +119,7 @@ fit.action_split <- function(object, workflow) {
     # function body
     object[[1]],
     # function args
-    workflow$pre$mold,
+    tidyflow$pre$mold,
     !!!args
   )
 
@@ -127,11 +127,11 @@ fit.action_split <- function(object, workflow) {
     abort("The split function should return an object of class `rsplit`.")
   }
 
-  workflow$pre$mold <- rsample::training(split_res)
-  workflow$pre$actions$split$testing <- rsample::testing(split_res)
+  tidyflow$pre$mold <- rsample::training(split_res)
+  tidyflow$pre$actions$split$testing <- rsample::testing(split_res)
   
   # All pre steps return the `wflow`
-  workflow
+  tidyflow
 }
 
 # Exclude blueprint; it doesn't apply to data
@@ -142,7 +142,7 @@ new_action_split <- function(.f, .dots, name_f) {
 
   new_action_pre(
     # Capture function name, function body and args for later to apply on
-    # data. The name of f is just for printing the workflow
+    # data. The name of f is just for printing the tidyflow
     !!name_f := .f,
     args = .dots,
     subclass = "action_split"
@@ -152,7 +152,7 @@ new_action_split <- function(.f, .dots, name_f) {
 update_fit <- function(x) {
   if (x$trained) {
     x <-
-      new_workflow(
+      new_tidyflow(
         data = x$data,
         pre = new_stage_pre(actions = x$pre$actions, mold = x$data),
         fit = new_stage_fit(actions = x$fit$actions),

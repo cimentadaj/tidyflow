@@ -1,7 +1,7 @@
-#' Fit a workflow object
+#' Fit a tidyflow object
 #'
 #' @description
-#' Fitting a workflow currently involves two main steps:
+#' Fitting a tidyflow currently involves two main steps:
 #'
 #' - Preprocessing the data using a formula preprocessor, or by calling
 #'   [recipes::prep()] on a recipe.
@@ -12,17 +12,17 @@
 #' In the future, there will also be _postprocessing_ steps that can be added
 #' after the model has been fit.
 #'
-#' @param object A workflow
+#' @param object A tidyflow
 #'
 #' @param ... Not used
 #'
-#' @param control A [control_workflow()] object
+#' @param control A [control_tidyflow()] object
 #'
 #' @return
-#' The workflow `object`, updated with a fit parsnip model in the
+#' The tidyflow `object`, updated with a fit parsnip model in the
 #' `object$fit$fit` slot.
 #'
-#' @name fit-workflow
+#' @name fit-tidyflow
 #' @export
 #' @examples
 #' library(parsnip)
@@ -31,66 +31,66 @@
 #' model <- linear_reg()
 #' model <- set_engine(model, "lm")
 #'
-#' formula_workflow <-
+#' formula_tidyflow <-
 #'  mtcars %>%
-#'  workflow() %>%
+#'  tidyflow() %>%
 #'  add_formula(mpg ~ cyl + log(disp)) %>%
 #'  add_model(model)
 #' 
-#' fit(formula_workflow)
+#' fit(formula_tidyflow)
 #'
-#' recipe_workflow <-
-#'  formula_workflow %>%
+#' recipe_tidyflow <-
+#'  formula_tidyflow %>%
 #'  remove_formula() %>% 
 #'  add_recipe(~ recipe(mpg ~ cyl + disp, .x) %>% step_log(disp))
 #'
-#' fit(recipe_workflow)
+#' fit(recipe_tidyflow)
 #'
 
-fit.workflow <- function(object, ..., control = control_workflow()) {
-  workflow <- object
+fit.tidyflow <- function(object, ..., control = control_tidyflow()) {
+  tidyflow <- object
 
-  if (!has_raw_data(workflow)) {
-    abort("`data` must be specified to fit a workflow; Do you need `add_data`?")
+  if (!has_raw_data(tidyflow)) {
+    abort("`data` must be specified to fit a tidyflow; Do you need `add_data`?")
   }
 
   ellipsis::check_dots_empty()
-  validate_has_minimal_components(workflow)
+  validate_has_minimal_components(tidyflow)
 
-  workflow <- .fit_pre(workflow)
-  workflow <- .fit_model(workflow, control)
+  tidyflow <- .fit_pre(tidyflow)
+  tidyflow <- .fit_model(tidyflow, control)
 
   # Eh? Predictions during the fit?
   # pred <- result$pred
-  # result <- fit_post(workflow, pred)
+  # result <- fit_post(tidyflow, pred)
 
-  workflow$trained <- TRUE
+  tidyflow$trained <- TRUE
 
-  workflow
+  tidyflow
 }
 
 # ------------------------------------------------------------------------------
 
-#' Internal workflow functions
+#' Internal tidyflow functions
 #'
-#' `.fit_pre()` and `.fit_model()` are internal workflow functions for
-#' _partially_ fitting a workflow object. They are only exported for usage by
+#' `.fit_pre()` and `.fit_model()` are internal tidyflow functions for
+#' _partially_ fitting a tidyflow object. They are only exported for usage by
 #' the tuning package, [tune](https://github.com/tidymodels/tune), and the
 #' general user should never need to worry about them.
 #'
-#' @param workflow A workflow
+#' @param tidyflow A tidyflow
 #'
-#'   For `.fit_pre()`, this should be a fresh workflow.
+#'   For `.fit_pre()`, this should be a fresh tidyflow.
 #'
-#'   For `.fit_model()`, this should be a workflow that has already been trained
+#'   For `.fit_model()`, this should be a tidyflow that has already been trained
 #'   through `.fit_pre()`.
 #'
 #' @param data A data frame of predictors and outcomes to use when fitting the
-#'   workflow
+#'   tidyflow
 #'
-#' @param control A [control_workflow()] object
+#' @param control A [control_tidyflow()] object
 #'
-#' @name workflows-internals
+#' @name tidyflows-internals
 #' @keywords internal
 #' @export
 #' @examples
@@ -100,13 +100,13 @@ fit.workflow <- function(object, ..., control = control_workflow()) {
 #' model <- linear_reg()
 #' model <- set_engine(model, "lm")
 #'
-#' base_workflow <- workflow(mtcars)
-#' base_workflow <- add_model(base_workflow, model)
+#' base_tidyflow <- tidyflow(mtcars)
+#' base_tidyflow <- add_model(base_tidyflow, model)
 #'
-#' formula_workflow <- add_formula(base_workflow, mpg ~ cyl + log(disp))
+#' formula_tidyflow <- add_formula(base_tidyflow, mpg ~ cyl + log(disp))
 #'
-#' partially_fit_workflow <- .fit_pre(formula_workflow)
-#' fit_workflow <- .fit_model(partially_fit_workflow, control_workflow())
+#' partially_fit_tidyflow <- .fit_pre(formula_tidyflow)
+#' fit_tidyflow <- .fit_model(partially_fit_tidyflow, control_tidyflow())
 .fit_pre <- function(wflow) {
   n <- length(wflow[["pre"]]$actions)
 
@@ -121,11 +121,11 @@ fit.workflow <- function(object, ..., control = control_workflow()) {
   wflow
 }
 
-#' @rdname workflows-internals
+#' @rdname tidyflows-internals
 #' @export
-.fit_model <- function(workflow, control) {
-  action_model <- workflow[["fit"]][["actions"]][["model"]]
-  fit(action_model, wflow = workflow, control = control)
+.fit_model <- function(tidyflow, control) {
+  action_model <- tidyflow[["fit"]][["actions"]][["model"]]
+  fit(action_model, wflow = tidyflow, control = control)
 }
 
 # ------------------------------------------------------------------------------
@@ -135,7 +135,7 @@ validate_has_minimal_components <- function(x) {
 
   if (!has_preprocessor) {
     glubort(
-      "The workflow must have a formula or recipe preprocessor. ",
+      "The tidyflow must have a formula or recipe preprocessor. ",
       "Provide one with `add_formula()` or `add_recipe()`."
     )
   }
@@ -144,7 +144,7 @@ validate_has_minimal_components <- function(x) {
 
   if (!has_model) {
     glubort(
-      "The workflow must have a model. ",
+      "The tidyflow must have a model. ",
       "Provide one with `add_model()`."
     )
   }

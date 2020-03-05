@@ -5,7 +5,7 @@ devtools::load_all()
 
 res <-
   mtcars %>%
-  workflow() %>%
+  tidyflow() %>%
   add_split(initial_split) %>% 
   add_formula(mpg ~ .) %>% 
   add_model(set_engine(linear_reg(), "lm"))
@@ -19,7 +19,7 @@ res %>%
 
 mod <-
   mtcars %>%
-  workflow() %>%
+  tidyflow() %>%
   add_split(initial_split) %>%
   add_recipe(~ recipe(mpg ~ cyl, data = .) %>% step_log(cyl, base = 10)) %>%
   add_resample(vfold_cv) %>% 

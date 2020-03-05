@@ -1,12 +1,12 @@
 # ------------------------------------------------------------------------------
-# pull_workflow_preprocessor()
+# pull_tidyflow_preprocessor()
 
 test_that("can pull a formula preprocessor", {
-  workflow <- workflow()
-  workflow <- add_formula(workflow, mpg ~ cyl)
+  tidyflow <- tidyflow()
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
 
   expect_equal(
-    pull_workflow_preprocessor(workflow),
+    pull_tidyflow_preprocessor(tidyflow),
     mpg ~ cyl
   )
 })
@@ -14,55 +14,55 @@ test_that("can pull a formula preprocessor", {
 test_that("can pull a recipe preprocessor", {
   recipe <- ~ recipes::recipe(mpg ~ cyl, .x)
 
-  workflow <- workflow()
-  workflow <- add_recipe(workflow, recipe)
+  tidyflow <- tidyflow()
+  tidyflow <- add_recipe(tidyflow, recipe)
 
   expect_equal(
-    pull_workflow_preprocessor(workflow),
+    pull_tidyflow_preprocessor(tidyflow),
     rlang::as_function(recipe)
   )
 })
 
 test_that("error if no preprocessor", {
   expect_error(
-    pull_workflow_preprocessor(workflow()),
+    pull_tidyflow_preprocessor(tidyflow()),
     "does not have a preprocessor"
   )
 })
 
-test_that("error if not a workflow", {
+test_that("error if not a tidyflow", {
   expect_error(
-    pull_workflow_preprocessor(1),
-    "must be a workflow"
+    pull_tidyflow_preprocessor(1),
+    "must be a tidyflow"
   )
 })
 
 # ------------------------------------------------------------------------------
-# pull_workflow_spec()
+# pull_tidyflow_spec()
 
 test_that("can pull a model spec", {
   model <- parsnip::linear_reg()
 
-  workflow <- workflow()
-  workflow <- add_model(workflow, model)
+  tidyflow <- tidyflow()
+  tidyflow <- add_model(tidyflow, model)
 
   expect_equal(
-    pull_workflow_spec(workflow),
+    pull_tidyflow_spec(tidyflow),
     model
   )
 })
 
 test_that("error if no spec", {
   expect_error(
-    pull_workflow_spec(workflow()),
+    pull_tidyflow_spec(tidyflow()),
     "does not have a model spec"
   )
 })
 
-test_that("error if not a workflow", {
+test_that("error if not a tidyflow", {
   expect_error(
-    pull_workflow_spec(1),
-    "must be a workflow"
+    pull_tidyflow_spec(1),
+    "must be a tidyflow"
   )
 })
 
@@ -73,69 +73,69 @@ test_that("can pull a model fit", {
   model <- parsnip::linear_reg()
   model <- parsnip::set_engine(model, "lm")
 
-  workflow <- workflow(mtcars)
-  workflow <- add_model(workflow, model)
-  workflow <- add_formula(workflow, mpg ~ cyl)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_model(tidyflow, model)
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
 
-  workflow <- fit(workflow)
+  tidyflow <- fit(tidyflow)
 
   expect_equal(
-    pull_tflow_fit(workflow),
-    workflow$fit$fit
+    pull_tflow_fit(tidyflow),
+    tidyflow$fit$fit
   )
 })
 
 test_that("error if no fit", {
   expect_error(
-    pull_tflow_fit(workflow()),
+    pull_tflow_fit(tidyflow()),
     "does not have a model fit. Have you called `fit[(][)]` yet?"
   )
 })
 
-test_that("error if not a workflow", {
+test_that("error if not a tidyflow", {
   expect_error(
     pull_tflow_fit(1),
-    "must be a workflow"
+    "must be a tidyflow"
   )
 })
 
 # ------------------------------------------------------------------------------
-# pull_workflow_mold()
+# pull_tidyflow_mold()
 
 test_that("can pull a mold", {
   model <- parsnip::linear_reg()
   model <- parsnip::set_engine(model, "lm")
 
-  workflow <- workflow(mtcars)
-  workflow <- add_model(workflow, model)
-  workflow <- add_formula(workflow, mpg ~ cyl)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_model(tidyflow, model)
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
 
-  workflow <- fit(workflow)
+  tidyflow <- fit(tidyflow)
 
-  expect_is(pull_workflow_mold(workflow), "list")
+  expect_is(pull_tidyflow_mold(tidyflow), "list")
 
   expect_equal(
-    pull_workflow_mold(workflow),
-    workflow$pre$mold
+    pull_tidyflow_mold(tidyflow),
+    tidyflow$pre$mold
   )
 })
 
 test_that("error if no mold", {
   expect_error(
-    pull_workflow_mold(workflow()),
+    pull_tidyflow_mold(tidyflow()),
     "does not have a mold. Have you called `fit[(][)]` yet?"
   )
 })
 
-test_that("error if not a workflow", {
+test_that("error if not a tidyflow", {
   expect_error(
-    pull_workflow_mold(1),
-    "must be a workflow"
+    pull_tidyflow_mold(1),
+    "must be a tidyflow"
   )
 })
 
 # ------------------------------------------------------------------------------
-# pull_workflow_prepped_recipe()
+# pull_tidyflow_prepped_recipe()
 
 test_that("can pull a prepped recipe", {
   model <- parsnip::linear_reg()
@@ -145,23 +145,23 @@ test_that("can pull a prepped recipe", {
     ~ recipes::recipe(mpg ~ cyl, .x) %>%
       recipes::step_log(cyl)
 
-  workflow <- workflow(mtcars)
-  workflow <- add_model(workflow, model)
-  workflow <- add_recipe(workflow, recipe)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_model(tidyflow, model)
+  tidyflow <- add_recipe(tidyflow, recipe)
 
-  workflow <- fit(workflow)
+  tidyflow <- fit(tidyflow)
 
-  expect_is(pull_workflow_prepped_recipe(workflow), "recipe")
+  expect_is(pull_tidyflow_prepped_recipe(tidyflow), "recipe")
 
   expect_equal(
-    pull_workflow_prepped_recipe(workflow),
-    workflow$pre$mold$blueprint$recipe
+    pull_tidyflow_prepped_recipe(tidyflow),
+    tidyflow$pre$mold$blueprint$recipe
   )
 })
 
 test_that("error if no recipe preprocessor", {
   expect_error(
-    pull_workflow_prepped_recipe(workflow()),
+    pull_tidyflow_prepped_recipe(tidyflow()),
     "must have a recipe preprocessor"
   )
 })
@@ -169,47 +169,47 @@ test_that("error if no recipe preprocessor", {
 test_that("error if no mold", {
   recipe <- ~ recipes::recipe(mpg ~ cyl, .x)
 
-  workflow <- workflow()
-  workflow <- add_recipe(workflow, recipe)
+  tidyflow <- tidyflow()
+  tidyflow <- add_recipe(tidyflow, recipe)
 
   expect_error(
-    pull_workflow_prepped_recipe(workflow),
+    pull_tidyflow_prepped_recipe(tidyflow),
     "does not have a mold. Have you called `fit[(][)]` yet?"
   )
 })
 
-test_that("error if not a workflow", {
+test_that("error if not a tidyflow", {
   expect_error(
-    pull_workflow_prepped_recipe(1),
-    "must be a workflow"
+    pull_tidyflow_prepped_recipe(1),
+    "must be a tidyflow"
   )
 })
 
 test_that("can pull the raw data", {
-  workflow <- workflow(mtcars)
+  tidyflow <- tidyflow(mtcars)
 
   expect_equal(
-    pull_workflow_rawdata(workflow),
+    pull_tidyflow_rawdata(tidyflow),
     mtcars
   )
 })
 
 test_that("error if no raw data", {
   expect_error(
-    pull_workflow_rawdata(workflow()),
-    "The workflow does not have data"
+    pull_tidyflow_rawdata(tidyflow()),
+    "The tidyflow does not have data"
   )
 })
 
 
 check_testing <- function(x) {
   expect_equal(
-    nrow(pull_workflow_testing(x)),
+    nrow(pull_tidyflow_testing(x)),
     8
   )
 
   expect_equal(
-    ncol(pull_workflow_testing(x)),
+    ncol(pull_tidyflow_testing(x)),
     11
   )
 
@@ -217,14 +217,14 @@ check_testing <- function(x) {
 
 test_that("can pull testing data", {
   model <- parsnip::set_engine(parsnip::linear_reg(), "lm")
-  workflow <- add_recipe(workflow(mtcars), ~ recipes::recipe(mpg ~ cyl, .))
-  workflow <- add_model(workflow, model)
+  tidyflow <- add_recipe(tidyflow(mtcars), ~ recipes::recipe(mpg ~ cyl, .))
+  tidyflow <- add_model(tidyflow, model)
 
-  res <- fit(workflow)
+  res <- fit(tidyflow)
 
   expect_error(
-    pull_workflow_testing(res),
-    "The workflow must have a split preprocessor."
+    pull_tidyflow_testing(res),
+    "The tidyflow must have a split preprocessor."
   )
 
   # Add split. The testing should have 8 rows (75%)
@@ -233,8 +233,8 @@ test_that("can pull testing data", {
   check_testing(res)
 
   expect_error(
-    pull_workflow_testing(remove_recipe(res)),
-    "Workflow has not yet been trained. Do you need to call `fit()`?"
+    pull_tidyflow_testing(remove_recipe(res)),
+    "Tidyflow has not yet been trained. Do you need to call `fit()`?"
   )
 
   res <- fit(add_formula(remove_recipe(res), mpg ~ cyl))

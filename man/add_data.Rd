@@ -4,7 +4,7 @@
 \alias{add_data}
 \alias{remove_data}
 \alias{update_data}
-\title{Add a data to a workflow}
+\title{Add a data to a tidyflow}
 \usage{
 add_data(x, data, ...)
 
@@ -13,7 +13,7 @@ remove_data(x)
 update_data(x, data, ...)
 }
 \arguments{
-\item{x}{A workflow}
+\item{x}{A tidyflow}
 
 \item{data}{A data frame or tibble.}
 
@@ -26,18 +26,18 @@ update_data(x, data, ...)
 \itemize{
 \item \code{add_data()} specifies the raw data used in the analysis. This data is used
 for the preprocessing and fitting the model.
-\item \code{remove_data()} removes the data from the workflow.
+\item \code{remove_data()} removes the data from the tidyflow.
 \item \code{update_data()} first removes the data, then replaces the previous
 data with the new one. Any model that has already been fit based on this
 data will need to be refit.
 }
 }
 \details{
-To fit a workflow, \code{data} \emph{must} be specified.
+To fit a tidyflow, \code{data} \emph{must} be specified.
 }
 \examples{
 
-wf <- workflow()
+wf <- tidyflow()
 wf <- add_data(wf, mtcars)
 wf
 

@@ -1,10 +1,10 @@
-test_that("can `fit()` a workflow with a recipe", {
+test_that("can `fit()` a tidyflow with a recipe", {
   mod <- parsnip::linear_reg()
   mod <- parsnip::set_engine(mod, "lm")
 
   wflow <-
     mtcars %>%
-    workflow() %>%
+    tidyflow() %>%
     add_recipe(~ recipes::recipe(mpg ~ cyl, .x)) %>%
     add_model(mod)
 
@@ -18,15 +18,15 @@ test_that("can `fit()` a workflow with a recipe", {
   )
 })
 
-test_that("can `fit()` a workflow with a formula", {
+test_that("can `fit()` a tidyflow with a formula", {
   mod <- parsnip::linear_reg()
   mod <- parsnip::set_engine(mod, "lm")
 
-  workflow <- workflow(mtcars)
-  workflow <- add_formula(workflow, mpg ~ cyl)
-  workflow <- add_model(workflow, mod)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- add_model(tidyflow, mod)
 
-  result <- fit(workflow)
+  result <- fit(tidyflow)
 
   expect_is(result$fit$fit, "model_fit")
 
@@ -36,16 +36,16 @@ test_that("can `fit()` a workflow with a formula", {
   )
 })
 
-test_that("can `fit()` a workflow + split + formula", {
+test_that("can `fit()` a tidyflow + split + formula", {
   mod <- parsnip::linear_reg()
   mod <- parsnip::set_engine(mod, "lm")
 
-  workflow <- workflow(mtcars)
-  workflow <- add_split(workflow, rsample::initial_split)
-  workflow <- add_formula(workflow, mpg ~ cyl)
-  workflow <- add_model(workflow, mod)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_split(tidyflow, rsample::initial_split)
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- add_model(tidyflow, mod)
 
-  result <- fit(workflow)
+  result <- fit(tidyflow)
 
   expect_is(result$fit$fit, "model_fit")
 
@@ -68,13 +68,13 @@ test_that("cannot fit without a dataset", {
   mod <- parsnip::linear_reg()
   mod <- parsnip::set_engine(mod, "lm")
 
-  workflow <- workflow()
-  workflow <- add_formula(workflow, mpg ~ cyl)
-  workflow <- add_model(workflow, mod)
+  tidyflow <- tidyflow()
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- add_model(tidyflow, mod)
 
   expect_error(
-    fit(workflow),
-    "`data` must be specified to fit a workflow; Do you need `add_data`?"
+    fit(tidyflow),
+    "`data` must be specified to fit a tidyflow; Do you need `add_data`?"
   )
 })
 
@@ -82,16 +82,16 @@ test_that("cannot fit without a pre stage", {
   mod <- parsnip::linear_reg()
   mod <- parsnip::set_engine(mod, "lm")
 
-  workflow <- workflow(mtcars)
-  workflow <- add_model(workflow, mod)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_model(tidyflow, mod)
 
-  expect_error(fit(workflow), "must have a formula or recipe")
+  expect_error(fit(tidyflow), "must have a formula or recipe")
 })
 
 test_that("cannot fit without a fit stage", {
-  workflow <- workflow(mtcars)
-  workflow <- add_formula(workflow, mpg ~ cyl)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
 
-  expect_error(fit(workflow), "must have a model")
+  expect_error(fit(tidyflow), "must have a model")
 })
 

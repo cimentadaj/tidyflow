@@ -1,33 +1,33 @@
-test_that("can add a split to a workflow", {
-  workflow <- workflow()
-  workflow <- add_split(workflow, rsample::initial_split)
+test_that("can add a split to a tidyflow", {
+  tidyflow <- tidyflow()
+  tidyflow <- add_split(tidyflow, rsample::initial_split)
 
-  expect_is(workflow$pre$actions$split, "action_split")
+  expect_is(tidyflow$pre$actions$split, "action_split")
 })
 
 test_that("split is validated", {
-  expect_error(add_split(workflow(), 1),
+  expect_error(add_split(tidyflow(), 1),
                "`.f` must be a function for splitting the dataset")
 })
 
 test_that("remove a split specification", {
-  workflow_no_split <- workflow()
-  workflow_with_split <- add_split(workflow_no_split, rsample::initial_split)
-  workflow_removed_split <- remove_split(workflow_with_split)
+  tidyflow_no_split <- tidyflow()
+  tidyflow_with_split <- add_split(tidyflow_no_split, rsample::initial_split)
+  tidyflow_removed_split <- remove_split(tidyflow_with_split)
 
-  expect_equal(workflow_no_split$pre, workflow_removed_split$pre)
+  expect_equal(tidyflow_no_split$pre, tidyflow_removed_split$pre)
 })
 
 
 test_that("Saves testing data after split", {
   lm_model <- parsnip::linear_reg()
   lm_model <- parsnip::set_engine(lm_model, "lm")
-  workflow_with_split  <- add_split(workflow(mtcars), rsample::initial_split)
-  workflow_with_split <- add_recipe(workflow_with_split, ~ recipes::recipe(mpg ~ cyl, .))
-  workflow_with_split  <- add_model(workflow_with_split, lm_model)
-  workflow_with_split <- fit(workflow_with_split)
+  tidyflow_with_split  <- add_split(tidyflow(mtcars), rsample::initial_split)
+  tidyflow_with_split <- add_recipe(tidyflow_with_split, ~ recipes::recipe(mpg ~ cyl, .))
+  tidyflow_with_split  <- add_model(tidyflow_with_split, lm_model)
+  tidyflow_with_split <- fit(tidyflow_with_split)
 
-  expect_true(!is.null(workflow_with_split$pre$actions$split$testing))
+  expect_true(!is.null(tidyflow_with_split$pre$actions$split$testing))
 })
 
 
@@ -35,23 +35,23 @@ test_that("remove a split after model fit", {
   lm_model <- parsnip::linear_reg()
   lm_model <- parsnip::set_engine(lm_model, "lm")
 
-  workflow_no_split <- add_formula(workflow(mtcars), mpg ~ cyl)
-  workflow_no_split <- add_model(workflow_no_split, lm_model)
+  tidyflow_no_split <- add_formula(tidyflow(mtcars), mpg ~ cyl)
+  tidyflow_no_split <- add_model(tidyflow_no_split, lm_model)
 
-  workflow_with_split  <- add_split(workflow_no_split, rsample::initial_split)
-  workflow_with_split <- fit(workflow_with_split)
+  tidyflow_with_split  <- add_split(tidyflow_no_split, rsample::initial_split)
+  tidyflow_with_split <- fit(tidyflow_with_split)
 
-  workflow_removed_split <- remove_split(workflow_with_split)
+  tidyflow_removed_split <- remove_split(tidyflow_with_split)
 
-  expect_equal(workflow_no_split$pre, workflow_removed_split$pre)
+  expect_equal(tidyflow_no_split$pre, tidyflow_removed_split$pre)
 })
 
 test_that("update a split specification", {
-  workflow <- workflow()
-  workflow <- add_split(workflow, rsample::initial_split)
-  workflow <- update_split(workflow, rsample::initial_time_split)
+  tidyflow <- tidyflow()
+  tidyflow <- add_split(tidyflow, rsample::initial_split)
+  tidyflow <- update_split(tidyflow, rsample::initial_time_split)
 
-  expect_equal(workflow$pre$actions$split$`rsample::initial_time_split`,
+  expect_equal(tidyflow$pre$actions$split$`rsample::initial_time_split`,
                rsample::initial_time_split)
 })
 
@@ -59,53 +59,53 @@ test_that("update a split after model fit", {
   lm_model <- parsnip::linear_reg()
   lm_model <- parsnip::set_engine(lm_model, "lm")
 
-  workflow <- workflow(mtcars)
-  workflow <- add_model(workflow, lm_model)
-  workflow <- add_formula(workflow, mpg ~ cyl)  
-  workflow <- add_split(workflow, rsample::initial_split)
-  workflow <- fit(workflow)
+  tidyflow <- tidyflow(mtcars)
+  tidyflow <- add_model(tidyflow, lm_model)
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)  
+  tidyflow <- add_split(tidyflow, rsample::initial_split)
+  tidyflow <- fit(tidyflow)
 
   # Should clear fitted model
-  workflow <- update_split(workflow, rsample::initial_time_split)
+  tidyflow <- update_split(tidyflow, rsample::initial_time_split)
 
-  expect_equal(workflow$pre$actions$split$`rsample::initial_time_split`,
+  expect_equal(tidyflow$pre$actions$split$`rsample::initial_time_split`,
                rsample::initial_time_split)
 
-  expect_equal(workflow$fit$actions$model$spec, lm_model)
-  expect_equal(workflow$data, workflow$pre$mold)
+  expect_equal(tidyflow$fit$actions$model$spec, lm_model)
+  expect_equal(tidyflow$data, tidyflow$pre$mold)
 })
 
 test_that("cannot add two split specifications", {
-  workflow <- workflow()
-  workflow <- add_split(workflow, rsample::initial_split)
+  tidyflow <- tidyflow()
+  tidyflow <- add_split(tidyflow, rsample::initial_split)
 
-  expect_error(add_split(workflow, rsample::initial_time_split),
-               "A `split` action has already been added to this workflow")
+  expect_error(add_split(tidyflow, rsample::initial_time_split),
+               "A `split` action has already been added to this tidyflow")
 })
 
 test_that("add/update_split check if `...` are named", {
-  workflow <- workflow()
+  tidyflow <- tidyflow()
 
   expect_error(
-    add_split(workflow, rsample::initial_split, 0.8),
+    add_split(tidyflow, rsample::initial_split, 0.8),
     regexp = "Arguments in `...` for `.f` should be named"
   )
 
-  workflow <- add_split(workflow, rsample::initial_split)
+  tidyflow <- add_split(tidyflow, rsample::initial_split)
 
   expect_error(
-    update_split(workflow, rsample::initial_time_split, 0.8),
+    update_split(tidyflow, rsample::initial_time_split, 0.8),
     regexp = "Arguments in `...` for `.f` should be named"
   )
   
 })
 
 test_that("Updating a split after removing one, warns", {
-  workflow <- add_split(workflow(), rsample::initial_split)
+  tidyflow <- add_split(tidyflow(), rsample::initial_split)
 
   expect_warning(
-    update_split(remove_split(workflow), rsample::initial_time_split),
-    "The workflow does not have a split specification."
+    update_split(remove_split(tidyflow), rsample::initial_time_split),
+    "The tidyflow does not have a split specification."
   )
 
 })
@@ -113,45 +113,45 @@ test_that("Updating a split after removing one, warns", {
 test_that("Updating a split doesn't remove anything else", {
 
   # The recipe
-  workflow <- add_recipe(workflow(), ~ recipes::recipe(mpg ~ cyl, data = .x))
-  workflow <- add_split(workflow, rsample::initial_split)
-  workflow <- update_split(workflow, rsample::initial_time_split)
-  expect_true(has_preprocessor_recipe(workflow))
-  expect_true(has_preprocessor_split(workflow))
+  tidyflow <- add_recipe(tidyflow(), ~ recipes::recipe(mpg ~ cyl, data = .x))
+  tidyflow <- add_split(tidyflow, rsample::initial_split)
+  tidyflow <- update_split(tidyflow, rsample::initial_time_split)
+  expect_true(has_preprocessor_recipe(tidyflow))
+  expect_true(has_preprocessor_split(tidyflow))
 
   # The CV fold
-  workflow <- add_resample(workflow(), rsample::bootstraps)
-  workflow <- add_split(workflow, rsample::initial_split)
-  workflow <- update_resample(workflow, rsample::vfold_cv)
-  expect_true(has_preprocessor_resample(workflow))
-  expect_true(has_preprocessor_split(workflow))
+  tidyflow <- add_resample(tidyflow(), rsample::bootstraps)
+  tidyflow <- add_split(tidyflow, rsample::initial_split)
+  tidyflow <- update_resample(tidyflow, rsample::vfold_cv)
+  expect_true(has_preprocessor_resample(tidyflow))
+  expect_true(has_preprocessor_split(tidyflow))
 })
 
 test_that("Removing a split doesn't remove anything else", {
 
   # The recipe
-  workflow <- add_recipe(workflow(), ~ recipes::recipe(mpg ~ cyl, data = .x))
-  workflow <- add_split(workflow, rsample::initial_split)
-  workflow <- remove_split(workflow)
-  expect_true(has_preprocessor_recipe(workflow))
+  tidyflow <- add_recipe(tidyflow(), ~ recipes::recipe(mpg ~ cyl, data = .x))
+  tidyflow <- add_split(tidyflow, rsample::initial_split)
+  tidyflow <- remove_split(tidyflow)
+  expect_true(has_preprocessor_recipe(tidyflow))
 
   # The CV fold
-  workflow <- add_resample(workflow(), rsample::bootstraps)
-  workflow <- add_split(workflow, rsample::initial_split)
-  workflow <- remove_split(workflow)
-  expect_true(has_preprocessor_resample(workflow))
+  tidyflow <- add_resample(tidyflow(), rsample::bootstraps)
+  tidyflow <- add_split(tidyflow, rsample::initial_split)
+  tidyflow <- remove_split(tidyflow)
+  expect_true(has_preprocessor_resample(tidyflow))
 
 })
 
 test_that("Name of split function is always saved as name in the list", {
   # For add_split
-  workflow <- add_split(workflow(), rsample::initial_split)
-  expect_true("rsample::initial_split" %in% names(workflow$pre$actions$split))
+  tidyflow <- add_split(tidyflow(), rsample::initial_split)
+  expect_true("rsample::initial_split" %in% names(tidyflow$pre$actions$split))
 
   # For update_split
-  workflow <- add_split(workflow(), rsample::initial_time_split)
-  workflow <- update_split(workflow, rsample::initial_split)
-  expect_true("rsample::initial_split" %in% names(workflow$pre$actions$split))
+  tidyflow <- add_split(tidyflow(), rsample::initial_time_split)
+  tidyflow <- update_split(tidyflow, rsample::initial_split)
+  expect_true("rsample::initial_split" %in% names(tidyflow$pre$actions$split))
 })
 
 
@@ -159,33 +159,33 @@ test_that("add_split should return an object of class `rsplit`", {
   # For add_split
   fake_split <- function(x) unclass(rsample::initial_split(x))
 
-  workflow <- add_split(workflow(mtcars), fake_split)
-  workflow <- add_formula(workflow, mpg ~ cyl)
+  tidyflow <- add_split(tidyflow(mtcars), fake_split)
+  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
   lm_model <- parsnip::linear_reg()
   lm_model <- parsnip::set_engine(lm_model, "lm")
-  workflow <- add_model(workflow, lm_model)
+  tidyflow <- add_model(tidyflow, lm_model)
 
   expect_error(
-    fit(workflow),
+    fit(tidyflow),
     regexp = "The split function should return an object of class `rsplit`"
   )
 })
 
 test_that("add_split resets model fit if trained before adding the split", {
   model <- parsnip::set_engine(parsnip::linear_reg(), "lm")
-  workflow <- add_recipe(workflow(mtcars), ~ recipes::recipe(mpg ~ cyl, .))
-  workflow <- add_model(workflow, model)
-  workflow <- fit(workflow)
+  tidyflow <- add_recipe(tidyflow(mtcars), ~ recipes::recipe(mpg ~ cyl, .))
+  tidyflow <- add_model(tidyflow, model)
+  tidyflow <- fit(tidyflow)
 
-  workflow <- add_split(workflow, rsample::initial_split)
-  expect_false(workflow$trained)
-  expect_equal(workflow$data, workflow$pre$mold)
-  expect_null(workflow$fit$fit)
+  tidyflow <- add_split(tidyflow, rsample::initial_split)
+  expect_false(tidyflow$trained)
+  expect_equal(tidyflow$data, tidyflow$pre$mold)
+  expect_null(tidyflow$fit$fit)
 
-  res <- fit(workflow)
+  res <- fit(tidyflow)
   # Fitted on the training data
-  expect_equal(nrow(pull_workflow_mold(res)$predictors), 24)
-  expect_equal(nrow(pull_workflow_mold(res)$outcomes), 24)
+  expect_equal(nrow(pull_tidyflow_mold(res)$predictors), 24)
+  expect_equal(nrow(pull_tidyflow_mold(res)$outcomes), 24)
 })
 
 
@@ -195,7 +195,7 @@ test_that("add_split resets model fit if trained before adding the split", {
 # fix this test
 ## test_that("Error when a resample is defined before a split", {
 ##   # For add_split
-##   workflow <- add_resample(workflow(), rsample::vfold_cv)
-##   expect_error(workflow %>% add_split(rsample::initial_split),
-##                regexp = "A workflow must never have a resample before splitting the data") # nolintr
+##   tidyflow <- add_resample(tidyflow(), rsample::vfold_cv)
+##   expect_error(tidyflow %>% add_split(rsample::initial_split),
+##                regexp = "A tidyflow must never have a resample before splitting the data") # nolintr
 ## })

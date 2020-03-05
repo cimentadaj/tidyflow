@@ -4,7 +4,7 @@
 \alias{add_model}
 \alias{remove_model}
 \alias{update_model}
-\title{Add a model to a workflow}
+\title{Add a model to a tidyflow}
 \usage{
 add_model(x, spec, formula = NULL)
 
@@ -13,7 +13,7 @@ remove_model(x)
 update_model(x, spec, formula = NULL)
 }
 \arguments{
-\item{x}{A workflow.}
+\item{x}{A tidyflow.}
 
 \item{spec}{A parsnip model specification.}
 
@@ -30,16 +30,16 @@ used for those purposes.}
 }
 \description{
 \itemize{
-\item \code{add_model()} adds a parsnip model to the workflow.
+\item \code{add_model()} adds a parsnip model to the tidyflow.
 \item \code{remove_model()} removes the model specification as well as any fitted
 model object. Any extra formulas are also removed. Doesn't remove any steps
 from the \code{pre} stage.
 \item \code{update_model()} first removes the model then adds the new specification to
-the workflow.
+the tidyflow.
 }
 }
 \details{
-\code{add_model()} is a required step to construct a minimal workflow.
+\code{add_model()} is a required step to construct a minimal tidyflow.
 }
 \examples{
 library(parsnip)
@@ -49,7 +49,7 @@ lm_model <- set_engine(lm_model, "lm")
 
 regularized_model <- set_engine(lm_model, "glmnet")
 
-wf <- workflow(mtcars)
+wf <- tidyflow(mtcars)
 wf <- add_model(wf, lm_model)
 wf
 

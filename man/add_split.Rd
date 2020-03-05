@@ -4,7 +4,7 @@
 \alias{add_split}
 \alias{remove_split}
 \alias{update_split}
-\title{Add a split specification to a workflow}
+\title{Add a split specification to a tidyflow}
 \usage{
 add_split(x, .f, ...)
 
@@ -13,9 +13,9 @@ remove_split(x)
 update_split(x, .f, ...)
 }
 \arguments{
-\item{x}{A workflow}
+\item{x}{A tidyflow}
 
-\item{.f}{A function to be applied to the dataset in the workflow. Must
+\item{.f}{A function to be applied to the dataset in the tidyflow. Must
 return an object of class \code{rsplit}. See package
 \code{\link[rsample]{rsample}}.}
 
@@ -34,7 +34,7 @@ accepts a function \code{.f} that will be applied to the data. Only
 functions which return an \code{rsplit} object will be allowed. See
 package \code{\link[rsample]{rsample}} and the details section. If a model
 has been fit before adding the split, it will need to be refit.
-\item \code{remove_split()} removes the split specification from the workflow. Note
+\item \code{remove_split()} removes the split specification from the tidyflow. Note
 that it keeps other preprocessing steps such as the recipe.
 \item \code{update_split()} first removes the split, then adds a new split
 specification. Any model that has already been fit based on this
@@ -42,7 +42,7 @@ split will need to be refit.
 }
 }
 \details{
-The split specification is an optional step in the workflow. You can add a
+The split specification is an optional step in the tidyflow. You can add a
 dataframe, prepare a recipe and fit the model without splitting into
 training/testing.
 
@@ -53,7 +53,7 @@ of class \code{rsplit}. These are functions which come from the
 \examples{
 library(rsample)
 
-wf <- workflow()
+wf <- tidyflow()
 wf <- add_data(wf, mtcars)
 
 # Strata as string

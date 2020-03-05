@@ -1,37 +1,37 @@
-#' Create a workflow
+#' Create a tidyflow
 #'
-#' A `workflow` is a container object that aggregates information required to
+#' A `tidyflow` is a container object that aggregates information required to
 #' fit and predict from a model. This information might be the main dataset,
 #' specified through [add_data()], a recipe used in
 #' preprocessing, specified through [add_recipe()], or the model specification
 #' to fit, specified through [add_model()].
 #'
-#' @param data A data frame or tibble used to begin the workflow. This is
+#' @param data A data frame or tibble used to begin the tidyflow. This is
 #' optional as the data can be specified with [add_data()]. 
 #' 
 #' @return
-#' A new `workflow` object.
+#' A new `tidyflow` object.
 #'
 #' @examples
 #' library(recipes)
 #'
 #' rec <- ~ recipe(mpg ~ cyl, .x) %>% step_log(cyl)
-#' wrk <- workflow(mtcars)
+#' wrk <- tidyflow(mtcars)
 #' wrk <- add_recipe(wrk, rec)
 #'
 #' @export
-workflow <- function(data = NULL) {
+tidyflow <- function(data = NULL) {
   if (!is.null(data) && !is.data.frame(data)) {
-    abort("A workflow can only begin with a data frame; `data` must a data frame") #nolintr
+    abort("A tidyflow can only begin with a data frame; `data` must a data frame") #nolintr
   }
 
-  new_workflow(data = data,
+  new_tidyflow(data = data,
                pre = new_stage_pre(mold = data))
 }
 
 # ------------------------------------------------------------------------------
 
-new_workflow <- function(data = NULL,
+new_tidyflow <- function(data = NULL,
                          pre = new_stage_pre(),
                          fit = new_stage_fit(),
                          post = new_stage_post(),
@@ -60,17 +60,17 @@ new_workflow <- function(data = NULL,
     trained = trained
   )
 
-  structure(data, class = "workflow")
+  structure(data, class = "tidyflow")
 }
 
-is_workflow <- function(x) {
-  inherits(x, "workflow")
+is_tidyflow <- function(x) {
+  inherits(x, "tidyflow")
 }
 
 # ------------------------------------------------------------------------------
 
 #' @export
-print.workflow <- function(x, ...) {
+print.tidyflow <- function(x, ...) {
   print_header(x)
   print_preprocessor(x)
   print_model(x)
@@ -86,7 +86,7 @@ print_header <- function(x) {
     trained <- ""
   }
 
-  header <- glue::glue("Workflow{trained}")
+  header <- glue::glue("Tidyflow{trained}")
   header <- cli::rule(header, line = 2)
 
   cat_line(header)
@@ -96,7 +96,7 @@ print_header <- function(x) {
   if (!has_raw_data(x)) {
     data_msg <- glue::glue("{data_msg} None")
   } else {
-    dt <- pull_workflow_rawdata(x)
+    dt <- pull_tidyflow_rawdata(x)
     data_missing <- sum(is.na(dt)) / nrow(dt)
     # I include a `is.nan` in case the data frame
     # is empty and 0 / 0 equals NaN
@@ -126,7 +126,7 @@ print_header <- function(x) {
   spec_msg <- cli::style_italic("Model:")
 
   if (has_spec(x)) {
-    spec <- class(pull_workflow_spec(x))[[1]]
+    spec <- class(pull_tidyflow_spec(x))[[1]]
     spec <- glue::glue("{spec}()")
   } else {
     spec <- "None"
@@ -156,7 +156,7 @@ print_preprocessor <- function(x) {
     return(invisible(x))
   }
 
-  # Space between Workflow section and Data section
+  # Space between Tidyflow section and Data section
   cat_line("")
 
   header <- cli::rule("Preprocessor")
@@ -225,7 +225,7 @@ print_preprocessor_resample <- function(x) {
 
 print_preprocessor_formula <- function(x) {
   formula_msg <- cli::style_italic("Formula: ")
-  formula <- pull_workflow_preprocessor(x)
+  formula <- pull_tidyflow_preprocessor(x)
   formula <- rlang::expr_text(formula)
 
   cat_line(glue::glue(formula_msg, formula))
@@ -234,7 +234,7 @@ print_preprocessor_formula <- function(x) {
 }
 
 print_preprocessor_recipe <- function(x) {
-  recipe <- pull_workflow_preprocessor(x)
+  recipe <- pull_tidyflow_preprocessor(x)
   steps <- recipe$steps
   n_steps <- length(steps)
 
@@ -292,7 +292,7 @@ print_model <- function(x) {
 
   has_fit <- has_fit(x)
 
-  # Space between Workflow/Preprocessor section and Model section
+  # Space between Tidyflow/Preprocessor section and Model section
   cat_line("")
 
   header <- cli::rule("Model")
@@ -308,7 +308,7 @@ print_model <- function(x) {
 }
 
 print_spec <- function(x) {
-  spec <- pull_workflow_spec(x)
+  spec <- pull_tidyflow_spec(x)
 
   print(spec)
 

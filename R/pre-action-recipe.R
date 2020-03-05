@@ -1,4 +1,4 @@
-#' Add a recipe to a workflow
+#' Add a recipe to a tidyflow
 #'
 #' @description
 #' - `add_recipe()` specifies the type of recipe used in the analysis. It
@@ -6,7 +6,7 @@
 #'   functions which return a \code{recipe} object will be allowed. See
 #'   package \code{\link[recipes]{recipes}} for how to create a recipe.
 #'
-#' - `remove_recipe()` removes the recipe function from the workflow. Note
+#' - `remove_recipe()` removes the recipe function from the tidyflow. Note
 #'   that it keeps other preprocessing steps such as the split and resample.
 #'
 #' - `update_recipe()` first removes the recipe function, then adds the new
@@ -14,10 +14,10 @@
 #'   recipe will need to be refit.
 #'
 #' @details
-#' To fit a workflow, one of `add_formula()` or `add_recipe()` _must_ be
+#' To fit a tidyflow, one of `add_formula()` or `add_recipe()` _must_ be
 #' specified, but not both.
 #'
-#' @param x A workflow
+#' @param x A tidyflow
 #' 
 #' @param .f A function or a formula
 #'
@@ -50,7 +50,7 @@
 #' # Specify an already created recipe function
 #' wflow <-
 #'  mtcars %>%
-#'  workflow() %>%
+#'  tidyflow() %>%
 #'  add_recipe(recipe_fun) %>%
 #'  add_model(set_engine(linear_reg(), "lm"))
 #' 
@@ -91,13 +91,13 @@ add_recipe <- function(x, .f, ..., blueprint = NULL) {
 #' @rdname add_recipe
 #' @export
 remove_recipe <- function(x) {
-  validate_is_workflow(x)
+  validate_is_tidyflow(x)
 
   if (!has_preprocessor_recipe(x)) {
-    rlang::warn("The workflow has no recipe preprocessor to remove.")
+    rlang::warn("The tidyflow has no recipe preprocessor to remove.")
   }
 
-  new_workflow(
+  new_tidyflow(
     data = x$data,
     pre = new_stage_pre(purge_action_recipe(x), mold = x$data),
     fit = new_stage_fit(actions = x$fit$actions),
@@ -132,7 +132,7 @@ fit.action_recipe <- function(object, wflow) {
                                   molded_data,
                                   blueprint = blueprint)
 
-  # All pre steps return the `workflow`
+  # All pre steps return the `tidyflow`
   wflow
 }
 

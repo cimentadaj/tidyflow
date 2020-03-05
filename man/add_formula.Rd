@@ -4,7 +4,7 @@
 \alias{add_formula}
 \alias{remove_formula}
 \alias{update_formula}
-\title{Add formula terms to a workflow}
+\title{Add formula terms to a tidyflow}
 \usage{
 add_formula(x, formula, ..., blueprint = NULL)
 
@@ -13,7 +13,7 @@ remove_formula(x)
 update_formula(x, formula, ..., blueprint = NULL)
 }
 \arguments{
-\item{x}{A workflow}
+\item{x}{A tidyflow}
 
 \item{formula}{A formula specifying the terms of the model. It is advised to
 not do preprocessing in the formula, and instead use a recipe if that is
@@ -41,15 +41,15 @@ formula will need to be refit.
 }
 }
 \details{
-To fit a workflow, one of \code{add_formula()} or \code{add_recipe()} \emph{must} be
+To fit a tidyflow, one of \code{add_formula()} or \code{add_recipe()} \emph{must} be
 specified, but not both.
 }
 \examples{
-workflow <- workflow()
-workflow <- add_formula(workflow, mpg ~ cyl)
-workflow
+tidyflow <- tidyflow()
+tidyflow <- add_formula(tidyflow, mpg ~ cyl)
+tidyflow
 
-remove_formula(workflow)
+remove_formula(tidyflow)
 
-update_formula(workflow, mpg ~ disp)
+update_formula(tidyflow, mpg ~ disp)
 }

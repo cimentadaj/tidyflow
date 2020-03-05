@@ -1,5 +1,5 @@
-> add_recipe(workflow(), rcp_fun)
-== Workflow ====================================================================
+> add_recipe(tidyflow(), rcp_fun)
+== Tidyflow ====================================================================
 Data: None
 Preprocessor: Recipe
 Model: None

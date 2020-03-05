@@ -1,19 +1,19 @@
-#' Add a model to a workflow
+#' Add a model to a tidyflow
 #'
 #' @description
-#' - `add_model()` adds a parsnip model to the workflow.
+#' - `add_model()` adds a parsnip model to the tidyflow.
 #'
 #' - `remove_model()` removes the model specification as well as any fitted
 #'   model object. Any extra formulas are also removed. Doesn't remove any steps
 #'   from the `pre` stage.
 #'
 #' - `update_model()` first removes the model then adds the new specification to
-#'   the workflow.
+#'   the tidyflow.
 #'
 #' @details
-#' `add_model()` is a required step to construct a minimal workflow.
+#' `add_model()` is a required step to construct a minimal tidyflow.
 #'
-#' @param x A workflow.
+#' @param x A tidyflow.
 #'
 #' @param spec A parsnip model specification.
 #'
@@ -37,7 +37,7 @@
 #'
 #' regularized_model <- set_engine(lm_model, "glmnet")
 #'
-#' wf <- workflow(mtcars)
+#' wf <- tidyflow(mtcars)
 #' wf <- add_model(wf, lm_model)
 #' wf
 #'
@@ -64,13 +64,13 @@ add_model <- function(x, spec, formula = NULL) {
 #' @rdname add_model
 #' @export
 remove_model <- function(x) {
-  validate_is_workflow(x)
+  validate_is_tidyflow(x)
 
   if (!has_spec(x)) {
-    rlang::warn("The workflow has no model to remove.")
+    rlang::warn("The tidyflow has no model to remove.")
   }
 
-  new_workflow(
+  new_tidyflow(
     data = x$data,
     pre = new_stage_pre(x$pre$actions, mold = x$pre$mold),
     fit = new_stage_fit(),
@@ -110,7 +110,7 @@ fit.action_model <- function(object, wflow, control, ...) {
   mold <- wflow$pre$mold
 
   if (is.null(mold)) {
-    abort("Internal error: No mold exists. `workflow` pre stage has not been run.")
+    abort("Internal error: No mold exists. `tidyflow` pre stage has not been run.")
   }
 
   if (is.null(formula)) {
@@ -122,7 +122,7 @@ fit.action_model <- function(object, wflow, control, ...) {
 
   wflow$fit$fit <- fit
 
-  # Only the workflow is returned
+  # Only the tidyflow is returned
   wflow
 }
 
