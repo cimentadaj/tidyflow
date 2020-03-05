@@ -2,13 +2,13 @@ test_that("can `fit()` a tidyflow with a recipe", {
   mod <- parsnip::linear_reg()
   mod <- parsnip::set_engine(mod, "lm")
 
-  wflow <-
+  tflow <-
     mtcars %>%
     tidyflow() %>%
     plug_recipe(~ recipes::recipe(mpg ~ cyl, .x)) %>%
     plug_model(mod)
 
-  result <- fit(wflow)
+  result <- fit(tflow)
 
   expect_is(result$fit$fit, "model_fit")
 

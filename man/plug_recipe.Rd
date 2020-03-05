@@ -60,23 +60,23 @@ recipe_fun <- function(.x) {
 }
 
 # Specify an already created recipe function
-wflow <-
+tflow <-
  mtcars \%>\%
  tidyflow() \%>\%
  plug_recipe(recipe_fun) \%>\%
  plug_model(set_engine(linear_reg(), "lm"))
 
 # Fit the model
-wflow \%>\%
+tflow \%>\%
  fit()
 
 # Remove the old recipe, specify one on the fly and fit again
-wflow \%>\%
+tflow \%>\%
  replace_recipe(~ recipe(mpg ~ cyl, data = .) \%>\% step_log(cyl, base = 10)) \%>\%
  fit()
 
 # Note how the function argument can be either `.` or `.x`
-wflow \%>\%
+tflow \%>\%
  replace_recipe(~ {
   .x \%>\% 
    recipe(mpg ~ cyl + am) \%>\%

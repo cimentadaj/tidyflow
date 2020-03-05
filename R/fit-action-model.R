@@ -88,15 +88,15 @@ replace_model <- function(x, spec, formula = NULL) {
 }
 
 # ------------------------------------------------------------------------------
-fit.action_model <- function(object, wflow, control, ...) {
+fit.action_model <- function(object, tflow, control, ...) {
   control_parsnip <- control$control_parsnip
   spec <- object$spec
   formula <- object$formula
-  resample_res <- wflow$pre$actions$resample$rset_res
+  resample_res <- tflow$pre$actions$resample$rset_res
 
   # It means that they specified a resample
   if (!is.null(resample_res)) {
-    obj <- wflow$pre$actions$recipe$recipe_res %||% wflow$pre$actions$formula
+    obj <- tflow$pre$actions$recipe$recipe_res %||% tflow$pre$actions$formula
 
     resampled <-
       tune::fit_resamples(obj,
@@ -107,7 +107,7 @@ fit.action_model <- function(object, wflow, control, ...) {
                           )
   }
 
-  mold <- wflow$pre$mold
+  mold <- tflow$pre$mold
 
   if (is.null(mold)) {
     abort("Internal error: No mold exists. `tidyflow` pre stage has not been run.")
@@ -120,10 +120,10 @@ fit.action_model <- function(object, wflow, control, ...) {
     fit <- fit_from_formula(spec, mold, control_parsnip, formula)
   }
 
-  wflow$fit$fit <- fit
+  tflow$fit$fit <- fit
 
   # Only the tidyflow is returned
-  wflow
+  tflow
 }
 
 fit_from_xy <- function(spec, mold, control_parsnip) {

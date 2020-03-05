@@ -55,13 +55,13 @@ Example
 <!-- ``` -->
 <!-- You can't predict on new samples using `bayes_lm_fit` without the prepped version of `spline_cars` around. You also might have other models and recipes in your workspace. This might lead to getting them mixed-up or forgetting to save the model/recipe pair that you are most interested in. -->
 <!-- workflows makes this easier by combining these objects together: -->
-<!-- ```{r wflow, eval = FALSE} -->
-<!-- car_wflow <- workflow() %>%  -->
+<!-- ```{r tflow, eval = FALSE} -->
+<!-- car_tflow <- workflow() %>%  -->
 <!--   plug_recipe(spline_cars) %>%  -->
 <!--   plug_model(bayes_lm) -->
 <!-- ``` -->
 <!-- Now you can prepare the recipe and estimate the model via a single call to `fit()`: -->
-<!-- ```{r wflow-fit, eval = FALSE} -->
-<!-- car_wflow_fit <- fit(car_wflow, data = mtcars) -->
+<!-- ```{r tflow-fit, eval = FALSE} -->
+<!-- car_tflow_fit <- fit(car_tflow, data = mtcars) -->
 <!-- ``` -->
 <!-- You can alter existing workflows using `replace_recipe()` / `replace_model()` and `drop_recipe()` / `drop_model()`. -->

@@ -107,25 +107,25 @@ fit.tidyflow <- function(object, ..., control = control_tidyflow()) {
 #'
 #' partially_fit_tidyflow <- .fit_pre(formula_tidyflow)
 #' fit_tidyflow <- .fit_model(partially_fit_tidyflow, control_tidyflow())
-.fit_pre <- function(wflow) {
-  n <- length(wflow[["pre"]]$actions)
+.fit_pre <- function(tflow) {
+  n <- length(tflow[["pre"]]$actions)
 
   for (i in seq_len(n)) {
-    action <- wflow[["pre"]]$actions[[i]]
+    action <- tflow[["pre"]]$actions[[i]]
 
-    # Update the `wflow` as we iterate through pre steps
-    wflow <- fit(action, wflow)
+    # Update the `tflow` as we iterate through pre steps
+    tflow <- fit(action, tflow)
   }
 
-  # But only return the wflow, it contains the final set of data in `mold`
-  wflow
+  # But only return the tflow, it contains the final set of data in `mold`
+  tflow
 }
 
 #' @rdname tidyflows-internals
 #' @export
 .fit_model <- function(tidyflow, control) {
   action_model <- tidyflow[["fit"]][["actions"]][["model"]]
-  fit(action_model, wflow = tidyflow, control = control)
+  fit(action_model, tflow = tidyflow, control = control)
 }
 
 # ------------------------------------------------------------------------------

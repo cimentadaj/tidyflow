@@ -38,30 +38,30 @@
 #' model <- linear_reg()
 #' model <- set_engine(model, "lm")
 #'
-#' wflow <- tidyflow(mtcars)
-#' wflow <- plug_split(wflow, initial_split)
-#' wflow <- plug_model(wflow, model)
+#' tflow <- tidyflow(mtcars)
+#' tflow <- plug_split(tflow, initial_split)
+#' tflow <- plug_model(tflow, model)
 #'
 #' rcp <- ~ step_log(recipe(mpg ~ cyl + disp, .), disp)
 #'
-#' wflow <- plug_recipe(wflow, rcp)
+#' tflow <- plug_recipe(tflow, rcp)
 #'
-#' wflow <- fit(wflow)
+#' tflow <- fit(tflow)
 #'
 #' # This will automatically `bake()` the recipe on `new_data`,
 #' # applying the log step to `disp`, and then fit the regression.
-#' predict(wflow, new_data = pull_tidyflow_testing(wflow))
+#' predict(tflow, new_data = pull_tidyflow_testing(tflow))
 #'
 predict.tidyflow <- function(object, new_data, type = NULL, opts = list(), ...) {
-  wflow <- object
+  tflow <- object
 
-  if (!wflow$trained) {
+  if (!tflow$trained) {
     abort("Tidyflow has not yet been trained. Do you need to call `fit()`?")
   }
 
-  blueprint <- wflow$pre$mold$blueprint
+  blueprint <- tflow$pre$mold$blueprint
   forged <- hardhat::forge(new_data, blueprint)
   new_data <- forged$predictors
-  fit <- wflow$fit$fit
+  fit <- tflow$fit$fit
   predict(fit, new_data, type = type, opts = opts, ...)
 }

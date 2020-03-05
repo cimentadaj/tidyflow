@@ -22,13 +22,13 @@ knitr::opts_chunk$set(echo = TRUE,
 The idea of the statistical workflow should be simple. It should be useful for holding only the minimum steps needed to perform a statistical analysis. The data, the formula and the model. In particular, the data should play the main role in the analysis: you should specify it once and let the workflow take care of all the details. For example:
 
 ```{r }
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_recipe(~ recipe(mpg ~ ., data = .x)) %>% 
   plug_model(set_engine(linear_reg(), "lm"))
 
-simple_wflow %>%
+simple_tflow %>%
   fit()
 
 ```
@@ -36,13 +36,13 @@ simple_wflow %>%
 The steps are declaractive. Start with the data and workflow, specify the formula and specify the model. `fit` takes cares of running the steps. In more convoluted examples, iteration is a necessary part of the workflow (create a new column, refit the data, try a new model, refit the data, etc...). Statistical iteration is somewhat at odds with some `tidyverse` packages where the order of operations is not important (`mutate` can be used at many different parts of an analysis, as well as `pivot_longer`, etc...). For statistical analysis, the order of operations is paramount: for example, you simply cannot specify for a column to be created after a model is run. For example:
 
 ```{r }
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_recipe(~ recipe(mpg ~ ., data = .x)) %>% 
   plug_model(set_engine(linear_reg(), "lm"))
 
-simple_wflow %>%
+simple_tflow %>%
   fit() %>%
   # complement_recipe will pass the already existing recipe to
   # the main argument of the function
@@ -57,7 +57,7 @@ The operation over `cyl` is something that is specified after `fit`ting the mode
 Preprocessing needs to happen before the modelling. You can iterate and alter columns after fitting the model but you'll need to run the model again. Having said that, if we have a somewhat established order of operations, as long as the workflow knows about the order, how the user declares the operations is not important:
 
 ```{r }
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_recipe(~ recipe(mpg ~ ., data = .x)) %>% 
@@ -65,7 +65,7 @@ simple_wflow <-
   # New_step
   complement_recipe(~ .x %>% step_mutate(cyl = log10(cyl)))
 
-simple_wflow %>%
+simple_tflow %>%
   # Split data into training/testing
   plug_split(prop = 0.75) %>%
   fit()
@@ -80,7 +80,7 @@ Two new steps have been added: create a new `cyl` column and split the data into
 
 ```{r }
 
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   # Split data into training/testing
@@ -91,11 +91,11 @@ simple_wflow <-
   plug_model(set_engine(linear_reg(), "lm"))
 
 # Fit the workflow
-simple_wflow %>%
+simple_tflow %>%
   fit()
 
 # Refit model with one step
-simple_wflow %>%
+simple_tflow %>%
   # Add more steps to the recipe. `.x` is the supplied
   # recipe above.
   complement_recipe(~ .x %>% step_mutate(cyl = log10(cyl)))
@@ -106,7 +106,7 @@ simple_wflow %>%
 This applies to any of the placeholders in `tflow`. For example, we can add a few more steps and also change the model:
 
 ```{r }
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   # Split data into training/testing
@@ -115,12 +115,12 @@ simple_wflow <-
   plug_model(set_engine(linear_reg(), "lm"))
 
 # Fit the workflow
-simple_wflow %>%
+simple_tflow %>%
   fit()
 
 # Refit model with newer steps and new model
-simple_wflow <-
-  simple_wflow %>%
+simple_tflow <-
+  simple_tflow %>%
   complement_recipe(~ {
     .x %>%
       step_mutate(cyl = log10(cyl)) %>%
@@ -129,7 +129,7 @@ simple_wflow <-
   # Replaces the model all together
   replace_model(set_engine(rand_forest(), "ranger"))
 
-simple_wflow %>%
+simple_tflow %>%
   fit()
 
 ```
@@ -152,7 +152,7 @@ A `tflow` should always define the data at first but it also gives the possibili
 
 ```{r }
 # Define main workflow with old data
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_split(rsample::initial_split, prop = 0.75) %>%
@@ -163,7 +163,7 @@ simple_wflow <-
   }) %>% 
   plug_model(set_engine(linear_reg(), "lm"))
 
-simple_wflow %>%
+simple_tflow %>%
   # Replaces the old data and reruns everything
   replace_data(mtcars2) %>% 
   fit()
@@ -176,7 +176,7 @@ A formula is always tied to your preprocessing. If you specify a new variable in
 
 ```{r }
 # Define main workflow
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_split(rsample::initial_split, prop = 0.75) %>%
@@ -188,21 +188,21 @@ simple_wflow <-
   plug_model(set_engine(linear_reg(), "lm"))
 
 # Run the model
-simple_wflow %>%
+simple_tflow %>%
   fit()
 
 # Update the recipe to include one more term
-simple_wflow %>%
+simple_tflow %>%
   complement_recipe(~ .x %>% step_add(am)) %>% 
   fit()
 
 # Update the recipe to include one more term and add a step
-simple_wflow %>%
+simple_tflow %>%
   complement_recipe(~ .x %>% step_add(am) %>% step_dummy(disp)) %>% 
   fit()
 
 # Update the recipe to include many terms and add a step
-simple_wflow %>%
+simple_tflow %>%
   complement_recipe(~ {
     .x %>%
       step_add(am, carb, hp, drat) %>%
@@ -217,7 +217,7 @@ If the user's data exploration process is short, they can scroll up to the initi
 Since this step is interactive, the user should be able to specify a workflow and extract the recipe prepped to explore the data:
 
 ```{r }
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_split(rsample::initial_split, prop = 0.75) %>%
@@ -229,7 +229,7 @@ simple_wflow <-
   plug_model(set_engine(linear_reg(), "lm"))
 
 # Visualize your changes and iterate until happy
-simple_wflow %>%
+simple_tflow %>%
   # trained will extract the prepped recipe on the data
   # if `plug_split` is specified, it will use the training data
   # for everything.
@@ -243,7 +243,7 @@ Another scenario is one in which the user wants to remove and update the complet
 
 ```{r }
 
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_split(rsample::initial_split, prop = 0.75) %>%
@@ -256,7 +256,7 @@ simple_wflow <-
 
 # Update the complete recipe rather than only the
 # add new steps
-simple_wflow %>%
+simple_tflow %>%
   replace_recipe(
     # in replace_recipe, `.x` will always be the data
     # in completement_recipe, `.x` will be the already defined recipe
@@ -272,7 +272,7 @@ simple_wflow %>%
 All of the above also includes the option of adding a resamples specification. This means that you can add a cross-validation function that will be added to the plan. For example: 
 
 ```{r }
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_split(rsample::initial_split, prop = 0.75) %>%
@@ -286,11 +286,11 @@ simple_wflow <-
   plug_model(set_engine(linear_reg(), "lm"))
 
 # Run model and look at results
-simple_wflow %>%
+simple_tflow %>%
   fit()
 
 # Didn't like it? Rerun updating with another function
-simple_wflow %>%
+simple_tflow %>%
   # add a montecarlo cross-validation
   replace_resample(rsample::mc_cv) %>%
   fit()
@@ -304,7 +304,7 @@ Setting models is somewhat easy, as was shown in the examples above. However, th
 ```{r}
 
 # Define main workflow
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_split(rsample::initial_sample, prop = 0.75) %>%
@@ -319,7 +319,7 @@ simple_wflow <-
 mod1 <- set_engine(linear_reg(penalty = 0.000001, mixture = 0.00002),
                    engine = "glmnet")
 
-simple_wflow %>%
+simple_tflow %>%
   replace_model(mod1) %>%
   fit()
 
@@ -327,14 +327,14 @@ simple_wflow %>%
 mod2 <- set_engine(linear_reg(penalty = tune(), mixture = tune()),
                    engine = "glmnet")
 
-simple_wflow %>%
+simple_tflow %>%
   replace_model(mod2) %>%
   # Add grid of values for empty parameters
   plug_grid_regular(levels = 10) %>% 
   fit()
 
 mod3 <- set_engine(rand_forest(trees = 2000), "ranger")
-simple_wflow %>%
+simple_tflow %>%
   replace_model(mod1) %>%
   # Fill unfilled params with `tune()`, such as min_n and ntry
   plug_all_params(tune()) %>%
@@ -353,7 +353,7 @@ mod4 <- set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()),
                    "ranger")
 
 # Define main workflow
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_split(rsample::initial_split, prop = 0.75) %>%
@@ -368,7 +368,7 @@ simple_wflow <-
   plug_model(mod4)
 
 # This should create a grid of values for `deg_free`, `trees` and `min_n`
-simple_wflow %>%
+simple_tflow %>%
   grid_regular(levels = 3) %>%
   fit()
 
@@ -382,7 +382,7 @@ mod5 <- set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()),
                    "ranger")
 
 # Define main workflow
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_split(rsample::initial_split, prop = 0.75) %>%
@@ -397,7 +397,7 @@ simple_wflow <-
   # Adds the metrics
   plug_metric(metric_set(rmse, rsq))
 
-simple_wflow %>%
+simple_tflow %>%
   plug_grid_regular(levels = 3) %>%
   fit()
 
@@ -412,7 +412,7 @@ mod6 <- set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()),
 
 
 # Define main workflow
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_split(rsample::initial_split, prop = 0.75) %>%
@@ -429,7 +429,7 @@ simple_wflow <-
 
 mod7 <- set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet")
 
-simple_wflow %>%
+simple_tflow %>%
   # Replaces old model
   replace_model(mod7) %>%
   plug_grid_regular(levels = 3) %>%
@@ -503,14 +503,14 @@ This description is mostly based on a workflow for doing machine learning. This 
 
 ```{r }
 # Define main workflow
-simple_wflow <-
+simple_tflow <-
   mtcars %>%
   tflow() %>%
   plug_recipe(~ recipe(mpg ~ ., data = .x)) %>% 
   plug_model(set_engine(linear_reg(), "lm"))
 
 # Run first model and explore
-simple_wflow %>%
+simple_tflow %>%
   fit()
 ```
 
@@ -530,7 +530,7 @@ All of the above is a prototype idea and none of it has been implemented.
 
 <!-- ames <- make_ames() -->
 
-<!-- ml_wflow <- -->
+<!-- ml_tflow <- -->
 <!--   ames %>% -->
 <!--   workflow() %>% -->
 <!--   initial_split(prop = .75) %>% -->
@@ -554,14 +554,14 @@ All of the above is a prototype idea and none of it has been implemented.
 <!-- ## The combination of empty parameter specification with any grid_* -->
 <!-- ## should throw an error. -->
 
-<!-- ml_wflow %>% -->
+<!-- ml_tflow %>% -->
 <!--   plug_model(mod1) %>% -->
 <!--   vfold_cv() %>% -->
 <!--   fit() -->
 
 <!-- # Add new recipes -->
 <!-- final_res <- -->
-<!--   ml_wflow %>% -->
+<!--   ml_tflow %>% -->
 <!--   replace_rcp( -->
 <!--     .recipe %>%  -->
 <!--       step_scale(Sale_Price) %>% -->
@@ -572,7 +572,7 @@ All of the above is a prototype idea and none of it has been implemented.
 <!--   fit() -->
 
 <!-- ## Add new variable -->
-<!-- ml_wflow %>% -->
+<!-- ml_tflow %>% -->
 <!--   replace_frm( -->
 <!--     ~ . + x2 -->
 <!--   ) %>%  -->
@@ -584,7 +584,7 @@ All of the above is a prototype idea and none of it has been implemented.
 <!--   fit() -->
 
 <!-- ## Replace y -->
-<!-- ml_wflow %>% -->
+<!-- ml_tflow %>% -->
 <!--   replace_frm( -->
 <!--     Latitude ~ . -->
 <!--   ) %>%  -->
@@ -596,7 +596,7 @@ All of the above is a prototype idea and none of it has been implemented.
 <!--   fit() -->
 
 <!-- ## Update whole formula -->
-<!-- ml_wflow %>% -->
+<!-- ml_tflow %>% -->
 <!--   replace_frm( -->
 <!--     Latitude ~ Neighborhood + whatever -->
 <!--   ) %>%  -->
@@ -620,17 +620,17 @@ All of the above is a prototype idea and none of it has been implemented.
     
 <!--     ) -->
 
-<!-- # ml_wflow shouldn't run anything -- it's just a specification -->
+<!-- # ml_tflow shouldn't run anything -- it's just a specification -->
 <!-- # of all the different steps. `fit` should run everything -->
-<!-- ml_wflow <- fit(ml_wflow) -->
+<!-- ml_tflow <- fit(ml_tflow) -->
 
 <!-- # Plot results of tuning parameters -->
-<!-- ml_wflow %>% -->
+<!-- ml_tflow %>% -->
 <!--   autoplot() -->
 
 <!-- # Automatically extract best parameters and fit to the training data -->
 <!-- final_model <- -->
-<!--   ml_wflow %>% -->
+<!--   ml_tflow %>% -->
 <!--   fit_best_model(metrics = metric_set(rmse)) -->
 
 <!-- # Predict on the test data using the last model -->
@@ -677,14 +677,14 @@ All of the above is a prototype idea and none of it has been implemented.
 <!--   parsnip::set_engine("ranger") -->
 
 <!-- ## Construct a workflow that combines your recipe and your model -->
-<!-- ml_wflow <- -->
+<!-- ml_tflow <- -->
 <!--   workflows::workflow() %>% -->
 <!--   workflows::plug_recipe(mod_rec) %>% -->
 <!--   workflows::plug_model(lm_mod) -->
 
 <!-- # Find best tuned model -->
 <!-- res <- -->
-<!--   ml_wflow %>% -->
+<!--   ml_tflow %>% -->
 <!--   fit(data = ames_train) -->
 
 <!-- ############################# Validation ###################################### -->
@@ -696,7 +696,7 @@ All of the above is a prototype idea and none of it has been implemented.
 
 <!-- # Refit using the entire training data -->
 <!-- reg_res <- -->
-<!--   ml_wflow %>% -->
+<!--   ml_tflow %>% -->
 <!--   tune::finalize_workflow(best_params) %>% -->
 <!--   parsnip::fit(data = ames_train) -->
 

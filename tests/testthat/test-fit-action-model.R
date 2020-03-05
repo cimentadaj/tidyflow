@@ -26,7 +26,7 @@ test_that("can provide a model formula override", {
   mod <- parsnip::linear_reg()
   mod <- parsnip::set_engine(mod, "lm")
 
-  wflow <-
+  tflow <-
     mtcars %>%
     tidyflow() %>%
     # disp is in the recipe, but excluded from the model formula
@@ -37,7 +37,7 @@ test_that("can provide a model formula override", {
     }) %>%
     plug_model(mod, formula = mpg ~ cyl)
 
-  result <- fit(wflow)
+  result <- fit(tflow)
 
   expect_equal(
     c("(Intercept)", "cyl"),

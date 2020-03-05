@@ -130,7 +130,7 @@ fit.action_split <- function(object, tidyflow) {
   tidyflow$pre$mold <- rsample::training(split_res)
   tidyflow$pre$actions$split$testing <- rsample::testing(split_res)
   
-  # All pre steps return the `wflow`
+  # All pre steps return the `tflow`
   tidyflow
 }
 

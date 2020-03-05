@@ -6,7 +6,7 @@
 \alias{.fit_model}
 \title{Internal tidyflow functions}
 \usage{
-.fit_pre(wflow)
+.fit_pre(tflow)
 
 .fit_model(tidyflow, control)
 }

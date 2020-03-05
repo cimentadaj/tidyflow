@@ -48,23 +48,23 @@
 #' }
 #'
 #' # Specify an already created recipe function
-#' wflow <-
+#' tflow <-
 #'  mtcars %>%
 #'  tidyflow() %>%
 #'  plug_recipe(recipe_fun) %>%
 #'  plug_model(set_engine(linear_reg(), "lm"))
 #' 
 #' # Fit the model
-#' wflow %>%
+#' tflow %>%
 #'  fit()
 #'
 #' # Remove the old recipe, specify one on the fly and fit again
-#' wflow %>%
+#' tflow %>%
 #'  replace_recipe(~ recipe(mpg ~ cyl, data = .) %>% step_log(cyl, base = 10)) %>%
 #'  fit()
 #'
 #' # Note how the function argument can be either `.` or `.x`
-#' wflow %>%
+#' tflow %>%
 #'  replace_recipe(~ {
 #'   .x %>% 
 #'    recipe(mpg ~ cyl + am) %>%
@@ -116,10 +116,10 @@ replace_recipe <- function(x, .f, ..., blueprint = NULL) {
 
 # ------------------------------------------------------------------------------
 
-fit.action_recipe <- function(object, wflow) {
+fit.action_recipe <- function(object, tflow) {
   recipe_fun <- object$recipe
   blueprint <- object$blueprint
-  molded_data <- wflow$pre$mold
+  molded_data <- tflow$pre$mold
   rcp_data <- recipe_fun(molded_data)
 
   if (!is_recipe(rcp_data)) {
@@ -127,13 +127,13 @@ fit.action_recipe <- function(object, wflow) {
   }
 
   # Keep recipe around
-  wflow$pre$actions$recipe$recipe_res <- rcp_data
-  wflow$pre$mold <- hardhat::mold(rcp_data,
+  tflow$pre$actions$recipe$recipe_res <- rcp_data
+  tflow$pre$mold <- hardhat::mold(rcp_data,
                                   molded_data,
                                   blueprint = blueprint)
 
   # All pre steps return the `tidyflow`
-  wflow
+  tflow
 }
 
 # ------------------------------------------------------------------------------

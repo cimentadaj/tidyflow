@@ -101,12 +101,12 @@ replace_resample <- function(x, .f, ...) {
 
 # ------------------------------------------------------------------------------
 
-fit.action_resample <- function(object, wflow) {
+fit.action_resample <- function(object, tflow) {
 
   # Since a tidyflow will alows need to have a formula or recipe
   # the result of mold when it reaches a resample, will always be
   # a mold structure. Let's convert that to a data frame
-  mold <- combine_outcome_preds(wflow$pre$mold)
+  mold <- combine_outcome_preds(tflow$pre$mold)
 
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)
@@ -123,10 +123,10 @@ fit.action_resample <- function(object, wflow) {
     abort("The resample function should return an object of class `rset`.")
   }
 
-  wflow$pre$actions$resample$rset_res <- resample_res
+  tflow$pre$actions$resample$rset_res <- resample_res
   
-  # All pre steps return the `wflow`
-  wflow
+  # All pre steps return the `tflow`
+  tflow
 }
 
 # Exclude blueprint; it doesn't apply to data

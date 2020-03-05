@@ -372,22 +372,22 @@ summary {
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>The idea of the statistical tidyflow should be simple. It should be useful for holding only the minimum steps needed to perform a statistical analysis. The data, the formula and the model. In particular, the data should play the main role in the analysis: you should specify it once and let the tidyflow take care of all the details. For example:</p>
-<pre class="r"><code>simple_wflow &lt;-
+<pre class="r"><code>simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
   plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   fit()</code></pre>
 <p>The steps are declaractive. Start with the data and tidyflow, specify the formula and specify the model. <code>fit</code> takes cares of running the steps. In more convoluted examples, iteration is a necessary part of the tidyflow (create a new column, refit the data, try a new model, refit the data, etc…). Statistical iteration is somewhat at odds with some <code>tidyverse</code> packages where the order of operations is not important (<code>mutate</code> can be used at many different parts of an analysis, as well as <code>pivot_longer</code>, etc…). For statistical analysis, the order of operations is paramount: for example, you simply cannot specify for a column to be created after a model is run. For example:</p>
-<pre class="r"><code>simple_wflow &lt;-
+<pre class="r"><code>simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
   plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   fit() %&gt;%
   # complement_recipe will pass the already existing recipe to
   # the main argument of the function
@@ -395,7 +395,7 @@ simple_wflow %&gt;%
 <p>The operation over <code>cyl</code> is something that is specified after <code>fit</code>ting the model; it simply won’t happen before the <code>fit</code>. This tension suggests that there are basic operations for statistical modelling that <strong>need</strong> to happen before fitting a model. In particular, there are some heuristics that force analysts to perform steps in a particular order. For example:</p>
 <p><code>data</code> -&gt; <code>split training</code> -&gt; <code>preprocessing</code> -&gt; <code>model</code></p>
 <p>Preprocessing needs to happen before the modelling. You can iterate and alter columns after fitting the model but you’ll need to run the model again. Having said that, if we have a somewhat established order of operations, as long as the tidyflow knows about the order, how the user declares the operations is not important:</p>
-<pre class="r"><code>simple_wflow &lt;-
+<pre class="r"><code>simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
@@ -403,14 +403,14 @@ simple_wflow %&gt;%
   # New_step
   complement_recipe(~ .x %&gt;% step_mutate(cyl = log10(cyl)))
 
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   # Split data into training/testing
   plug_split(prop = 0.75) %&gt;%
   fit()</code></pre>
 <p>Two new steps have been added: create a new <code>cyl</code> column and split the data into training and testing. For this case, their order is unimportant. <code>cyl</code> was recreated after setting the model and the training/testing split was done after data creation, model specification, etc… I don’t think it’s a good idea to define a tidyflow this way but this illustrates the point that in theory, the order of steps doesn’t matter, as long as <code>fit</code> knows the correct order. The correct order in this case is:</p>
 <p><code>data</code> -&gt; <code>data split</code>-&gt; <code>formula</code> -&gt; <code>data wrangling</code> -&gt; <code>model definition</code> -&gt; <code>fit</code></p>
 <p><code>tflow</code> is a placeholder (or plan) of all these steps and reorders them for <code>fit</code> to execute them. The benefits of the placeholder strategy is that it allows both an ordered set of steps and interactivity. For example, we can fit a model with the initial tidyflow and add a new <code>step_*</code> for newer iterations:</p>
-<pre class="r"><code>simple_wflow &lt;-
+<pre class="r"><code>simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   # Split data into training/testing
@@ -421,17 +421,17 @@ simple_wflow %&gt;%
   plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Fit the tidyflow
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   fit()
 
 # Refit model with one step
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   # Add more steps to the recipe. `.x` is the supplied
   # recipe above.
   complement_recipe(~ .x %&gt;% step_mutate(cyl = log10(cyl)))
   fit()</code></pre>
 <p>This applies to any of the placeholders in <code>tflow</code>. For example, we can add a few more steps and also change the model:</p>
-<pre class="r"><code>simple_wflow &lt;-
+<pre class="r"><code>simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   # Split data into training/testing
@@ -440,12 +440,12 @@ simple_wflow %&gt;%
   plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Fit the tidyflow
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   fit()
 
 # Refit model with newer steps and new model
-simple_wflow &lt;-
-  simple_wflow %&gt;%
+simple_tflow &lt;-
+  simple_tflow %&gt;%
   complement_recipe(~ {
     .x %&gt;%
       step_mutate(cyl = log10(cyl)) %&gt;%
@@ -454,7 +454,7 @@ simple_wflow &lt;-
   # Replaces the model all together
   replace_model(set_engine(rand_forest(), &quot;ranger&quot;))
 
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   fit()</code></pre>
 <p><code>tflow</code> has a predefined set of placeholders defined as:</p>
 <ul>
@@ -471,7 +471,7 @@ simple_wflow %&gt;%
 <p>The data should play the main role during the analysis. We risk a great deal by having many parts of our data laying around in our environment: the raw data, the training data, testing data and the cross-validated set. Having these many pieces around can induce mistakes such as adding the testing data to the cross-validation by mistake. Or specifying the training data for the model but mistakenly adding the testing data to the predict method. <code>tflow</code> aims to solve that by specifying the data only once. You can extract all of the pieces from the <code>tflow</code> such as the training/testing but that’s opted-in: <code>tflow</code> will never touch your testing and always pass it correctly to where it needs to go.</p>
 <p>A <code>tflow</code> should always define the data at first but it also gives the possibility of updating the data. This can be useful if you’ve defined a complete pipeline with a particular data source but an updated version of our data has just arrived:</p>
 <pre class="r"><code># Define main tidyflow with old data
-simple_wflow &lt;-
+simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_split(rsample::initial_split, prop = 0.75) %&gt;%
@@ -482,7 +482,7 @@ simple_wflow &lt;-
   }) %&gt;% 
   plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   # Replaces the old data and reruns everything
   replace_data(mtcars2) %&gt;% 
   fit()</code></pre>
@@ -491,7 +491,7 @@ simple_wflow %&gt;%
 <h3>Updating the preprocessing step</h3>
 <p>A formula is always tied to your preprocessing. If you specify a new variable in your formula, you need not specify a new preprocessing step. However, if you specify a new step for a variable, you need to specify it in the formula. Since <code>tflow</code> is a placeholder of steps, adding new terms to formulas is just as easy with <code>step_add</code>.</p>
 <pre class="r"><code># Define main tidyflow
-simple_wflow &lt;-
+simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_split(rsample::initial_split, prop = 0.75) %&gt;%
@@ -503,21 +503,21 @@ simple_wflow &lt;-
   plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Run the model
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   fit()
 
 # Update the recipe to include one more term
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   complement_recipe(~ .x %&gt;% step_add(am)) %&gt;% 
   fit()
 
 # Update the recipe to include one more term and add a step
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   complement_recipe(~ .x %&gt;% step_add(am) %&gt;% step_dummy(disp)) %&gt;% 
   fit()
 
 # Update the recipe to include many terms and add a step
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   complement_recipe(~ {
     .x %&gt;%
       step_add(am, carb, hp, drat) %&gt;%
@@ -526,7 +526,7 @@ simple_wflow %&gt;%
   fit()</code></pre>
 <p>If the user’s data exploration process is short, they can scroll up to the initial recipe and redefine it there. For more complicated tidyflows, <code>step_add</code> can make it easy to iteratively update the initial specification and add subsequent steps to the tidyflow <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
 <p>Since this step is interactive, the user should be able to specify a tidyflow and extract the recipe prepped to explore the data:</p>
-<pre class="r"><code>simple_wflow &lt;-
+<pre class="r"><code>simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_split(rsample::initial_split, prop = 0.75) %&gt;%
@@ -538,7 +538,7 @@ simple_wflow %&gt;%
   plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Visualize your changes and iterate until happy
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   # trained will extract the prepped recipe on the data
   # if `plug_split` is specified, it will use the training data
   # for everything.
@@ -546,7 +546,7 @@ simple_wflow %&gt;%
   ggplot(aes(cyl)) %&gt;%
   geom_histogram()</code></pre>
 <p>Another scenario is one in which the user wants to remove and update the complete formula. <code>replace_recipe</code> will always accept a function with one argument, which will be passed the data.</p>
-<pre class="r"><code>simple_wflow &lt;-
+<pre class="r"><code>simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_split(rsample::initial_split, prop = 0.75) %&gt;%
@@ -559,7 +559,7 @@ simple_wflow %&gt;%
 
 # Update the complete recipe rather than only the
 # add new steps
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   replace_recipe(
     # in replace_recipe, `.x` will always be the data
     # in completement_recipe, `.x` will be the already defined recipe
@@ -569,7 +569,7 @@ simple_wflow %&gt;%
       step_dummy(gear)
   )</code></pre>
 <p>All of the above also includes the option of adding a resamples specification. This means that you can add a cross-validation function that will be added to the plan. For example:</p>
-<pre class="r"><code>simple_wflow &lt;-
+<pre class="r"><code>simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_split(rsample::initial_split, prop = 0.75) %&gt;%
@@ -583,11 +583,11 @@ simple_wflow %&gt;%
   plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Run model and look at results
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   fit()
 
 # Didn&#39;t like it? Rerun updating with another function
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   # add a montecarlo cross-validation
   replace_resample(rsample::mc_cv) %&gt;%
   fit()</code></pre>
@@ -596,7 +596,7 @@ simple_wflow %&gt;%
 <h3>Updating the modelling tidyflow</h3>
 <p>Setting models is somewhat easy, as was shown in the examples above. However, there are more complicated layers such as adding tuning parameters and grids of tuning parameters. Just as a formula is tied to the preprocessing step, tuning parameters are usually tied to a model. This means that we can think of tuning parameters/grids as part of a model. Why have them separate? For example:</p>
 <pre class="r"><code># Define main tidyflow
-simple_wflow &lt;-
+simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_split(rsample::initial_sample, prop = 0.75) %&gt;%
@@ -611,7 +611,7 @@ simple_wflow &lt;-
 mod1 &lt;- set_engine(linear_reg(penalty = 0.000001, mixture = 0.00002),
                    engine = &quot;glmnet&quot;)
 
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   replace_model(mod1) %&gt;%
   fit()
 
@@ -619,14 +619,14 @@ simple_wflow %&gt;%
 mod2 &lt;- set_engine(linear_reg(penalty = tune(), mixture = tune()),
                    engine = &quot;glmnet&quot;)
 
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   replace_model(mod2) %&gt;%
   # Add grid of values for empty parameters
   plug_grid_regular(levels = 10) %&gt;% 
   fit()
 
 mod3 &lt;- set_engine(rand_forest(trees = 2000), &quot;ranger&quot;)
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   replace_model(mod1) %&gt;%
   # Fill unfilled params with `tune()`, such as min_n and ntry
   plug_all_params(tune()) %&gt;%
@@ -638,7 +638,7 @@ simple_wflow %&gt;%
                    &quot;ranger&quot;)
 
 # Define main tidyflow
-simple_wflow &lt;-
+simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_split(rsample::initial_split, prop = 0.75) %&gt;%
@@ -653,7 +653,7 @@ simple_wflow &lt;-
   plug_model(mod4)
 
 # This should create a grid of values for `deg_free`, `trees` and `min_n`
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   grid_regular(levels = 3) %&gt;%
   fit()</code></pre>
 <p>The tidyflow showed so far takes care of returning all default metrics associated with a particular variable. That is, if no metric of fit is specified (root mean square error, R square, etc…), it returns the default when tuning the grid (this is controlled automatically by <code>tune_grid</code>). However, this tidyflow allows to specify any metric for the model, as it will be saved together with the model.</p>
@@ -661,7 +661,7 @@ simple_wflow %&gt;%
                    &quot;ranger&quot;)
 
 # Define main tidyflow
-simple_wflow &lt;-
+simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_split(rsample::initial_split, prop = 0.75) %&gt;%
@@ -676,7 +676,7 @@ simple_wflow &lt;-
   # Adds the metrics
   plug_metric(metric_set(rmse, rsq))
 
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   plug_grid_regular(levels = 3) %&gt;%
   fit()</code></pre>
 <p>Thanks to the fact that <code>tidymodels</code> defines pretty much every step (recipe, metrics, cross validation, grids, etc…) of the tidyflow with separate classes, each of these classes has a slot in the tidyflow and you can explicitly add/update them with the <code>plug_*</code> or <code>replace_*</code> functions. It’s still not clear how the <code>plug_*</code> or <code>replace_*</code> functions will work since I want to make them memorable: they all work the same way and accept similar things. I need to think about this more.</p>
@@ -685,7 +685,7 @@ simple_wflow %&gt;%
 
 
 # Define main tidyflow
-simple_wflow &lt;-
+simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_split(rsample::initial_split, prop = 0.75) %&gt;%
@@ -702,7 +702,7 @@ simple_wflow &lt;-
 
 mod7 &lt;- set_engine(linear_reg(penalty = tune(), mixture = tune()), &quot;glmnet&quot;)
 
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   # Replaces old model
   replace_model(mod7) %&gt;%
   plug_grid_regular(levels = 3) %&gt;%
@@ -755,14 +755,14 @@ Computational engine: glmnet </code></pre>
 <h1>Final thoughts</h1>
 <p>This description is mostly based on a tidyflow for doing machine learning. This is the case simply because the core objective of <code>tidymodels</code> is to focus on machine learning. However, this tidyflow should be useful for doing other types of statistical analysis. For example, the statistical analysis tidyflow is very similar to the one described above without separating into training/testing, adding cross-validation and performing a grid search. You could in principle do the same for statistical inferece. As long as the result is not focused on choosing the best model but on visualizing coefficients:</p>
 <pre class="r"><code># Define main tidyflow
-simple_wflow &lt;-
+simple_tflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
   plug_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
   plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Run first model and explore
-simple_wflow %&gt;%
+simple_tflow %&gt;%
   fit()</code></pre>
 <p>Initiatives such as <a href="http://docs.zeligproject.org/index.html">Zelig</a> could be adapted to <code>tflow</code> such that more statistical models can be used (as well as other standard statistical software such as <code>brms</code>, <code>rstanarm</code>, etc…).</p>
 <p>All of the above is a prototype idea and none of it has been implemented.</p>
@@ -773,7 +773,7 @@ simple_wflow %&gt;%
 <!-- library(AmesHousing) -->
 <!-- library(tidymodels) -->
 <!-- ames <- make_ames() -->
-<!-- ml_wflow <- -->
+<!-- ml_tflow <- -->
 <!--   ames %>% -->
 <!--   tidyflow() %>% -->
 <!--   initial_split(prop = .75) %>% -->
@@ -793,13 +793,13 @@ simple_wflow %&gt;%
 <!--   grid_regular(levels = 10) -->
 <!-- ## The combination of empty parameter specification with any grid_* -->
 <!-- ## should throw an error. -->
-<!-- ml_wflow %>% -->
+<!-- ml_tflow %>% -->
 <!--   plug_model(mod1) %>% -->
 <!--   vfold_cv() %>% -->
 <!--   fit() -->
 <!-- # Add new recipes -->
 <!-- final_res <- -->
-<!--   ml_wflow %>% -->
+<!--   ml_tflow %>% -->
 <!--   replace_rcp( -->
 <!--     .recipe %>%  -->
 <!--       step_scale(Sale_Price) %>% -->
@@ -809,7 +809,7 @@ simple_wflow %&gt;%
 <!--   vfold_cv() %>%  -->
 <!--   fit() -->
 <!-- ## Add new variable -->
-<!-- ml_wflow %>% -->
+<!-- ml_tflow %>% -->
 <!--   replace_frm( -->
 <!--     ~ . + x2 -->
 <!--   ) %>%  -->
@@ -820,7 +820,7 @@ simple_wflow %&gt;%
 <!--   vfold_cv() %>%  -->
 <!--   fit() -->
 <!-- ## Replace y -->
-<!-- ml_wflow %>% -->
+<!-- ml_tflow %>% -->
 <!--   replace_frm( -->
 <!--     Latitude ~ . -->
 <!--   ) %>%  -->
@@ -831,7 +831,7 @@ simple_wflow %&gt;%
 <!--   vfold_cv() %>%  -->
 <!--   fit() -->
 <!-- ## Update whole formula -->
-<!-- ml_wflow %>% -->
+<!-- ml_tflow %>% -->
 <!--   replace_frm( -->
 <!--     Latitude ~ Neighborhood + whatever -->
 <!--   ) %>%  -->
@@ -850,15 +850,15 @@ simple_wflow %&gt;%
 <!--   replace_rcp( -->
 <!--     -step_scale, -->
 <!--     ) -->
-<!-- # ml_wflow shouldn't run anything -- it's just a specification -->
+<!-- # ml_tflow shouldn't run anything -- it's just a specification -->
 <!-- # of all the different steps. `fit` should run everything -->
-<!-- ml_wflow <- fit(ml_wflow) -->
+<!-- ml_tflow <- fit(ml_tflow) -->
 <!-- # Plot results of tuning parameters -->
-<!-- ml_wflow %>% -->
+<!-- ml_tflow %>% -->
 <!--   autoplot() -->
 <!-- # Automatically extract best parameters and fit to the training data -->
 <!-- final_model <- -->
-<!--   ml_wflow %>% -->
+<!--   ml_tflow %>% -->
 <!--   fit_best_model(metrics = metric_set(rmse)) -->
 <!-- # Predict on the test data using the last model -->
 <!-- # Everything is bundled into a tidyflow object -->
@@ -893,13 +893,13 @@ simple_wflow %&gt;%
 <!--   set_mode("classification") %>%  -->
 <!--   parsnip::set_engine("ranger") -->
 <!-- ## Construct a tidyflow that combines your recipe and your model -->
-<!-- ml_wflow <- -->
+<!-- ml_tflow <- -->
 <!--   tidyflows::tidyflow() %>% -->
 <!--   tidyflows::plug_recipe(mod_rec) %>% -->
 <!--   tidyflows::plug_model(lm_mod) -->
 <!-- # Find best tuned model -->
 <!-- res <- -->
-<!--   ml_wflow %>% -->
+<!--   ml_tflow %>% -->
 <!--   fit(data = ames_train) -->
 <!-- ############################# Validation ###################################### -->
 <!-- ############################################################################### -->
@@ -909,7 +909,7 @@ simple_wflow %&gt;%
 <!--   tune::select_best(metric = "rmse", maximize = FALSE) -->
 <!-- # Refit using the entire training data -->
 <!-- reg_res <- -->
-<!--   ml_wflow %>% -->
+<!--   ml_tflow %>% -->
 <!--   tune::finalize_tidyflow(best_params) %>% -->
 <!--   parsnip::fit(data = ames_train) -->
 <!-- # Predict on test data -->
