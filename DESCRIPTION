@@ -2,19 +2,23 @@ Package: tidyflow
 Title: Modeling Tidyflows
 Version: 0.1.0.9000
 Authors@R: 
-    c(person(given = "Davis",
-             family = "Vaughan",
+    c(person(given = "Jorge",
+             family = "Cimentada",
              role = c("aut", "cre"),
+             email = "cimentadaj@gmail.com"),
+      person(given = "Davis",
+             family = "Vaughan",
+             role = c("aut"),
              email = "davis@rstudio.com"),
       person(given = "RStudio",
              role = "cph"))
-Description: Managing both a 'parsnip' model and a preprocessor, such as a
-    model formula or recipe from 'recipes', can often be challenging. The goal
-    of 'tidyflow' is to streamline this process by bundling the model alongside
-    the preprocessor, all within the same object.
+Description: Managing a modelling workflow such as data, training/testing splitting,
+    resampling, preprocessing and modelling, can often be challenging. The goal
+    of 'tidyflow' is to streamline this process by bundling your workflow within the
+    same object.
 License: MIT + file LICENSE
-URL: https://github.com/tidymodels/tidyflow
-BugReports: https://github.com/tidymodels/tidyflow/issues
+URL: https://github.com/cimentadaj/tidyflow
+BugReports: https://github.com/cimentadaj/tidyflow/issues
 Depends: 
     R (>= 3.2)
 Imports: 
