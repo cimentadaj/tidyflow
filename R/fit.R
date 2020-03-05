@@ -64,7 +64,8 @@ fit.tidyflow <- function(object, ..., control = control_tidyflow()) {
   # pred <- result$pred
   # result <- fit_post(tidyflow, pred)
 
-  tidyflow$trained <- TRUE
+  # Only if it has be fit (NOT TUNED!)
+  tidyflow$trained <- if (has_fit(tidyflow)) TRUE else FALSE
 
   tidyflow
 }

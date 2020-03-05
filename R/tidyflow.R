@@ -83,7 +83,7 @@ print_header <- function(x) {
   if (x$trained) {
     trained <- " [trained]"
   } else {
-    trained <- ""
+    trained <- if (has_fit_tuning(x)) " [tuned]" else ""
   }
 
   header <- glue::glue("Tidyflow{trained}")
@@ -291,6 +291,7 @@ print_model <- function(x) {
   }
 
   has_fit <- has_fit(x)
+  has_tuning <- has_fit_tuning(x)
 
   # Space between Tidyflow/Preprocessor section and Model section
   cat_line("")
@@ -298,12 +299,18 @@ print_model <- function(x) {
   header <- cli::rule("Model")
   cat_line(header)
 
+  print_spec(x)
+
+  if (has_tuning) {
+    print_tuning(x)
+    invisible(x)
+  }
+
   if (has_fit) {
     print_fit(x)
     return(invisible(x))
   }
 
-  print_spec(x)
   invisible(x)
 }
 
@@ -339,6 +346,31 @@ print_fit <- function(x) {
 
   invisible(x)
 }
+
+print_tuning <- function(x) {
+  tuning_fit <- pull_tflow_tuning(x)
+
+  n_output <- nrow(tuning_fit)
+
+  cat_line("Tuning results: ")
+  cat_line("")
+
+  if (n_output < 6L) {
+    print(tuning_fit)
+    return(invisible(x))
+  }
+
+  n_extra_output <- n_output - 5L
+  output <- tuning_fit[1:5, ]
+
+  print(output)
+  cat_line("")
+  cat_line(glue::glue("... and {n_extra_output} more lines."))
+  cat_line("")
+
+  invisible(x)
+}
+
 
 cat_line <- function(...) {
   cat(paste0(..., collapse = "\n"), "\n", sep = "")

@@ -98,13 +98,14 @@ fit.action_model <- function(object, tflow, control, ...) {
   if (!is.null(resample_res)) {
     obj <- tflow$pre$actions$recipe$recipe_res %||% tflow$pre$actions$formula
 
-    resampled <-
+    tflow$pre$actions$resample$tuning_res <-
       tune::fit_resamples(obj,
                           model = spec,
                           resamples = resample_res,
-                          control = control,
-                          ...
+                          control = tune::control_resamples()
                           )
+    
+    return(tflow)
   }
 
   mold <- tflow$pre$mold

@@ -6,6 +6,7 @@
 \alias{pull_tidyflow_preprocessor}
 \alias{pull_tidyflow_spec}
 \alias{pull_tflow_fit}
+\alias{pull_tflow_tuning}
 \alias{pull_tidyflow_mold}
 \alias{pull_tidyflow_prepped_recipe}
 \alias{pull_tidyflow_testing}
@@ -18,6 +19,8 @@ pull_tidyflow_preprocessor(x)
 pull_tidyflow_spec(x)
 
 pull_tflow_fit(x)
+
+pull_tflow_tuning(x)
 
 pull_tidyflow_mold(x)
 

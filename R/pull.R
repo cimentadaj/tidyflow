@@ -137,6 +137,19 @@ pull_tflow_fit <- function(x) {
 
 #' @rdname tidyflow-extractors
 #' @export
+pull_tflow_tuning <- function(x) {
+  validate_is_tidyflow(x)
+
+  if (has_fit_tuning(x)) {
+    return(x$pre$actions$resample$tuning_res)
+  }
+
+  abort("The tidyflow does not have a resamples result. Have you called `fit()` yet?")
+}
+
+
+#' @rdname tidyflow-extractors
+#' @export
 pull_tidyflow_mold <- function(x) {
   validate_is_tidyflow(x)
 

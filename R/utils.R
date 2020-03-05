@@ -71,6 +71,10 @@ has_fit <- function(x) {
   !is.null(x$fit$fit)
 }
 
+has_fit_tuning <- function(x) {
+  !is.null(x$pre$actions$resample$tuning_res)
+}
+
 has_raw_data <- function(x) {
   !is.null(x$data)
 }
