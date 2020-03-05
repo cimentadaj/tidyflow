@@ -1,7 +1,7 @@
 #' Add a split specification to a tidyflow
 #'
 #' @description
-#' - `add_split()` specifies the type of splitting used in the analysis. It
+#' - `plug_split()` specifies the type of splitting used in the analysis. It
 #'   accepts a function \code{.f} that will be applied to the data. Only
 #'   functions which return an \code{rsplit} object will be allowed. See
 #'   package \code{\link[rsample]{rsample}} and the details section. If a model
@@ -42,10 +42,10 @@
 #' library(rsample)
 #'
 #' wf <- tidyflow()
-#' wf <- add_data(wf, mtcars)
+#' wf <- plug_data(wf, mtcars)
 #' 
 #' # Strata as string
-#' wf <- add_split(wf, initial_split, prop = 0.8, strata = "cyl")
+#' wf <- plug_split(wf, initial_split, prop = 0.8, strata = "cyl")
 #'
 #' wf
 #' 
@@ -59,7 +59,7 @@
 #' # New split function
 #' replace_split(wf, initial_time_split)
 #'
-add_split <- function(x, .f, ...) {
+plug_split <- function(x, .f, ...) {
 
   ## In case you fit the model and **then** add a split.
   ## This fun removes everything.
@@ -80,10 +80,10 @@ add_split <- function(x, .f, ...) {
   .f <- enquo(.f)
   name_f <- quo_text(.f)
   action <- new_action_split(eval_tidy(.f), .dots, name_f)
-  add_action(x, action, "split")
+  plug_action(x, action, "split")
 }
 
-#' @rdname add_split
+#' @rdname plug_split
 #' @export
 drop_split <- function(x) {
   validate_is_tidyflow(x)
@@ -101,12 +101,12 @@ drop_split <- function(x) {
   )
 }
 
-#' @rdname add_split
+#' @rdname plug_split
 #' @export
 replace_split <- function(x, .f, ...) {
   x <- drop_split(x)
   .f <- enquo(.f)
-  add_split(x, !!.f, ...)
+  plug_split(x, !!.f, ...)
 }
 
 # ------------------------------------------------------------------------------

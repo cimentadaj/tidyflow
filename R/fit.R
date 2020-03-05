@@ -34,15 +34,15 @@
 #' formula_tidyflow <-
 #'  mtcars %>%
 #'  tidyflow() %>%
-#'  add_formula(mpg ~ cyl + log(disp)) %>%
-#'  add_model(model)
+#'  plug_formula(mpg ~ cyl + log(disp)) %>%
+#'  plug_model(model)
 #' 
 #' fit(formula_tidyflow)
 #'
 #' recipe_tidyflow <-
 #'  formula_tidyflow %>%
 #'  drop_formula() %>% 
-#'  add_recipe(~ recipe(mpg ~ cyl + disp, .x) %>% step_log(disp))
+#'  plug_recipe(~ recipe(mpg ~ cyl + disp, .x) %>% step_log(disp))
 #'
 #' fit(recipe_tidyflow)
 #'
@@ -51,7 +51,7 @@ fit.tidyflow <- function(object, ..., control = control_tidyflow()) {
   tidyflow <- object
 
   if (!has_raw_data(tidyflow)) {
-    abort("`data` must be specified to fit a tidyflow; Do you need `add_data`?")
+    abort("`data` must be specified to fit a tidyflow; Do you need `plug_data`?")
   }
 
   ellipsis::check_dots_empty()
@@ -101,9 +101,9 @@ fit.tidyflow <- function(object, ..., control = control_tidyflow()) {
 #' model <- set_engine(model, "lm")
 #'
 #' base_tidyflow <- tidyflow(mtcars)
-#' base_tidyflow <- add_model(base_tidyflow, model)
+#' base_tidyflow <- plug_model(base_tidyflow, model)
 #'
-#' formula_tidyflow <- add_formula(base_tidyflow, mpg ~ cyl + log(disp))
+#' formula_tidyflow <- plug_formula(base_tidyflow, mpg ~ cyl + log(disp))
 #'
 #' partially_fit_tidyflow <- .fit_pre(formula_tidyflow)
 #' fit_tidyflow <- .fit_model(partially_fit_tidyflow, control_tidyflow())
@@ -136,7 +136,7 @@ validate_has_minimal_components <- function(x) {
   if (!has_preprocessor) {
     glubort(
       "The tidyflow must have a formula or recipe preprocessor. ",
-      "Provide one with `add_formula()` or `add_recipe()`."
+      "Provide one with `plug_formula()` or `plug_recipe()`."
     )
   }
 
@@ -145,7 +145,7 @@ validate_has_minimal_components <- function(x) {
   if (!has_model) {
     glubort(
       "The tidyflow must have a model. ",
-      "Provide one with `add_model()`."
+      "Provide one with `plug_model()`."
     )
   }
 

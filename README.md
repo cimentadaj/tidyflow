@@ -57,8 +57,8 @@ Example
 <!-- workflows makes this easier by combining these objects together: -->
 <!-- ```{r wflow, eval = FALSE} -->
 <!-- car_wflow <- workflow() %>%  -->
-<!--   add_recipe(spline_cars) %>%  -->
-<!--   add_model(bayes_lm) -->
+<!--   plug_recipe(spline_cars) %>%  -->
+<!--   plug_model(bayes_lm) -->
 <!-- ``` -->
 <!-- Now you can prepare the recipe and estimate the model via a single call to `fit()`: -->
 <!-- ```{r wflow-fit, eval = FALSE} -->

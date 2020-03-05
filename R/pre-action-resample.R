@@ -1,7 +1,7 @@
 #' Add a resample specification to a tidyflow
 #'
 #' @description
-#' - `add_resample()` specifies the type of resample used in the analysis. It
+#' - `plug_resample()` specifies the type of resample used in the analysis. It
 #'   accepts a function \code{.f} that will be applied to the data. Only
 #'   functions which return an \code{rset} object will be allowed. See
 #'   package \code{\link[rsample]{rsample}} and the details section.
@@ -41,10 +41,10 @@
 #' library(rsample)
 #'
 #' wf <- tidyflow()
-#' wf <- add_data(wf, mtcars)
+#' wf <- plug_data(wf, mtcars)
 #' 
 #' # Strata as string
-#' wf <- add_resample(wf, vfold_cv, v = 5, strata = "cyl")
+#' wf <- plug_resample(wf, vfold_cv, v = 5, strata = "cyl")
 #'
 #' wf
 #' 
@@ -58,7 +58,7 @@
 #' # New split function
 #' replace_resample(wf, bootstraps)
 #'
-add_resample <- function(x, .f, ...) {
+plug_resample <- function(x, .f, ...) {
   .dots <- enquos(...)
 
   if (!is_uniquely_named(.dots)) {
@@ -70,10 +70,10 @@ add_resample <- function(x, .f, ...) {
   .f <- enquo(.f)
   name_f <- quo_text(.f)
   action <- new_action_resample(eval_tidy(.f), .dots, name_f)
-  add_action(x, action, "resample")
+  plug_action(x, action, "resample")
 }
 
-#' @rdname add_resample
+#' @rdname plug_resample
 #' @export
 drop_resample <- function(x) {
   validate_is_tidyflow(x)
@@ -91,12 +91,12 @@ drop_resample <- function(x) {
   )
 }
 
-#' @rdname add_resample
+#' @rdname plug_resample
 #' @export
 replace_resample <- function(x, .f, ...) {
   x <- drop_resample(x)
   .f <- enquo(.f)
-  add_resample(x, !!.f, ...)
+  plug_resample(x, !!.f, ...)
 }
 
 # ------------------------------------------------------------------------------

@@ -2,12 +2,12 @@
 #'
 #' A `tidyflow` is a container object that aggregates information required to
 #' fit and predict from a model. This information might be the main dataset,
-#' specified through [add_data()], a recipe used in
-#' preprocessing, specified through [add_recipe()], or the model specification
-#' to fit, specified through [add_model()].
+#' specified through [plug_data()], a recipe used in
+#' preprocessing, specified through [plug_recipe()], or the model specification
+#' to fit, specified through [plug_model()].
 #'
 #' @param data A data frame or tibble used to begin the tidyflow. This is
-#' optional as the data can be specified with [add_data()]. 
+#' optional as the data can be specified with [plug_data()]. 
 #' 
 #' @return
 #' A new `tidyflow` object.
@@ -17,7 +17,7 @@
 #'
 #' rec <- ~ recipe(mpg ~ cyl, .x) %>% step_log(cyl)
 #' wrk <- tidyflow(mtcars)
-#' wrk <- add_recipe(wrk, rec)
+#' wrk <- plug_recipe(wrk, rec)
 #'
 #' @export
 tidyflow <- function(data = NULL) {

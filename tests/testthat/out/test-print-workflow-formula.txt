@@ -1,4 +1,4 @@
-> add_formula(tidyflow(), y ~ x)
+> plug_formula(tidyflow(), y ~ x)
 == Tidyflow ====================================================================
 Data: None
 Preprocessor: Formula

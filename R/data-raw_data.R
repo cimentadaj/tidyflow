@@ -1,7 +1,7 @@
 #' Add a data to a tidyflow
 #'
 #' @description
-#' - `add_data()` specifies the raw data used in the analysis. This data is used
+#' - `plug_data()` specifies the raw data used in the analysis. This data is used
 #'   for the preprocessing and fitting the model.
 #'
 #' - `drop_data()` removes the data from the tidyflow.
@@ -27,14 +27,14 @@
 #' @examples
 #'
 #' wf <- tidyflow()
-#' wf <- add_data(wf, mtcars)
+#' wf <- plug_data(wf, mtcars)
 #' wf
 #'
 #' drop_data(wf)
 #'
 #' replace_data(wf, iris)
 #'
-add_data <- function(x, data, ...) {
+plug_data <- function(x, data, ...) {
   ellipsis::check_dots_empty()
 
   if (!is.data.frame(data)) {
@@ -52,7 +52,7 @@ add_data <- function(x, data, ...) {
   x
 }
 
-#' @rdname add_data
+#' @rdname plug_data
 #' @export
 drop_data <- function(x) {
   validate_is_tidyflow(x)
@@ -73,10 +73,10 @@ drop_data <- function(x) {
   )
 }
 
-#' @rdname add_data
+#' @rdname plug_data
 #' @export
 replace_data <- function(x, data, ...) {
   ellipsis::check_dots_empty()
   x <- drop_data(x)
-  add_data(x, data)
+  plug_data(x, data)
 }

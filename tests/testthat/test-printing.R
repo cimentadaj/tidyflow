@@ -10,14 +10,14 @@ test_that("can print tidyflow with recipe", {
 
   verify_output(
     test_path("out/test-print-tidyflow-recipe.txt"),
-    add_recipe(tidyflow(), rec)
+    plug_recipe(tidyflow(), rec)
   )
 })
 
 test_that("can print tidyflow with formula", {
   verify_output(
     test_path("out/test-print-tidyflow-formula.txt"),
-    add_formula(tidyflow(), y ~ x)
+    plug_formula(tidyflow(), y ~ x)
   )
 })
 
@@ -26,7 +26,7 @@ test_that("can print tidyflow with model", {
 
   verify_output(
     test_path("out/test-print-tidyflow-model.txt"),
-    add_model(tidyflow(), model)
+    plug_model(tidyflow(), model)
   )
 })
 
@@ -36,7 +36,7 @@ test_that("can print tidyflow with model with engine specific args", {
 
   verify_output(
     test_path("out/test-print-tidyflow-model-args.txt"),
-    add_model(tidyflow(), model)
+    plug_model(tidyflow(), model)
   )
 })
 
@@ -45,8 +45,8 @@ test_that("can print tidyflow with fit model", {
   model <- parsnip::set_engine(model, "lm")
 
   tidyflow <- tidyflow()
-  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
-  tidyflow <- add_model(tidyflow, model)
+  tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- plug_model(tidyflow, model)
 
   verify_output(
     test_path("out/test-print-tidyflow-fit.txt"),
@@ -73,7 +73,7 @@ test_that("can print tidyflow with >10 recipe steps", {
 
   verify_output(
     test_path("out/test-print-tidyflow-recipe-11-steps.txt"),
-    add_recipe(tidyflow(), rcp_fun)
+    plug_recipe(tidyflow(), rcp_fun)
   )
 
 
@@ -96,6 +96,6 @@ test_that("can print tidyflow with >10 recipe steps", {
 
   verify_output(
     test_path("out/test-print-tidyflow-recipe-12-steps.txt"),
-    add_recipe(tidyflow(), rcp_fun)
+    plug_recipe(tidyflow(), rcp_fun)
   )
 })

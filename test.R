@@ -6,9 +6,9 @@ devtools::load_all()
 res <-
   mtcars %>%
   tidyflow() %>%
-  add_split(initial_split) %>% 
-  add_formula(mpg ~ .) %>% 
-  add_model(set_engine(linear_reg(), "lm"))
+  plug_split(initial_split) %>% 
+  plug_formula(mpg ~ .) %>% 
+  plug_model(set_engine(linear_reg(), "lm"))
 
 res
 
@@ -20,10 +20,10 @@ res %>%
 mod <-
   mtcars %>%
   tidyflow() %>%
-  add_split(initial_split) %>%
-  add_recipe(~ recipe(mpg ~ cyl, data = .) %>% step_log(cyl, base = 10)) %>%
-  add_resample(vfold_cv) %>% 
-  add_model(set_engine(linear_reg(), "lm"))
+  plug_split(initial_split) %>%
+  plug_recipe(~ recipe(mpg ~ cyl, data = .) %>% step_log(cyl, base = 10)) %>%
+  plug_resample(vfold_cv) %>% 
+  plug_model(set_engine(linear_reg(), "lm"))
 
 
 set.seed(23141)

@@ -1,18 +1,18 @@
 test_that("can add a resample to a tidyflow", {
   tidyflow <- tidyflow()
-  tidyflow <- add_resample(tidyflow, rsample::bootstraps)
+  tidyflow <- plug_resample(tidyflow, rsample::bootstraps)
 
   expect_is(tidyflow$pre$actions$resample, "action_resample")
 })
 
 test_that("resample is validated", {
-  expect_error(add_resample(tidyflow(), 1),
+  expect_error(plug_resample(tidyflow(), 1),
                "`.f` must be a function for resampling the dataset")
 })
 
 test_that("remove a resample specification", {
   tidyflow_no_resample <- tidyflow()
-  tidyflow_with_resample <- add_resample(tidyflow_no_resample,
+  tidyflow_with_resample <- plug_resample(tidyflow_no_resample,
                                          rsample::bootstraps)
   
   tidyflow_removed_resample <- drop_resample(tidyflow_with_resample)
@@ -30,9 +30,9 @@ test_that("remove a resample specification", {
 ##   rec <- recipes::recipe(mpg ~ cyl, mtcars)
 
 ##   tidyflow_no_recipe <- tidyflow()
-##   tidyflow_no_recipe <- add_model(tidyflow_no_recipe, lm_model)
+##   tidyflow_no_recipe <- plug_model(tidyflow_no_recipe, lm_model)
 
-##   tidyflow_with_recipe  <- add_recipe(tidyflow_no_recipe, rec)
+##   tidyflow_with_recipe  <- plug_recipe(tidyflow_no_recipe, rec)
 ##   tidyflow_with_recipe <- fit(tidyflow_with_recipe, data = mtcars)
 
 ##   tidyflow_removed_recipe <- drop_recipe(tidyflow_with_recipe)
@@ -42,7 +42,7 @@ test_that("remove a resample specification", {
 
 test_that("update a resample specification", {
   tidyflow <- tidyflow()
-  tidyflow <- add_resample(tidyflow, rsample::bootstraps)
+  tidyflow <- plug_resample(tidyflow, rsample::bootstraps)
   tidyflow <- replace_resample(tidyflow, rsample::vfold_cv)
 
   expect_equal(tidyflow$pre$actions$resample$`rsample::vfold_cv`,
@@ -60,8 +60,8 @@ test_that("update a resample specification", {
 ##   lm_model <- parsnip::set_engine(lm_model, "lm")
 
 ##   tidyflow <- tidyflow()
-##   tidyflow <- add_model(tidyflow, lm_model)
-##   tidyflow <- add_recipe(tidyflow, rec)
+##   tidyflow <- plug_model(tidyflow, lm_model)
+##   tidyflow <- plug_recipe(tidyflow, rec)
 
 ##   tidyflow <- fit(tidyflow, data = mtcars)
 
@@ -76,9 +76,9 @@ test_that("update a resample specification", {
 
 test_that("cannot add two resample specifications", {
   tidyflow <- tidyflow()
-  tidyflow <- add_resample(tidyflow, rsample::bootstraps)
+  tidyflow <- plug_resample(tidyflow, rsample::bootstraps)
 
-  expect_error(add_resample(tidyflow, rsample::vfold_cv),
+  expect_error(plug_resample(tidyflow, rsample::vfold_cv),
                "A `resample` action has already been added to this tidyflow")
 })
 
@@ -86,11 +86,11 @@ test_that("add/replace_resample check if `...` are named", {
   tidyflow <- tidyflow()
 
   expect_error(
-    add_resample(tidyflow, rsample::bootstraps, 0.8),
+    plug_resample(tidyflow, rsample::bootstraps, 0.8),
     regexp = "Arguments in `...` for `.f` should be named"
   )
 
-  tidyflow <- add_resample(tidyflow, rsample::bootstraps)
+  tidyflow <- plug_resample(tidyflow, rsample::bootstraps)
 
   expect_error(
     replace_resample(tidyflow, rsample::vfold_cv, 0.8),
@@ -100,7 +100,7 @@ test_that("add/replace_resample check if `...` are named", {
 })
 
 test_that("Updating a resample after removing one, warns", {
-  tidyflow <- add_resample(tidyflow(), rsample::bootstraps)
+  tidyflow <- plug_resample(tidyflow(), rsample::bootstraps)
 
   expect_warning(
     replace_resample(drop_resample(tidyflow), rsample::vfold_cv),
@@ -112,16 +112,16 @@ test_that("Updating a resample after removing one, warns", {
 test_that("Updating a resample doesn't remove anything else", {
 
   # The split
-  tidyflow <- add_split(tidyflow(), rsample::initial_split)
-  tidyflow <- add_resample(tidyflow, rsample::bootstraps)
+  tidyflow <- plug_split(tidyflow(), rsample::initial_split)
+  tidyflow <- plug_resample(tidyflow, rsample::bootstraps)
   tidyflow <- replace_resample(tidyflow, rsample::vfold_cv)
   expect_true(has_preprocessor_split(tidyflow))
   expect_true(has_preprocessor_resample(tidyflow))
 
   
   # The recipe
-  tidyflow <- add_recipe(tidyflow(), ~ recipes::recipe(mpg ~ cyl, data = .x))
-  tidyflow <- add_resample(tidyflow, rsample::bootstraps)
+  tidyflow <- plug_recipe(tidyflow(), ~ recipes::recipe(mpg ~ cyl, data = .x))
+  tidyflow <- plug_resample(tidyflow, rsample::bootstraps)
   tidyflow <- replace_resample(tidyflow, rsample::vfold_cv)
   expect_true(has_preprocessor_recipe(tidyflow))
   expect_true(has_preprocessor_resample(tidyflow))
@@ -131,26 +131,26 @@ test_that("Updating a resample doesn't remove anything else", {
 test_that("Removing a resample doesn't remove anything else", {
   
   # The split
-  tidyflow <- add_split(tidyflow(), rsample::initial_split)
-  tidyflow <- add_resample(tidyflow, rsample::bootstraps)
+  tidyflow <- plug_split(tidyflow(), rsample::initial_split)
+  tidyflow <- plug_resample(tidyflow, rsample::bootstraps)
   tidyflow <- drop_resample(tidyflow)
   expect_true(has_preprocessor_split(tidyflow))
 
   # The recipe
-  tidyflow <- add_recipe(tidyflow(), ~ recipes::recipe(mpg ~ cyl, data = .x))
-  tidyflow <- add_resample(tidyflow, rsample::bootstraps)
+  tidyflow <- plug_recipe(tidyflow(), ~ recipes::recipe(mpg ~ cyl, data = .x))
+  tidyflow <- plug_resample(tidyflow, rsample::bootstraps)
   tidyflow <- drop_resample(tidyflow)
   expect_true(has_preprocessor_recipe(tidyflow))
 
 })
 
 test_that("Name of resample function is always saved as name in the list", {
-  # For add_resample
-  tidyflow <- add_resample(tidyflow(), rsample::bootstraps)
+  # For plug_resample
+  tidyflow <- plug_resample(tidyflow(), rsample::bootstraps)
   expect_true("rsample::bootstraps" %in% names(tidyflow$pre$actions$resample))
 
   # For replace_resample
-  tidyflow <- add_resample(tidyflow(), rsample::vfold_cv)
+  tidyflow <- plug_resample(tidyflow(), rsample::vfold_cv)
   tidyflow <- replace_resample(tidyflow, rsample::bootstraps)
   expect_true("rsample::bootstraps" %in% names(tidyflow$pre$actions$resample))
 })

@@ -45,11 +45,11 @@
 #' recipe <- ~ recipe(mpg ~ cyl + disp, .x) %>% step_log(disp)
 #'
 #' base_tidyflow <- tidyflow()
-#' base_tidyflow <- add_data(base_tidyflow, mtcars)
-#' base_tidyflow <- add_model(base_tidyflow, model)
+#' base_tidyflow <- plug_data(base_tidyflow, mtcars)
+#' base_tidyflow <- plug_model(base_tidyflow, model)
 #'
-#' recipe_tidyflow <- add_recipe(base_tidyflow, recipe)
-#' formula_tidyflow <- add_formula(base_tidyflow, mpg ~ cyl + log(disp))
+#' recipe_tidyflow <- plug_recipe(base_tidyflow, recipe)
+#' formula_tidyflow <- plug_formula(base_tidyflow, mpg ~ cyl + log(disp))
 #'
 #' fit_recipe_tidyflow <- fit(recipe_tidyflow)
 #' fit_formula_tidyflow <- fit(formula_tidyflow)

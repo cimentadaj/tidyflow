@@ -8,7 +8,7 @@ tidyflow(data = NULL)
 }
 \arguments{
 \item{data}{A data frame or tibble used to begin the tidyflow. This is
-optional as the data can be specified with \code{\link[=add_data]{add_data()}}.}
+optional as the data can be specified with \code{\link[=plug_data]{plug_data()}}.}
 }
 \value{
 A new \code{tidyflow} object.
@@ -16,15 +16,15 @@ A new \code{tidyflow} object.
 \description{
 A \code{tidyflow} is a container object that aggregates information required to
 fit and predict from a model. This information might be the main dataset,
-specified through \code{\link[=add_data]{add_data()}}, a recipe used in
-preprocessing, specified through \code{\link[=add_recipe]{add_recipe()}}, or the model specification
-to fit, specified through \code{\link[=add_model]{add_model()}}.
+specified through \code{\link[=plug_data]{plug_data()}}, a recipe used in
+preprocessing, specified through \code{\link[=plug_recipe]{plug_recipe()}}, or the model specification
+to fit, specified through \code{\link[=plug_model]{plug_model()}}.
 }
 \examples{
 library(recipes)
 
 rec <- ~ recipe(mpg ~ cyl, .x) \%>\% step_log(cyl)
 wrk <- tidyflow(mtcars)
-wrk <- add_recipe(wrk, rec)
+wrk <- plug_recipe(wrk, rec)
 
 }

@@ -3,8 +3,8 @@ test_that("can predict from a tidyflow", {
   mod <- parsnip::set_engine(mod, "lm")
 
   tidyflow <- tidyflow(mtcars)
-  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
-  tidyflow <- add_model(tidyflow, mod)
+  tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- plug_model(tidyflow, mod)
 
   fit_tidyflow <- fit(tidyflow)
 
@@ -19,9 +19,9 @@ test_that("can predict from tidyflow + split", {
   mod <- parsnip::set_engine(mod, "lm")
 
   tidyflow <- tidyflow(mtcars)
-  tidyflow <- add_split(tidyflow, rsample::initial_split)
-  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
-  tidyflow <- add_model(tidyflow, mod)
+  tidyflow <- plug_split(tidyflow, rsample::initial_split)
+  tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- plug_model(tidyflow, mod)
 
   fit_tidyflow <- fit(tidyflow)
 
@@ -43,8 +43,8 @@ test_that("formula preprocessing is done to the `new_data`", {
   mod <- parsnip::set_engine(mod, "lm")
 
   tidyflow <- tidyflow(mtcars)
-  tidyflow <- add_formula(tidyflow, mpg ~ log(cyl))
-  tidyflow <- add_model(tidyflow, mod)
+  tidyflow <- plug_formula(tidyflow, mpg ~ log(cyl))
+  tidyflow <- plug_model(tidyflow, mod)
 
   fit_tidyflow <- fit(tidyflow)
 
@@ -55,8 +55,8 @@ test_that("formula preprocessing is done to the `new_data`", {
   mtcars_with_log$cyl <- log(mtcars_with_log$cyl)
 
   tidyflow <- tidyflow(mtcars_with_log)
-  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
-  tidyflow <- add_model(tidyflow, mod)
+  tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- plug_model(tidyflow, mod)
 
   fit_tidyflow <- fit(tidyflow)
 
@@ -71,9 +71,9 @@ test_that("formula preprocessing is done with split to the `new_data`", {
 
   set.seed(23141)
   tidyflow <- tidyflow(mtcars)
-  tidyflow <- add_split(tidyflow, rsample::initial_split)
-  tidyflow <- add_formula(tidyflow, mpg ~ log(cyl))
-  tidyflow <- add_model(tidyflow, mod)
+  tidyflow <- plug_split(tidyflow, rsample::initial_split)
+  tidyflow <- plug_formula(tidyflow, mpg ~ log(cyl))
+  tidyflow <- plug_model(tidyflow, mod)
 
   fit_tidyflow <- fit(tidyflow)
 
@@ -85,9 +85,9 @@ test_that("formula preprocessing is done with split to the `new_data`", {
 
   set.seed(23141)
   tidyflow <- tidyflow(mtcars_with_log)
-  tidyflow <- add_split(tidyflow, rsample::initial_split)
-  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
-  tidyflow <- add_model(tidyflow, mod)
+  tidyflow <- plug_split(tidyflow, rsample::initial_split)
+  tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- plug_model(tidyflow, mod)
 
   fit_tidyflow <- fit(tidyflow)
 
@@ -101,8 +101,8 @@ test_that("recipe preprocessing is done to the `new_data`", {
   mod <- parsnip::set_engine(mod, "lm")
   rec <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, .), cyl)
   tidyflow <- tidyflow(mtcars)
-  tidyflow <- add_recipe(tidyflow, rec)
-  tidyflow <- add_model(tidyflow, mod)
+  tidyflow <- plug_recipe(tidyflow, rec)
+  tidyflow <- plug_model(tidyflow, mod)
 
   fit_tidyflow <- fit(tidyflow)
   result1 <- predict(fit_tidyflow, mtcars)
@@ -112,8 +112,8 @@ test_that("recipe preprocessing is done to the `new_data`", {
   mtcars_with_log$cyl <- log(mtcars_with_log$cyl)
 
   tidyflow <- tidyflow(mtcars_with_log)
-  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
-  tidyflow <- add_model(tidyflow, mod)
+  tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- plug_model(tidyflow, mod)
 
   fit_tidyflow <- fit(tidyflow)
 
@@ -127,8 +127,8 @@ test_that("`new_data` must have all of the original predictors", {
   mod <- parsnip::set_engine(mod, "lm")
   rec <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, .), cyl)
   tidyflow <- tidyflow(mtcars)
-  tidyflow <- add_recipe(tidyflow, rec)
-  tidyflow <- add_model(tidyflow, mod)
+  tidyflow <- plug_recipe(tidyflow, rec)
+  tidyflow <- plug_model(tidyflow, mod)
 
   fit_tidyflow <- fit(tidyflow)
 
@@ -144,8 +144,8 @@ test_that("predict without split and new_data raises error", {
   mod <- parsnip::set_engine(mod, "lm")
   rec <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, .), cyl)
   tidyflow <- tidyflow(mtcars)
-  tidyflow <- add_recipe(tidyflow, rec)
-  tidyflow <- add_model(tidyflow, mod)
+  tidyflow <- plug_recipe(tidyflow, rec)
+  tidyflow <- plug_model(tidyflow, mod)
 
   fit_tidyflow <- fit(tidyflow)
   expect_error(predict(fit_tidyflow),
@@ -158,8 +158,8 @@ test_that("predict without split but with new_data works", {
   mod <- parsnip::set_engine(mod, "lm")
   rec <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, .), cyl)
   tidyflow <- tidyflow(mtcars)
-  tidyflow <- add_recipe(tidyflow, rec)
-  tidyflow <- add_model(tidyflow, mod)
+  tidyflow <- plug_recipe(tidyflow, rec)
+  tidyflow <- plug_model(tidyflow, mod)
 
   fit_tidyflow <- fit(tidyflow)
   res <- predict(fit_tidyflow, new_data = mtcars)
@@ -173,15 +173,15 @@ test_that("blueprint will get passed on to hardhat::forge()", {
 
   # Pass formula explicitly to keep `lm()` from auto-generating an intercept
   tidyflow <- tidyflow(mtcars)
-  tidyflow <- add_model(tidyflow, mod, formula = mpg ~ . + 0)
+  tidyflow <- plug_model(tidyflow, mod, formula = mpg ~ . + 0)
 
   blueprint_no_intercept <- hardhat::default_formula_blueprint(intercept = FALSE)
-  tidyflow_no_intercept <- add_formula(tidyflow, mpg ~ hp + disp, blueprint = blueprint_no_intercept)
+  tidyflow_no_intercept <- plug_formula(tidyflow, mpg ~ hp + disp, blueprint = blueprint_no_intercept)
   fit_no_intercept <- fit(tidyflow_no_intercept)
   prediction_no_intercept <- predict(fit_no_intercept, mtcars)
 
   blueprint_with_intercept <- hardhat::default_formula_blueprint(intercept = TRUE)
-  tidyflow_with_intercept <- add_formula(tidyflow, mpg ~ hp + disp, blueprint = blueprint_with_intercept)
+  tidyflow_with_intercept <- plug_formula(tidyflow, mpg ~ hp + disp, blueprint = blueprint_with_intercept)
   fit_with_intercept <- fit(tidyflow_with_intercept)
   prediction_with_intercept <- predict(fit_with_intercept, mtcars)
 

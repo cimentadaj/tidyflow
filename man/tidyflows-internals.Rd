@@ -37,9 +37,9 @@ model <- linear_reg()
 model <- set_engine(model, "lm")
 
 base_tidyflow <- tidyflow(mtcars)
-base_tidyflow <- add_model(base_tidyflow, model)
+base_tidyflow <- plug_model(base_tidyflow, model)
 
-formula_tidyflow <- add_formula(base_tidyflow, mpg ~ cyl + log(disp))
+formula_tidyflow <- plug_formula(base_tidyflow, mpg ~ cyl + log(disp))
 
 partially_fit_tidyflow <- .fit_pre(formula_tidyflow)
 fit_tidyflow <- .fit_model(partially_fit_tidyflow, control_tidyflow())

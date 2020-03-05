@@ -1,7 +1,7 @@
 #' Add a model to a tidyflow
 #'
 #' @description
-#' - `add_model()` adds a parsnip model to the tidyflow.
+#' - `plug_model()` adds a parsnip model to the tidyflow.
 #'
 #' - `drop_model()` removes the model specification as well as any fitted
 #'   model object. Any extra formulas are also removed. Doesn't remove any steps
@@ -11,7 +11,7 @@
 #'   the tidyflow.
 #'
 #' @details
-#' `add_model()` is a required step to construct a minimal tidyflow.
+#' `plug_model()` is a required step to construct a minimal tidyflow.
 #'
 #' @param x A tidyflow.
 #'
@@ -38,10 +38,10 @@
 #' regularized_model <- set_engine(lm_model, "glmnet")
 #'
 #' wf <- tidyflow(mtcars)
-#' wf <- add_model(wf, lm_model)
+#' wf <- plug_model(wf, lm_model)
 #' wf
 #'
-#' wf <- add_formula(wf, mpg ~ .)
+#' wf <- plug_formula(wf, mpg ~ .)
 #' wf
 #'
 #' drop_model(wf)
@@ -56,12 +56,12 @@
 #' replace_model(wf, regularized_model)
 #' replace_model(fitted, regularized_model)
 #'
-add_model <- function(x, spec, formula = NULL) {
+plug_model <- function(x, spec, formula = NULL) {
   action <- new_action_model(spec, formula)
-  add_action(x, action, "model")
+  plug_action(x, action, "model")
 }
 
-#' @rdname add_model
+#' @rdname plug_model
 #' @export
 drop_model <- function(x) {
   validate_is_tidyflow(x)
@@ -80,11 +80,11 @@ drop_model <- function(x) {
 }
 
 
-#' @rdname add_model
+#' @rdname plug_model
 #' @export
 replace_model <- function(x, spec, formula = NULL) {
   x <- drop_model(x)
-  add_model(x, spec, formula)
+  plug_model(x, spec, formula)
 }
 
 # ------------------------------------------------------------------------------

@@ -39,9 +39,9 @@ test_that("tidyflow must be the first argument when adding actions", {
   rec <- ~ recipes::recipe(mpg ~ cyl, .x)
   mod <- parsnip::linear_reg()
 
-  expect_error(add_formula(1, mpg ~ cyl), "must be a tidyflow")
-  expect_error(add_recipe(1, rec), "must be a tidyflow")
-  expect_error(add_model(1, mod), "must be a tidyflow")
+  expect_error(plug_formula(1, mpg ~ cyl), "must be a tidyflow")
+  expect_error(plug_recipe(1, rec), "must be a tidyflow")
+  expect_error(plug_model(1, mod), "must be a tidyflow")
 })
 
 test_that("constructor validates input", {

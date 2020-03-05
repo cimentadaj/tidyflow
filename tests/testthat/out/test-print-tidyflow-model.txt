@@ -1,4 +1,4 @@
-> add_model(tidyflow(), model)
+> plug_model(tidyflow(), model)
 == Tidyflow ====================================================================
 Data: None
 Preprocessor: None

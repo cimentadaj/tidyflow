@@ -39,12 +39,12 @@
 #' model <- set_engine(model, "lm")
 #'
 #' wflow <- tidyflow(mtcars)
-#' wflow <- add_split(wflow, initial_split)
-#' wflow <- add_model(wflow, model)
+#' wflow <- plug_split(wflow, initial_split)
+#' wflow <- plug_model(wflow, model)
 #'
 #' rcp <- ~ step_log(recipe(mpg ~ cyl + disp, .), disp)
 #'
-#' wflow <- add_recipe(wflow, rcp)
+#' wflow <- plug_recipe(wflow, rcp)
 #'
 #' wflow <- fit(wflow)
 #'

@@ -1,7 +1,7 @@
 #' Add formula terms to a tidyflow
 #'
 #' @description
-#' - `add_formula()` specifies the terms of the model through the usage of a
+#' - `plug_formula()` specifies the terms of the model through the usage of a
 #'   formula.
 #'
 #' - `drop_formula()` removes the formula as well as any downstream objects
@@ -14,7 +14,7 @@
 #'   formula will need to be refit.
 #'
 #' @details
-#' To fit a tidyflow, one of `add_formula()` or `add_recipe()` _must_ be
+#' To fit a tidyflow, one of `plug_formula()` or `plug_recipe()` _must_ be
 #' specified, but not both.
 #'
 #' @param x A tidyflow
@@ -34,19 +34,19 @@
 #' @export
 #' @examples
 #' tidyflow <- tidyflow()
-#' tidyflow <- add_formula(tidyflow, mpg ~ cyl)
+#' tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
 #' tidyflow
 #'
 #' drop_formula(tidyflow)
 #'
 #' replace_formula(tidyflow, mpg ~ disp)
-add_formula <- function(x, formula, ..., blueprint = NULL) {
+plug_formula <- function(x, formula, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
   action <- new_action_formula(formula, blueprint)
-  add_action(x, action, "formula")
+  plug_action(x, action, "formula")
 }
 
-#' @rdname add_formula
+#' @rdname plug_formula
 #' @export
 drop_formula <- function(x) {
   validate_is_tidyflow(x)
@@ -64,12 +64,12 @@ drop_formula <- function(x) {
   )
 }
 
-#' @rdname add_formula
+#' @rdname plug_formula
 #' @export
 replace_formula <- function(x, formula, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
   x <- drop_formula(x)
-  add_formula(x, formula, blueprint = blueprint)
+  plug_formula(x, formula, blueprint = blueprint)
 }
 
 # ------------------------------------------------------------------------------

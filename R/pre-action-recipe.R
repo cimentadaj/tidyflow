@@ -1,7 +1,7 @@
 #' Add a recipe to a tidyflow
 #'
 #' @description
-#' - `add_recipe()` specifies the type of recipe used in the analysis. It
+#' - `plug_recipe()` specifies the type of recipe used in the analysis. It
 #'   accepts a function \code{.f} that will be applied to the data. Only
 #'   functions which return a \code{recipe} object will be allowed. See
 #'   package \code{\link[recipes]{recipes}} for how to create a recipe.
@@ -14,7 +14,7 @@
 #'   recipe will need to be refit.
 #'
 #' @details
-#' To fit a tidyflow, one of `add_formula()` or `add_recipe()` _must_ be
+#' To fit a tidyflow, one of `plug_formula()` or `plug_recipe()` _must_ be
 #' specified, but not both.
 #'
 #' @param x A tidyflow
@@ -51,8 +51,8 @@
 #' wflow <-
 #'  mtcars %>%
 #'  tidyflow() %>%
-#'  add_recipe(recipe_fun) %>%
-#'  add_model(set_engine(linear_reg(), "lm"))
+#'  plug_recipe(recipe_fun) %>%
+#'  plug_model(set_engine(linear_reg(), "lm"))
 #' 
 #' # Fit the model
 #' wflow %>%
@@ -74,7 +74,7 @@
 #'  }) %>%
 #'  fit()
 #' 
-add_recipe <- function(x, .f, ..., blueprint = NULL) {
+plug_recipe <- function(x, .f, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
   validate_recipes_available()
 
@@ -85,10 +85,10 @@ add_recipe <- function(x, .f, ..., blueprint = NULL) {
   ## }
 
   action <- new_action_recipe(.f, blueprint)
-  add_action(x, action, "recipe")
+  plug_action(x, action, "recipe")
 }
 
-#' @rdname add_recipe
+#' @rdname plug_recipe
 #' @export
 drop_recipe <- function(x) {
   validate_is_tidyflow(x)
@@ -106,12 +106,12 @@ drop_recipe <- function(x) {
   )
 }
 
-#' @rdname add_recipe
+#' @rdname plug_recipe
 #' @export
 replace_recipe <- function(x, .f, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
   x <- drop_recipe(x)
-  add_recipe(x, .f, blueprint = blueprint)
+  plug_recipe(x, .f, blueprint = blueprint)
 }
 
 # ------------------------------------------------------------------------------

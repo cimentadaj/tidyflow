@@ -3,7 +3,7 @@
 
 test_that("can pull a formula preprocessor", {
   tidyflow <- tidyflow()
-  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
 
   expect_equal(
     pull_tidyflow_preprocessor(tidyflow),
@@ -15,7 +15,7 @@ test_that("can pull a recipe preprocessor", {
   recipe <- ~ recipes::recipe(mpg ~ cyl, .x)
 
   tidyflow <- tidyflow()
-  tidyflow <- add_recipe(tidyflow, recipe)
+  tidyflow <- plug_recipe(tidyflow, recipe)
 
   expect_equal(
     pull_tidyflow_preprocessor(tidyflow),
@@ -44,7 +44,7 @@ test_that("can pull a model spec", {
   model <- parsnip::linear_reg()
 
   tidyflow <- tidyflow()
-  tidyflow <- add_model(tidyflow, model)
+  tidyflow <- plug_model(tidyflow, model)
 
   expect_equal(
     pull_tidyflow_spec(tidyflow),
@@ -74,8 +74,8 @@ test_that("can pull a model fit", {
   model <- parsnip::set_engine(model, "lm")
 
   tidyflow <- tidyflow(mtcars)
-  tidyflow <- add_model(tidyflow, model)
-  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- plug_model(tidyflow, model)
+  tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
 
   tidyflow <- fit(tidyflow)
 
@@ -107,8 +107,8 @@ test_that("can pull a mold", {
   model <- parsnip::set_engine(model, "lm")
 
   tidyflow <- tidyflow(mtcars)
-  tidyflow <- add_model(tidyflow, model)
-  tidyflow <- add_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- plug_model(tidyflow, model)
+  tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
 
   tidyflow <- fit(tidyflow)
 
@@ -146,8 +146,8 @@ test_that("can pull a prepped recipe", {
       recipes::step_log(cyl)
 
   tidyflow <- tidyflow(mtcars)
-  tidyflow <- add_model(tidyflow, model)
-  tidyflow <- add_recipe(tidyflow, recipe)
+  tidyflow <- plug_model(tidyflow, model)
+  tidyflow <- plug_recipe(tidyflow, recipe)
 
   tidyflow <- fit(tidyflow)
 
@@ -170,7 +170,7 @@ test_that("error if no mold", {
   recipe <- ~ recipes::recipe(mpg ~ cyl, .x)
 
   tidyflow <- tidyflow()
-  tidyflow <- add_recipe(tidyflow, recipe)
+  tidyflow <- plug_recipe(tidyflow, recipe)
 
   expect_error(
     pull_tidyflow_prepped_recipe(tidyflow),
@@ -217,8 +217,8 @@ check_testing <- function(x) {
 
 test_that("can pull testing data", {
   model <- parsnip::set_engine(parsnip::linear_reg(), "lm")
-  tidyflow <- add_recipe(tidyflow(mtcars), ~ recipes::recipe(mpg ~ cyl, .))
-  tidyflow <- add_model(tidyflow, model)
+  tidyflow <- plug_recipe(tidyflow(mtcars), ~ recipes::recipe(mpg ~ cyl, .))
+  tidyflow <- plug_model(tidyflow, model)
 
   res <- fit(tidyflow)
 
@@ -228,7 +228,7 @@ test_that("can pull testing data", {
   )
 
   # Add split. The testing should have 8 rows (75%)
-  res <- fit(add_split(res, rsample::initial_split))
+  res <- fit(plug_split(res, rsample::initial_split))
 
   check_testing(res)
 
@@ -237,7 +237,7 @@ test_that("can pull testing data", {
     "Tidyflow has not yet been trained. Do you need to call `fit()`?"
   )
 
-  res <- fit(add_formula(drop_recipe(res), mpg ~ cyl))
+  res <- fit(plug_formula(drop_recipe(res), mpg ~ cyl))
   # The data is refit the same way with a formula
   check_testing(res)
 

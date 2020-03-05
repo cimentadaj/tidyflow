@@ -375,8 +375,8 @@ summary {
 <pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
-  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+  plug_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
+  plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 simple_wflow %&gt;%
   fit()</code></pre>
@@ -384,8 +384,8 @@ simple_wflow %&gt;%
 <pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
-  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+  plug_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
+  plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 simple_wflow %&gt;%
   fit() %&gt;%
@@ -398,14 +398,14 @@ simple_wflow %&gt;%
 <pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
-  add_model(set_engine(linear_reg(), &quot;lm&quot;)) %&gt;%
+  plug_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
+  plug_model(set_engine(linear_reg(), &quot;lm&quot;)) %&gt;%
   # New_step
   complement_recipe(~ .x %&gt;% step_mutate(cyl = log10(cyl)))
 
 simple_wflow %&gt;%
   # Split data into training/testing
-  add_split(prop = 0.75) %&gt;%
+  plug_split(prop = 0.75) %&gt;%
   fit()</code></pre>
 <p>Two new steps have been added: create a new <code>cyl</code> column and split the data into training and testing. For this case, their order is unimportant. <code>cyl</code> was recreated after setting the model and the training/testing split was done after data creation, model specification, etc… I don’t think it’s a good idea to define a tidyflow this way but this illustrates the point that in theory, the order of steps doesn’t matter, as long as <code>fit</code> knows the correct order. The correct order in this case is:</p>
 <p><code>data</code> -&gt; <code>data split</code>-&gt; <code>formula</code> -&gt; <code>data wrangling</code> -&gt; <code>model definition</code> -&gt; <code>fit</code></p>
@@ -414,11 +414,11 @@ simple_wflow %&gt;%
   mtcars %&gt;%
   tflow() %&gt;%
   # Split data into training/testing
-  add_split(rsample::initial_split, prop = 0.75) %&gt;%
-  # `add_recipe` recives your recipe and attaches the
+  plug_split(rsample::initial_split, prop = 0.75) %&gt;%
+  # `plug_recipe` recives your recipe and attaches the
   # data already provided in `.x`
-  add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
-  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+  plug_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
+  plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Fit the tidyflow
 simple_wflow %&gt;%
@@ -435,9 +435,9 @@ simple_wflow %&gt;%
   mtcars %&gt;%
   tflow() %&gt;%
   # Split data into training/testing
-  add_split(rsample::initial_split, prop = 0.75) %&gt;%
-  add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
-  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+  plug_split(rsample::initial_split, prop = 0.75) %&gt;%
+  plug_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
+  plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Fit the tidyflow
 simple_wflow %&gt;%
@@ -474,13 +474,13 @@ simple_wflow %&gt;%
 simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_split(rsample::initial_split, prop = 0.75) %&gt;%
-  add_recipe(~ {
+  plug_split(rsample::initial_split, prop = 0.75) %&gt;%
+  plug_recipe(~ {
     recipe(mpg ~ cyl + gear, data = .x) %&gt;%
       step_mutate(cyl = log10(cyl)) %&gt;%
       step_dummy(gear)
   }) %&gt;% 
-  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+  plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 simple_wflow %&gt;%
   # Replaces the old data and reruns everything
@@ -494,13 +494,13 @@ simple_wflow %&gt;%
 simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_split(rsample::initial_split, prop = 0.75) %&gt;%
-  add_recipe(~ {
+  plug_split(rsample::initial_split, prop = 0.75) %&gt;%
+  plug_recipe(~ {
     recipe(mpg ~ cyl + gear, data = .x) %&gt;%
       step_mutate(cyl = log10(cyl)) %&gt;%
       step_dummy(gear)
   }) %&gt;% 
-  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+  plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Run the model
 simple_wflow %&gt;%
@@ -529,18 +529,18 @@ simple_wflow %&gt;%
 <pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_split(rsample::initial_split, prop = 0.75) %&gt;%
-  add_recipe(~ {
+  plug_split(rsample::initial_split, prop = 0.75) %&gt;%
+  plug_recipe(~ {
     recipe(mpg ~ cyl + gear, data = .x) %&gt;%
       step_mutate(cyl = log10(cyl)) %&gt;%
       step_dummy(gear)
   }) %&gt;% 
-  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+  plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Visualize your changes and iterate until happy
 simple_wflow %&gt;%
   # trained will extract the prepped recipe on the data
-  # if `add_split` is specified, it will use the training data
+  # if `plug_split` is specified, it will use the training data
   # for everything.
   trained() %&gt;%
   ggplot(aes(cyl)) %&gt;%
@@ -549,13 +549,13 @@ simple_wflow %&gt;%
 <pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_split(rsample::initial_split, prop = 0.75) %&gt;%
-  add_recipe(~ {
+  plug_split(rsample::initial_split, prop = 0.75) %&gt;%
+  plug_recipe(~ {
     recipe(mpg ~ cyl + gear, data = .x) %&gt;%
       step_mutate(cyl = log10(cyl)) %&gt;%
       step_dummy(gear)
   }) %&gt;% 
-  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+  plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Update the complete recipe rather than only the
 # add new steps
@@ -572,15 +572,15 @@ simple_wflow %&gt;%
 <pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_split(rsample::initial_split, prop = 0.75) %&gt;%
+  plug_split(rsample::initial_split, prop = 0.75) %&gt;%
   # adds cross-validation
-  add_resamples(rsample::vfold_cv) %&gt;% 
-  add_recipe(~ {
+  plug_resamples(rsample::vfold_cv) %&gt;% 
+  plug_recipe(~ {
     recipe(mpg ~ cyl + gear, data = .x) %&gt;%
       step_mutate(cyl = log10(cyl)) %&gt;%
       step_dummy(gear)
   }) %&gt;% 
-  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+  plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Run model and look at results
 simple_wflow %&gt;%
@@ -599,13 +599,13 @@ simple_wflow %&gt;%
 simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_split(rsample::initial_sample, prop = 0.75) %&gt;%
-  add_recipe(~ {
+  plug_split(rsample::initial_sample, prop = 0.75) %&gt;%
+  plug_recipe(~ {
     recipe(mpg ~ cyl + gear, data = .x) %&gt;%
       step_mutate(cyl = log10(cyl)) %&gt;%
       step_dummy(gear)
   }) %&gt;% 
-  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+  plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Create the model with some tuning parameters
 mod1 &lt;- set_engine(linear_reg(penalty = 0.000001, mixture = 0.00002),
@@ -622,15 +622,15 @@ mod2 &lt;- set_engine(linear_reg(penalty = tune(), mixture = tune()),
 simple_wflow %&gt;%
   replace_model(mod2) %&gt;%
   # Add grid of values for empty parameters
-  add_grid_regular(levels = 10) %&gt;% 
+  plug_grid_regular(levels = 10) %&gt;% 
   fit()
 
 mod3 &lt;- set_engine(rand_forest(trees = 2000), &quot;ranger&quot;)
 simple_wflow %&gt;%
   replace_model(mod1) %&gt;%
   # Fill unfilled params with `tune()`, such as min_n and ntry
-  add_all_params(tune()) %&gt;%
-  add_grid_regular(levels = 10) %&gt;% 
+  plug_all_params(tune()) %&gt;%
+  plug_grid_regular(levels = 10) %&gt;% 
   fit()</code></pre>
 <p>I haven’t though the tuning/model integration really well but the above should be more flexible allowing you to create tuning grids with minimum/maximums along the grid space.</p>
 <p>There are scenarios in which you’d like to also specify tuning parameters in your recipe as well as in your model. By specifying <code>tune()</code> in all empty parameters, as long as you specify the <code>grid_*</code> function, it should create a grid of values that are fed to <code>fit</code>.</p>
@@ -641,16 +641,16 @@ simple_wflow %&gt;%
 simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_split(rsample::initial_split, prop = 0.75) %&gt;%
-  add_resample(rsample::bootstraps) %&gt;%
-  add_recipe(~ {
+  plug_split(rsample::initial_split, prop = 0.75) %&gt;%
+  plug_resample(rsample::bootstraps) %&gt;%
+  plug_recipe(~ {
     recipe(mpg ~ cyl + gear + disp, data = .x) %&gt;%
       step_mutate(cyl = log10(cyl)) %&gt;%
       step_dummy(gear) %&gt;%
       # NOTE: see the tune() in the recipe?
       step_ns(disp, deg_free = tune())
   }) %&gt;% 
-  add_model(mod4)
+  plug_model(mod4)
 
 # This should create a grid of values for `deg_free`, `trees` and `min_n`
 simple_wflow %&gt;%
@@ -664,22 +664,22 @@ simple_wflow %&gt;%
 simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_split(rsample::initial_split, prop = 0.75) %&gt;%
-  add_resample(rsample::vfold_cv) %&gt;% 
-  add_recipe(~ {
+  plug_split(rsample::initial_split, prop = 0.75) %&gt;%
+  plug_resample(rsample::vfold_cv) %&gt;% 
+  plug_recipe(~ {
     recipe(mpg ~ cyl + gear + disp, data = .x) %&gt;%
       step_mutate(cyl = log10(cyl)) %&gt;%
       step_dummy(gear) %&gt;%
       step_ns(disp, deg_free = tune())
   }) %&gt;% 
-  add_model(mod5) %&gt;%
+  plug_model(mod5) %&gt;%
   # Adds the metrics
-  add_metric(metric_set(rmse, rsq))
+  plug_metric(metric_set(rmse, rsq))
 
 simple_wflow %&gt;%
-  add_grid_regular(levels = 3) %&gt;%
+  plug_grid_regular(levels = 3) %&gt;%
   fit()</code></pre>
-<p>Thanks to the fact that <code>tidymodels</code> defines pretty much every step (recipe, metrics, cross validation, grids, etc…) of the tidyflow with separate classes, each of these classes has a slot in the tidyflow and you can explicitly add/update them with the <code>add_*</code> or <code>replace_*</code> functions. It’s still not clear how the <code>add_*</code> or <code>replace_*</code> functions will work since I want to make them memorable: they all work the same way and accept similar things. I need to think about this more.</p>
+<p>Thanks to the fact that <code>tidymodels</code> defines pretty much every step (recipe, metrics, cross validation, grids, etc…) of the tidyflow with separate classes, each of these classes has a slot in the tidyflow and you can explicitly add/update them with the <code>plug_*</code> or <code>replace_*</code> functions. It’s still not clear how the <code>plug_*</code> or <code>replace_*</code> functions will work since I want to make them memorable: they all work the same way and accept similar things. I need to think about this more.</p>
 <pre class="r"><code>mod6 &lt;- set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()),
                    &quot;ranger&quot;)
 
@@ -688,24 +688,24 @@ simple_wflow %&gt;%
 simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_split(rsample::initial_split, prop = 0.75) %&gt;%
-  add_resample(rsample::vfold_cv)
-  add_recipe(~ {
+  plug_split(rsample::initial_split, prop = 0.75) %&gt;%
+  plug_resample(rsample::vfold_cv)
+  plug_recipe(~ {
     recipe(mpg ~ cyl + gear + disp, data = .x) %&gt;%
       step_mutate(cyl = log10(cyl)) %&gt;%
       step_dummy(gear) %&gt;%
       step_ns(disp, deg_free = tune())
   }) %&gt;% 
-  add_model(mod6) %&gt;%
+  plug_model(mod6) %&gt;%
   # Adds the metrics
-  add_metric(metric_set(rmse, rsq))
+  plug_metric(metric_set(rmse, rsq))
 
 mod7 &lt;- set_engine(linear_reg(penalty = tune(), mixture = tune()), &quot;glmnet&quot;)
 
 simple_wflow %&gt;%
   # Replaces old model
   replace_model(mod7) %&gt;%
-  add_grid_regular(levels = 3) %&gt;%
+  plug_grid_regular(levels = 3) %&gt;%
   # Replace previous grid
   replace_grid_regular(levels = 10) %&gt;% 
   fit()</code></pre>
@@ -723,10 +723,10 @@ simple_wflow %&gt;%
 <p>Now finally, what does running <code>fit</code> return? As for the printing, it should print something along the lines of:</p>
 <pre class="r"><code>mtcars %&gt;%
   tidyflow() %&gt;%
-  add_split(rsample::initial_split) %&gt;%
-  add_resample(rsample::vfold_cv) %&gt;%
-  add_recipe(~ recipe(mpg ~ cyl, data = .x) %&gt;% step_log(cyl)) %&gt;%
-  add_model(set_engine(linear_reg(penalty = tune(), mixture = tune()), &quot;glmnet&quot;))</code></pre>
+  plug_split(rsample::initial_split) %&gt;%
+  plug_resample(rsample::vfold_cv) %&gt;%
+  plug_recipe(~ recipe(mpg ~ cyl, data = .x) %&gt;% step_log(cyl)) %&gt;%
+  plug_model(set_engine(linear_reg(penalty = tune(), mixture = tune()), &quot;glmnet&quot;))</code></pre>
 <pre><code>══ Tidyflow ════════════════════════════════════════════════════════════════════
 Data: 32 rows x 11 columns; 0% missing values
 Preprocessor: Recipe
@@ -758,8 +758,8 @@ Computational engine: glmnet </code></pre>
 simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
-  add_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
-  add_model(set_engine(linear_reg(), &quot;lm&quot;))
+  plug_recipe(~ recipe(mpg ~ ., data = .x)) %&gt;% 
+  plug_model(set_engine(linear_reg(), &quot;lm&quot;))
 
 # Run first model and explore
 simple_wflow %&gt;%
@@ -794,7 +794,7 @@ simple_wflow %&gt;%
 <!-- ## The combination of empty parameter specification with any grid_* -->
 <!-- ## should throw an error. -->
 <!-- ml_wflow %>% -->
-<!--   add_model(mod1) %>% -->
+<!--   plug_model(mod1) %>% -->
 <!--   vfold_cv() %>% -->
 <!--   fit() -->
 <!-- # Add new recipes -->
@@ -805,7 +805,7 @@ simple_wflow %&gt;%
 <!--       step_scale(Sale_Price) %>% -->
 <!--       step_center(Sale_Price) -->
 <!--   ) %>% -->
-<!--   add_model(mod2) %>% -->
+<!--   plug_model(mod2) %>% -->
 <!--   vfold_cv() %>%  -->
 <!--   fit() -->
 <!-- ## Add new variable -->
@@ -816,7 +816,7 @@ simple_wflow %&gt;%
 <!--   replace_rcp( -->
 <!--     .rcp %>% step_dummy(x2) -->
 <!--   ) %>% -->
-<!--   add_model(mod2) %>% -->
+<!--   plug_model(mod2) %>% -->
 <!--   vfold_cv() %>%  -->
 <!--   fit() -->
 <!-- ## Replace y -->
@@ -827,7 +827,7 @@ simple_wflow %&gt;%
 <!--   replace_rcp( -->
 <!--     .rcp %>% step_log(Latitude) -->
 <!--   ) %>% -->
-<!--   add_model(mod2) %>% -->
+<!--   plug_model(mod2) %>% -->
 <!--   vfold_cv() %>%  -->
 <!--   fit() -->
 <!-- ## Update whole formula -->
@@ -843,7 +843,7 @@ simple_wflow %&gt;%
 <!--     # Remove recipe and accept new one -->
 <!--     new = TRUE -->
 <!--   ) %>% -->
-<!--   add_model(mod2) %>% -->
+<!--   plug_model(mod2) %>% -->
 <!--   vfold_cv() %>%  -->
 <!--   fit() -->
 <!-- final_res %>% -->
@@ -895,8 +895,8 @@ simple_wflow %&gt;%
 <!-- ## Construct a tidyflow that combines your recipe and your model -->
 <!-- ml_wflow <- -->
 <!--   tidyflows::tidyflow() %>% -->
-<!--   tidyflows::add_recipe(mod_rec) %>% -->
-<!--   tidyflows::add_model(lm_mod) -->
+<!--   tidyflows::plug_recipe(mod_rec) %>% -->
+<!--   tidyflows::plug_model(lm_mod) -->
 <!-- # Find best tuned model -->
 <!-- res <- -->
 <!--   ml_wflow %>% -->

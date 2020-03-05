@@ -40,15 +40,15 @@ model <- set_engine(model, "lm")
 formula_tidyflow <-
  mtcars \%>\%
  tidyflow() \%>\%
- add_formula(mpg ~ cyl + log(disp)) \%>\%
- add_model(model)
+ plug_formula(mpg ~ cyl + log(disp)) \%>\%
+ plug_model(model)
 
 fit(formula_tidyflow)
 
 recipe_tidyflow <-
  formula_tidyflow \%>\%
  drop_formula() \%>\% 
- add_recipe(~ recipe(mpg ~ cyl + disp, .x) \%>\% step_log(disp))
+ plug_recipe(~ recipe(mpg ~ cyl + disp, .x) \%>\% step_log(disp))
 
 fit(recipe_tidyflow)
 

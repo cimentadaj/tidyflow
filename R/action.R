@@ -1,42 +1,42 @@
-add_action <- function(x, action, name) {
+plug_action <- function(x, action, name) {
   if (!is_tidyflow(x)) {
     abort("`x` must be a tidyflow.")
   }
 
   check_conflicts(action, x)
 
-  add_action_impl(x, action, name)
+  plug_action_impl(x, action, name)
 }
 
 # ------------------------------------------------------------------------------
 
-add_action_impl <- function(x, action, name) {
-  UseMethod("add_action_impl", action)
+plug_action_impl <- function(x, action, name) {
+  UseMethod("plug_action_impl", action)
 }
 
-add_action_impl.action_pre <- function(x, action, name) {
+plug_action_impl.action_pre <- function(x, action, name) {
   sacred_order <- c("split", "formula", "recipe", "resample")
   check_singleton(x$pre$actions, name)
-  x$pre <- add_action_to_stage(x$pre, action, name)
+  x$pre <- plug_action_to_stage(x$pre, action, name)
   x$pre$actions <- clean_list(x$pre$actions[sacred_order])
   x
 }
 
-add_action_impl.action_fit <- function(x, action, name) {
+plug_action_impl.action_fit <- function(x, action, name) {
   check_singleton(x$fit$actions, name)
-  x$fit <- add_action_to_stage(x$fit, action, name)
+  x$fit <- plug_action_to_stage(x$fit, action, name)
   x
 }
 
-add_action_impl.action_post <- function(x, action, name) {
+plug_action_impl.action_post <- function(x, action, name) {
   check_singleton(x$post$actions, name)
-  x$post <- add_action_to_stage(x$post, action, name)
+  x$post <- plug_action_to_stage(x$post, action, name)
   x
 }
 
 # ------------------------------------------------------------------------------
 
-add_action_to_stage <- function(stage, action, name) {
+plug_action_to_stage <- function(stage, action, name) {
   stage$actions <- c(stage$actions, list2(!!name := action))
   stage
 }
