@@ -9,7 +9,7 @@
 #' - `drop_recipe()` removes the recipe function from the tidyflow. Note
 #'   that it keeps other preprocessing steps such as the split and resample.
 #'
-#' - `update_recipe()` first removes the recipe function, then adds the new
+#' - `replace_recipe()` first removes the recipe function, then adds the new
 #'   recipe function. Any model that has already been fit based on this
 #'   recipe will need to be refit.
 #'
@@ -60,12 +60,12 @@
 #'
 #' # Remove the old recipe, specify one on the fly and fit again
 #' wflow %>%
-#'  update_recipe(~ recipe(mpg ~ cyl, data = .) %>% step_log(cyl, base = 10)) %>%
+#'  replace_recipe(~ recipe(mpg ~ cyl, data = .) %>% step_log(cyl, base = 10)) %>%
 #'  fit()
 #'
 #' # Note how the function argument can be either `.` or `.x`
 #' wflow %>%
-#'  update_recipe(~ {
+#'  replace_recipe(~ {
 #'   .x %>% 
 #'    recipe(mpg ~ cyl + am) %>%
 #'     step_log(cyl, base = 10) %>%
@@ -108,7 +108,7 @@ drop_recipe <- function(x) {
 
 #' @rdname add_recipe
 #' @export
-update_recipe <- function(x, .f, ..., blueprint = NULL) {
+replace_recipe <- function(x, .f, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
   x <- drop_recipe(x)
   add_recipe(x, .f, blueprint = blueprint)

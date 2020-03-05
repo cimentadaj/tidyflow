@@ -3,14 +3,14 @@
 \name{add_model}
 \alias{add_model}
 \alias{drop_model}
-\alias{update_model}
+\alias{replace_model}
 \title{Add a model to a tidyflow}
 \usage{
 add_model(x, spec, formula = NULL)
 
 drop_model(x)
 
-update_model(x, spec, formula = NULL)
+replace_model(x, spec, formula = NULL)
 }
 \arguments{
 \item{x}{A tidyflow.}
@@ -34,7 +34,7 @@ used for those purposes.}
 \item \code{drop_model()} removes the model specification as well as any fitted
 model object. Any extra formulas are also removed. Doesn't remove any steps
 from the \code{pre} stage.
-\item \code{update_model()} first removes the model then adds the new specification to
+\item \code{replace_model()} first removes the model then adds the new specification to
 the tidyflow.
 }
 }
@@ -65,7 +65,7 @@ drop_model(fitted)
 
 drop_model(wf)
 
-update_model(wf, regularized_model)
-update_model(fitted, regularized_model)
+replace_model(wf, regularized_model)
+replace_model(fitted, regularized_model)
 
 }

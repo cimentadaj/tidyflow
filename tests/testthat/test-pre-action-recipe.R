@@ -5,7 +5,7 @@ test_that("can add a recipe to a tidyflow", {
   expect_is(tidyflow$pre$actions$recipe, "action_recipe")
 
   rcp_fun <- function(x) recipes::recipe(mpg ~ cyl, x)
-  tidyflow <- update_recipe(tidyflow, rcp_fun)
+  tidyflow <- replace_recipe(tidyflow, rcp_fun)
   expect_is(tidyflow$pre$actions$recipe, "action_recipe")
 
 })
@@ -76,7 +76,7 @@ test_that("remove a recipe after model fit", {
 test_that("update a recipe", {
   tidyflow <- tidyflow(mtcars)
   tidyflow <- add_recipe(tidyflow, ~ recipes::recipe(mpg ~ cyl, .x))
-  tidyflow <- update_recipe(tidyflow, ~ recipes::recipe(mpg ~ disp, .x))
+  tidyflow <- replace_recipe(tidyflow, ~ recipes::recipe(mpg ~ disp, .x))
 
   expect_equal(tidyflow$pre$actions$recipe$recipe,
                rlang::as_function(~ recipes::recipe(mpg ~ disp, .x))
@@ -94,7 +94,7 @@ test_that("update a recipe after model fit", {
   tidyflow <- fit(tidyflow)
 
   # Should clear fitted model
-  tidyflow <- update_recipe(tidyflow, ~ recipes::recipe(mpg ~ disp, .x))
+  tidyflow <- replace_recipe(tidyflow, ~ recipes::recipe(mpg ~ disp, .x))
 
   expect_equal(tidyflow$pre$actions$recipe$recipe,
                rlang::as_function(~ recipes::recipe(mpg ~ disp, .x)))
@@ -117,7 +117,7 @@ test_that("model fit works correctly after updating recipe", {
 
   # Should clear fitted model
   rcp <- ~ recipes::step_log(recipes::recipe(mpg ~ disp, .x), disp, base = 10)
-  tidyflow <- update_recipe(tidyflow, rcp)
+  tidyflow <- replace_recipe(tidyflow, rcp)
   tidyflow <- fit(tidyflow)
 
   expect_equal(tidyflow$pre$actions$recipe$recipe,

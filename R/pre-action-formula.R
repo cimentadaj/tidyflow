@@ -9,7 +9,7 @@
 #'   terms. Additionally, if the model has already been fit, then the fit is
 #'   removed.
 #'
-#' - `update_formula()` first removes the formula, then replaces the previous
+#' - `replace_formula()` first removes the formula, then replaces the previous
 #'   formula with the new one. Any model that has already been fit based on this
 #'   formula will need to be refit.
 #'
@@ -39,7 +39,7 @@
 #'
 #' drop_formula(tidyflow)
 #'
-#' update_formula(tidyflow, mpg ~ disp)
+#' replace_formula(tidyflow, mpg ~ disp)
 add_formula <- function(x, formula, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
   action <- new_action_formula(formula, blueprint)
@@ -66,7 +66,7 @@ drop_formula <- function(x) {
 
 #' @rdname add_formula
 #' @export
-update_formula <- function(x, formula, ..., blueprint = NULL) {
+replace_formula <- function(x, formula, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
   x <- drop_formula(x)
   add_formula(x, formula, blueprint = blueprint)

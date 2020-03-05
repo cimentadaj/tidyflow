@@ -33,7 +33,7 @@ mod %>%
 
 
 mod %>%
-  update_recipe(~ {
+  replace_recipe(~ {
     recipe(mpg ~ gear + cyl, data = .) %>%
       step_mutate(gear = as.factor(gear)) %>% 
       step_dummy(gear)

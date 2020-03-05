@@ -3,14 +3,14 @@
 \name{add_split}
 \alias{add_split}
 \alias{drop_split}
-\alias{update_split}
+\alias{replace_split}
 \title{Add a split specification to a tidyflow}
 \usage{
 add_split(x, .f, ...)
 
 drop_split(x)
 
-update_split(x, .f, ...)
+replace_split(x, .f, ...)
 }
 \arguments{
 \item{x}{A tidyflow}
@@ -36,7 +36,7 @@ package \code{\link[rsample]{rsample}} and the details section. If a model
 has been fit before adding the split, it will need to be refit.
 \item \code{drop_split()} removes the split specification from the tidyflow. Note
 that it keeps other preprocessing steps such as the recipe.
-\item \code{update_split()} first removes the split, then adds a new split
+\item \code{replace_split()} first removes the split, then adds a new split
 specification. Any model that has already been fit based on this
 split will need to be refit.
 }
@@ -62,13 +62,13 @@ wf <- add_split(wf, initial_split, prop = 0.8, strata = "cyl")
 wf
 
 # Strata as unquoted name
-wf <- update_split(wf, initial_split, prop = 0.8, strata = cyl)
+wf <- replace_split(wf, initial_split, prop = 0.8, strata = cyl)
 
 wf
 
 drop_split(wf)
 
 # New split function
-update_split(wf, initial_time_split)
+replace_split(wf, initial_time_split)
 
 }

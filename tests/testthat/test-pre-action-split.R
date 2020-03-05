@@ -49,7 +49,7 @@ test_that("remove a split after model fit", {
 test_that("update a split specification", {
   tidyflow <- tidyflow()
   tidyflow <- add_split(tidyflow, rsample::initial_split)
-  tidyflow <- update_split(tidyflow, rsample::initial_time_split)
+  tidyflow <- replace_split(tidyflow, rsample::initial_time_split)
 
   expect_equal(tidyflow$pre$actions$split$`rsample::initial_time_split`,
                rsample::initial_time_split)
@@ -66,7 +66,7 @@ test_that("update a split after model fit", {
   tidyflow <- fit(tidyflow)
 
   # Should clear fitted model
-  tidyflow <- update_split(tidyflow, rsample::initial_time_split)
+  tidyflow <- replace_split(tidyflow, rsample::initial_time_split)
 
   expect_equal(tidyflow$pre$actions$split$`rsample::initial_time_split`,
                rsample::initial_time_split)
@@ -83,7 +83,7 @@ test_that("cannot add two split specifications", {
                "A `split` action has already been added to this tidyflow")
 })
 
-test_that("add/update_split check if `...` are named", {
+test_that("add/replace_split check if `...` are named", {
   tidyflow <- tidyflow()
 
   expect_error(
@@ -94,7 +94,7 @@ test_that("add/update_split check if `...` are named", {
   tidyflow <- add_split(tidyflow, rsample::initial_split)
 
   expect_error(
-    update_split(tidyflow, rsample::initial_time_split, 0.8),
+    replace_split(tidyflow, rsample::initial_time_split, 0.8),
     regexp = "Arguments in `...` for `.f` should be named"
   )
   
@@ -104,7 +104,7 @@ test_that("Updating a split after removing one, warns", {
   tidyflow <- add_split(tidyflow(), rsample::initial_split)
 
   expect_warning(
-    update_split(drop_split(tidyflow), rsample::initial_time_split),
+    replace_split(drop_split(tidyflow), rsample::initial_time_split),
     "The tidyflow does not have a split specification."
   )
 
@@ -115,14 +115,14 @@ test_that("Updating a split doesn't remove anything else", {
   # The recipe
   tidyflow <- add_recipe(tidyflow(), ~ recipes::recipe(mpg ~ cyl, data = .x))
   tidyflow <- add_split(tidyflow, rsample::initial_split)
-  tidyflow <- update_split(tidyflow, rsample::initial_time_split)
+  tidyflow <- replace_split(tidyflow, rsample::initial_time_split)
   expect_true(has_preprocessor_recipe(tidyflow))
   expect_true(has_preprocessor_split(tidyflow))
 
   # The CV fold
   tidyflow <- add_resample(tidyflow(), rsample::bootstraps)
   tidyflow <- add_split(tidyflow, rsample::initial_split)
-  tidyflow <- update_resample(tidyflow, rsample::vfold_cv)
+  tidyflow <- replace_resample(tidyflow, rsample::vfold_cv)
   expect_true(has_preprocessor_resample(tidyflow))
   expect_true(has_preprocessor_split(tidyflow))
 })
@@ -148,9 +148,9 @@ test_that("Name of split function is always saved as name in the list", {
   tidyflow <- add_split(tidyflow(), rsample::initial_split)
   expect_true("rsample::initial_split" %in% names(tidyflow$pre$actions$split))
 
-  # For update_split
+  # For replace_split
   tidyflow <- add_split(tidyflow(), rsample::initial_time_split)
-  tidyflow <- update_split(tidyflow, rsample::initial_split)
+  tidyflow <- replace_split(tidyflow, rsample::initial_split)
   expect_true("rsample::initial_split" %in% names(tidyflow$pre$actions$split))
 })
 

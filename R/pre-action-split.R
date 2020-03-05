@@ -10,7 +10,7 @@
 #' - `drop_split()` removes the split specification from the tidyflow. Note
 #'   that it keeps other preprocessing steps such as the recipe.
 #'
-#' - `update_split()` first removes the split, then adds a new split 
+#' - `replace_split()` first removes the split, then adds a new split 
 #'   specification. Any model that has already been fit based on this
 #'   split will need to be refit.
 #'
@@ -50,20 +50,20 @@
 #' wf
 #' 
 #' # Strata as unquoted name
-#' wf <- update_split(wf, initial_split, prop = 0.8, strata = cyl)
+#' wf <- replace_split(wf, initial_split, prop = 0.8, strata = cyl)
 #'
 #' wf
 #'
 #' drop_split(wf)
 #'
 #' # New split function
-#' update_split(wf, initial_time_split)
+#' replace_split(wf, initial_time_split)
 #'
 add_split <- function(x, .f, ...) {
 
   ## In case you fit the model and **then** add a split.
   ## This fun removes everything.
-  x <- update_fit(x)
+  x <- replace_fit(x)
 
   ## if (has_preprocessor_resample(x)) {
   ##   abort("A tidyflow must never have a resample before splitting the data")
@@ -103,7 +103,7 @@ drop_split <- function(x) {
 
 #' @rdname add_split
 #' @export
-update_split <- function(x, .f, ...) {
+replace_split <- function(x, .f, ...) {
   x <- drop_split(x)
   .f <- enquo(.f)
   add_split(x, !!.f, ...)
@@ -149,7 +149,7 @@ new_action_split <- function(.f, .dots, name_f) {
   )
 }
 
-update_fit <- function(x) {
+replace_fit <- function(x) {
   if (x$trained) {
     x <-
       new_tidyflow(

@@ -452,7 +452,7 @@ simple_wflow &lt;-
       step_dummy(gear)
   }) %&gt;%
   # Replaces the model all together
-  update_model(set_engine(rand_forest(), &quot;ranger&quot;))
+  replace_model(set_engine(rand_forest(), &quot;ranger&quot;))
 
 simple_wflow %&gt;%
   fit()</code></pre>
@@ -462,7 +462,7 @@ simple_wflow %&gt;%
 <li><code>recipe</code>: contains the formula and steps</li>
 <li><code>modelling</code>: contains the model</li>
 </ul>
-<p>If you specify a recipe, you can either update it with <code>complement_recipe</code> or provide a completely new recipe with <code>update_recipe</code>, if you update a new dataset, it replaces the old one, if you update a new model it replaces the old one. Now, let’s think how this tidyflow works with more challenging examples.</p>
+<p>If you specify a recipe, you can either update it with <code>complement_recipe</code> or provide a completely new recipe with <code>replace_recipe</code>, if you update a new dataset, it replaces the old one, if you update a new model it replaces the old one. Now, let’s think how this tidyflow works with more challenging examples.</p>
 </div>
 <div id="abstracting-the-three-placeholders" class="section level1">
 <h1>Abstracting the three placeholders</h1>
@@ -484,7 +484,7 @@ simple_wflow &lt;-
 
 simple_wflow %&gt;%
   # Replaces the old data and reruns everything
-  update_data(mtcars2) %&gt;% 
+  replace_data(mtcars2) %&gt;% 
   fit()</code></pre>
 </div>
 <div id="updating-the-preprocessing-step" class="section level3">
@@ -545,7 +545,7 @@ simple_wflow %&gt;%
   trained() %&gt;%
   ggplot(aes(cyl)) %&gt;%
   geom_histogram()</code></pre>
-<p>Another scenario is one in which the user wants to remove and update the complete formula. <code>update_recipe</code> will always accept a function with one argument, which will be passed the data.</p>
+<p>Another scenario is one in which the user wants to remove and update the complete formula. <code>replace_recipe</code> will always accept a function with one argument, which will be passed the data.</p>
 <pre class="r"><code>simple_wflow &lt;-
   mtcars %&gt;%
   tflow() %&gt;%
@@ -560,8 +560,8 @@ simple_wflow %&gt;%
 # Update the complete recipe rather than only the
 # add new steps
 simple_wflow %&gt;%
-  update_recipe(
-    # in update_recipe, `.x` will always be the data
+  replace_recipe(
+    # in replace_recipe, `.x` will always be the data
     # in completement_recipe, `.x` will be the already defined recipe
     recipe(mpg ~ cyl + gear, data = .x) %&gt;%
       step_center(cyl) %&gt;%
@@ -589,7 +589,7 @@ simple_wflow %&gt;%
 # Didn&#39;t like it? Rerun updating with another function
 simple_wflow %&gt;%
   # add a montecarlo cross-validation
-  update_resample(rsample::mc_cv) %&gt;%
+  replace_resample(rsample::mc_cv) %&gt;%
   fit()</code></pre>
 </div>
 <div id="updating-the-modelling-tidyflow" class="section level3">
@@ -612,7 +612,7 @@ mod1 &lt;- set_engine(linear_reg(penalty = 0.000001, mixture = 0.00002),
                    engine = &quot;glmnet&quot;)
 
 simple_wflow %&gt;%
-  update_model(mod1) %&gt;%
+  replace_model(mod1) %&gt;%
   fit()
 
 # Redefine the model with empty parameters for the tuning grid
@@ -620,14 +620,14 @@ mod2 &lt;- set_engine(linear_reg(penalty = tune(), mixture = tune()),
                    engine = &quot;glmnet&quot;)
 
 simple_wflow %&gt;%
-  update_model(mod2) %&gt;%
+  replace_model(mod2) %&gt;%
   # Add grid of values for empty parameters
   add_grid_regular(levels = 10) %&gt;% 
   fit()
 
 mod3 &lt;- set_engine(rand_forest(trees = 2000), &quot;ranger&quot;)
 simple_wflow %&gt;%
-  update_model(mod1) %&gt;%
+  replace_model(mod1) %&gt;%
   # Fill unfilled params with `tune()`, such as min_n and ntry
   add_all_params(tune()) %&gt;%
   add_grid_regular(levels = 10) %&gt;% 
@@ -679,7 +679,7 @@ simple_wflow &lt;-
 simple_wflow %&gt;%
   add_grid_regular(levels = 3) %&gt;%
   fit()</code></pre>
-<p>Thanks to the fact that <code>tidymodels</code> defines pretty much every step (recipe, metrics, cross validation, grids, etc…) of the tidyflow with separate classes, each of these classes has a slot in the tidyflow and you can explicitly add/update them with the <code>add_*</code> or <code>update_*</code> functions. It’s still not clear how the <code>add_*</code> or <code>update_*</code> functions will work since I want to make them memorable: they all work the same way and accept similar things. I need to think about this more.</p>
+<p>Thanks to the fact that <code>tidymodels</code> defines pretty much every step (recipe, metrics, cross validation, grids, etc…) of the tidyflow with separate classes, each of these classes has a slot in the tidyflow and you can explicitly add/update them with the <code>add_*</code> or <code>replace_*</code> functions. It’s still not clear how the <code>add_*</code> or <code>replace_*</code> functions will work since I want to make them memorable: they all work the same way and accept similar things. I need to think about this more.</p>
 <pre class="r"><code>mod6 &lt;- set_engine(rand_forest(trees = tune(), mtry = 10, min_n = tune()),
                    &quot;ranger&quot;)
 
@@ -704,10 +704,10 @@ mod7 &lt;- set_engine(linear_reg(penalty = tune(), mixture = tune()), &quot;glmn
 
 simple_wflow %&gt;%
   # Replaces old model
-  update_model(mod7) %&gt;%
+  replace_model(mod7) %&gt;%
   add_grid_regular(levels = 3) %&gt;%
   # Replace previous grid
-  update_grid_regular(levels = 10) %&gt;% 
+  replace_grid_regular(levels = 10) %&gt;% 
   fit()</code></pre>
 <p>Finally, the process behind <code>tflow</code> should be somewhat transparent and the user should be able to print the tidyflow before fitting to see the order of steps. In particular, there should be a method that when ran on the object return a data frame along the lines of:</p>
 <pre><code>## # A tibble: 6 x 2
@@ -800,7 +800,7 @@ simple_wflow %&gt;%
 <!-- # Add new recipes -->
 <!-- final_res <- -->
 <!--   ml_wflow %>% -->
-<!--   update_rcp( -->
+<!--   replace_rcp( -->
 <!--     .recipe %>%  -->
 <!--       step_scale(Sale_Price) %>% -->
 <!--       step_center(Sale_Price) -->
@@ -810,10 +810,10 @@ simple_wflow %&gt;%
 <!--   fit() -->
 <!-- ## Add new variable -->
 <!-- ml_wflow %>% -->
-<!--   update_frm( -->
+<!--   replace_frm( -->
 <!--     ~ . + x2 -->
 <!--   ) %>%  -->
-<!--   update_rcp( -->
+<!--   replace_rcp( -->
 <!--     .rcp %>% step_dummy(x2) -->
 <!--   ) %>% -->
 <!--   add_model(mod2) %>% -->
@@ -821,10 +821,10 @@ simple_wflow %&gt;%
 <!--   fit() -->
 <!-- ## Replace y -->
 <!-- ml_wflow %>% -->
-<!--   update_frm( -->
+<!--   replace_frm( -->
 <!--     Latitude ~ . -->
 <!--   ) %>%  -->
-<!--   update_rcp( -->
+<!--   replace_rcp( -->
 <!--     .rcp %>% step_log(Latitude) -->
 <!--   ) %>% -->
 <!--   add_model(mod2) %>% -->
@@ -832,10 +832,10 @@ simple_wflow %&gt;%
 <!--   fit() -->
 <!-- ## Update whole formula -->
 <!-- ml_wflow %>% -->
-<!--   update_frm( -->
+<!--   replace_frm( -->
 <!--     Latitude ~ Neighborhood + whatever -->
 <!--   ) %>%  -->
-<!--   update_rcp( -->
+<!--   replace_rcp( -->
 <!--     .rcp %>% -->
 <!--       step_log(Latitude) %>% -->
 <!--       step_dummy(Neighborhood) %>% -->
@@ -847,7 +847,7 @@ simple_wflow %&gt;%
 <!--   vfold_cv() %>%  -->
 <!--   fit() -->
 <!-- final_res %>% -->
-<!--   update_rcp( -->
+<!--   replace_rcp( -->
 <!--     -step_scale, -->
 <!--     ) -->
 <!-- # ml_wflow shouldn't run anything -- it's just a specification -->

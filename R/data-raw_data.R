@@ -6,7 +6,7 @@
 #'
 #' - `drop_data()` removes the data from the tidyflow.
 #'
-#' - `update_data()` first removes the data, then replaces the previous
+#' - `replace_data()` first removes the data, then replaces the previous
 #'   data with the new one. Any model that has already been fit based on this
 #'   data will need to be refit.
 #'
@@ -32,7 +32,7 @@
 #'
 #' drop_data(wf)
 #'
-#' update_data(wf, iris)
+#' replace_data(wf, iris)
 #'
 add_data <- function(x, data, ...) {
   ellipsis::check_dots_empty()
@@ -75,7 +75,7 @@ drop_data <- function(x) {
 
 #' @rdname add_data
 #' @export
-update_data <- function(x, data, ...) {
+replace_data <- function(x, data, ...) {
   ellipsis::check_dots_empty()
   x <- drop_data(x)
   add_data(x, data)

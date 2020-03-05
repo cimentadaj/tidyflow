@@ -3,14 +3,14 @@
 \name{add_data}
 \alias{add_data}
 \alias{drop_data}
-\alias{update_data}
+\alias{replace_data}
 \title{Add a data to a tidyflow}
 \usage{
 add_data(x, data, ...)
 
 drop_data(x)
 
-update_data(x, data, ...)
+replace_data(x, data, ...)
 }
 \arguments{
 \item{x}{A tidyflow}
@@ -27,7 +27,7 @@ update_data(x, data, ...)
 \item \code{add_data()} specifies the raw data used in the analysis. This data is used
 for the preprocessing and fitting the model.
 \item \code{drop_data()} removes the data from the tidyflow.
-\item \code{update_data()} first removes the data, then replaces the previous
+\item \code{replace_data()} first removes the data, then replaces the previous
 data with the new one. Any model that has already been fit based on this
 data will need to be refit.
 }
@@ -43,6 +43,6 @@ wf
 
 drop_data(wf)
 
-update_data(wf, iris)
+replace_data(wf, iris)
 
 }

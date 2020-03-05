@@ -80,7 +80,7 @@ test_that("remove a formula after model fit", {
 test_that("update a formula", {
   tidyflow <- tidyflow()
   tidyflow <- add_formula(tidyflow, mpg ~ cyl)
-  tidyflow <- update_formula(tidyflow, mpg ~ disp)
+  tidyflow <- replace_formula(tidyflow, mpg ~ disp)
 
   expect_equal(tidyflow$pre$actions$formula$formula, mpg ~ disp)
 })
@@ -96,7 +96,7 @@ test_that("update a formula after model fit", {
   tidyflow <- fit(tidyflow)
 
   # Should clear fitted model
-  tidyflow <- update_formula(tidyflow, mpg ~ disp)
+  tidyflow <- replace_formula(tidyflow, mpg ~ disp)
 
   expect_equal(tidyflow$pre$actions$formula$formula, mpg ~ disp)
 

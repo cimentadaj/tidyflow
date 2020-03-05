@@ -7,7 +7,7 @@
 #'   model object. Any extra formulas are also removed. Doesn't remove any steps
 #'   from the `pre` stage.
 #'
-#' - `update_model()` first removes the model then adds the new specification to
+#' - `replace_model()` first removes the model then adds the new specification to
 #'   the tidyflow.
 #'
 #' @details
@@ -53,8 +53,8 @@
 #'
 #' drop_model(wf)
 #'
-#' update_model(wf, regularized_model)
-#' update_model(fitted, regularized_model)
+#' replace_model(wf, regularized_model)
+#' replace_model(fitted, regularized_model)
 #'
 add_model <- function(x, spec, formula = NULL) {
   action <- new_action_model(spec, formula)
@@ -82,7 +82,7 @@ drop_model <- function(x) {
 
 #' @rdname add_model
 #' @export
-update_model <- function(x, spec, formula = NULL) {
+replace_model <- function(x, spec, formula = NULL) {
   x <- drop_model(x)
   add_model(x, spec, formula)
 }

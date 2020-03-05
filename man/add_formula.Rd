@@ -3,14 +3,14 @@
 \name{add_formula}
 \alias{add_formula}
 \alias{drop_formula}
-\alias{update_formula}
+\alias{replace_formula}
 \title{Add formula terms to a tidyflow}
 \usage{
 add_formula(x, formula, ..., blueprint = NULL)
 
 drop_formula(x)
 
-update_formula(x, formula, ..., blueprint = NULL)
+replace_formula(x, formula, ..., blueprint = NULL)
 }
 \arguments{
 \item{x}{A tidyflow}
@@ -35,7 +35,7 @@ formula.
 that might get created after the formula is used for preprocessing, such as
 terms. Additionally, if the model has already been fit, then the fit is
 removed.
-\item \code{update_formula()} first removes the formula, then replaces the previous
+\item \code{replace_formula()} first removes the formula, then replaces the previous
 formula with the new one. Any model that has already been fit based on this
 formula will need to be refit.
 }
@@ -51,5 +51,5 @@ tidyflow
 
 drop_formula(tidyflow)
 
-update_formula(tidyflow, mpg ~ disp)
+replace_formula(tidyflow, mpg ~ disp)
 }

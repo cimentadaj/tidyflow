@@ -84,7 +84,7 @@ test_that("update a model", {
   tidyflow <- tidyflow()
   tidyflow <- add_formula(tidyflow, mpg ~ cyl)
   tidyflow <- add_model(tidyflow, lm_model)
-  tidyflow <- update_model(tidyflow, glmn_model)
+  tidyflow <- replace_model(tidyflow, glmn_model)
 
   expect_equal(tidyflow$fit$actions$model$spec$engine, "glmnet")
 })
@@ -100,7 +100,7 @@ test_that("update a model after model fit", {
   tidyflow <- add_formula(tidyflow, mpg ~ cyl)
 
   tidyflow <- fit(tidyflow)
-  tidyflow <- update_model(tidyflow, lm_model)
+  tidyflow <- replace_model(tidyflow, lm_model)
 
   # Should no longer have `model = FALSE` engine arg
   engine_args <- tidyflow$fit$actions$model$spec$eng_args

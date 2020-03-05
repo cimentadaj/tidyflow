@@ -64,4 +64,4 @@ Example
 <!-- ```{r wflow-fit, eval = FALSE} -->
 <!-- car_wflow_fit <- fit(car_wflow, data = mtcars) -->
 <!-- ``` -->
-<!-- You can alter existing workflows using `update_recipe()` / `update_model()` and `drop_recipe()` / `drop_model()`. -->
+<!-- You can alter existing workflows using `replace_recipe()` / `replace_model()` and `drop_recipe()` / `drop_model()`. -->

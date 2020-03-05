@@ -3,14 +3,14 @@
 \name{add_recipe}
 \alias{add_recipe}
 \alias{drop_recipe}
-\alias{update_recipe}
+\alias{replace_recipe}
 \title{Add a recipe to a tidyflow}
 \usage{
 add_recipe(x, .f, ..., blueprint = NULL)
 
 drop_recipe(x)
 
-update_recipe(x, .f, ..., blueprint = NULL)
+replace_recipe(x, .f, ..., blueprint = NULL)
 }
 \arguments{
 \item{x}{A tidyflow}
@@ -40,7 +40,7 @@ functions which return a \code{recipe} object will be allowed. See
 package \code{\link[recipes]{recipes}} for how to create a recipe.
 \item \code{drop_recipe()} removes the recipe function from the tidyflow. Note
 that it keeps other preprocessing steps such as the split and resample.
-\item \code{update_recipe()} first removes the recipe function, then adds the new
+\item \code{replace_recipe()} first removes the recipe function, then adds the new
 recipe function. Any model that has already been fit based on this
 recipe will need to be refit.
 }
@@ -72,12 +72,12 @@ wflow \%>\%
 
 # Remove the old recipe, specify one on the fly and fit again
 wflow \%>\%
- update_recipe(~ recipe(mpg ~ cyl, data = .) \%>\% step_log(cyl, base = 10)) \%>\%
+ replace_recipe(~ recipe(mpg ~ cyl, data = .) \%>\% step_log(cyl, base = 10)) \%>\%
  fit()
 
 # Note how the function argument can be either `.` or `.x`
 wflow \%>\%
- update_recipe(~ {
+ replace_recipe(~ {
   .x \%>\% 
    recipe(mpg ~ cyl + am) \%>\%
     step_log(cyl, base = 10) \%>\%

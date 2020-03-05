@@ -9,7 +9,7 @@
 #' - `drop_resample()` removes the resample specification from the tidyflow.
 #'   Note that it keeps other preprocessing steps such as the recipe.
 #'
-#' - `update_resample()` first removes the resample, then adds a new resample
+#' - `replace_resample()` first removes the resample, then adds a new resample
 #'   specification. Any model that has already been fit based on this
 #'   split will need to be refit.
 #'
@@ -49,14 +49,14 @@
 #' wf
 #' 
 #' # Strata as unquoted name
-#' wf <- update_resample(wf, initial_split, v = 5, strata = cyl)
+#' wf <- replace_resample(wf, initial_split, v = 5, strata = cyl)
 #'
 #' wf
 #'
 #' drop_resample(wf)
 #'
 #' # New split function
-#' update_resample(wf, bootstraps)
+#' replace_resample(wf, bootstraps)
 #'
 add_resample <- function(x, .f, ...) {
   .dots <- enquos(...)
@@ -93,7 +93,7 @@ drop_resample <- function(x) {
 
 #' @rdname add_resample
 #' @export
-update_resample <- function(x, .f, ...) {
+replace_resample <- function(x, .f, ...) {
   x <- drop_resample(x)
   .f <- enquo(.f)
   add_resample(x, !!.f, ...)

@@ -3,14 +3,14 @@
 \name{add_resample}
 \alias{add_resample}
 \alias{drop_resample}
-\alias{update_resample}
+\alias{replace_resample}
 \title{Add a resample specification to a tidyflow}
 \usage{
 add_resample(x, .f, ...)
 
 drop_resample(x)
 
-update_resample(x, .f, ...)
+replace_resample(x, .f, ...)
 }
 \arguments{
 \item{x}{A tidyflow}
@@ -35,7 +35,7 @@ functions which return an \code{rset} object will be allowed. See
 package \code{\link[rsample]{rsample}} and the details section.
 \item \code{drop_resample()} removes the resample specification from the tidyflow.
 Note that it keeps other preprocessing steps such as the recipe.
-\item \code{update_resample()} first removes the resample, then adds a new resample
+\item \code{replace_resample()} first removes the resample, then adds a new resample
 specification. Any model that has already been fit based on this
 split will need to be refit.
 }
@@ -61,13 +61,13 @@ wf <- add_resample(wf, vfold_cv, v = 5, strata = "cyl")
 wf
 
 # Strata as unquoted name
-wf <- update_resample(wf, initial_split, v = 5, strata = cyl)
+wf <- replace_resample(wf, initial_split, v = 5, strata = cyl)
 
 wf
 
 drop_resample(wf)
 
 # New split function
-update_resample(wf, bootstraps)
+replace_resample(wf, bootstraps)
 
 }

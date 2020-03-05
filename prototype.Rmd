@@ -127,7 +127,7 @@ simple_wflow <-
       step_dummy(gear)
   }) %>%
   # Replaces the model all together
-  update_model(set_engine(rand_forest(), "ranger"))
+  replace_model(set_engine(rand_forest(), "ranger"))
 
 simple_wflow %>%
   fit()
@@ -140,7 +140,7 @@ simple_wflow %>%
 * `recipe`: contains the formula and steps
 * `modelling`: contains the model
 
-If you specify a recipe, you can either update it with `complement_recipe` or provide a completely new recipe with `update_recipe`, if you update a new dataset, it replaces the old one, if you update a new model it replaces the old one. Now, let's think how this workflow works with more challenging examples.
+If you specify a recipe, you can either update it with `complement_recipe` or provide a completely new recipe with `replace_recipe`, if you update a new dataset, it replaces the old one, if you update a new model it replaces the old one. Now, let's think how this workflow works with more challenging examples.
 
 # Abstracting the three placeholders
 
@@ -165,7 +165,7 @@ simple_wflow <-
 
 simple_wflow %>%
   # Replaces the old data and reruns everything
-  update_data(mtcars2) %>% 
+  replace_data(mtcars2) %>% 
   fit()
 
 ```
@@ -239,7 +239,7 @@ simple_wflow %>%
 
 ```
 
-Another scenario is one in which the user wants to remove and update the complete formula. `update_recipe` will always accept a function with one argument, which will be passed the data.
+Another scenario is one in which the user wants to remove and update the complete formula. `replace_recipe` will always accept a function with one argument, which will be passed the data.
 
 ```{r }
 
@@ -257,8 +257,8 @@ simple_wflow <-
 # Update the complete recipe rather than only the
 # add new steps
 simple_wflow %>%
-  update_recipe(
-    # in update_recipe, `.x` will always be the data
+  replace_recipe(
+    # in replace_recipe, `.x` will always be the data
     # in completement_recipe, `.x` will be the already defined recipe
     recipe(mpg ~ cyl + gear, data = .x) %>%
       step_center(cyl) %>%
@@ -292,7 +292,7 @@ simple_wflow %>%
 # Didn't like it? Rerun updating with another function
 simple_wflow %>%
   # add a montecarlo cross-validation
-  update_resample(rsample::mc_cv) %>%
+  replace_resample(rsample::mc_cv) %>%
   fit()
 
 ```
@@ -320,7 +320,7 @@ mod1 <- set_engine(linear_reg(penalty = 0.000001, mixture = 0.00002),
                    engine = "glmnet")
 
 simple_wflow %>%
-  update_model(mod1) %>%
+  replace_model(mod1) %>%
   fit()
 
 # Redefine the model with empty parameters for the tuning grid
@@ -328,14 +328,14 @@ mod2 <- set_engine(linear_reg(penalty = tune(), mixture = tune()),
                    engine = "glmnet")
 
 simple_wflow %>%
-  update_model(mod2) %>%
+  replace_model(mod2) %>%
   # Add grid of values for empty parameters
   add_grid_regular(levels = 10) %>% 
   fit()
 
 mod3 <- set_engine(rand_forest(trees = 2000), "ranger")
 simple_wflow %>%
-  update_model(mod1) %>%
+  replace_model(mod1) %>%
   # Fill unfilled params with `tune()`, such as min_n and ntry
   add_all_params(tune()) %>%
   add_grid_regular(levels = 10) %>% 
@@ -403,7 +403,7 @@ simple_wflow %>%
 
 ```
 
-Thanks to the fact that `tidymodels` defines pretty much every step (recipe, metrics, cross validation, grids, etc...) of the workflow with separate classes, each of these classes has a slot in the workflow and you can explicitly add/update them with the `add_*` or `update_*` functions. It's still not clear how the `add_*` or `update_*` functions will work since I want to make them memorable: they all work the same way and accept similar things. I need to think about this more.
+Thanks to the fact that `tidymodels` defines pretty much every step (recipe, metrics, cross validation, grids, etc...) of the workflow with separate classes, each of these classes has a slot in the workflow and you can explicitly add/update them with the `add_*` or `replace_*` functions. It's still not clear how the `add_*` or `replace_*` functions will work since I want to make them memorable: they all work the same way and accept similar things. I need to think about this more.
 
 ```{r }
 
@@ -431,10 +431,10 @@ mod7 <- set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet")
 
 simple_wflow %>%
   # Replaces old model
-  update_model(mod7) %>%
+  replace_model(mod7) %>%
   add_grid_regular(levels = 3) %>%
   # Replace previous grid
-  update_grid_regular(levels = 10) %>% 
+  replace_grid_regular(levels = 10) %>% 
   fit()
 ```
 
@@ -562,7 +562,7 @@ All of the above is a prototype idea and none of it has been implemented.
 <!-- # Add new recipes -->
 <!-- final_res <- -->
 <!--   ml_wflow %>% -->
-<!--   update_rcp( -->
+<!--   replace_rcp( -->
 <!--     .recipe %>%  -->
 <!--       step_scale(Sale_Price) %>% -->
 <!--       step_center(Sale_Price) -->
@@ -573,10 +573,10 @@ All of the above is a prototype idea and none of it has been implemented.
 
 <!-- ## Add new variable -->
 <!-- ml_wflow %>% -->
-<!--   update_frm( -->
+<!--   replace_frm( -->
 <!--     ~ . + x2 -->
 <!--   ) %>%  -->
-<!--   update_rcp( -->
+<!--   replace_rcp( -->
 <!--     .rcp %>% step_dummy(x2) -->
 <!--   ) %>% -->
 <!--   add_model(mod2) %>% -->
@@ -585,10 +585,10 @@ All of the above is a prototype idea and none of it has been implemented.
 
 <!-- ## Replace y -->
 <!-- ml_wflow %>% -->
-<!--   update_frm( -->
+<!--   replace_frm( -->
 <!--     Latitude ~ . -->
 <!--   ) %>%  -->
-<!--   update_rcp( -->
+<!--   replace_rcp( -->
 <!--     .rcp %>% step_log(Latitude) -->
 <!--   ) %>% -->
 <!--   add_model(mod2) %>% -->
@@ -597,10 +597,10 @@ All of the above is a prototype idea and none of it has been implemented.
 
 <!-- ## Update whole formula -->
 <!-- ml_wflow %>% -->
-<!--   update_frm( -->
+<!--   replace_frm( -->
 <!--     Latitude ~ Neighborhood + whatever -->
 <!--   ) %>%  -->
-<!--   update_rcp( -->
+<!--   replace_rcp( -->
 <!--     .rcp %>% -->
 <!--       step_log(Latitude) %>% -->
 <!--       step_dummy(Neighborhood) %>% -->
@@ -615,7 +615,7 @@ All of the above is a prototype idea and none of it has been implemented.
 
 
 <!-- final_res %>% -->
-<!--   update_rcp( -->
+<!--   replace_rcp( -->
 <!--     -step_scale, -->
     
 <!--     ) -->

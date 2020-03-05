@@ -22,7 +22,7 @@ test_that("remove tidyflow data", {
 test_that("update a dataframe", {
   tidyflow <- tidyflow()
   tidyflow <- add_data(tidyflow, mtcars)
-  tidyflow <- update_data(tidyflow, iris)
+  tidyflow <- replace_data(tidyflow, iris)
 
   expect_equal(tidyflow$data, iris)
   expect_equal(tidyflow$data, tidyflow$pre$mold)
