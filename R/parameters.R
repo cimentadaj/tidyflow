@@ -12,11 +12,11 @@
 #' 
 #' @export
 ## parameters.tidyflow <- function(x, ...) {
-##   model <- tidyflow::pull_tidyflow_spec(x)
+##   model <- tidyflow::pull_tflow_spec(x)
 ##   param_data <- dials::parameters(model)
 ##   if (has_preprocessor_recipe(x)) {
 ##     if (has_raw_data(x)) {
-##       recipe <- pull_tidyflow_preprocessor(x)(x$pre$mold)
+##       recipe <- pull_tflow_preprocessor(x)(x$pre$mold)
 ##       recipe_param_data <- dials::parameters(recipe)
 ##       param_data <- dplyr::bind_rows(param_data, recipe_param_data)
 ##     } else {

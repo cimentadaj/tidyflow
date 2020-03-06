@@ -12,7 +12,7 @@
 
 \item{new_data}{A data frame containing the new predictors to preprocess
 and predict on. Usually, this would be extracted from the tidyflow
-with \code{\link{pull_tidyflow_testing}}}
+with \code{\link{pull_tflow_testing}}}
 
 \item{type}{A single character value or \code{NULL}. Possible values
 are "numeric", "class", "prob", "conf_int", "pred_int", "quantile",
@@ -55,7 +55,7 @@ about predicting from a tidyflow is that it will:
 tidyflow was created and fit. This is accomplished using \link[=forge]{ hardhat::forge()}, which will apply any formula preprocessing or call
 \code{\link[recipes:bake]{recipes::bake()}} if a recipe was supplied. For safety reasons,
 if a split was specified, the user should always use
-\code{\link{pull_tidyflow_testing}} to extract the raw testing data
+\code{\link{pull_tflow_testing}} to extract the raw testing data
 from the tidyflow and pass it to \code{new_data}.
 \item Call \code{\link[parsnip:predict.model_fit]{parsnip::predict.model_fit()}} for you using the underlying fit
 parsnip model.
@@ -81,6 +81,6 @@ tflow <- fit(tflow)
 
 # This will automatically `bake()` the recipe on `new_data`,
 # applying the log step to `disp`, and then fit the regression.
-predict(tflow, new_data = pull_tidyflow_testing(tflow))
+predict(tflow, new_data = pull_tflow_testing(tflow))
 
 }

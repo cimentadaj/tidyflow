@@ -99,7 +99,7 @@ print_header <- function(x) {
   if (!has_raw_data(x)) {
     data_msg <- glue::glue("{data_msg} None")
   } else {
-    dt <- pull_tidyflow_rawdata(x)
+    dt <- pull_tflow_rawdata(x)
     data_missing <- sum(is.na(dt)) / nrow(dt)
     # I include a `is.nan` in case the data frame
     # is empty and 0 / 0 equals NaN
@@ -129,7 +129,7 @@ print_header <- function(x) {
   spec_msg <- cli::style_italic("Model:")
 
   if (has_spec(x)) {
-    spec <- class(pull_tidyflow_spec(x))[[1]]
+    spec <- class(pull_tflow_spec(x))[[1]]
     spec <- glue::glue("{spec}()")
   } else {
     spec <- "None"
@@ -228,7 +228,7 @@ print_preprocessor_resample <- function(x) {
 
 print_preprocessor_formula <- function(x) {
   formula_msg <- cli::style_italic("Formula: ")
-  formula <- pull_tidyflow_preprocessor(x)
+  formula <- pull_tflow_preprocessor(x)
   formula <- rlang::expr_text(formula)
 
   cat_line(glue::glue(formula_msg, formula))
@@ -237,7 +237,7 @@ print_preprocessor_formula <- function(x) {
 }
 
 print_preprocessor_recipe <- function(x) {
-  recipe <- pull_tidyflow_preprocessor(x)
+  recipe <- pull_tflow_preprocessor(x)
   steps <- recipe$steps
   n_steps <- length(steps)
 
@@ -318,7 +318,7 @@ print_model <- function(x) {
 }
 
 print_spec <- function(x) {
-  spec <- pull_tidyflow_spec(x)
+  spec <- pull_tflow_spec(x)
 
   print(spec)
 

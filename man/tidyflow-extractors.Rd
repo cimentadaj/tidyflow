@@ -2,31 +2,31 @@
 % Please edit documentation in R/pull.R
 \name{tidyflow-extractors}
 \alias{tidyflow-extractors}
-\alias{pull_tidyflow_rawdata}
-\alias{pull_tidyflow_preprocessor}
-\alias{pull_tidyflow_spec}
+\alias{pull_tflow_rawdata}
+\alias{pull_tflow_preprocessor}
+\alias{pull_tflow_spec}
 \alias{pull_tflow_fit}
 \alias{pull_tflow_tuning}
-\alias{pull_tidyflow_mold}
-\alias{pull_tidyflow_prepped_recipe}
-\alias{pull_tidyflow_testing}
+\alias{pull_tflow_mold}
+\alias{pull_tflow_prepped_recipe}
+\alias{pull_tflow_testing}
 \title{Extract elements of a tidyflow}
 \usage{
-pull_tidyflow_rawdata(x)
+pull_tflow_rawdata(x)
 
-pull_tidyflow_preprocessor(x)
+pull_tflow_preprocessor(x)
 
-pull_tidyflow_spec(x)
+pull_tflow_spec(x)
 
 pull_tflow_fit(x)
 
 pull_tflow_tuning(x)
 
-pull_tidyflow_mold(x)
+pull_tflow_mold(x)
 
-pull_tidyflow_prepped_recipe(x)
+pull_tflow_prepped_recipe(x)
 
-pull_tidyflow_testing(x)
+pull_tflow_testing(x)
 }
 \arguments{
 \item{x}{A tidyflow}
@@ -39,17 +39,17 @@ section.
 These functions extract various elements from a tidyflow object. If they do
 not exist yet, an error is thrown.
 \itemize{
-\item \code{pull_tidyflow_rawdata()} returns the complete raw/untrained data.
-\item \code{pull_tidyflow_preprocessor()} returns either the formula or recipe used
+\item \code{pull_tflow_rawdata()} returns the complete raw/untrained data.
+\item \code{pull_tflow_preprocessor()} returns either the formula or recipe used
 for preprocessing.
-\item \code{pull_tidyflow_spec()} returns the parsnip model specification.
+\item \code{pull_tflow_spec()} returns the parsnip model specification.
 \item \code{pull_tflow_fit()} returns the parsnip model fit.
-\item \code{pull_tidyflow_mold()} returns the preprocessed "mold" object returned
+\item \code{pull_tflow_mold()} returns the preprocessed "mold" object returned
 from \code{\link[hardhat:mold]{hardhat::mold()}}. It contains information about the preprocessing,
 including either the prepped recipe or the formula terms object.
-\item \code{pull_tidyflow_prepped_recipe()} returns the prepped recipe. It is
-extracted from the mold object returned from \code{pull_tidyflow_mold()}.
-\item \code{pull_tidyflow_testing()} returns the raw testing data (without applying
+\item \code{pull_tflow_prepped_recipe()} returns the prepped recipe. It is
+extracted from the mold object returned from \code{pull_tflow_mold()}.
+\item \code{pull_tflow_testing()} returns the raw testing data (without applying
 the preprocessing steps recipe or formula). Since the split
 training/testing is done when the user \verb{fit()'s the model, the testing data can only be extracted after a model fit. The prepping of the testing data is done when specifying }new_data\verb{in}predict.tidyflow`
 automatically.
@@ -64,40 +64,40 @@ model <- set_engine(model, "lm")
 
 recipe <- ~ recipe(mpg ~ cyl + disp, .x) \%>\% step_log(disp)
 
-base_tidyflow <- tidyflow()
-base_tidyflow <- plug_data(base_tidyflow, mtcars)
-base_tidyflow <- plug_model(base_tidyflow, model)
+base_tflow <- tidyflow()
+base_tflow <- plug_data(base_tflow, mtcars)
+base_tflow <- plug_model(base_tflow, model)
 
-recipe_tidyflow <- plug_recipe(base_tidyflow, recipe)
-formula_tidyflow <- plug_formula(base_tidyflow, mpg ~ cyl + log(disp))
+recipe_tflow <- plug_recipe(base_tflow, recipe)
+formula_tflow <- plug_formula(base_tflow, mpg ~ cyl + log(disp))
 
-fit_recipe_tidyflow <- fit(recipe_tidyflow)
-fit_formula_tidyflow <- fit(formula_tidyflow)
+fit_recipe_tflow <- fit(recipe_tflow)
+fit_formula_tflow <- fit(formula_tflow)
 
-pull_tidyflow_rawdata(fit_recipe_tidyflow)
-pull_tidyflow_rawdata(fit_formula_tidyflow)
+pull_tflow_rawdata(fit_recipe_tflow)
+pull_tflow_rawdata(fit_formula_tflow)
 
 # The preprocessor is either the recipe function or a formula
-pull_tidyflow_preprocessor(recipe_tidyflow)
-pull_tidyflow_preprocessor(formula_tidyflow)
+pull_tflow_preprocessor(recipe_tflow)
+pull_tflow_preprocessor(formula_tflow)
 
 # The `spec` is the parsnip spec before it has been fit.
 # The `fit` is the fit parsnip model.
-pull_tidyflow_spec(fit_formula_tidyflow)
-pull_tflow_fit(fit_formula_tidyflow)
+pull_tflow_spec(fit_formula_tflow)
+pull_tflow_fit(fit_formula_tflow)
 
 # The mold is returned from `hardhat::mold()`, and contains the
 # predictors, outcomes, and information about the preprocessing
 # for use on new data at `predict()` time.
-pull_tidyflow_mold(fit_recipe_tidyflow)
+pull_tflow_mold(fit_recipe_tflow)
 
 # A useful shortcut is to extract the prepped recipe from the tidyflow
-pull_tidyflow_prepped_recipe(fit_recipe_tidyflow)
+pull_tflow_prepped_recipe(fit_recipe_tflow)
 
 # That is identical to
 identical(
-  pull_tidyflow_mold(fit_recipe_tidyflow)$blueprint$recipe,
-  pull_tidyflow_prepped_recipe(fit_recipe_tidyflow)
+  pull_tflow_mold(fit_recipe_tflow)$blueprint$recipe,
+  pull_tflow_prepped_recipe(fit_recipe_tflow)
 )
 
 }

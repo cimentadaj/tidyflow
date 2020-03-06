@@ -4,23 +4,23 @@
 #' These functions extract various elements from a tidyflow object. If they do
 #' not exist yet, an error is thrown.
 #'
-#' - `pull_tidyflow_rawdata()` returns the complete raw/untrained data.
+#' - `pull_tflow_rawdata()` returns the complete raw/untrained data.
 #' 
-#' - `pull_tidyflow_preprocessor()` returns either the formula or recipe used
+#' - `pull_tflow_preprocessor()` returns either the formula or recipe used
 #'   for preprocessing.
 #'
-#' - `pull_tidyflow_spec()` returns the parsnip model specification.
+#' - `pull_tflow_spec()` returns the parsnip model specification.
 #'
 #' - `pull_tflow_fit()` returns the parsnip model fit.
 #'
-#' - `pull_tidyflow_mold()` returns the preprocessed "mold" object returned
+#' - `pull_tflow_mold()` returns the preprocessed "mold" object returned
 #'   from [hardhat::mold()]. It contains information about the preprocessing,
 #'   including either the prepped recipe or the formula terms object.
 #'
-#' - `pull_tidyflow_prepped_recipe()` returns the prepped recipe. It is
-#'   extracted from the mold object returned from `pull_tidyflow_mold()`.
+#' - `pull_tflow_prepped_recipe()` returns the prepped recipe. It is
+#'   extracted from the mold object returned from `pull_tflow_mold()`.
 #'
-#' - `pull_tidyflow_testing()` returns the raw testing data (without applying
+#' - `pull_tflow_testing()` returns the raw testing data (without applying
 #'   the preprocessing steps recipe or formula). Since the split
 #'   training/testing is done when the user `fit()'s the model, the testing
 #'   data can only be extracted after a model fit. The prepping of the testing
@@ -44,47 +44,47 @@
 #'
 #' recipe <- ~ recipe(mpg ~ cyl + disp, .x) %>% step_log(disp)
 #'
-#' base_tidyflow <- tidyflow()
-#' base_tidyflow <- plug_data(base_tidyflow, mtcars)
-#' base_tidyflow <- plug_model(base_tidyflow, model)
+#' base_tflow <- tidyflow()
+#' base_tflow <- plug_data(base_tflow, mtcars)
+#' base_tflow <- plug_model(base_tflow, model)
 #'
-#' recipe_tidyflow <- plug_recipe(base_tidyflow, recipe)
-#' formula_tidyflow <- plug_formula(base_tidyflow, mpg ~ cyl + log(disp))
+#' recipe_tflow <- plug_recipe(base_tflow, recipe)
+#' formula_tflow <- plug_formula(base_tflow, mpg ~ cyl + log(disp))
 #'
-#' fit_recipe_tidyflow <- fit(recipe_tidyflow)
-#' fit_formula_tidyflow <- fit(formula_tidyflow)
+#' fit_recipe_tflow <- fit(recipe_tflow)
+#' fit_formula_tflow <- fit(formula_tflow)
 #'
-#' pull_tidyflow_rawdata(fit_recipe_tidyflow)
-#' pull_tidyflow_rawdata(fit_formula_tidyflow)
+#' pull_tflow_rawdata(fit_recipe_tflow)
+#' pull_tflow_rawdata(fit_formula_tflow)
 #' 
 #' # The preprocessor is either the recipe function or a formula
-#' pull_tidyflow_preprocessor(recipe_tidyflow)
-#' pull_tidyflow_preprocessor(formula_tidyflow)
+#' pull_tflow_preprocessor(recipe_tflow)
+#' pull_tflow_preprocessor(formula_tflow)
 #'
 #' # The `spec` is the parsnip spec before it has been fit.
 #' # The `fit` is the fit parsnip model.
-#' pull_tidyflow_spec(fit_formula_tidyflow)
-#' pull_tflow_fit(fit_formula_tidyflow)
+#' pull_tflow_spec(fit_formula_tflow)
+#' pull_tflow_fit(fit_formula_tflow)
 #'
 #' # The mold is returned from `hardhat::mold()`, and contains the
 #' # predictors, outcomes, and information about the preprocessing
 #' # for use on new data at `predict()` time.
-#' pull_tidyflow_mold(fit_recipe_tidyflow)
+#' pull_tflow_mold(fit_recipe_tflow)
 #'
 #' # A useful shortcut is to extract the prepped recipe from the tidyflow
-#' pull_tidyflow_prepped_recipe(fit_recipe_tidyflow)
+#' pull_tflow_prepped_recipe(fit_recipe_tflow)
 #'
 #' # That is identical to
 #' identical(
-#'   pull_tidyflow_mold(fit_recipe_tidyflow)$blueprint$recipe,
-#'   pull_tidyflow_prepped_recipe(fit_recipe_tidyflow)
+#'   pull_tflow_mold(fit_recipe_tflow)$blueprint$recipe,
+#'   pull_tflow_prepped_recipe(fit_recipe_tflow)
 #' )
 #'
 NULL
 
 #' @rdname tidyflow-extractors
 #' @export
-pull_tidyflow_rawdata <- function(x) {
+pull_tflow_rawdata <- function(x) {
   validate_is_tidyflow(x)
 
   if (has_raw_data(x)) {
@@ -97,7 +97,7 @@ pull_tidyflow_rawdata <- function(x) {
 
 #' @rdname tidyflow-extractors
 #' @export
-pull_tidyflow_preprocessor <- function(x) {
+pull_tflow_preprocessor <- function(x) {
   validate_is_tidyflow(x)
 
   if (has_preprocessor_formula(x)) {
@@ -113,7 +113,7 @@ pull_tidyflow_preprocessor <- function(x) {
 
 #' @rdname tidyflow-extractors
 #' @export
-pull_tidyflow_spec <- function(x) {
+pull_tflow_spec <- function(x) {
   validate_is_tidyflow(x)
 
   if (has_spec(x)) {
@@ -150,7 +150,7 @@ pull_tflow_tuning <- function(x) {
 
 #' @rdname tidyflow-extractors
 #' @export
-pull_tidyflow_mold <- function(x) {
+pull_tflow_mold <- function(x) {
   validate_is_tidyflow(x)
 
   if (has_mold(x)) {
@@ -162,21 +162,21 @@ pull_tidyflow_mold <- function(x) {
 
 #' @rdname tidyflow-extractors
 #' @export
-pull_tidyflow_prepped_recipe <- function(x) {
+pull_tflow_prepped_recipe <- function(x) {
   validate_is_tidyflow(x)
 
   if (!has_preprocessor_recipe(x)) {
     abort("The tidyflow must have a recipe preprocessor.")
   }
 
-  mold <- pull_tidyflow_mold(x)
+  mold <- pull_tflow_mold(x)
 
   mold$blueprint$recipe
 }
 
 #' @rdname tidyflow-extractors
 #' @export
-pull_tidyflow_testing <- function(x) {
+pull_tflow_testing <- function(x) {
   validate_is_tidyflow(x)
 
   if (!has_preprocessor_split(x)) {

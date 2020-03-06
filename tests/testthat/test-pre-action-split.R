@@ -33,6 +33,25 @@ test_that("dropping a split and refitting gives same result", {
                strip_elapsed(mod2_no_split))
 })
 
+
+test_that("plug_split resets model fit if trained before adding the split", {
+  model <- parsnip::set_engine(parsnip::linear_reg(), "lm")
+  tflow <- plug_recipe(tidyflow(mtcars), ~ recipes::recipe(mpg ~ cyl, .))
+  tflow <- plug_model(tflow, model)
+  tflow <- fit(tflow)
+
+  tflow <- plug_split(tflow, rsample::initial_split)
+  expect_false(tflow$trained)
+  expect_equal(tflow$data, tflow$pre$mold)
+  expect_null(tflow$fit$fit)
+
+  res <- fit(tflow)
+  # Fitted on the training data
+  expect_equal(nrow(pull_tflow_mold(res)$predictors), 24)
+  expect_equal(nrow(pull_tflow_mold(res)$outcomes), 24)
+})
+
+
 test_that("Can add split after model fit and refit", {
   rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)
   tflow <- tidyflow(mtcars, seed = 542)
@@ -54,7 +73,7 @@ test_that("Saves testing data after split", {
   tidyflow_with_split  <- plug_model(tidyflow_with_split, lm_model)
   tidyflow_with_split <- fit(tidyflow_with_split)
 
-  expect_true(!is.null(pull_tidyflow_testing(tidyflow_with_split)))
+  expect_true(!is.null(pull_tflow_testing(tidyflow_with_split)))
 })
 
 
@@ -230,8 +249,8 @@ test_that("plug_split resets model fit if trained before adding the split", {
 
   res <- fit(tidyflow)
   # Fitted on the training data
-  expect_equal(nrow(pull_tidyflow_mold(res)$predictors), 24)
-  expect_equal(nrow(pull_tidyflow_mold(res)$outcomes), 24)
+  expect_equal(nrow(pull_tflow_mold(res)$predictors), 24)
+  expect_equal(nrow(pull_tflow_mold(res)$outcomes), 24)
 })
 
 

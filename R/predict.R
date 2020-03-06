@@ -9,7 +9,7 @@
 #'   hardhat::forge()], which will apply any formula preprocessing or call
 #'   [recipes::bake()] if a recipe was supplied. For safety reasons,
 #'   if a split was specified, the user should always use
-#'   \code{\link{pull_tidyflow_testing}} to extract the raw testing data
+#'   \code{\link{pull_tflow_testing}} to extract the raw testing data
 #'   from the tidyflow and pass it to `new_data`.
 #'
 #' - Call [parsnip::predict.model_fit()] for you using the underlying fit
@@ -21,7 +21,7 @@
 #'
 #' @param new_data A data frame containing the new predictors to preprocess
 #'   and predict on. Usually, this would be extracted from the tidyflow
-#'   with \code{\link{pull_tidyflow_testing}}
+#'   with \code{\link{pull_tflow_testing}}
 #'
 #' @return
 #' A data frame of model predictions, with as many rows as `new_data` has,
@@ -50,7 +50,7 @@
 #'
 #' # This will automatically `bake()` the recipe on `new_data`,
 #' # applying the log step to `disp`, and then fit the regression.
-#' predict(tflow, new_data = pull_tidyflow_testing(tflow))
+#' predict(tflow, new_data = pull_tflow_testing(tflow))
 #'
 predict.tidyflow <- function(object, new_data, type = NULL, opts = list(), ...) {
   tflow <- object
