@@ -72,7 +72,10 @@ drop_model <- function(x) {
 
   new_tidyflow(
     data = x$data,
-    pre = new_stage_pre(x$pre$actions, mold = x$pre$mold),
+    pre = new_stage_pre(actions = x$pre$actions,
+                        mold = x$pre$mold,
+                        seed = x$pre$seed,
+                        results = x$pre$results),
     fit = new_stage_fit(),
     post = new_stage_post(actions = x$post$actions),
     trained = FALSE
@@ -92,13 +95,13 @@ fit.action_model <- function(object, tflow, control, ...) {
   control_parsnip <- control$control_parsnip
   spec <- object$spec
   formula <- object$formula
-  resample_res <- tflow$pre$actions$resample$rset_res
+  resample_res <- tflow$pre$results$resample
 
   # It means that they specified a resample
   if (!is.null(resample_res)) {
-    obj <- tflow$pre$actions$recipe$recipe_res %||% tflow$pre$actions$formula
+    obj <- tflow$pre$results$recipe %||% tflow$pre$actions$formula
 
-    tflow$pre$actions$resample$tuning_res <-
+    tflow$fit$fit$tuning <-
       tune::fit_resamples(obj,
                           model = spec,
                           resamples = resample_res,

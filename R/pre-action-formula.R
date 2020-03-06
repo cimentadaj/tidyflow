@@ -57,7 +57,10 @@ drop_formula <- function(x) {
 
   new_tidyflow(
     data = x$data,
-    pre = new_stage_pre(purge_action_formula(x), mold = x$data),
+    pre = new_stage_pre(actions = purge_action_formula(x),
+                        mold = x$data,
+                        seed = x$pre$seed,
+                        results = purge_results_formula(x)),
     fit = new_stage_fit(actions = x$fit$actions),
     post = new_stage_post(actions = x$post$actions),
     trained = FALSE
@@ -82,7 +85,9 @@ fit.action_formula <- function(object, tidyflow) {
   tidyflow$pre$mold <- hardhat::mold(formula,
                                      tidyflow$pre$mold,
                                      blueprint = blueprint)
-  
+
+  tidyflow$pre$results$formula <- tidyflow$pre$mold
+
   # All pre steps return the `tidyflow`
   tidyflow
 }

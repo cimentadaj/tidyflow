@@ -23,6 +23,11 @@ plug_action_impl.action_pre <- function(x, action, name) {
   check_singleton(x$pre$actions, name)
   x$pre <- plug_action_to_stage(x$pre, action, name)
   x$pre$actions <- clean_list(x$pre$actions[sacred_order])
+
+  # Plugs in NULL slots for each action to store results later
+  x$pre <- plug_result_to_stage(x$pre, name)
+  x$pre$results <- clean_list(x$pre$results[sacred_order])
+
   x
 }
 
@@ -42,6 +47,11 @@ plug_action_impl.action_post <- function(x, action, name) {
 
 plug_action_to_stage <- function(stage, action, name) {
   stage$actions <- c(stage$actions, list2(!!name := action))
+  stage
+}
+
+plug_result_to_stage <- function(stage, name) {
+  stage$results <- c(stage$results, list2(!!name := list()))
   stage
 }
 

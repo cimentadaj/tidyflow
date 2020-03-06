@@ -99,7 +99,10 @@ drop_recipe <- function(x) {
 
   new_tidyflow(
     data = x$data,
-    pre = new_stage_pre(purge_action_recipe(x), mold = x$data),
+    pre = new_stage_pre(actions = purge_action_recipe(x),
+                        mold = x$data,
+                        seed = x$pre$seed,
+                        results = purge_results_recipe(x)),
     fit = new_stage_fit(actions = x$fit$actions),
     post = new_stage_post(actions = x$post$actions),
     trained = FALSE
@@ -127,7 +130,7 @@ fit.action_recipe <- function(object, tflow) {
   }
 
   # Keep recipe around
-  tflow$pre$actions$recipe$recipe_res <- rcp_data
+  tflow$pre$results$recipe <- rcp_data
   tflow$pre$mold <- hardhat::mold(rcp_data,
                                   molded_data,
                                   blueprint = blueprint)

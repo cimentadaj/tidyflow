@@ -39,7 +39,7 @@ test_that("Saves testing data after split", {
   tidyflow_with_split  <- plug_model(tidyflow_with_split, lm_model)
   tidyflow_with_split <- fit(tidyflow_with_split)
 
-  expect_true(!is.null(tidyflow_with_split$pre$actions$split$testing))
+  expect_true(!is.null(pull_tidyflow_testing(tidyflow_with_split)))
 })
 
 
@@ -54,8 +54,7 @@ test_that("remove a split after model fit", {
   tidyflow_with_split <- fit(tidyflow_with_split)
 
   tidyflow_removed_split <- drop_split(tidyflow_with_split)
-
-  expect_equal(tidyflow_no_split$pre, tidyflow_removed_split$pre)
+  expect_equal(tidyflow_no_split$pre$actions, tidyflow_removed_split$pre$actions)
 })
 
 test_that("update a split specification", {

@@ -68,11 +68,11 @@ has_spec <- function(x) {
 }
 
 has_fit <- function(x) {
-  !is.null(x$fit$fit)
+  !is.null(x$fit$fit$fit)
 }
 
 has_fit_tuning <- function(x) {
-  !is.null(x$pre$actions$resample$tuning_res)
+  !is.null(x$fit$fit$tuning)
 }
 
 has_raw_data <- function(x) {
@@ -87,7 +87,7 @@ has_raw_data <- function(x) {
 # the split specification, we want the power to remove specific actions
 # from that stage. Each purge_action_* works for a stage and name to remove the
 # action.
-purge_action <- function(x, name) {
+purge_ <- function(x, name) {
   all_names <- names(x)
   selected_names <- setdiff(all_names, name)
   x <- x[selected_names]
@@ -99,22 +99,55 @@ purge_action <- function(x, name) {
 }
 
 purge_action_split <- function(x) {
-  purge_action(x$pre$actions, "split")
+  purge_(x$pre$actions, "split")
 }
 
 purge_action_resample <- function(x) {
-  purge_action(x$pre$actions, "resample")
+  purge_(x$pre$actions, "resample")
 }
 
 purge_action_formula <- function(x) {
-  purge_action(x$pre$actions, "formula")
+  purge_(x$pre$actions, "formula")
 }
 
-
 purge_action_recipe <- function(x) {
-  purge_action(x$pre$actions, "recipe")
+  purge_(x$pre$actions, "recipe")
+}
+
+purge_results_split <- function(x) {
+  purge_(x$pre$results, "split")
+}
+
+purge_results_resample <- function(x) {
+  purge_(x$pre$results, "resample")
+}
+
+purge_results_formula <- function(x) {
+  purge_(x$pre$results, "formula")
+}
+
+purge_results_recipe <- function(x) {
+  purge_(x$pre$results, "recipe")
 }
 
 combine_outcome_preds <- function(mold) {
   cbind(mold$outcomes, mold$predictors)
 }
+
+# To compare equality of models, elapsed time is sometimes
+# the only different thing
+strip_elapsed <- function(x) {
+  x$fit$fit$elapsed <- NULL
+  x
+}
+
+# To compare equality with all.equal in tests. all.equal
+# doesn't support list columns in tibbles. Here we just
+# turn to dataframe all rsplit objects
+rsplit2df <- function(x) {
+  x$pre$results$resample <- as.data.frame(x$pre$results$resample)
+  x$fit$fit$tuning <- as.data.frame(x$fit$fit$tuning)
+
+  x
+}
+

@@ -66,7 +66,10 @@ drop_data <- function(x) {
     # of the main character in the analysis. Everything
     # after data is indeed a stage which contains actions
     data = NULL,
-    pre = new_stage_pre(actions = x$pre$actions, mold = NULL),
+    pre = new_stage_pre(actions = x$pre$actions,
+                        mold = NULL,
+                        seed = x$pre$seed,
+                        results = NULL),
     fit = new_stage_fit(actions = x$fit$actions),
     post = new_stage_post(actions = x$post$actions),
     trained = FALSE

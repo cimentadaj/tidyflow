@@ -141,7 +141,7 @@ pull_tflow_tuning <- function(x) {
   validate_is_tidyflow(x)
 
   if (has_fit_tuning(x)) {
-    return(x$pre$actions$resample$tuning_res)
+    return(x$fit$fit$tuning)
   }
 
   abort("The tidyflow does not have a resamples result. Have you called `fit()` yet?")
@@ -187,6 +187,6 @@ pull_tidyflow_testing <- function(x) {
     abort("Tidyflow has not yet been trained. Do you need to call `fit()`?")
   }
 
-  test_data <- x$pre$actions$split$testing
+  test_data <- rsample::testing(x$pre$results$split)
   test_data
 }

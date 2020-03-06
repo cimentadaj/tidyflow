@@ -59,6 +59,7 @@
 #' replace_resample(wf, bootstraps)
 #'
 plug_resample <- function(x, .f, ...) {
+
   .dots <- enquos(...)
 
   if (!is_uniquely_named(.dots)) {
@@ -84,7 +85,10 @@ drop_resample <- function(x) {
 
   new_tidyflow(
     data = x$data,
-    pre = new_stage_pre(actions = purge_action_resample(x), mold = x$data),
+    pre = new_stage_pre(actions = purge_action_resample(x),
+                        mold = x$data,
+                        seed = x$pre$seed,
+                        results = purge_results_resample(x)),
     fit = new_stage_fit(actions = x$fit$actions),
     post = new_stage_post(actions = x$post$actions),
     trained = FALSE
@@ -123,7 +127,7 @@ fit.action_resample <- function(object, tflow) {
     abort("The resample function should return an object of class `rset`.")
   }
 
-  tflow$pre$actions$resample$rset_res <- resample_res
+  tflow$pre$results$resample <- resample_res
   
   # All pre steps return the `tflow`
   tflow

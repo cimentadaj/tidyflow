@@ -90,7 +90,10 @@ drop_split <- function(x) {
 
   new_tidyflow(
     data = x$data,
-    pre = new_stage_pre(actions = purge_action_split(x), mold = x$data),
+    pre = new_stage_pre(actions = purge_action_split(x),
+                        mold = x$data,
+                        seed = x$pre$seed,
+                        results = purge_results_split(x)),
     fit = new_stage_fit(actions = x$fit$actions),
     post = new_stage_post(actions = x$post$actions),
     trained = FALSE
@@ -106,7 +109,7 @@ replace_split <- function(x, .f, ...) {
 }
 
 # ------------------------------------------------------------------------------
-fit.action_split <- function(object, tidyflow) {
+fit.action_split <- function(object, tflow) {
 
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)
@@ -115,7 +118,7 @@ fit.action_split <- function(object, tidyflow) {
     # function body
     object[[1]],
     # function args
-    tidyflow$pre$mold,
+    tflow$pre$mold,
     !!!args
   )
 
@@ -123,11 +126,11 @@ fit.action_split <- function(object, tidyflow) {
     abort("The split function should return an object of class `rsplit`.")
   }
 
-  tidyflow$pre$mold <- rsample::training(split_res)
-  tidyflow$pre$actions$split$testing <- rsample::testing(split_res)
+  tflow$pre$mold <- rsample::training(split_res)
+  tflow$pre$results$split <- split_res
   
   # All pre steps return the `tflow`
-  tidyflow
+  tflow
 }
 
 # Exclude blueprint; it doesn't apply to data
@@ -150,7 +153,9 @@ replace_fit <- function(x) {
     x <-
       new_tidyflow(
         data = x$data,
-        pre = new_stage_pre(actions = x$pre$actions, mold = x$data),
+        pre = new_stage_pre(actions = x$pre$actions,
+                            mold = x$data,
+                            seed = x$pre$seed),
         fit = new_stage_fit(actions = x$fit$actions),
         post = new_stage_post(actions = x$post$actions),
         trained = FALSE

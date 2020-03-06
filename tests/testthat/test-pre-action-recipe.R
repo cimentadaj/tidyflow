@@ -33,7 +33,7 @@ test_that("Can add recipe after model fit and refit", {
   tflow <- plug_recipe(drop_formula(mod1_no_rcp), rcp)
   mod2_rcp <- fit(tflow)
 
-  expect_is(mod2_rcp$pre$actions$recipe$recipe_res, "recipe")
+  expect_is(mod2_rcp$pre$results$recipe, "recipe")
   expect_true(mod2_rcp$trained)
 })
 
