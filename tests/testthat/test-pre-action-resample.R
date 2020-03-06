@@ -20,31 +20,38 @@ test_that("remove a resample specification", {
   expect_equal(tidyflow_no_resample$pre, tidyflow_removed_resample$pre)
 })
 
-test_that("Dropping a resample and refitting is the same as normal fitting", {
+test_that("dropping a resample and refitting gives same result", {
+  tflow <- tidyflow(mtcars, seed = 2315)
+  tflow <- plug_recipe(tflow, ~ recipes::recipe(mpg ~ cyl, .x))
+  tflow <- plug_split(tflow, rsample::initial_split)
+  tflow <- plug_resample(tflow, rsample::vfold_cv)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
 
-  rcp <-
-    ~ .x %>%
-    recipes::recipe(mpg ~ cyl) %>%
-    recipes::step_log(cyl, base = 10)
+  mod1_resample <- fit(tflow)
+  tflow <- drop_resample(mod1_resample)
+  tflow <- plug_resample(tflow, rsample::vfold_cv)
+  mod2_no_resample <- fit(tflow)
 
-  mod <-
-    mtcars %>%
-    tidyflow() %>%
-    plug_split(rsample::initial_split) %>%
-    plug_recipe(rcp) %>%
-    plug_model(parsnip::set_engine(parsnip::linear_reg(), "lm"))
+  expect_equal(rsplit2df(strip_elapsed(mod1_resample)),
+               rsplit2df(strip_elapsed(mod2_no_resample)))
+})
 
-    set.seed(5421)
-    non_resample_mod <- mod %>% fit()
-    resample_mod <- mod %>% plug_resample(rsample::vfold_cv) %>% fit()
-    set.seed(5421)
-    dropped_resample_mod <- resample_mod %>% drop_resample() %>% fit()
+test_that("Fit resample, drop a resample and refit is the same as normal fitting", { #nolintr
+  rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)
+  tflow <- tidyflow(mtcars, seed = 542)
+  tflow <- plug_split(tflow, rsample::initial_split)
+  tflow <- plug_recipe(tflow, rcp)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
 
-    # Setting the time elapsed to NULL, since there can be very minor
-    # differences in time fitting the model for comparison.
-    dropped_resample_mod$fit$fit$elapsed <- NULL
-    non_resample_mod$fit$fit$elapsed <- NULL
-    expect_equal(non_resample_mod, dropped_resample_mod)
+  mod1_no_resample <- fit(tflow)
+  resample_mod <- fit(plug_resample(mod1_no_resample, rsample::vfold_cv))
+  mod2_no_resample <- fit(drop_resample(resample_mod))
+
+  # Setting the time elapsed to NULL, since there can be very minor
+  # differences in time fitting the model for comparison.
+  expect_equal(strip_elapsed(mod1_no_resample),
+               strip_elapsed(mod2_no_resample))
+})
 
 test_that("Can add resample after model fit and refit", {
   rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)

@@ -69,8 +69,7 @@ test_that("formula preprocessing is done with split to the `new_data`", {
   mod <- parsnip::linear_reg()
   mod <- parsnip::set_engine(mod, "lm")
 
-  set.seed(23141)
-  tidyflow <- tidyflow(mtcars)
+  tidyflow <- tidyflow(mtcars, seed = 23141)
   tidyflow <- plug_split(tidyflow, rsample::initial_split)
   tidyflow <- plug_formula(tidyflow, mpg ~ log(cyl))
   tidyflow <- plug_model(tidyflow, mod)
@@ -83,8 +82,7 @@ test_that("formula preprocessing is done with split to the `new_data`", {
   mtcars_with_log <- mtcars
   mtcars_with_log$cyl <- log(mtcars_with_log$cyl)
 
-  set.seed(23141)
-  tidyflow <- tidyflow(mtcars_with_log)
+  tidyflow <- tidyflow(mtcars_with_log, seed = 23141)
   tidyflow <- plug_split(tidyflow, rsample::initial_split)
   tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
   tidyflow <- plug_model(tidyflow, mod)

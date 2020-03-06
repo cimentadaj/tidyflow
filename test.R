@@ -24,7 +24,6 @@ mod <-
   plug_resample(vfold_cv) %>%
   plug_model(set_engine(linear_reg(), "lm"))
 
-set.seed(23141)
 res_vf <-
   mod %>%
   fit()

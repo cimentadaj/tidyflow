@@ -81,6 +81,21 @@ test_that("remove a recipe", {
   expect_equal(tidyflow_no_recipe$pre, tidyflow_removed_recipe$pre)
 })
 
+test_that("dropping a recipe and refitting gives same result", {
+  tflow <- tidyflow(mtcars, seed = 2315)
+  tflow <- plug_recipe(tflow, ~ recipes::recipe(mpg ~ cyl, .x))
+  tflow <- plug_split(tflow, rsample::initial_split)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
+
+  mod1_rcp <- fit(tflow)
+  tflow <- drop_recipe(mod1_rcp)
+  tflow <- plug_recipe(tflow, ~ recipes::recipe(mpg ~ cyl, .x))
+  mod2_no_rcp <- fit(tflow)
+
+  expect_equal(strip_elapsed(mod1_rcp),
+               strip_elapsed(mod2_no_rcp))
+})
+
 test_that("remove a recipe after model fit", {
   lm_model <- parsnip::linear_reg()
   lm_model <- parsnip::set_engine(lm_model, "lm")

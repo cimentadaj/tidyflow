@@ -18,6 +18,21 @@ test_that("remove a split specification", {
   expect_equal(tidyflow_no_split$pre, tidyflow_removed_split$pre)
 })
 
+test_that("dropping a split and refitting gives same result", {
+  tflow <- tidyflow(mtcars, seed = 2315)
+  tflow <- plug_recipe(tflow, ~ recipes::recipe(mpg ~ cyl, .x))
+  tflow <- plug_split(tflow, rsample::initial_split)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
+
+  mod1_split <- fit(tflow)
+  tflow <- drop_split(mod1_split)
+  tflow <- plug_split(tflow, rsample::initial_split)
+  mod2_no_split <- fit(tflow)
+
+  expect_equal(strip_elapsed(mod1_split),
+               strip_elapsed(mod2_no_split))
+})
+
 test_that("Can add split after model fit and refit", {
   rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)
   tflow <- tidyflow(mtcars, seed = 542)

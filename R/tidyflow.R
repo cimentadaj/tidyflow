@@ -9,6 +9,9 @@
 #' @param data A data frame or tibble used to begin the tidyflow. This is
 #' optional as the data can be specified with [plug_data()]. 
 #' 
+#' @param seed A seed to be used for reproducibility across the complete
+#' workflow. This seed is used for every step, to ensure the same result
+#' when doing random splitting, resampling and model fitting.
 #' @return
 #' A new `tidyflow` object.
 #'
@@ -20,13 +23,13 @@
 #' wrk <- plug_recipe(wrk, rec)
 #'
 #' @export
-tidyflow <- function(data = NULL) {
+tidyflow <- function(data = NULL, seed = NULL) {
   if (!is.null(data) && !is.data.frame(data)) {
     abort("A tidyflow can only begin with a data frame; `data` must a data frame") #nolintr
   }
 
   new_tidyflow(data = data,
-               pre = new_stage_pre(mold = data))
+               pre = new_stage_pre(mold = data, seed = seed))
 }
 
 # ------------------------------------------------------------------------------

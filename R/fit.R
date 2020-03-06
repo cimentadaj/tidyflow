@@ -54,6 +54,8 @@ fit.tidyflow <- function(tflow, ..., control = control_tidyflow()) {
   ellipsis::check_dots_empty()
   validate_has_minimal_components(tflow)
 
+  # If no seed has been specified, `set.seed` supports NULL as random
+  set.seed(tflow$pre$seed)
   tflow <- .fit_pre(tflow)
   tflow <- .fit_model(tflow, control)
 

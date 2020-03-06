@@ -4,11 +4,15 @@
 \alias{tidyflow}
 \title{Create a tidyflow}
 \usage{
-tidyflow(data = NULL)
+tidyflow(data = NULL, seed = NULL)
 }
 \arguments{
 \item{data}{A data frame or tibble used to begin the tidyflow. This is
 optional as the data can be specified with \code{\link[=plug_data]{plug_data()}}.}
+
+\item{seed}{A seed to be used for reproducibility across the complete
+workflow. This seed is used for every step, to ensure the same result
+when doing random splitting, resampling and model fitting.}
 }
 \value{
 A new \code{tidyflow} object.
