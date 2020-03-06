@@ -99,7 +99,7 @@ fit.action_model <- function(object, tflow, control, ...) {
 
   # It means that they specified a resample
   if (!is.null(resample_res)) {
-    obj <- tflow$pre$results$recipe %||% tflow$pre$actions$formula
+    obj <- tflow$pre$results$recipe %||% tflow$pre$actions$formula$formula
 
     tflow$fit$fit$tuning <-
       tune::fit_resamples(obj,

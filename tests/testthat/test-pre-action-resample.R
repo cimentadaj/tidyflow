@@ -36,6 +36,29 @@ test_that("dropping a resample and refitting gives same result", {
                rsplit2df(strip_elapsed(mod2_no_resample)))
 })
 
+
+test_that("plug_resample can work with recipe or formula", {
+  # This test is more about fit.action_model which calles fit_resample
+  # in which it decides to user recipe or formula on whether their NULL
+  tflow <- tidyflow(mtcars, seed = 2315)
+  tflow <- plug_recipe(tflow, ~ recipes::recipe(mpg ~ cyl, .x))
+  tflow <- plug_split(tflow, rsample::initial_split)
+  tflow <- plug_resample(tflow, rsample::vfold_cv)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
+
+  mod1_recipe <- fit(tflow)
+
+  tflow <- drop_recipe(tflow)
+  tflow <- plug_formula(tflow, mpg ~ cyl)
+  mod1_formula <- fit(tflow)
+
+  # rsplit can be compared because all.equal doesn't support
+  # it. Instead, we convert to data frame to compare.
+  expect_equal(as.data.frame(pull_tflow_tuning(mod1_recipe)),
+               as.data.frame(pull_tflow_tuning(mod1_formula)))
+
+})
+
 test_that("Fit resample, drop a resample and refit is the same as normal fitting", { #nolintr
   rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)
   tflow <- tidyflow(mtcars, seed = 542)
