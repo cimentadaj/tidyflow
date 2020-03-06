@@ -136,6 +136,26 @@ test_that("Updating a split after removing one, warns", {
 
 })
 
+test_that("drop_split removes the action and the result", {
+  lm_model <- parsnip::linear_reg()
+  lm_model <- parsnip::set_engine(lm_model, "lm")
+
+  tidyflow <- plug_recipe(tidyflow(mtcars),
+                          ~ recipes::recipe(mpg ~ cyl, data = .x))
+  
+  tidyflow <- plug_split(tidyflow, rsample::initial_split)
+  tidyflow <- plug_model(tidyflow, lm_model)
+  mod1 <- fit(tidyflow)
+  tidyflow <- drop_split(tidyflow)
+
+  # Both are null on dropped tidyflow
+  expect_null(tidyflow$pre$results$split)
+  expect_null(tidyflow$pre$actions$split)
+  # Both are available on fitted tidyflow
+  expect_is(mod1$pre$results$split, "rsplit")
+  expect_is(mod1$pre$actions$split[[1]], "function")
+})
+
 test_that("Updating a split doesn't remove anything else", {
 
   # The recipe

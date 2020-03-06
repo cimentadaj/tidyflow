@@ -73,7 +73,44 @@ test_that("remove a model after model fit", {
 
   expect_equal(tidyflow_no_model$fit, tidyflow_removed_model$fit)
   # The removed tidyflow still keeps the original mold
-  expect_false(identical(tidyflow_removed_model$data, tidyflow_removed_model$pre$mold))
+  expect_false(identical(tidyflow_removed_model$data,
+                         tidyflow_removed_model$pre$mold))
+})
+
+test_that("remove a model after model fit keeps all results/actions intact", {
+  # Check it with a recipe
+  lm_model <- parsnip::linear_reg()
+  lm_model <- parsnip::set_engine(lm_model, "lm")
+  tflow <- tidyflow(mtcars)
+  tflow <- plug_recipe(tflow, ~ recipes::recipe(.x, mpg ~ cyl))
+  tflow_nofit  <- plug_model(tflow, lm_model)
+  tflow_fit <- fit(tflow_nofit)
+  tflow_drop  <- drop_model(tflow_fit)
+
+  # Make sure data and pre are exactly the same in tflow without
+  # model and with model
+  expect_equal(tflow_fit[c("data", "pre")], tflow_drop[c("data", "pre")])
+
+  # Now adds a split
+  tflow_nofit <- plug_split(tflow_nofit, rsample::initial_split)
+  tflow_fit <- fit(tflow_nofit)
+  tflow_drop  <- drop_model(tflow_fit)
+  expect_equal(tflow_fit[c("data", "pre")], tflow_drop[c("data", "pre")])
+
+  # Now adds a resample
+  tflow_nofit <- plug_resample(tflow_nofit, rsample::vfold_cv)
+  tflow_fit <- fit(tflow_nofit)
+  tflow_drop  <- drop_model(tflow_fit)
+  expect_equal(rsplit2df(tflow_fit[c("data", "pre")]),
+               rsplit2df(tflow_drop[c("data", "pre")]))
+
+  # Removes the recipe and adds the formula
+  tflow_nofit <- drop_recipe(tflow_nofit)
+  tflow_nofit <- plug_formula(tflow_nofit, mpg ~ cyl)
+  tflow_fit <- fit(tflow_nofit)
+  tflow_drop  <- drop_model(tflow_fit)
+  expect_equal(rsplit2df(tflow_fit[c("data", "pre")]),
+               rsplit2df(tflow_drop[c("data", "pre")]))
 })
 
 test_that("update a model", {

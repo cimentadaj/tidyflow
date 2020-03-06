@@ -77,6 +77,32 @@ test_that("remove a formula after model fit", {
   expect_null(tidyflow_removed_formula$fit$fit)
 })
 
+test_that("drop_formula removes the action and the result", {
+  lm_model <- parsnip::linear_reg()
+  lm_model <- parsnip::set_engine(lm_model, "lm")
+  tidyflow <- plug_formula(tidyflow(mtcars), mpg ~ cyl)
+  tidyflow <- plug_model(tidyflow, lm_model)
+  mod1 <- fit(tidyflow)
+  tidyflow <- drop_formula(tidyflow)
+
+  # Both are null on dropped tidyflow
+  expect_null(tidyflow$pre$results$formula)
+  expect_null(tidyflow$pre$actions$formula)
+  # Both are available on fitted tidyflow
+  expect_is(mod1$pre$results$formula, "list")
+  expect_length(mod1$pre$results$formula, 4)
+  expect_named(mod1$pre$results$formula)
+  test_mold <- function(x) {
+    mold <- combine_outcome_preds(x)
+    expect_is(mold, "data.frame")
+    expect_equal(nrow(mold), 32)
+    expect_is(x$blueprint, "hardhat_blueprint")
+  }
+  test_mold(mod1$pre$results$formula)
+  expect_is(mod1$pre$actions$formula[[1]], "formula")
+})
+
+
 test_that("update a formula", {
   tidyflow <- tidyflow()
   tidyflow <- plug_formula(tidyflow, mpg ~ cyl)

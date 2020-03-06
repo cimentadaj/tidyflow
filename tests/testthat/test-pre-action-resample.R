@@ -59,6 +59,27 @@ test_that("plug_resample can work with recipe or formula", {
 
 })
 
+
+test_that("drop_resample removes the action and the result", {
+  lm_model <- parsnip::linear_reg()
+  lm_model <- parsnip::set_engine(lm_model, "lm")
+
+  tidyflow <- plug_recipe(tidyflow(mtcars),
+                          ~ recipes::recipe(mpg ~ cyl, data = .x))
+  
+  tidyflow <- plug_resample(tidyflow, rsample::vfold_cv)
+  tidyflow <- plug_model(tidyflow, lm_model)
+  mod1 <- fit(tidyflow)
+  tidyflow <- drop_resample(tidyflow)
+
+  # Both are null on dropped tidyflow
+  expect_null(tidyflow$pre$results$resample)
+  expect_null(tidyflow$pre$actions$resample)
+  # Both are available on fitted tidyflow
+  expect_is(mod1$pre$results$resample, "rset")
+  expect_is(mod1$pre$actions$resample[[1]], "function")
+})
+
 test_that("Fit resample, drop a resample and refit is the same as normal fitting", { #nolintr
   rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)
   tflow <- tidyflow(mtcars, seed = 542)

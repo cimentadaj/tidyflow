@@ -70,6 +70,26 @@ test_that("Can add recipe after model fit and refit", {
   resample_mod <- fit(plug_resample(mod1_no_resample, rsample::vfold_cv))
 })
 
+test_that("drop_recipe removes the action and the result", {
+  lm_model <- parsnip::linear_reg()
+  lm_model <- parsnip::set_engine(lm_model, "lm")
+
+  tidyflow <- plug_recipe(tidyflow(mtcars),
+                          ~ recipes::recipe(mpg ~ cyl, data = .x))
+  
+  tidyflow <- plug_model(tidyflow, lm_model)
+  mod1 <- fit(tidyflow)
+  tidyflow <- drop_recipe(tidyflow)
+
+  # Both are null on dropped tidyflow
+  expect_null(tidyflow$pre$results$recipe)
+  expect_null(tidyflow$pre$actions$recipe)
+  # Both are available on fitted tidyflow
+  expect_is(mod1$pre$results$recipe, "recipe")
+  expect_is(mod1$pre$actions$recipe[[1]], "function")
+})
+
+
 test_that("remove a recipe", {
   tidyflow_no_recipe <- tidyflow(mtcars)
   tidyflow_with_recipe <- plug_recipe(tidyflow_no_recipe,
