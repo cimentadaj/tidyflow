@@ -20,6 +20,33 @@ test_that("remove a resample specification", {
   expect_equal(tidyflow_no_resample$pre, tidyflow_removed_resample$pre)
 })
 
+test_that("Dropping a resample and refitting is the same as normal fitting", {
+
+  rcp <-
+    ~ .x %>%
+    recipes::recipe(mpg ~ cyl) %>%
+    recipes::step_log(cyl, base = 10)
+
+  mod <-
+    mtcars %>%
+    tidyflow() %>%
+    plug_split(rsample::initial_split) %>%
+    plug_recipe(rcp) %>%
+    plug_model(parsnip::set_engine(parsnip::linear_reg(), "lm"))
+
+    set.seed(5421)
+    non_resample_mod <- mod %>% fit()
+    resample_mod <- mod %>% plug_resample(rsample::vfold_cv) %>% fit()
+    set.seed(5421)
+    dropped_resample_mod <- resample_mod %>% drop_resample() %>% fit()
+
+    # Setting the time elapsed to NULL, since there can be very minor
+    # differences in time fitting the model for comparison.
+    dropped_resample_mod$fit$fit$elapsed <- NULL
+    non_resample_mod$fit$fit$elapsed <- NULL
+    expect_equal(non_resample_mod, dropped_resample_mod)
+})
+
 # TODO
 # After you define a fit method for resample, adapt this
 # example to remove the fit object after resample

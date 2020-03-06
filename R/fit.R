@@ -12,8 +12,7 @@
 #' In the future, there will also be _postprocessing_ steps that can be added
 #' after the model has been fit.
 #'
-#' @param object A tidyflow
-#'
+#' @param tflow A tidyflow object
 #' @param ... Not used
 #'
 #' @param control A [control_tidyflow()] object
@@ -46,28 +45,26 @@
 #'
 #' fit(recipe_tidyflow)
 #'
+fit.tidyflow <- function(tflow, ..., control = control_tidyflow()) {
 
-fit.tidyflow <- function(object, ..., control = control_tidyflow()) {
-  tidyflow <- object
-
-  if (!has_raw_data(tidyflow)) {
+  if (!has_raw_data(tflow)) {
     abort("`data` must be specified to fit a tidyflow; Do you need `plug_data`?")
   }
 
   ellipsis::check_dots_empty()
-  validate_has_minimal_components(tidyflow)
+  validate_has_minimal_components(tflow)
 
-  tidyflow <- .fit_pre(tidyflow)
-  tidyflow <- .fit_model(tidyflow, control)
+  tflow <- .fit_pre(tflow)
+  tflow <- .fit_model(tflow, control)
 
   # Eh? Predictions during the fit?
   # pred <- result$pred
-  # result <- fit_post(tidyflow, pred)
+  # result <- fit_post(tflow, pred)
 
   # Only if it has be fit (NOT TUNED!)
-  tidyflow$trained <- if (has_fit(tidyflow)) TRUE else FALSE
+  tflow$trained <- if (has_fit(tflow)) TRUE else FALSE
 
-  tidyflow
+  tflow
 }
 
 # ------------------------------------------------------------------------------

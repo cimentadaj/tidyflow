@@ -84,7 +84,7 @@ drop_resample <- function(x) {
 
   new_tidyflow(
     data = x$data,
-    pre = new_stage_pre(actions = purge_action_resample(x)),
+    pre = new_stage_pre(actions = purge_action_resample(x), mold = x$data),
     fit = new_stage_fit(actions = x$fit$actions),
     post = new_stage_post(actions = x$post$actions),
     trained = FALSE

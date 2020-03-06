@@ -5,10 +5,10 @@
 \alias{fit.tidyflow}
 \title{Fit a tidyflow object}
 \usage{
-\method{fit}{tidyflow}(object, ..., control = control_tidyflow())
+\method{fit}{tidyflow}(tflow, ..., control = control_tidyflow())
 }
 \arguments{
-\item{object}{A tidyflow}
+\item{tflow}{A tidyflow object}
 
 \item{...}{Not used}
 
