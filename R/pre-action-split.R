@@ -61,10 +61,6 @@
 #'
 plug_split <- function(x, .f, ...) {
 
-  ## In case you fit the model and **then** add a split.
-  ## This fun removes everything.
-  x <- replace_fit(x)
-
   ## if (has_preprocessor_resample(x)) {
   ##   abort("A tidyflow must never have a resample before splitting the data")
   ## }

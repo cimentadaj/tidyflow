@@ -45,6 +45,19 @@ test_that("Dropping a resample and refitting is the same as normal fitting", {
     dropped_resample_mod$fit$fit$elapsed <- NULL
     non_resample_mod$fit$fit$elapsed <- NULL
     expect_equal(non_resample_mod, dropped_resample_mod)
+
+test_that("Can add resample after model fit and refit", {
+  rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)
+  tflow <- tidyflow(mtcars, seed = 542)
+  tflow <- plug_split(tflow, rsample::initial_split)
+  tflow <- plug_recipe(tflow, rcp)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
+
+  mod1_no_resample <- fit(tflow)
+  mod2_resample <- fit(plug_resample(mod1_no_resample, rsample::vfold_cv))
+
+  expect_is(mod2_resample$pre$actions$resample$tuning_res, "rset")
+  expect_false(mod2_resample$trained)
 })
 
 # TODO

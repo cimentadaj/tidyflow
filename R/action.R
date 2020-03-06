@@ -3,6 +3,10 @@ plug_action <- function(x, action, name) {
     abort("`x` must be a tidyflow.")
   }
 
+  ## In case you fit the model and **then** add a something.
+  ## This fun removes everything.
+  x <- replace_fit(x)
+
   check_conflicts(action, x)
 
   plug_action_impl(x, action, name)

@@ -23,6 +23,21 @@ test_that("cannot add a recipe if a formula already exists", {
                "cannot be added when a formula already exists")
 })
 
+test_that("Can add recipe after model fit and refit", {
+  rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)
+  tflow <- tidyflow(mtcars, seed = 542)
+  tflow <- plug_formula(tflow, mpg ~ cyl)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
+
+  mod1_no_rcp <- fit(tflow)
+  tflow <- plug_recipe(drop_formula(mod1_no_rcp), rcp)
+  mod2_rcp <- fit(tflow)
+
+  expect_is(mod2_rcp$pre$actions$recipe$recipe_res, "recipe")
+  expect_true(mod2_rcp$trained)
+})
+
+
 test_that("recipe function must return a recipe object", {
   tidyflow <- tidyflow(mtcars)
   lm_model <- parsnip::linear_reg()
@@ -42,6 +57,17 @@ test_that("recipe function must return a recipe object", {
     fit(tidyflow),
     "The recipe function `.f` should return an object of class `recipe`"
   )
+})
+
+test_that("Can add recipe after model fit and refit", {
+  rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)
+  tflow <- tidyflow(mtcars, seed = 542)
+  tflow <- plug_split(tflow, rsample::initial_split)
+  tflow <- plug_recipe(tflow, rcp)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
+
+  mod1_no_resample <- fit(tflow)
+  resample_mod <- fit(plug_resample(mod1_no_resample, rsample::vfold_cv))
 })
 
 test_that("remove a recipe", {
