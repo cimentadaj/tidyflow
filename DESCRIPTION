@@ -26,14 +26,14 @@ Imports:
     hardhat,
     parsnip (>= 0.0.4),
     rlang (>= 0.4.1),
-    tune (>= 0.0.1)
+    tune (>= 0.0.1),
+    rsample
 Suggests: 
     covr,
     knitr,
     recipes,
     rmarkdown,
-    testthat (>= 2.3.0),
-    rsample
+    testthat (>= 2.3.0)
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

@@ -5,6 +5,16 @@
 #' not exist yet, an error is thrown.
 #'
 #' - `pull_tflow_rawdata()` returns the complete raw/untrained data.
+#'
+#' - `pull_tflow_training()` returns the training data from the split. Only
+#'    works when a split has been specified with \code{\link{plug_split}}.
+#'    If \code{prep = TRUE}, the preprocessing (either recipe or formula)
+#'    is applied to the data.
+#'
+#' - `pull_tflow_testing()` returns the testing data from the split. Only
+#'    works when a split has been specified with \code{\link{plug_split}}
+#'    If \code{prep = TRUE}, the preprocessing (either recipe or formula)
+#'    is applied to the data.
 #' 
 #' - `pull_tflow_preprocessor()` returns either the formula or recipe used
 #'   for preprocessing.
@@ -20,16 +30,12 @@
 #' - `pull_tflow_prepped_recipe()` returns the prepped recipe. It is
 #'   extracted from the mold object returned from `pull_tflow_mold()`.
 #'
-#' - `pull_tflow_testing()` returns the raw testing data (without applying
-#'   the preprocessing steps recipe or formula). Since the split
-#'   training/testing is done when the user `fit()'s the model, the testing
-#'   data can only be extracted after a model fit. The prepping of the testing
-#'   data is done when specifying `new_data` in `predict.tidyflow`
-#'   automatically.
-#'
 #' @param x A tidyflow
 #'
-#'
+#' @param prep A logical stating whether the training/testing data should be
+#' returned with the preprocessing step applied (either the formula or the recipe
+#' preprocessing). By default it is set to \code{FALSE}.
+#' 
 #' @return
 #' The extracted value from the tidyflow, `x`, as described in the description
 #' section.
@@ -94,6 +100,53 @@ pull_tflow_rawdata <- function(x) {
   abort("The tidyflow does not have data.")
 }
 
+#' @rdname tidyflow-extractors
+#' @export
+pull_tflow_split <- function(x) {
+  if (!(has_fit(x) || has_fit_tuning(x))) {
+    abort("Tidyflow has not yet been trained. Do you need to call `fit()`?")
+  }
+
+  if (!has_preprocessor_split(x)) {
+    abort("The tidyflow must have a split preprocessor.")
+  }
+
+  x$pre$results$split
+}
+
+#' @rdname tidyflow-extractors
+#' @export
+pull_tflow_training <- function(x, prep = FALSE) {
+  validate_is_tidyflow(x)
+  # No need to check if there's a split or it has been fit
+  # pull_tflow_split does.
+  training_data <- rsample::training(pull_tflow_split(x))
+
+  if (prep) {
+    training_data <- hardhat::forge(training_data, pull_tflow_mold(x)$blueprint,
+                                    outcomes = TRUE)
+    training_data <- combine_outcome_preds(training_data)
+  }
+
+  training_data
+}
+
+#' @rdname tidyflow-extractors
+#' @export
+pull_tflow_testing <- function(x, prep = FALSE) {
+  validate_is_tidyflow(x)
+  # No need to check if there's a split or it has been fit
+  # pull_tflow_split does.
+  test_data <- rsample::testing(pull_tflow_split(x))
+
+  if (prep) {
+    test_data <- hardhat::forge(test_data, pull_tflow_mold(x)$blueprint,
+                                outcomes = TRUE)
+    test_data <- combine_outcome_preds(test_data)
+  }
+
+  test_data
+}
 
 #' @rdname tidyflow-extractors
 #' @export
@@ -172,21 +225,4 @@ pull_tflow_prepped_recipe <- function(x) {
   mold <- pull_tflow_mold(x)
 
   mold$blueprint$recipe
-}
-
-#' @rdname tidyflow-extractors
-#' @export
-pull_tflow_testing <- function(x) {
-  validate_is_tidyflow(x)
-
-  if (!has_preprocessor_split(x)) {
-    abort("The tidyflow must have a split preprocessor.")
-  }
-
-  if (!x$trained) {
-    abort("Tidyflow has not yet been trained. Do you need to call `fit()`?")
-  }
-
-  test_data <- rsample::testing(x$pre$results$split)
-  test_data
 }

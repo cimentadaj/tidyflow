@@ -3,16 +3,24 @@
 \name{tidyflow-extractors}
 \alias{tidyflow-extractors}
 \alias{pull_tflow_rawdata}
+\alias{pull_tflow_split}
+\alias{pull_tflow_training}
+\alias{pull_tflow_testing}
 \alias{pull_tflow_preprocessor}
 \alias{pull_tflow_spec}
 \alias{pull_tflow_fit}
 \alias{pull_tflow_tuning}
 \alias{pull_tflow_mold}
 \alias{pull_tflow_prepped_recipe}
-\alias{pull_tflow_testing}
 \title{Extract elements of a tidyflow}
 \usage{
 pull_tflow_rawdata(x)
+
+pull_tflow_split(x)
+
+pull_tflow_training(x, prep = FALSE)
+
+pull_tflow_testing(x, prep = FALSE)
 
 pull_tflow_preprocessor(x)
 
@@ -25,11 +33,13 @@ pull_tflow_tuning(x)
 pull_tflow_mold(x)
 
 pull_tflow_prepped_recipe(x)
-
-pull_tflow_testing(x)
 }
 \arguments{
 \item{x}{A tidyflow}
+
+\item{prep}{A logical stating whether the training/testing data should be
+returned with the preprocessing step applied (either the formula or the recipe
+preprocessing). By default it is set to \code{FALSE}.}
 }
 \value{
 The extracted value from the tidyflow, \code{x}, as described in the description
@@ -40,6 +50,10 @@ These functions extract various elements from a tidyflow object. If they do
 not exist yet, an error is thrown.
 \itemize{
 \item \code{pull_tflow_rawdata()} returns the complete raw/untrained data.
+\item \code{pull_tflow_training()} returns the training data from the split. Only
+works when a split has been specified with \code{\link{plug_split}}
+\item \code{pull_tflow_testing()} returns the testing data from the split. Only
+works when a split has been specified with \code{\link{plug_split}}
 \item \code{pull_tflow_preprocessor()} returns either the formula or recipe used
 for preprocessing.
 \item \code{pull_tflow_spec()} returns the parsnip model specification.

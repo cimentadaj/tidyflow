@@ -185,6 +185,9 @@ test_that("error if not a tidyflow", {
   )
 })
 
+# ------------------------------------------------------------------------------
+# pull_tflow_rawdata()
+
 test_that("can pull the raw data", {
   tidyflow <- tidyflow(mtcars)
 
@@ -200,6 +203,9 @@ test_that("error if no raw data", {
     "The tidyflow does not have data"
   )
 })
+
+# ------------------------------------------------------------------------------
+# pull_tflow_testing()
 
 
 check_testing <- function(x) {
@@ -242,3 +248,79 @@ test_that("can pull testing data", {
   check_testing(res)
 
 })
+
+# ------------------------------------------------------------------------------
+# pull_tflow_split()
+
+tidyflow <- tidyflow(mtcars, seed = 54132)
+tidyflow <- plug_split(tidyflow, rsample::initial_split)
+tidyflow <- plug_recipe(tidyflow, ~ recipes::recipe(.x, mpg ~ cyl))
+tidyflow <- plug_model(tidyflow,
+                       parsnip::set_engine(parsnip::linear_reg(), "lm"))
+
+test_that("pull_tflow_split can pull a split", {
+  tidyflow <- fit(tidyflow)
+  expect_is(pull_tflow_split(tidyflow), "rsplit")
+})
+
+test_that("pull_tflow_split error if no split", {
+  expect_error(pull_tflow_split(fit(drop_split(tidyflow))),
+               "The tidyflow must have a split preprocessor")
+})
+
+test_that("error if not a tidyflow", {
+  expect_error(pull_tflow_split(tidyflow),
+               "Tidyflow has not yet been trained. Do you need to call `fit()`?"
+               )
+})
+
+# ------------------------------------------------------------------------------
+# pull_tflow_training()
+
+test_testing_training <- function(untrained_tflow) {
+  test_that("pull_tflow_training can pull the raw training", {
+    tidyflow <- fit(untrained_tflow)
+    expect_equal(pull_tflow_training(tidyflow),
+                 rsample::training(pull_tflow_split(tidyflow)))
+  })
+
+  
+  test_that("pull_tflow_training can pull the prepped training data", {
+    tidyflow <- fit(untrained_tflow)
+
+    training_data <- pull_tflow_training(tidyflow)
+    training_data <- hardhat::forge(training_data,
+                                    pull_tflow_mold(tidyflow)$blueprint,
+                                    outcomes = TRUE)
+    training_data <- combine_outcome_preds(training_data)
+    
+    expect_equal(pull_tflow_training(tidyflow, prep = TRUE),
+                 training_data)
+  })
+
+
+  test_that("pull_tflow_split error if no split", {
+    expect_error(pull_tflow_split(fit(drop_split(untrained_tflow))),
+                 "The tidyflow must have a split preprocessor")
+  })
+
+
+  test_that("error if not a tidyflow", {
+    expect_error(pull_tflow_split(untrained_tflow),
+                 "Tidyflow has not yet been trained. Do you need to call `fit()`?"
+                 )
+  })
+}
+
+# With recipe
+test_testing_training(tidyflow)
+
+# With formula
+test_testing_training(plug_formula(drop_recipe(tidyflow), mpg ~ cyl))
+
+# With recipe + resample
+test_testing_training(plug_resample(tidyflow, rsample::vfold_cv))
+
+# With formula + resample
+tflow <- plug_resample(plug_formula(drop_recipe(tidyflow), mpg ~ cyl),
+                       rsample::vfold_cv)
