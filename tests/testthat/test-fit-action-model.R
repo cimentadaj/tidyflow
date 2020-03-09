@@ -41,7 +41,7 @@ test_that("can provide a model formula override", {
 
   expect_equal(
     c("(Intercept)", "cyl"),
-    names(result$fit$fit$fit$coefficients)
+    names(pull_tflow_fit(result)$fit$coefficients)
   )
 })
 
@@ -123,7 +123,7 @@ test_that("update a model", {
   tidyflow <- plug_model(tidyflow, lm_model)
   tidyflow <- replace_model(tidyflow, glmn_model)
 
-  expect_equal(tidyflow$fit$actions$model$spec$engine, "glmnet")
+  expect_equal(pull_tflow_spec(tidyflow)$engine, "glmnet")
 })
 
 
@@ -140,9 +140,10 @@ test_that("update a model after model fit", {
   tidyflow <- replace_model(tidyflow, lm_model)
 
   # Should no longer have `model = FALSE` engine arg
-  engine_args <- tidyflow$fit$actions$model$spec$eng_args
+  engine_args <- pull_tflow_spec(tidyflow)$eng_args
   expect_false(any(names(engine_args) == "model"))
 
   # The fitted model should be removed
-  expect_null(tidyflow$fit$fit)
+  expect_error(pull_tflow_fit(tidyflow),
+               "The tidyflow does not have a model fit. Have you called `fit[(][)]` yet?") #nolintr
 })

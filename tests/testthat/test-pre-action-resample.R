@@ -73,10 +73,11 @@ test_that("drop_resample removes the action and the result", {
   tidyflow <- drop_resample(tidyflow)
 
   # Both are null on dropped tidyflow
-  expect_null(tidyflow$pre$results$resample)
+  expect_error(pull_tflow_resample(tidyflow))
   expect_null(tidyflow$pre$actions$resample)
+
   # Both are available on fitted tidyflow
-  expect_is(mod1$pre$results$resample, "rset")
+  expect_is(pull_tflow_resample(mod1), "rset")
   expect_is(mod1$pre$actions$resample[[1]], "function")
 })
 
@@ -107,7 +108,7 @@ test_that("Can add resample after model fit and refit", {
   mod1_no_resample <- fit(tflow)
   mod2_resample <- fit(plug_resample(mod1_no_resample, rsample::vfold_cv))
 
-  expect_is(mod2_resample$fit$fit$tuning, "rset")
+  expect_is(pull_tflow_fit_tuning(mod2_resample), "rset")
   expect_false(mod2_resample$trained)
 })
 
@@ -161,8 +162,8 @@ test_that("update a resample specification", {
 
 ##   expect_equal(tidyflow$pre$actions$recipe$recipe, rec2)
 
-##   expect_equal(tidyflow$fit$actions$model$spec, lm_model)
-##   expect_null(tidyflow$pre$mold)
+##   expect_equal(pull_tflow_spec(tidyflow), lm_model)
+##   expect_null(pull_tflow_mold(tidyflow))
 ## })
 
 test_that("cannot add two resample specifications", {

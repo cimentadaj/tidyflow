@@ -43,7 +43,7 @@ test_that("plug_split resets model fit if trained before adding the split", {
   tflow <- plug_split(tflow, rsample::initial_split)
   expect_false(tflow$trained)
   expect_equal(tflow$data, tflow$pre$mold)
-  expect_null(tflow$fit$fit)
+  expect_error(pull_tflow_fit(tflow))
 
   res <- fit(tflow)
   # Fitted on the training data
@@ -61,7 +61,9 @@ test_that("Can add split after model fit and refit", {
   mod1_no_split <- fit(tflow)
   mod2_split <- fit(plug_split(mod1_no_split, rsample::initial_split))
 
-  expect_equal(nobs(mod2_split$fit$fit$fit), nrow(mod2_split$pre$mold$predictors))
+  expect_equal(nobs(pull_tflow_fit(mod2_split)$fit),
+               nrow(pull_tflow_mold(mod2_split)$predictors))
+
   expect_true(mod2_split$trained)
 })
 
@@ -116,8 +118,8 @@ test_that("update a split after model fit", {
   expect_equal(tidyflow$pre$actions$split$`rsample::initial_time_split`,
                rsample::initial_time_split)
 
-  expect_equal(tidyflow$fit$actions$model$spec, lm_model)
-  expect_equal(tidyflow$data, tidyflow$pre$mold)
+  expect_equal(pull_tflow_spec(tidyflow), lm_model)
+  expect_equal(pull_tflow_rawdata(tidyflow), tidyflow$pre$mold)
 })
 
 test_that("cannot add two split specifications", {
@@ -244,8 +246,9 @@ test_that("plug_split resets model fit if trained before adding the split", {
 
   tidyflow <- plug_split(tidyflow, rsample::initial_split)
   expect_false(tidyflow$trained)
-  expect_equal(tidyflow$data, tidyflow$pre$mold)
-  expect_null(tidyflow$fit$fit)
+  expect_equal(pull_tflow_rawdata(tidyflow),
+               pull_tflow_mold(tidyflow))
+  expect_error(pull_tflow_fit(tidyflow))
 
   res <- fit(tidyflow)
   # Fitted on the training data

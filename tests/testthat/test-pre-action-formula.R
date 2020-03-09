@@ -33,12 +33,12 @@ test_that("formula preprocessing is executed upon `fit()`", {
   result <- fit(tidyflow)
 
   expect_equal(
-    result$pre$mold$outcomes$mpg,
+    pull_tflow_mold(result)$outcomes$mpg,
     mtcars$mpg
   )
 
   expect_equal(
-    result$pre$mold$predictors$`log(cyl)`,
+    pull_tflow_mold(result)$predictors$`log(cyl)`,
     log(mtcars$cyl)
   )
 
@@ -72,9 +72,11 @@ test_that("remove a formula after model fit", {
 
   tidyflow_removed_formula <- drop_formula(tidyflow_with_formula)
 
-  expect_equal(tidyflow_no_formula$data, tidyflow_removed_formula$pre$mold)
+  expect_equal(pull_tflow_rawdata(tidyflow_no_formula),
+               pull_tflow_mold(tidyflow_removed_formula))
+  
   expect_equal(tidyflow_no_formula$pre, tidyflow_removed_formula$pre)
-  expect_null(tidyflow_removed_formula$fit$fit)
+  expect_error(pull_tflow_fit(tidyflow_removed_formula))
 })
 
 test_that("drop_formula removes the action and the result", {
@@ -86,20 +88,23 @@ test_that("drop_formula removes the action and the result", {
   tidyflow <- drop_formula(tidyflow)
 
   # Both are null on dropped tidyflow
-  expect_null(tidyflow$pre$results$formula)
+  expect_error(pull_tflow_preprocessor(tidyflow))
   expect_null(tidyflow$pre$actions$formula)
+
   # Both are available on fitted tidyflow
-  expect_is(mod1$pre$results$formula, "list")
-  expect_length(mod1$pre$results$formula, 4)
-  expect_named(mod1$pre$results$formula)
+  expect_is(pull_tflow_mold(mod1), "list")
+  expect_length(pull_tflow_mold(mod1), 4)
+  expect_named(pull_tflow_mold(mod1))
+
   test_mold <- function(x) {
     mold <- combine_outcome_preds(x)
     expect_is(mold, "data.frame")
     expect_equal(nrow(mold), 32)
     expect_is(x$blueprint, "hardhat_blueprint")
   }
-  test_mold(mod1$pre$results$formula)
-  expect_is(mod1$pre$actions$formula[[1]], "formula")
+
+  test_mold(pull_tflow_mold(mod1))
+  expect_is(pull_tflow_preprocessor(mod1), "formula")
 })
 
 
@@ -108,7 +113,7 @@ test_that("update a formula", {
   tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
   tidyflow <- replace_formula(tidyflow, mpg ~ disp)
 
-  expect_equal(tidyflow$pre$actions$formula$formula, mpg ~ disp)
+  expect_equal(pull_tflow_preprocessor(tidyflow), mpg ~ disp)
 })
 
 test_that("update a formula after model fit", {
@@ -124,10 +129,11 @@ test_that("update a formula after model fit", {
   # Should clear fitted model
   tidyflow <- replace_formula(tidyflow, mpg ~ disp)
 
-  expect_equal(tidyflow$pre$actions$formula$formula, mpg ~ disp)
+  expect_equal(pull_tflow_preprocessor(tidyflow), mpg ~ disp)
 
-  expect_equal(tidyflow$fit$actions$model$spec, lm_model)
-  expect_equal(tidyflow$data, tidyflow$pre$mold)
+  expect_equal(pull_tflow_spec(tidyflow), lm_model)
+  expect_equal(pull_tflow_rawdata(tidyflow),
+               pull_tflow_mold(tidyflow))
 })
 
 test_that("can pass a blueprint through to hardhat::mold()", {
@@ -142,9 +148,9 @@ test_that("can pass a blueprint through to hardhat::mold()", {
 
   tidyflow <- fit(tidyflow)
 
-  expect_true("(Intercept)" %in% colnames(tidyflow$pre$mold$predictors))
+  expect_true("(Intercept)" %in% colnames(pull_tflow_mold(tidyflow)$predictors))
   expect_equal(tidyflow$pre$actions$formula$blueprint, blueprint)
-  expect_true(tidyflow$pre$mold$blueprint$intercept)
+  expect_true(pull_tflow_mold(tidyflow)$blueprint$intercept)
 })
 
 test_that("can only use a 'formula_blueprint' blueprint", {
@@ -172,12 +178,12 @@ test_that("Formula works with plug_split", {
   # This makes sure that the final model is fit
   # on the splitted sample
   expect_equal(
-    result$pre$mold$outcomes$mpg,
+    pull_tflow_mold(result)$outcomes$mpg,
     pull_tflow_fit(result)$fit$model[[1]]
   )
 
   expect_equal(
-    result$pre$mold$predictors$`log(cyl)`,
+    pull_tflow_mold(result)$predictors$`log(cyl)`,
     pull_tflow_fit(result)$fit$model[[2]]
   )
   

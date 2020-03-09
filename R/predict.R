@@ -62,6 +62,6 @@ predict.tidyflow <- function(object, new_data, type = NULL, opts = list(), ...) 
   blueprint <- tflow$pre$mold$blueprint
   forged <- hardhat::forge(new_data, blueprint)
   new_data <- forged$predictors
-  fit <- tflow$fit$fit
+  fit <- pull_tflow_fit(tflow)
   predict(fit, new_data, type = type, opts = opts, ...)
 }
