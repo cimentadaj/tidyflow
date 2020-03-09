@@ -58,7 +58,6 @@ has_preprocessor_fit <- function(x) {
   !is.null(x$fit$fit)
 }
 
-
 has_mold <- function(x) {
   !is.null(x$pre$mold)
 }

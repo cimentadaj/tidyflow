@@ -9,11 +9,10 @@ test_that("can `fit()` a tidyflow with a recipe", {
     plug_model(mod)
 
   result <- fit(tflow)
-
-  expect_is(result$fit$fit, "model_fit")
+  expect_is(pull_tflow_fit(result), "model_fit")
 
   expect_equal(
-    coef(result$fit$fit$fit),
+    coef(pull_tflow_fit(result)$fit),
     coef(lm(formula = mpg ~ cyl, data = mtcars))
   )
 })
@@ -28,10 +27,10 @@ test_that("can `fit()` a tidyflow with a formula", {
 
   result <- fit(tidyflow)
 
-  expect_is(result$fit$fit, "model_fit")
+  expect_is(pull_tflow_fit(result), "model_fit")
 
   expect_equal(
-    coef(result$fit$fit$fit),
+    coef(pull_tflow_fit(result)$fit),
     coef(lm(formula = mpg ~ cyl, data = mtcars))
   )
 })
@@ -47,18 +46,18 @@ test_that("can `fit()` a tidyflow + split + formula", {
 
   result <- fit(tidyflow)
 
-  expect_is(result$fit$fit, "model_fit")
+  expect_is(pull_tflow_fit(result), "model_fit")
 
   semi_mold <- result$pre$mold
   converted_mold <- combine_outcome_preds(semi_mold)
   
   expect_equal(
-    coef(result$fit$fit$fit),
+    coef(pull_tflow_fit(result)$fit),
     coef(lm(formula = mpg ~ cyl, data = converted_mold))
   )
 
   expect_equal(
-    nobs(result$fit$fit$fit),
+    nobs(pull_tflow_fit(result)$fit),
     nrow(converted_mold)
   )
   
@@ -109,8 +108,7 @@ test_that("can `fit()` regardless of order", {
   tflow <- plug_model(tflow, mod)
   result <- fit(tflow)
 
-  expect_is(result$fit$fit$tuning, "rset")
-
+  expect_is(pull_tflow_fit_tuning(result), "rset")
 
   # 'Random order'
   tflow2 <- tidyflow(seed = 23151)
@@ -121,7 +119,7 @@ test_that("can `fit()` regardless of order", {
   tflow2 <- plug_data(tflow2, mtcars)
   result2 <- fit(tflow2)
 
-  expect_is(result2$fit$fit$tuning, "rset")
+  expect_is(pull_tflow_fit_tuning(result2), "rset")
 
   expect_equal(rsplit2df(result),
                rsplit2df(result2))
