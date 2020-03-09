@@ -186,68 +186,30 @@ test_that("error if not a tidyflow", {
 })
 
 # ------------------------------------------------------------------------------
-# pull_tflow_rawdata()
+# pull_tflow_resample()
+tidyflow <- tidyflow(mtcars, seed = 54132)
+tidyflow <- plug_split(tidyflow, rsample::initial_split)
+tidyflow <- plug_resample(tidyflow, rsample::vfold_cv)
+tidyflow <- plug_recipe(tidyflow, ~ recipes::recipe(.x, mpg ~ cyl))
+tidyflow <- plug_model(tidyflow,
+                       parsnip::set_engine(parsnip::linear_reg(), "lm"))
 
-test_that("can pull the raw data", {
-  tidyflow <- tidyflow(mtcars)
-
-  expect_equal(
-    pull_tflow_rawdata(tidyflow),
-    mtcars
-  )
+test_that("pull_tflow_resample can pull a resample", {
+  tidyflow <- fit(tidyflow)
+  expect_is(pull_tflow_resample(tidyflow), "rset")
 })
 
-test_that("error if no raw data", {
-  expect_error(
-    pull_tflow_rawdata(tidyflow()),
-    "The tidyflow does not have data"
-  )
+test_that("pull_tflow_resample error if no resample", {
+  expect_error(pull_tflow_resample(fit(drop_resample(tidyflow))),
+               "The tidyflow must have a resample preprocessor")
 })
 
-# ------------------------------------------------------------------------------
-# pull_tflow_testing()
-
-
-check_testing <- function(x) {
-  expect_equal(
-    nrow(pull_tflow_testing(x)),
-    8
-  )
-
-  expect_equal(
-    ncol(pull_tflow_testing(x)),
-    11
-  )
-
-}
-
-test_that("can pull testing data", {
-  model <- parsnip::set_engine(parsnip::linear_reg(), "lm")
-  tidyflow <- plug_recipe(tidyflow(mtcars), ~ recipes::recipe(mpg ~ cyl, .))
-  tidyflow <- plug_model(tidyflow, model)
-
-  res <- fit(tidyflow)
-
-  expect_error(
-    pull_tflow_testing(res),
-    "The tidyflow must have a split preprocessor."
-  )
-
-  # Add split. The testing should have 8 rows (75%)
-  res <- fit(plug_split(res, rsample::initial_split))
-
-  check_testing(res)
-
-  expect_error(
-    pull_tflow_testing(drop_recipe(res)),
-    "Tidyflow has not yet been trained. Do you need to call `fit()`?"
-  )
-
-  res <- fit(plug_formula(drop_recipe(res), mpg ~ cyl))
-  # The data is refit the same way with a formula
-  check_testing(res)
-
+test_that("pull_tflow_resample error if not a tidyflow", {
+  expect_error(pull_tflow_resample(tidyflow),
+               "Tidyflow has not yet been trained. Do you need to call `fit()`?"
+               )
 })
+
 
 # ------------------------------------------------------------------------------
 # pull_tflow_split()
@@ -277,7 +239,7 @@ test_that("error if not a tidyflow", {
 # ------------------------------------------------------------------------------
 # pull_tflow_training()
 
-test_testing_training <- function(untrained_tflow) {
+test_training <- function(untrained_tflow) {
   test_that("pull_tflow_training can pull the raw training", {
     tidyflow <- fit(untrained_tflow)
     expect_equal(pull_tflow_training(tidyflow),
@@ -298,29 +260,150 @@ test_testing_training <- function(untrained_tflow) {
                  training_data)
   })
 
-
-  test_that("pull_tflow_split error if no split", {
-    expect_error(pull_tflow_split(fit(drop_split(untrained_tflow))),
+  test_that("pull_tflow_training error if no split", {
+    expect_error(pull_tflow_training(fit(drop_split(untrained_tflow))),
                  "The tidyflow must have a split preprocessor")
   })
 
-
-  test_that("error if not a tidyflow", {
-    expect_error(pull_tflow_split(untrained_tflow),
+  test_that("pull_tflow_training error if not a tidyflow", {
+    expect_error(pull_tflow_training(untrained_tflow),
                  "Tidyflow has not yet been trained. Do you need to call `fit()`?"
                  )
   })
 }
 
 # With recipe
-test_testing_training(tidyflow)
+test_training(tidyflow)
 
 # With formula
-test_testing_training(plug_formula(drop_recipe(tidyflow), mpg ~ cyl))
+test_training(plug_formula(drop_recipe(tidyflow), mpg ~ cyl))
 
 # With recipe + resample
-test_testing_training(plug_resample(tidyflow, rsample::vfold_cv))
+test_training(plug_resample(tidyflow, rsample::vfold_cv))
 
 # With formula + resample
 tflow <- plug_resample(plug_formula(drop_recipe(tidyflow), mpg ~ cyl),
                        rsample::vfold_cv)
+test_training(tflow)
+
+# ------------------------------------------------------------------------------
+# pull_tflow_rawdata()
+
+test_that("pull_tflow_rawdata can pull the raw data", {
+  tidyflow <- tidyflow(mtcars)
+
+  expect_equal(
+    pull_tflow_rawdata(tidyflow),
+    mtcars
+  )
+})
+
+test_that("pull_tflow_rawdata error if no raw data", {
+  expect_error(
+    pull_tflow_rawdata(tidyflow()),
+    "The tidyflow does not have data"
+  )
+})
+
+# ------------------------------------------------------------------------------
+# pull_tflow_testing()
+
+test_testing <- function(untrained_tflow) {
+  test_that("pull_tflow_testing can pull the raw testing", {
+    tidyflow <- fit(untrained_tflow)
+    expect_equal(pull_tflow_testing(tidyflow),
+                 rsample::testing(pull_tflow_split(tidyflow)))
+
+    expect_equal(
+      nrow(pull_tflow_testing(tidyflow)),
+      8
+    )
+
+    expect_equal(
+      ncol(pull_tflow_testing(tidyflow)),
+      11
+    )
+  })
+  
+  test_that("pull_tflow_testing can pull the prepped testing data", {
+    tidyflow <- fit(untrained_tflow)
+
+    testing_data <- pull_tflow_testing(tidyflow)
+    testing_data <- hardhat::forge(testing_data,
+                                   pull_tflow_mold(tidyflow)$blueprint,
+                                   outcomes = TRUE)
+    testing_data <- combine_outcome_preds(testing_data)
+    
+    expect_equal(pull_tflow_testing(tidyflow, prep = TRUE),
+                 testing_data)
+  })
+
+  test_that("pull_tflow_testing error if no split", {
+    expect_error(pull_tflow_testing(fit(drop_split(untrained_tflow))),
+                 "The tidyflow must have a split preprocessor")
+  })
+
+  test_that("pull_tflow_testing error if not a tidyflow", {
+    expect_error(pull_tflow_testing(untrained_tflow),
+                 "Tidyflow has not yet been trained. Do you need to call `fit()`?"
+                 )
+  })
+}
+
+# With recipe
+test_testing(tidyflow)
+
+# With formula
+test_testing(plug_formula(drop_recipe(tidyflow), mpg ~ cyl))
+
+# With recipe + resample
+test_testing(plug_resample(tidyflow, rsample::vfold_cv))
+
+# With formula + resample
+tflow <- plug_resample(plug_formula(drop_recipe(tidyflow), mpg ~ cyl),
+                       rsample::vfold_cv)
+
+test_training(tflow)
+# ------------------------------------------------------------------------------
+# pull_tflow_fit_tuning()
+model <- parsnip::linear_reg()
+model <- parsnip::set_engine(model, "lm")
+
+tidyflow <- tidyflow(mtcars)
+tidyflow <- plug_model(tidyflow, model)
+tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
+tidyflow <- plug_resample(tidyflow, rsample::vfold_cv)
+
+test_that("pull_tflow_fit_tuning can pull a model tuning result", {
+  tidyflow <- fit(tidyflow)
+  res <- pull_tflow_fit_tuning(tidyflow)
+
+  expect_is(
+    res,
+    "resample_results"
+  )
+
+  expect_is(
+    res,
+    "tune_results"
+  )
+
+  expect_equal(
+    nrow(res),
+    10
+  )
+})
+
+test_that("pull_tflow_fit_tuning error if no fit", {
+  expect_error(
+    pull_tflow_fit_tuning(tidyflow),
+    "The tidyflow does not have a tuning fit. Have you called `fit[(][)]` yet?"
+  )
+})
+
+test_that("pull_tflow_fit_tuning error if not a tidyflow", {
+  expect_error(
+    pull_tflow_fit_tuning(1),
+    "must be a tidyflow"
+  )
+})

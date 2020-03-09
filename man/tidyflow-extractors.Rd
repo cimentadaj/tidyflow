@@ -6,12 +6,13 @@
 \alias{pull_tflow_split}
 \alias{pull_tflow_training}
 \alias{pull_tflow_testing}
+\alias{pull_tflow_resample}
 \alias{pull_tflow_preprocessor}
+\alias{pull_tflow_prepped_recipe}
+\alias{pull_tflow_mold}
 \alias{pull_tflow_spec}
 \alias{pull_tflow_fit}
-\alias{pull_tflow_tuning}
-\alias{pull_tflow_mold}
-\alias{pull_tflow_prepped_recipe}
+\alias{pull_tflow_fit_tuning}
 \title{Extract elements of a tidyflow}
 \usage{
 pull_tflow_rawdata(x)
@@ -22,17 +23,19 @@ pull_tflow_training(x, prep = FALSE)
 
 pull_tflow_testing(x, prep = FALSE)
 
+pull_tflow_resample(x)
+
 pull_tflow_preprocessor(x)
+
+pull_tflow_prepped_recipe(x)
+
+pull_tflow_mold(x)
 
 pull_tflow_spec(x)
 
 pull_tflow_fit(x)
 
-pull_tflow_tuning(x)
-
-pull_tflow_mold(x)
-
-pull_tflow_prepped_recipe(x)
+pull_tflow_fit_tuning(x)
 }
 \arguments{
 \item{x}{A tidyflow}
@@ -50,36 +53,47 @@ These functions extract various elements from a tidyflow object. If they do
 not exist yet, an error is thrown.
 \itemize{
 \item \code{pull_tflow_rawdata()} returns the complete raw/untrained data.
+\item \code{pull_tflow_split()} returns the split object from the function specified
+in \code{\link{plug_split}}.
 \item \code{pull_tflow_training()} returns the training data from the split. Only
-works when a split has been specified with \code{\link{plug_split}}
+works when a split has been specified with \code{\link{plug_split}}.
+If \code{prep = TRUE}, the preprocessing (either recipe or formula)
+is applied to the data.
 \item \code{pull_tflow_testing()} returns the testing data from the split. Only
 works when a split has been specified with \code{\link{plug_split}}
+If \code{prep = TRUE}, the preprocessing (either recipe or formula)
+is applied to the data.
 \item \code{pull_tflow_preprocessor()} returns either the formula or recipe used
-for preprocessing.
-\item \code{pull_tflow_spec()} returns the parsnip model specification.
-\item \code{pull_tflow_fit()} returns the parsnip model fit.
+for preprocessing. Note that in the case of the recipe it returns the
+function that should be applied to the data to apply the recipe.
+\code{\link{pull_tflow_prepped_recipe}} returns the recipe already applied
+to the training data.
+\item \code{pull_tflow_resample()} returns the resample object from the function
+specified in \code{\link{plug_resample}}. This resample object already
+has the preprocessor applied (either formula or recipe).
+\item \code{pull_tflow_prepped_recipe()} returns the prepped recipe. It is
+extracted from the mold object returned from \code{pull_tflow_mold()}.
 \item \code{pull_tflow_mold()} returns the preprocessed "mold" object returned
 from \code{\link[hardhat:mold]{hardhat::mold()}}. It contains information about the preprocessing,
 including either the prepped recipe or the formula terms object.
-\item \code{pull_tflow_prepped_recipe()} returns the prepped recipe. It is
-extracted from the mold object returned from \code{pull_tflow_mold()}.
-\item \code{pull_tflow_testing()} returns the raw testing data (without applying
-the preprocessing steps recipe or formula). Since the split
-training/testing is done when the user \verb{fit()'s the model, the testing data can only be extracted after a model fit. The prepping of the testing data is done when specifying }new_data\verb{in}predict.tidyflow`
-automatically.
+\item \code{pull_tflow_spec()} returns the parsnip model specification.
+\item \code{pull_tflow_fit()} returns the parsnip model fit.
+\item \code{pull_tflow_fit_tuning()} returns the resample result from model tuning.
 }
 }
 \examples{
 library(parsnip)
 library(recipes)
+library(rsample)
 
 model <- linear_reg()
 model <- set_engine(model, "lm")
 
-recipe <- ~ recipe(mpg ~ cyl + disp, .x) \%>\% step_log(disp)
+recipe <- ~ recipe(.x, mpg ~ cyl + disp) \%>\% step_log(disp)
 
 base_tflow <- tidyflow()
 base_tflow <- plug_data(base_tflow, mtcars)
+base_tflow <- plug_split(base_tflow, initial_split)
 base_tflow <- plug_model(base_tflow, model)
 
 recipe_tflow <- plug_recipe(base_tflow, recipe)
@@ -104,6 +118,14 @@ pull_tflow_fit(fit_formula_tflow)
 # predictors, outcomes, and information about the preprocessing
 # for use on new data at `predict()` time.
 pull_tflow_mold(fit_recipe_tflow)
+
+# The raw training and testing
+pull_tflow_training(fit_recipe_tflow)
+pull_tflow_testing(fit_recipe_tflow)
+
+# Or with the preprocessor (recipe/formula) applied
+pull_tflow_training(fit_recipe_tflow, prep = TRUE)
+pull_tflow_testing(fit_recipe_tflow, prep = TRUE)
 
 # A useful shortcut is to extract the prepped recipe from the tidyflow
 pull_tflow_prepped_recipe(fit_recipe_tflow)

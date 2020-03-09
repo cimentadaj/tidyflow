@@ -351,7 +351,7 @@ print_fit <- function(x) {
 }
 
 print_tuning <- function(x) {
-  tuning_fit <- pull_tflow_tuning(x)
+  tuning_fit <- pull_tflow_fit_tuning(x)
 
   n_output <- nrow(tuning_fit)
 
