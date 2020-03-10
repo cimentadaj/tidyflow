@@ -188,3 +188,44 @@ test_that("blueprint will get passed on to hardhat::forge()", {
 
   expect_false(identical(prediction_with_intercept, prediction_no_intercept))
 })
+
+
+
+test_that("predict raises error when model not fit/tuned", {
+  rcp <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, data = .), cyl, base = 10) #nolintr
+  tflow <- tidyflow(mtcars)
+  tflow <- plug_split(tflow, rsample::initial_split)
+  tflow <- plug_recipe(tflow, rcp)
+  tflow <- plug_resample(tflow, rsample::vfold_cv)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
+  fit_tflow <- fit(tflow)
+
+  expect_error(
+    predict(fit_tflow, new_data = mtcars),
+    "You seem to have a model with tuning parameters but not a finalized model. Did you call complete_tidyflow()?" #nolintr
+  )
+
+  expect_error(
+    predict(drop_resample(fit_tflow), new_data = mtcars),
+    "Tidyflow has not yet been trained. Did you call fit()?"
+  )
+
+  ## TODO:
+  ## When you implement complete_tidyflow() add a test that when tuning + complete_tidyflow result is expected
+  ## Also, if you rename complete_tidyflow you need to replace that in the error message from predict.tidyflow
+
+  expect_error(
+    predict(fit(drop_resample(fit_tflow))),
+    'argument "new_data" is missing, with no default'
+  )
+
+  res <- predict(fit(drop_resample(fit_tflow)),
+                 new_data = pull_tflow_testing(fit_tflow, TRUE))
+
+  expect_equal(nrow(res), 8)
+
+  res <- predict(fit(drop_resample(fit_tflow)),
+                 new_data = pull_tflow_training(fit_tflow, TRUE))
+
+  expect_equal(nrow(res), 24)
+})

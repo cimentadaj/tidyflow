@@ -165,7 +165,6 @@ test_that("update a recipe after model fit", {
   expect_equal(tidyflow$data, tidyflow$pre$mold)
 })
 
-
 test_that("model fit works correctly after updating recipe", {
   lm_model <- parsnip::linear_reg()
   lm_model <- parsnip::set_engine(lm_model, "lm")
