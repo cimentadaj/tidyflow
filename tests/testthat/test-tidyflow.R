@@ -11,9 +11,12 @@ check_tidyflow <- function(tidyflow) {
   expect_is(tidyflow$fit, "stage_fit")
   expect_is(tidyflow$post, "stage_post")
   expect_equal(tidyflow$pre$actions, list())
+  # Here I don't use pull_tflow_mold because it raises
+  # an error when no data has been supplied in the test
+  # 'can create a basic tidyflow'
   expect_equal(tidyflow$pre$mold, tidyflow$data)
   expect_equal(tidyflow$fit$actions, list())
-  expect_equal(tidyflow$fit$fit, NULL)
+  expect_error(pull_tflow_fit(tidyflow))
   expect_equal(tidyflow$post$actions, list())
 }
 
