@@ -61,6 +61,7 @@
 #'
 plug_split <- function(x, .f, ...) {
 
+  # TODO
   ## if (has_preprocessor_resample(x)) {
   ##   abort("A tidyflow must never have a resample before splitting the data")
   ## }

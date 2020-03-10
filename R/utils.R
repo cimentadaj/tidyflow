@@ -54,6 +54,10 @@ has_preprocessor_formula <- function(x) {
   "formula" %in% names(x$pre$actions)
 }
 
+has_preprocessor_grid <- function(x) {
+  "grid" %in% names(x$pre$actions)
+}
+
 has_preprocessor_fit <- function(x) {
   !is.null(x$fit$fit)
 }
@@ -105,6 +109,10 @@ purge_action_resample <- function(x) {
   purge_(x$pre$actions, "resample")
 }
 
+purge_action_grid <- function(x) {
+  purge_(x$pre$actions, "grid")
+}
+
 purge_action_formula <- function(x) {
   purge_(x$pre$actions, "formula")
 }
@@ -119,6 +127,10 @@ purge_results_split <- function(x) {
 
 purge_results_resample <- function(x) {
   purge_(x$pre$results, "resample")
+}
+
+purge_results_grid <- function(x) {
+  purge_(x$pre$results, "grid")
 }
 
 purge_results_formula <- function(x) {

@@ -19,7 +19,7 @@ plug_action_impl <- function(x, action, name) {
 }
 
 plug_action_impl.action_pre <- function(x, action, name) {
-  sacred_order <- c("split", "formula", "recipe", "resample")
+  sacred_order <- c("split", "formula", "recipe", "resample", "grid")
   check_singleton(x$pre$actions, name)
   x$pre <- plug_action_to_stage(x$pre, action, name)
   x$pre$actions <- clean_list(x$pre$actions[sacred_order])

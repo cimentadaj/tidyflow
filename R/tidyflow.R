@@ -146,12 +146,14 @@ print_preprocessor <- function(x) {
   has_preprocessor_recipe <- has_preprocessor_recipe(x)
   has_preprocessor_split <- has_preprocessor_split(x)
   has_preprocessor_resample <- has_preprocessor_resample(x)
+  has_preprocessor_grid <- has_preprocessor_grid(x)
 
   preprocessing <- c(
     has_preprocessor_formula,
     has_preprocessor_recipe,
     has_preprocessor_split,
-    has_preprocessor_resample
+    has_preprocessor_resample,
+    has_preprocessor_grid
   )
 
   # If all have **no** preprocessing, don't print anything
@@ -180,6 +182,10 @@ print_preprocessor <- function(x) {
   ## if (has_preprocessor_recipe) {
   ##   print_preprocessor_recipe(x)
   ## }
+
+  if (has_preprocessor_grid) {
+    print_preprocessor_grid(x)
+  }
 
   invisible(x)
 }
@@ -224,6 +230,34 @@ print_preprocessor_resample <- function(x) {
   }
 
   cat_line(resample_msg)
+}
+
+print_preprocessor_grid <- function(x) {
+  grid_msg <- cli::style_italic("Grid:")
+
+  if (!has_preprocessor_grid(x)) {
+    grid_msg <- glue::glue("{grid_msg} None")
+  } else {
+    grid_fn_name <- names(x$pre$actions$grid)[1]
+    arg <- unlist(x$pre$actions$grid$args)
+
+    if (rlang::is_empty(arg)) {
+      # TODO: add tuning values from model/recipe if available
+      arg_msg <- "default args"
+    } else {
+      arg_named <- names(arg) != ""
+      if (any(arg_named)) {
+        named_args <- paste0(names(arg[arg_named]), " = ", arg[arg_named], collapse = ", ")
+        arg_msg <- paste0(paste0(arg[!arg_named], collapse = ", "), ", ", named_args)
+      } else {
+        arg_msg <- paste0(arg, collapse = ", ")
+      }
+    }
+
+    grid_msg <- glue::glue("{grid_msg} {grid_fn_name} w/ {arg_msg}")
+  }
+
+  cat_line(grid_msg)
 }
 
 print_preprocessor_formula <- function(x) {

@@ -1,6 +1,7 @@
 library(rsample)
 library(recipes)
 library(parsnip)
+library(dials)
 devtools::load_all()
 
 res <-
@@ -47,3 +48,35 @@ res_vf %>%
 ## You will have two functions: one which updates the tidyflow with
 ## the final parameters and another which fits the last model.
 ## As a shortcut, you'll have one which does both things be default.
+
+# Calculate all tuning params automatically
+mod1 <- set_engine(linear_reg(penalty = tune(), mixture = tune("test")), "glmnet")
+mod <-
+  mtcars %>%
+  tidyflow() %>%
+  plug_split(initial_split) %>%
+  plug_recipe(~ recipe(mpg ~ cyl, data = .) %>% step_ns(cyl, deg_free = tune())) %>%
+  plug_resample(vfold_cv) %>%
+  plug_model(mod1) %>%
+  plug_grid(grid_regular, penalty(c(-5, 0)), mixture(c(0, 0.5)), levels = 5)
+
+mod %>%
+  parameters()
+
+# Change tuning grid
+mod %>%
+  replace_grid(grid_random, levels = 5)
+
+# Specify tuning params through replace_grid
+mod %>%
+  replace_grid(grid_random, penalty(c(-5, 0)), mixture(c(0, 0.5)))
+
+# Combination of fixed tuning params and varying
+mod2 <- set_engine(linear_reg(penalty = tune(), mixture = 0), "glmnet")
+mod %>%
+  replace_grid(grid_random, penalty(c(-5, 0)))
+
+# Combination of fixed tuning params and varying
+mod2 <- set_engine(linear_reg(penalty = tune(), mixture = 0), "glmnet")
+mod %>%
+  replace_grid(grid_random, penalty(c(-5, 0)))
