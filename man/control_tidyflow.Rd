@@ -4,14 +4,17 @@
 \alias{control_tidyflow}
 \title{Control object for a tidyflow}
 \usage{
-control_tidyflow(control_parsnip = NULL)
+control_tidyflow(control_parsnip = NULL, control_resamples = NULL)
 }
 \arguments{
 \item{control_parsnip}{A parsnip control object. If \code{NULL}, a default control
 argument is constructed from \code{\link[parsnip:control_parsnip]{parsnip::control_parsnip()}}.}
+
+\item{control_resamples}{A resamples control object. If \code{NULL}, a default control
+argument is constructed from \code{\link[tune:control_resamples]{tune::control_resamples()}}.}
 }
 \value{
-A \code{control_tidyflow} object for tweaking the tidyflow fitting process.
+A \code{control_tidyflow} object for tweaking the tidyflow fitting/tuning process.
 }
 \description{
 \code{control_tidyflow()} holds the control parameters for a tidyflow.

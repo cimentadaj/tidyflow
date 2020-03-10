@@ -5,17 +5,23 @@
 #' @param control_parsnip A parsnip control object. If `NULL`, a default control
 #'   argument is constructed from [parsnip::control_parsnip()].
 #'
+#' @param control_resamples A resamples control object. If `NULL`, a default control
+#'   argument is constructed from [tune::control_resamples()].
 #' @return
-#' A `control_tidyflow` object for tweaking the tidyflow fitting process.
+#' A `control_tidyflow` object for tweaking the tidyflow fitting/tuning process.
 #'
 #' @export
 #' @examples
 #' control_tidyflow()
-control_tidyflow <- function(control_parsnip = NULL) {
+control_tidyflow <- function(control_parsnip = NULL,
+                             control_resamples = NULL) {
+  
   control_parsnip <- check_control_parsnip(control_parsnip)
+  control_resamples <- check_control_resamples(control_resamples)
 
   data <- list(
-    control_parsnip = control_parsnip
+    control_parsnip = control_parsnip,
+    control_resamples = control_resamples   
   )
 
   structure(data, class = "control_tidyflow")
@@ -36,5 +42,31 @@ check_control_parsnip <- function(x) {
     abort("`control_parsnip` must be a 'control_parsnip' object.")
   }
 
+  x
+}
+
+check_control_resamples <- function(x) {
+  if (is.null(x)) {
+    x <- tune::control_resamples()
+  }
+
+  x <- coerce_control(x, "control_resamples")
+
+  if (!inherits(x, "control_resamples")) {
+    abort("`control_resamples` must be a 'control_resamples' object.")
+  }
+
+  x
+}
+
+# TODO
+# Seems tune::control_* functions don't have yet a custom
+# control_* class. Until then, coerce them to the specific classes
+# such that it fits tidyflow.
+# https://github.com/tidymodels/tune/issues/183
+coerce_control <- function(x, cls) {
+  if (!inherits(x, cls)) {
+    class(x) <- c(cls, class(x))
+  }
   x
 }
