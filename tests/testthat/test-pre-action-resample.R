@@ -36,7 +36,6 @@ test_that("dropping a resample and refitting gives same result", {
                rsplit2df(strip_elapsed(mod2_no_resample)))
 })
 
-
 test_that("plug_resample can work with recipe or formula", {
   # This test is more about fit.action_model which calles fit_resample
   # in which it decides to user recipe or formula on whether their NULL
@@ -58,7 +57,6 @@ test_that("plug_resample can work with recipe or formula", {
                as.data.frame(pull_tflow_fit_tuning(mod1_formula)))
 
 })
-
 
 test_that("drop_resample removes the action and the result", {
   lm_model <- parsnip::linear_reg()
@@ -97,6 +95,22 @@ test_that("Fit resample, drop a resample and refit is the same as normal fitting
   expect_equal(strip_elapsed(mod1_no_resample),
                strip_elapsed(mod2_no_resample))
 })
+
+test_that("Adding a resample to a trained model drops trained flag", {
+  rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)
+  tflow <- tidyflow(mtcars, seed = 542)
+  tflow <- plug_split(tflow, rsample::initial_split)
+  tflow <- plug_recipe(tflow, rcp)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
+
+  mod1_no_resample <- fit(tflow)
+  resample_mod <- plug_resample(mod1_no_resample, rsample::vfold_cv)
+
+  # no fit
+  expect_error(pull_tflow_fit(resample_mod))
+  expect_false(resample_mod$trained)
+})
+
 
 test_that("Can add resample after model fit and refit", {
   rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)
