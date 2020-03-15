@@ -248,7 +248,12 @@ print_preprocessor_grid <- function(x) {
       arg_named <- names(arg) != ""
       if (any(arg_named)) {
         named_args <- paste0(names(arg[arg_named]), " = ", arg[arg_named], collapse = ", ")
-        arg_msg <- paste0(paste0(arg[!arg_named], collapse = ", "), ", ", named_args)
+        # If no unnamed args and any named arg, then the result will be
+        # ", levels = 5" for example. Here convert empty "" to character()
+        # so that when no unnamed arg, no extra comma is added.
+        unnamed_args <- paste0(arg[!arg_named], collapse = ", ")
+        unnamed_args <- if (unnamed_args == "") character() else unnamed_args
+        arg_msg <- paste0(c(unnamed_args, named_args), collapse = ", ")
       } else {
         arg_msg <- paste0(arg, collapse = ", ")
       }
