@@ -96,9 +96,10 @@ fit.action_model <- function(object, tflow, control, ...) {
   spec <- object$spec
   formula <- object$formula
   resample_res <- tflow$pre$results$resample
+  grid_res <- tflow$pre$results$grid
 
-  # It means that they specified a resample
-  if (!is.null(resample_res)) {
+  # It means that they specified a resample and no grid
+  if (!is.null(resample_res) && is.null(grid_res)) {
     control_resamples <- control$control_resamples
     obj <- tflow$pre$results$recipe %||% tflow$pre$actions$formula$formula
 
@@ -109,6 +110,20 @@ fit.action_model <- function(object, tflow, control, ...) {
                           control = control_resamples
                           )
     
+    return(tflow)
+    # It means that they specified a resample AND a grid, so tuning is wanted
+  } else if (!is.null(resample_res) && !is.null(grid_res)) {
+    control_grid <- control$control_grid
+    obj <- tflow$pre$results$recipe %||% tflow$pre$actions$formula$formula
+
+    tflow$fit$fit$tuning <-
+      tune::tune_grid(obj,
+                      model = spec,
+                      resamples = resample_res,
+                      grid = grid_res,
+                      control = control_grid
+                      )
+
     return(tflow)
   }
 

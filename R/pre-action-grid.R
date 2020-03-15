@@ -64,9 +64,9 @@
 plug_grid <- function(x, .f, ...) {
   .dots <- enquos(...)
 
-  ## if (!is_uniquely_named(.dots)) {
-  ##   abort("Arguments in `...` for `.f` should be named")
-  ## }
+  if (!is_uniquely_named(.dots)) {
+    abort("Arguments in `...` for `.f` should be named")
+  }
 
   # Capture name of function to put as name in action list
   # Easier for printing the split specification
@@ -108,12 +108,16 @@ replace_grid <- function(x, .f, ...) {
 # ------------------------------------------------------------------------------
 fit.action_grid <- function(object, tflow) {
 
+  if (!has_preprocessor_resample(tflow)) {
+    abort("The tidyflow does not have a resample specification. Did you want `plug_resample()`?") #nolintr
+  }
+
   if (!has_spec(tflow)) {
-      abort("The tidyflow does not have a model specification to extract the tuning parameters") #nolintr
+    abort("The tidyflow does not have a model specification to extract the tuning parameters. Did you want `plug_model()`?") #nolintr
   }
 
   # Including recipe + model
-  all_params <- parameters(tflow)
+  all_params <- tune::parameters(tflow)
 
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)
@@ -121,7 +125,8 @@ fit.action_grid <- function(object, tflow) {
   grid_res <- rlang::exec(
     # function body
     object[[1]],
-    all_params
+    all_params,
+    !!!args
   )
 
   if (!inherits(grid_res, "param_grid")) {

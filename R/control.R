@@ -14,14 +14,17 @@
 #' @examples
 #' control_tidyflow()
 control_tidyflow <- function(control_parsnip = NULL,
-                             control_resamples = NULL) {
+                             control_resamples = NULL,
+                             control_grid = NULL) {
   
   control_parsnip <- check_control_parsnip(control_parsnip)
   control_resamples <- check_control_resamples(control_resamples)
+  control_grid <- check_control_grid(control_grid)
 
   data <- list(
     control_parsnip = control_parsnip,
-    control_resamples = control_resamples   
+    control_resamples = control_resamples,
+    control_grid = control_grid
   )
 
   structure(data, class = "control_tidyflow")
@@ -58,6 +61,21 @@ check_control_resamples <- function(x) {
 
   x
 }
+
+check_control_grid <- function(x) {
+  if (is.null(x)) {
+    x <- tune::control_grid()
+  }
+
+  x <- coerce_control(x, "control_grid")
+
+  if (!inherits(x, "control_grid")) {
+    abort("`control_grid` must be a 'control_grid' object.")
+  }
+
+  x
+}
+
 
 # TODO
 # Seems tune::control_* functions don't have yet a custom

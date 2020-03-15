@@ -7,3 +7,4 @@
 ^prototype\.html$
 ^test\.R$
 ^workflows\.Rproj$
+^\.Rproj\.user$

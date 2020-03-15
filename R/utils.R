@@ -82,6 +82,45 @@ has_raw_data <- function(x) {
   !is.null(x$data)
 }
 
+has_tune <- function(x) {
+  UseMethod("has_tune")
+}
+
+has_tune.recipe <- function(x) {
+  steps <- x$steps[[1]]
+  tune_calls <- vapply(steps, is.language, logical(1))
+
+  # Even if tune is defined as tune("a new name"), by converting
+  # the call object to character, the first slot is always the
+  # function call. Any args specified will be slot 2, 3, 4, ...
+  res <- vapply(steps[tune_calls],
+                function(x) as.character(x)[[1]] == "tune", logical(1))
+  # Any argument has a tune() call?
+  any(res)
+}
+
+has_tune.formula <- function(x) {
+  FALSE
+}
+
+has_tune.model_spec <- function(x) {
+  possible_tune_args <- lapply(x$args, rlang::eval_tidy)
+
+  available_args <- vapply(possible_tune_args,
+                           Negate(is.null),
+                           FUN.VALUE = logical(1))
+
+
+  possible_tune_args <- possible_tune_args[available_args]
+
+  any_tune_args <- any(
+    vapply(possible_tune_args,
+           function(x) as.character(x)[[1]] == "tune",
+           FUN.VALUE = logical(1))
+  )
+
+  any_tune_args
+}
 
 # ------------------------------------------------------------------------------
 
@@ -142,7 +181,13 @@ purge_results_recipe <- function(x) {
 }
 
 combine_outcome_preds <- function(mold) {
-  cbind(mold$outcomes, mold$predictors)
+  mold_names <- c("predictors", "outcomes", "blueprint", "extras")
+
+  if (any(mold_names %in% names(mold))) {
+    mold <- cbind(mold$outcomes, mold$predictors)
+  }
+
+  mold
 }
 
 # To compare equality of models, elapsed time is sometimes

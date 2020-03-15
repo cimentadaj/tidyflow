@@ -2,6 +2,7 @@ library(rsample)
 library(recipes)
 library(parsnip)
 library(dials)
+library(tune)
 devtools::load_all()
 
 res <-
@@ -21,15 +22,18 @@ mod <-
   mtcars %>%
   tidyflow() %>%
   plug_split(initial_split) %>%
-  plug_recipe(~ recipe(mpg ~ cyl, data = .) %>% step_log(cyl, base = 10)) %>%
+  plug_recipe(~ recipe(mpg ~ cyl, data = .) %>% step_ns(cyl, deg_free = tune())) %>%
   plug_resample(vfold_cv) %>%
-  plug_model(set_engine(linear_reg(), "lm"))
+  plug_model(set_engine(linear_reg(), "lm")) %>% 
+  plug_grid(grid_regular, levels = 5)
+
 
 res_vf <-
   mod %>%
   fit()
 
-res_vf
+res_vf %>%
+  collect_metrics()
 
 pull_tflow_tuning(res_vf) %>% show_best(metric = "rsq")
 
@@ -80,3 +84,33 @@ mod %>%
 mod2 <- set_engine(linear_reg(penalty = tune(), mixture = 0), "glmnet")
 mod %>%
   replace_grid(grid_random, penalty(c(-5, 0)))
+
+
+library(mlbench)
+data(Ionosphere)
+Ionosphere <- Ionosphere %>% select(-V2)
+
+svm_mod <-
+  svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
+  set_mode("classification") %>%
+  set_engine("kernlab")
+
+iono_rec <-
+  ~ recipe(Class ~ ., data = .x)  %>%
+  # In case V1 is has a single value sampled
+  step_zv(all_predictors()) %>% 
+  # convert it to a dummy variable
+  step_dummy(V1) %>%
+  # Scale it the same as the others
+  step_range(matches("V1_"))
+
+tflow <-
+  tidyflow() %>%
+  plug_data(Ionosphere) %>% 
+  plug_recipe(iono_rec) %>%
+  plug_resample(bootstraps, times = 30) %>%
+  plug_model(svm_mod) %>%
+  plug_grid(grid_regular)
+
+tflow %>%
+  fit()

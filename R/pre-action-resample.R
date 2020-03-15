@@ -104,14 +104,28 @@ replace_resample <- function(x, .f, ...) {
 }
 
 # ------------------------------------------------------------------------------
-
 fit.action_resample <- function(object, tflow) {
+  preprocessor <- tflow$pre$results$recipe %||% tflow$pre$actions$formula$formula
 
+  has_tuning <-
+    has_tune(preprocessor) ||
+    has_tune(pull_tflow_spec(tflow))
+  
+  has_grid <- has_preprocessor_grid(tflow)
+
+  if (has_tuning && !has_grid) {
+    abort("The recipe or model has `tune()` parameters but no have grid specification. Did you want `plug_grid()`?") #nolintr
+  }
+
+  has_tunable_rcp <-
+    has_preprocessor_recipe(tflow) &&
+    has_tune(tflow$pre$results$recipe)
+  
   # Since a tidyflow will alows need to have a formula or recipe
   # the result of mold when it reaches a resample, will always be
   # a mold structure. Let's convert that to a data frame
   mold <- combine_outcome_preds(tflow$pre$mold)
-
+  
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)
 
