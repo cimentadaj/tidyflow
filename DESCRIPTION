@@ -27,13 +27,15 @@ Imports:
     parsnip (>= 0.0.4),
     rlang (>= 0.4.1),
     tune (>= 0.0.1),
-    rsample
+    rsample,
+    dials
 Suggests: 
     covr,
     knitr,
     recipes,
     rmarkdown,
-    testthat (>= 2.3.0)
+    testthat (>= 2.3.0),
+    glmnet
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

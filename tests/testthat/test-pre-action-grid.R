@@ -312,7 +312,7 @@ test_that("If tune() is present, plug_grid must be present", {
     ~ recipes::step_ns(
       recipes::recipe(mpg ~ cyl + am, .x),
       cyl,
-      deg_free = tune()
+      deg_free = tune::tune()
     )
   tflow <- replace_model(tflow, model)
   tflow <- replace_recipe(tflow, rcp)
@@ -367,7 +367,7 @@ test_that("parameters on tidyflow returns same tuning params as tuning", {
     ~ recipes::step_ns(
       recipes::recipe(mpg ~ cyl + am, .x),
       cyl,
-      deg_free = tune()
+      deg_free = tune::tune()
     )
 
   tflow <- replace_recipe(tflow, rcp)
@@ -383,7 +383,7 @@ test_that("Tuning is applied with all pre steps", {
     ~ recipes::step_ns(
       recipes::recipe(mpg ~ disp + am, .x),
       disp,
-      deg_free = tune()
+      deg_free = tune::tune()
     )
   tflow <- plug_split(tflow, rsample::initial_split)
   tflow <- plug_recipe(tflow, rcp)

@@ -8,17 +8,17 @@
 \usage{
 .fit_pre(tflow)
 
-.fit_model(tidyflow, control)
+.fit_model(tflow, control)
 }
 \arguments{
+\item{control}{A \code{\link[=control_tidyflow]{control_tidyflow()}} object}
+
 \item{tidyflow}{A tidyflow
 
 For \code{.fit_pre()}, this should be a fresh tidyflow.
 
 For \code{.fit_model()}, this should be a tidyflow that has already been trained
 through \code{.fit_pre()}.}
-
-\item{control}{A \code{\link[=control_tidyflow]{control_tidyflow()}} object}
 
 \item{data}{A data frame of predictors and outcomes to use when fitting the
 tidyflow}

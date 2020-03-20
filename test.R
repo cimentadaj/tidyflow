@@ -108,9 +108,10 @@ tflow <-
   tidyflow() %>%
   plug_data(Ionosphere) %>% 
   plug_recipe(iono_rec) %>%
-  plug_resample(bootstraps, times = 30) %>%
+  plug_resample(bootstraps) %>%
   plug_model(svm_mod) %>%
   plug_grid(grid_regular)
 
-tflow %>%
+tst <-
+  tflow %>%
   fit()

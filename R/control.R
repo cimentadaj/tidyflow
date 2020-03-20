@@ -7,6 +7,9 @@
 #'
 #' @param control_resamples A resamples control object. If `NULL`, a default control
 #'   argument is constructed from [tune::control_resamples()].
+#'
+#' @param control_grid A grid control object. If `NULL`, a default control
+#'   argument is constructed from [tune::control_grid()].
 #' @return
 #' A `control_tidyflow` object for tweaking the tidyflow fitting/tuning process.
 #'

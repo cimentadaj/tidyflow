@@ -6,5 +6,6 @@
 ^prototype\.Rmd$
 ^prototype\.html$
 ^test\.R$
-^workflows\.Rproj$
+^tidyflow\.Rproj$
 ^\.Rproj\.user$
+^test.R$
