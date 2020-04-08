@@ -100,12 +100,12 @@ print_header <- function(x) {
     data_msg <- glue::glue("{data_msg} None")
   } else {
     dt <- pull_tflow_rawdata(x)
-    data_missing <- sum(is.na(dt)) / nrow(dt)
+    data_missing <- round(sum(is.na(dt)) / nrow(dt), 1)
     # I include a `is.nan` in case the data frame
     # is empty and 0 / 0 equals NaN
     data_content <- glue::glue(
       "{nrow(dt)} rows x {ncol(dt)} columns; ",
-      "{if (is.nan(data_missing)) 0 else data_missing}% missing values"
+      "{if (is.nan(data_missing)) 0 else data_missing}% NA"
     )
 
     data_msg <- glue::glue("{data_msg} {data_content}")
