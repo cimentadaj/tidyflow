@@ -124,8 +124,8 @@ fit.tidyflow <- function(tflow, ..., control = control_tidyflow()) {
 #' @rdname tidyflows-internals
 #' @export
 .fit_model <- function(tflow, control) {
-  action_model <- tflow[["fit"]][["actions"]][["model"]]
-  fit(action_model, tflow = tflow, control = control)
+  object <- tflow[["fit"]][["actions"]][["model"]]
+  fit(object, tflow = tflow, control = control)
 }
 
 # ------------------------------------------------------------------------------

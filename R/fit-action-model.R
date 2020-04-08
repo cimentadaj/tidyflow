@@ -104,8 +104,8 @@ fit.action_model <- function(object, tflow, control, ...) {
     obj <- tflow$pre$results$recipe %||% tflow$pre$actions$formula$formula
 
     tflow$fit$fit$tuning <-
-      tune::fit_resamples(obj,
-                          model = spec,
+      tune::fit_resamples(object = spec,
+                          preprocessor = obj,
                           resamples = resample_res,
                           control = control_resamples
                           )
@@ -117,8 +117,8 @@ fit.action_model <- function(object, tflow, control, ...) {
     obj <- tflow$pre$results$recipe %||% tflow$pre$actions$formula$formula
 
     tflow$fit$fit$tuning <-
-      tune::tune_grid(obj,
-                      model = spec,
+      tune::tune_grid(object = spec,
+                      preprocessor = obj,
                       resamples = resample_res,
                       grid = grid_res,
                       control = control_grid
