@@ -1,3 +1,5 @@
+between <- function(x, start, end) all(x >= start & x <= end)
+
 test_that("can add a grid to a tidyflow", {
   tidyflow <- tidyflow()
   tidyflow <- plug_grid(tidyflow, dials::grid_regular)
@@ -217,14 +219,14 @@ test_that("add/replace_grid check if `...` are named", {
 
   expect_error(
     plug_grid(tidyflow, dials::grid_regular, 0.8),
-    regexp = "Arguments in `...` for `.f` should be named"
+    regexp = "Arguments in `...` for `plug_grid` should be uniquely named"
   )
 
   tidyflow <- plug_grid(tidyflow, dials::grid_regular)
 
   expect_error(
     replace_grid(tidyflow, dials::grid_max_entropy, 0.8),
-    regexp = "Arguments in `...` for `.f` should be named"
+    regexp = "Arguments in `...` for `plug_grid` should be uniquely named"
   )
   
 })
@@ -489,3 +491,222 @@ test_that("Tuning is applied with all pre steps", {
 ##     fixed = TRUE
 ##   )
 ## })
+
+test_that("Repeating param names throws error", {
+  mod <- plug_split(tidyflow(mtcars), rsample::initial_split)
+  mod <- plug_resample(plug_formula(mod, mpg ~ .), rsample::vfold_cv)
+  model <-
+    parsnip::set_engine(
+      parsnip::linear_reg(
+        penalty = tune::tune(),
+        mixture = tune::tune()),
+      "glmnet"
+    )
+  
+  expect_error(
+    plug_grid(plug_model(mod, model),
+              dials::grid_regular,
+              penalty = penalty(),
+              penalty = penalty()
+              ),
+    regexp = "Arguments in `...` for `plug_grid` should be uniquely named"
+  )
+
+  model <-
+    parsnip::set_engine(
+      parsnip::linear_reg(
+        penalty = tune::tune("my_penalty"),
+        mixture = tune::tune("my_mixture")),
+      "glmnet"
+    )
+
+  expect_error(
+    fit(
+      plug_grid(plug_model(mod, model),
+                dials::grid_regular,
+                penalty = dials::penalty(),
+                mixture = dials::mixture()
+                )
+    ),
+    regexp = "At least one parameter does not match any id's in the set: 'penalty', 'mixture'"
+  )
+
+  expect_error(
+    fit(
+      plug_grid(plug_model(mod, model),
+                dials::grid_regular,
+                my_penalty = dials::penalty(),
+                mixture = dials::mixture()
+                )
+    ),
+    regexp = "At least one parameter does not match any id's in the set: 'mixture'"
+  )
+  
+})
+
+
+test_that("Tuning without specifying values in plug_grid works", {
+  # Grid search with tuning parameters in model
+  # No need to define the values of the tuning parameters
+  # as they have defaults. For example, see dials::penalty()
+  mod <- plug_split(tidyflow(mtcars), rsample::initial_split)
+  mod <- plug_resample(plug_formula(mod, mpg ~ .), rsample::vfold_cv)
+  model <-
+    parsnip::set_engine(
+      parsnip::linear_reg(
+        penalty = tune::tune(),
+        mixture = tune::tune()),
+      "glmnet"
+    )
+  
+  mod <- plug_grid(plug_model(mod, model), dials::grid_regular, levels = 2)
+  res <- fit(mod)
+
+  rows_tuning <-
+    unique(
+      vapply(pull_tflow_fit_tuning(res)$`.metrics`,
+             nrow,
+             FUN.VALUE = numeric(1)
+             )
+    )
+
+  # This matches number of tuning parameters so it should always
+  # be 8.
+  expect_equal(rows_tuning, 8)
+
+  # Let's just make sure that the parameters names are in the
+  # tuning data frame.
+  parameters_present <-
+    all(
+      vapply(pull_tflow_fit_tuning(res)$`.metrics`,
+             function(x) all(c("penalty", "mixture") %in% names(x)),
+             FUN.VALUE = logical(1)
+             )
+    )
+
+  expect_true(parameters_present)
+})
+
+test_that("Specifying parameters in `...` for plug_grid replaces default values", {
+  
+  mod <- plug_split(tidyflow(mtcars), rsample::initial_split)
+  mod <- plug_resample(plug_formula(mod, mpg ~ .), rsample::vfold_cv)
+  model <-
+    parsnip::set_engine(
+      parsnip::linear_reg(
+        penalty = tune::tune(),
+        mixture = tune::tune()),
+      "glmnet"
+    )
+  
+  mod <- plug_grid(plug_model(mod, model),
+                   dials::grid_regular,
+                   penalty = dials::penalty(c(-1, 0), trans = NULL),
+                   mixture = dials::mixture(c(0, 0.5)),
+                   levels = 2
+                   )
+  res <- fit(mod)
+
+  ## TODO: When pull_grid exists, put it here
+  expect_true(between(res$pre$results$grid$penalty, -1, 0))
+  expect_true(between(res$pre$results$grid$mixture, 0, 0.5))
+
+  # Also works when both tuning params have different names
+  model <-
+    parsnip::set_engine(
+      parsnip::linear_reg(
+        penalty = tune::tune("my_penalty"),
+        mixture = tune::tune("my_mixture")),
+      "glmnet"
+    )
+
+  mod <- replace_grid(replace_model(mod, model),
+                   dials::grid_regular,
+                   my_penalty = dials::penalty(c(-1, 0), trans = NULL),
+                   my_mixture = dials::mixture(c(0, 0.5)),
+                   levels = 2
+                   )
+  res <- fit(mod)
+
+  expect_true(between(res$pre$results$grid$my_penalty, -1, 0))
+  expect_true(between(res$pre$results$grid$my_mixture, 0, 0.5))
+
+  # Also works when one tuning param has different names and the other
+  # the normal name
+  model <-
+    parsnip::set_engine(
+      parsnip::linear_reg(
+        penalty = tune::tune("my_penalty"),
+        mixture = tune::tune()),
+      "glmnet"
+    )
+
+  mod <- replace_grid(replace_model(mod, model),
+                      dials::grid_regular,
+                      my_penalty = dials::penalty(c(-5, 0), trans = NULL),
+                      mixture = dials::mixture(c(0, 0.1)),
+                      levels = 2
+                      )
+  res <- fit(mod)
+
+  expect_true(between(res$pre$results$grid$my_penalty, -5, 0))
+  expect_true(between(res$pre$results$grid$mixture, 0, 0.1))
+})
+
+
+test_that("Specifying tuning params in model and recipe works well in both", {
+  
+  mod <- plug_split(tidyflow(mtcars), rsample::initial_split)
+  rec <- ~ recipes::step_ns(recipes::recipe(mpg ~ ., data = .), hp, deg_free = tune())
+  mod <- plug_recipe(mod, rec)
+  mod <- plug_resample(mod, rsample::vfold_cv)
+
+  model <-
+    parsnip::set_engine(
+      parsnip::linear_reg(
+        penalty = tune::tune(),
+        mixture = tune::tune()),
+      "glmnet"
+    )
+  
+  mod <- plug_grid(plug_model(mod, model),
+                   dials::grid_regular,
+                   levels = 2
+                   )
+  res <- fit(mod)
+
+  # Let's just make sure that the parameters names are in the
+  # tuning data frame.
+  parameters_and_recipe_present <-
+    all(
+      vapply(pull_tflow_fit_tuning(res)$`.metrics`,
+             function(x) all(c("penalty", "mixture", "deg_free") %in% names(x)),
+             FUN.VALUE = logical(1)
+             )
+    )
+  
+  expect_true(parameters_and_recipe_present)
+
+  rows_tuning <-
+    unique(
+      vapply(pull_tflow_fit_tuning(res)$`.metrics`,
+             nrow,
+             FUN.VALUE = numeric(1)
+             )
+    )
+
+  # This matches number of tuning parameters so it should always be 16.
+  expect_equal(rows_tuning, 16)
+
+  mod <- replace_grid(mod,
+                      dials::grid_regular,
+                      deg_free = dials::deg_free(c(1, 10)),
+                      mixture = dials::mixture(c(0, 0.1)),
+                      levels = 2
+                      )
+  res <- fit(mod)
+
+  expect_true(between(res$pre$results$grid$deg_free, 1, 10))
+  expect_true(between(res$pre$results$grid$mixture, 0, 0.1))
+})
+

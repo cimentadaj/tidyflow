@@ -3,7 +3,7 @@
 #' @description
 #' - `plug_grid()` specifies the type of grid used in the model tuning. It
 #'   accepts a function \code{.f} that will be fed the tuning parameters defined
-#'   in the model and the recip. Only functions which return a \code{param_grid}
+#'   in the model and the recipe. Only functions which return a \code{param_grid}
 #'   object will be allowed. See package \code{\link[dials]{dials}} and
 #'   the details section. If a model has been fit before adding the grid,
 #'   it will need to be refit.
@@ -25,6 +25,12 @@
 #' \code{param_grid}. These functions come from the \code{\link[dials]{dials}}
 #' package.
 #'
+#' If a tuning parameter in the model/recipe is assigned a name (that is,
+#' \code{tune("new_name")}) and the user is interested in specifying
+#' the tuning values for that parameter using \code{plug_grid} or
+#' \code{replace_grid}, then the parameter name should have the name not
+#' the original name. See the example section for a concrete example.
+#'
 #' @param x A tidyflow
 #'
 #' @param .f A function which will be passed the tuned arguments from the model
@@ -41,31 +47,82 @@
 #'
 #' @export
 #' @examples
+#'
+#' \dontrun{
+#' library(parsnip)
 #' library(rsample)
-#'
-#' wf <- tidyflow()
-#' wf <- plug_data(wf, mtcars)
+#' library(tune)
+#' library(dials)
+#' library(recipes)
+#' # Grid search with tuning parameters in model
+#' # No need to define the values of the tuning parameters
+#' # as they have defaults. For example, see dials::penalty()
+#' mod <-
+#'   mtcars %>%
+#'   tidyflow() %>%
+#'   plug_split(initial_split) %>%
+#'   plug_formula(mpg ~ .) %>% 
+#'   plug_resample(vfold_cv) %>%
+#'   plug_model(set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet")) %>% 
+#'   plug_grid(grid_regular)
 #' 
-#' # Strata as string
-#' wf <- plug_grid(wf, initial_split, prop = 0.8, strata = "cyl")
-#'
-#' wf
+#' res <- fit(mod)
 #' 
-#' # Strata as unquoted name
-#' wf <- replace_grid(wf, initial_split, prop = 0.8, strata = cyl)
-#'
-#' wf
-#'
-#' drop_grid(wf)
-#'
-#' # New split function
-#' replace_grid(wf, initial_time_split)
-#'
+#' res %>%
+#'   pull_tflow_fit_tuning() %>%
+#'   show_best("rsq")
+#' 
+#' # If you want to specify tuning values, you can do so with
+#' # `plug_grid` or `replace_grid` but they must have the same
+#' # name as the tuning parameter
+#' res2 <-
+#'   mod %>%
+#'   replace_grid(grid_regular, penalty = penalty(c(-1, 0)), levels = 2) %>%
+#'   fit()
+#' 
+#' res2 %>%
+#'   pull_tflow_fit_tuning() %>%
+#'   show_best("rsq")
+#' 
+#' # If tune assigns a name, then `plug_grid` or `replace_grid` must
+#' # use that name to replace it
+#' model <-
+#'   set_engine(
+#'     linear_reg(penalty = tune("my_penalty"), mixture = tune("my_mixture")),
+#'     "glmnet"
+#'   )
+#' 
+#' # You must use `my_penalty`
+#' res3 <-
+#'   mod %>%
+#'   replace_model(model) %>%   
+#'   replace_grid(grid_regular, my_penalty = penalty(c(-1, 0)), levels = 2) %>%
+#'   fit()
+#' 
+#' res3 %>%
+#'   pull_tflow_fit_tuning() %>%
+#'   show_best("rsq")
+#' 
+#' # Finally, you can also tune values from a recipe directly
+#' res4 <-
+#'   res3 %>%
+#'   drop_formula() %>% 
+#'   plug_recipe(~ recipe(mpg ~ ., data = .) %>% step_ns(hp, deg_free = tune())) %>%
+#'   fit()
+#' 
+#' res4 %>%
+#'   pull_tflow_fit_tuning() %>%
+#'   show_best("rsq")
+#' }
+#' 
 plug_grid <- function(x, .f, ...) {
   .dots <- enquos(...)
 
   if (!is_uniquely_named(.dots)) {
-    abort("Arguments in `...` for `.f` should be named")
+    fun_name <- as.character(match.call())[1]
+    abort(
+      paste0("Arguments in `...` for `", fun_name, "` should be uniquely named")
+    )
   }
 
   # Capture name of function to put as name in action list
@@ -122,6 +179,20 @@ fit.action_grid <- function(object, tflow) {
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)
 
+  # When specifying parameters in `...` that need to override
+  # the ones defined in `tune()` inside the model, I only
+  # keep the names of parameters defined in `...` not
+  # and update the all_params
+  name_args <- names(formals(object[[1]]))
+  parameters_names <- setdiff(names(args), name_args)
+  if (length(parameters_names) != 0) {
+    all_params <- rlang::exec(
+      stats::update,
+      all_params,
+      !!!args[parameters_names]
+    )
+  }
+  
   grid_res <- rlang::exec(
     # function body
     object[[1]],

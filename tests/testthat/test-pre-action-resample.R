@@ -197,14 +197,14 @@ test_that("add/replace_resample check if `...` are named", {
 
   expect_error(
     plug_resample(tidyflow, rsample::bootstraps, 0.8),
-    regexp = "Arguments in `...` for `.f` should be named"
+    regexp = "Arguments in `...` for `plug_resample` should be uniquely named"
   )
 
   tidyflow <- plug_resample(tidyflow, rsample::bootstraps)
 
   expect_error(
     replace_resample(tidyflow, rsample::vfold_cv, 0.8),
-    regexp = "Arguments in `...` for `.f` should be named"
+    regexp = "Arguments in `...` for `plug_resample` should be uniquely named"
   )
   
 })

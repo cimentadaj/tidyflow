@@ -63,7 +63,10 @@ plug_resample <- function(x, .f, ...) {
   .dots <- enquos(...)
 
   if (!is_uniquely_named(.dots)) {
-    abort("Arguments in `...` for `.f` should be named")
+    fun_name <- as.character(match.call())[1]
+    abort(
+      paste0("Arguments in `...` for `", fun_name, "` should be uniquely named")
+    )
   }
 
   # Capture name of function to put as name in action list

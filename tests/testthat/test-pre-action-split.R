@@ -135,14 +135,14 @@ test_that("add/replace_split check if `...` are named", {
 
   expect_error(
     plug_split(tidyflow, rsample::initial_split, 0.8),
-    regexp = "Arguments in `...` for `.f` should be named"
+    regexp = "Arguments in `...` for `plug_split` should be uniquely named"
   )
 
   tidyflow <- plug_split(tidyflow, rsample::initial_split)
 
   expect_error(
     replace_split(tidyflow, rsample::initial_time_split, 0.8),
-    regexp = "Arguments in `...` for `.f` should be named"
+    regexp = "Arguments in `...` for `plug_split` should be uniquely named"
   )
   
 })

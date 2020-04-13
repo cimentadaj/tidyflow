@@ -79,9 +79,11 @@ plug_recipe <- function(x, .f, ..., blueprint = NULL) {
   validate_recipes_available()
 
   ## For when `...` is supported
-  ## .dots <- enquos(...)
   ## if (!is_uniquely_named(.dots)) {
-  ##   abort("Arguments in `...` for `.f` should be named")
+  ##   fun_name <- as.character(match.call())[1]
+  ##   abort(
+  ##     paste0("Arguments in `...` for `", fun_name, "` should be uniquely named")
+  ##   )
   ## }
 
   action <- new_action_recipe(.f, blueprint)
