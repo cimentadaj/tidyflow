@@ -21,14 +21,14 @@ Depends:
 Imports: 
     cli (>= 2.0.0),
     ellipsis (>= 0.2.0),
-    generics,
-    glue,
-    hardhat,
+    generics (>= 0.0.2),
+    glue (>= 1.4.0),
+    hardhat (>= 0.1.2),
     parsnip (>= 0.0.4),
     rlang (>= 0.4.1),
-    tune (>= 0.0.1),
-    rsample,
-    dials
+    tune (>= 0.1.0),
+    rsample (>= 0.0.6),
+    dials (>= 0.0.6)
 Suggests: 
     covr,
     knitr,

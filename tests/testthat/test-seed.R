@@ -67,5 +67,13 @@ test_that("Specifying the seed returns the same results using resample", {
     first_mod <- mod %>% fit() %>% rsplit2df()
     second_mod <- mod %>% fit() %>% rsplit2df()
 
-    expect_equal(first_mod, second_mod)
+    # You were using expect_equal but expect equal
+    # uses some sort of all.equal for tibble
+    # and throws an error. This will be fixed
+    # when this issue is resolved:
+    # https://github.com/r-lib/testthat/issues/447
+    expect_true(
+      all.equal.list(first_mod, second_mod)
+    )
+
 })

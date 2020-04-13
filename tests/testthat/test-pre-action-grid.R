@@ -127,8 +127,16 @@ test_that("plug_grid can work with recipe or formula", {
 
   # rsplit can be compared because all.equal doesn't support
   # it. Instead, we convert to data frame to compare.
-  expect_equal(as.data.frame(pull_tflow_fit_tuning(mod1_recipe)),
-               as.data.frame(pull_tflow_fit_tuning(mod1_formula)))
+
+  # You were using expect_equal but expect equal
+  # uses some sort of all.equal for tibble
+  # and throws an error. This will be fixed
+  # when this issue is resolved:
+  # https://github.com/r-lib/testthat/issues/447
+  expect_true(
+    all.equal.list(rsplit2df(mod1_recipe),
+                   rsplit2df(mod1_formula))
+  )
 
 })
 
@@ -443,9 +451,11 @@ test_that("Tuning is applied with all pre steps", {
       grid = mod1_grid$pre$results$grid
     )
 
-  expect_equal(
-    as.data.frame(tuning_vals),
-    as.data.frame(manual_mod1)
+  expect_true(
+    all.equal.list(
+      tblattr_2_df(tuning_vals),
+      tblattr_2_df(manual_mod1)
+    )
   )
 })
 

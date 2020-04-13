@@ -204,6 +204,18 @@ rsplit2df <- function(x) {
   x$pre$results$resample <- as.data.frame(x$pre$results$resample)
   x$fit$fit$tuning <- as.data.frame(x$fit$fit$tuning)
 
+  # The attribute parameters from the fit tuning result
+  # is a tibble. tibble has removed the method all.equal.tbl
+  # https://github.com/tidyverse/dplyr/issues/2751
+  # Here I inspect the attribute parameters and turn it into
+  # a data frame. This way, all.equal.list can compare the data
+  # frames as list columns.
+  x <- tblattr_2_df(x$fit$fit$tuning)
+
   x
 }
 
+tblattr_2_df <- function(x) {
+  attr(x, "parameters") <- as.data.frame(attr(x, "parameters"))
+  x
+}

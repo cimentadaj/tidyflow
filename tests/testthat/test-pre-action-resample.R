@@ -53,8 +53,12 @@ test_that("plug_resample can work with recipe or formula", {
 
   # rsplit can be compared because all.equal doesn't support
   # it. Instead, we convert to data frame to compare.
-  expect_equal(as.data.frame(pull_tflow_fit_tuning(mod1_recipe)),
-               as.data.frame(pull_tflow_fit_tuning(mod1_formula)))
+  expect_true(
+    all.equal.list(
+      rsplit2df(mod1_recipe),
+      rsplit2df(mod1_formula)
+    )
+  )
 
 })
 
