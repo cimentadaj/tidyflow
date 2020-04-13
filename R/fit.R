@@ -54,8 +54,6 @@ fit.tidyflow <- function(tflow, ..., control = control_tidyflow()) {
   ellipsis::check_dots_empty()
   validate_has_minimal_components(tflow)
 
-  # If no seed has been specified, `set.seed` supports NULL as random
-  set.seed(tflow$pre$seed)
   tflow <- .fit_pre(tflow)
   tflow <- .fit_model(tflow, control)
 
@@ -111,8 +109,9 @@ fit.tidyflow <- function(tflow, ..., control = control_tidyflow()) {
   n <- length(tflow[["pre"]]$actions)
 
   for (i in seq_len(n)) {
+    # If no seed has been specified, `set.seed` supports NULL as random
+    set.seed(tflow$pre$seed)
     action <- tflow[["pre"]]$actions[[i]]
-
     # Update the `tflow` as we iterate through pre steps
     tflow <- fit(action, tflow)
   }
@@ -124,6 +123,9 @@ fit.tidyflow <- function(tflow, ..., control = control_tidyflow()) {
 #' @rdname tidyflows-internals
 #' @export
 .fit_model <- function(tflow, control) {
+  # If no seed has been specified, `set.seed` supports NULL as random
+  set.seed(tflow$pre$seed)
+
   object <- tflow[["fit"]][["actions"]][["model"]]
   fit(object, tflow = tflow, control = control)
 }
