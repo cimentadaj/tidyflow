@@ -7,6 +7,7 @@
 \alias{pull_tflow_training}
 \alias{pull_tflow_testing}
 \alias{pull_tflow_resample}
+\alias{pull_tflow_grid}
 \alias{pull_tflow_preprocessor}
 \alias{pull_tflow_prepped_recipe}
 \alias{pull_tflow_mold}
@@ -24,6 +25,8 @@ pull_tflow_training(x, prep = FALSE)
 pull_tflow_testing(x, prep = FALSE)
 
 pull_tflow_resample(x)
+
+pull_tflow_grid(x)
 
 pull_tflow_preprocessor(x)
 
@@ -71,6 +74,8 @@ to the training data.
 \item \code{pull_tflow_resample()} returns the resample object from the function
 specified in \code{\link{plug_resample}}. This resample object already
 has the preprocessor applied (either formula or recipe).
+\item \code{pull_tflow_grid()} returns the grid data frame from which the tuning
+parameter was made.
 \item \code{pull_tflow_prepped_recipe()} returns the prepped recipe. It is
 extracted from the mold object returned from \code{pull_tflow_mold()}.
 \item \code{pull_tflow_mold()} returns the preprocessed "mold" object returned

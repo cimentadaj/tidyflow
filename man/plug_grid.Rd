@@ -66,7 +66,6 @@ library(rsample)
 library(tune)
 library(dials)
 library(recipes)
-library(tidyflow)
 # Grid search with tuning parameters in model
 # No need to define the values of the tuning parameters
 # as they have defaults. For example, see dials::penalty()

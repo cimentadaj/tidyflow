@@ -140,7 +140,7 @@ fit.action_model <- function(object, tflow, control, ...) {
     fit <- fit_from_formula(spec, mold, control_parsnip, formula)
   }
 
-  tflow$fit$fit <- fit
+  tflow$fit$fit$fit <- fit
 
   # Only the tidyflow is returned
   tflow

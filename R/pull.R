@@ -28,6 +28,9 @@
 #' - `pull_tflow_resample()` returns the resample object from the function
 #'    specified in \code{\link{plug_resample}}. This resample object already
 #'    has the preprocessor applied (either formula or recipe).
+#'
+#' - `pull_tflow_grid()` returns the grid data frame from which the tuning
+#'    parameter was made.
 #' 
 #' - `pull_tflow_prepped_recipe()` returns the prepped recipe. It is
 #'   extracted from the mold object returned from `pull_tflow_mold()`.
@@ -186,6 +189,21 @@ pull_tflow_resample <- function(x) {
 
 #' @rdname tidyflow-extractors
 #' @export
+pull_tflow_grid <- function(x) {
+  if (!has_fit_tuning(x)) {
+    abort("Tidyflow has not yet been trained. Do you need to call `fit()`?")
+  }
+
+  if (!has_preprocessor_grid(x)) {
+    abort("The tidyflow must have a grid preprocessor.")
+  }
+
+  x$pre$results$grid
+}
+
+
+#' @rdname tidyflow-extractors
+#' @export
 pull_tflow_preprocessor <- function(x) {
   validate_is_tidyflow(x)
 
@@ -244,7 +262,7 @@ pull_tflow_fit <- function(x) {
   validate_is_tidyflow(x)
 
   if (has_fit(x)) {
-    return(x$fit$fit)
+    return(x$fit$fit$fit)
   }
 
   abort("The tidyflow does not have a model fit. Have you called `fit()` yet?")

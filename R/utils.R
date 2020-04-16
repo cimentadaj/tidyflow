@@ -193,7 +193,7 @@ combine_outcome_preds <- function(mold) {
 # To compare equality of models, elapsed time is sometimes
 # the only different thing
 strip_elapsed <- function(x) {
-  x$fit$fit$elapsed <- NULL
+  x$fit$fit$fit$elapsed <- NULL
   x
 }
 

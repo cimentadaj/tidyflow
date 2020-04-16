@@ -81,7 +81,7 @@ test_that("can pull a model fit", {
 
   expect_equal(
     pull_tflow_fit(tidyflow),
-    tidyflow$fit$fit
+    tidyflow$fit$fit$fit
   )
 })
 
@@ -208,6 +208,39 @@ test_that("pull_tflow_resample error if not a tidyflow", {
   expect_error(pull_tflow_resample(tidyflow),
                "Tidyflow has not yet been trained. Do you need to call `fit()`?"
                )
+})
+
+# ------------------------------------------------------------------------------
+# pull_tflow_grid()
+tidyflow <- tidyflow(mtcars, seed = 54132)
+tidyflow <- plug_split(tidyflow, rsample::initial_split)
+tidyflow <- plug_resample(tidyflow, rsample::vfold_cv)
+tidyflow <- plug_recipe(tidyflow, ~ recipes::recipe(.x, mpg ~ .))
+mod <- parsnip::set_engine(parsnip::linear_reg(penalty = tune::tune(),
+                                               mixture = tune::tune()),
+                           "glmnet")
+
+tidyflow <- plug_model(tidyflow, mod)
+
+tidyflow <- plug_grid(tidyflow, dials::grid_regular, levels = 2)
+
+test_that("pull_tflow_grid can pull a resample", {
+  tidyflow <- fit(tidyflow)
+  expect_is(pull_tflow_grid(tidyflow), "param_grid")
+})
+
+test_that("pull_tflow_resample error if not a tidyflow", {
+  expect_error(pull_tflow_grid(tidyflow),
+               "Tidyflow has not yet been trained. Do you need to call `fit()`?"
+               )
+})
+
+mod <- parsnip::set_engine(parsnip::linear_reg(), "lm")
+tidyflow <- plug_model(drop_model(drop_grid(tidyflow)), mod)
+
+test_that("pull_tflow_grid error if no grid but tuning values", {
+  expect_error(pull_tflow_grid(fit(tidyflow)),
+               "The tidyflow must have a grid preprocessor")
 })
 
 

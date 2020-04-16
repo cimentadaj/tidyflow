@@ -15,8 +15,11 @@
 \item{control}{A \code{\link[=control_tidyflow]{control_tidyflow()}} object}
 }
 \value{
-The tidyflow \code{object}, updated with a fit parsnip model in the
-\code{object$fit$fit} slot.
+If a tuning grid has been specified with \code{\link{plug_grid}}, then the
+result is a data frame with the tuning results. Can be extracted with
+\code{\link{pull_tflow_fit_tuning}}. If no tuning grid has been specified,
+the result is a parsnip model. It can be extracted with
+\code{\link{pull_tflow_fit}}.
 }
 \description{
 Fitting a tidyflow currently involves two main steps:
@@ -33,7 +36,11 @@ after the model has been fit.
 \examples{
 library(parsnip)
 library(recipes)
+library(tune)
+library(dials)
+library(rsample)
 
+# Fit a simple linear model
 model <- linear_reg()
 model <- set_engine(model, "lm")
 
@@ -51,5 +58,23 @@ recipe_tidyflow <-
  plug_recipe(~ recipe(mpg ~ cyl + disp, .x) \%>\% step_log(disp))
 
 fit(recipe_tidyflow)
+
+# Fit a regularized regression through a grid search.
+# Do this by updating the already defined model:
+new_mod <- set_engine(linear_reg(penalty = tune(), mixture = tune()),
+                      "glmnet")
+tuned_res <-
+ formula_tidyflow \%>\%
+  plug_resample(vfold_cv) \%>\% 
+  replace_formula(mpg ~ .) \%>\% 
+  replace_model(new_mod) \%>\%
+  plug_grid(grid_regular) \%>\%
+  fit()
+
+# Extract the tuning fit:
+pull_tflow_fit_tuning(tuned_res)
+
+# TODO: Extract best params and refit once complete_wflow is ready
+ 
 
 }
