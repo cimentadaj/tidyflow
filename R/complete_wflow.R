@@ -1,21 +1,16 @@
 #' Fit the best model from a tuning grid
-#'
-#' @description
-#' Fitting a tidyflow currently involves two main steps:
-#'
-#' - Preprocessing the data using a formula preprocessor, or by calling
-#'   [recipes::prep()] on a recipe.
-#'
-#' - Fitting the underlying parsnip model using [parsnip::fit.model_spec()].
-#'
+#' 
 #' @details
 #' In the future, there will also be _postprocessing_ steps that can be added
 #' after the model has been fit.
 #' @param x A tidyflow
-#' @param best_params A 1 row tibble with the best parameters to fit the final model. Ideally, the result of \code{\link[tune]{select_best}}.
+#' @param best_params A 1 row tibble with the best parameters to fit the final
+#' model. Ideally, the result of \code{\link[tune]{select_best}}.
 #' @param control A [control_tidyflow()] object
+#' 
 #' @return
-#' The tidyflow `object`, updated with a fit parsnip model. Can be extracted
+#' 
+#' The tidyflow `object`, updated with the fitted best model. Can be extracted
 #' with \code{\link{pull_tflow_fit}}.
 #'
 #' @export

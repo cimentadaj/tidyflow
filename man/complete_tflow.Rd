@@ -9,21 +9,17 @@ complete_tflow(x, best_params, control = control_tidyflow())
 \arguments{
 \item{x}{A tidyflow}
 
-\item{best_params}{A 1 row tibble with the best parameters to fit the final model. Ideally, the result of \code{\link[tune]{select_best}}.}
+\item{best_params}{A 1 row tibble with the best parameters to fit the final
+model. Ideally, the result of \code{\link[tune]{select_best}}.}
 
 \item{control}{A \code{\link[=control_tidyflow]{control_tidyflow()}} object}
 }
 \value{
-The tidyflow \code{object}, updated with a fit parsnip model. Can be extracted
+The tidyflow \code{object}, updated with the fitted best model. Can be extracted
 with \code{\link{pull_tflow_fit}}.
 }
 \description{
-Fitting a tidyflow currently involves two main steps:
-\itemize{
-\item Preprocessing the data using a formula preprocessor, or by calling
-\code{\link[recipes:prep]{recipes::prep()}} on a recipe.
-\item Fitting the underlying parsnip model using \code{\link[parsnip:fit.model_spec]{parsnip::fit.model_spec()}}.
-}
+Fit the best model from a tuning grid
 }
 \details{
 In the future, there will also be \emph{postprocessing} steps that can be added
@@ -45,7 +41,7 @@ tuned_res <-
   plug_resample(vfold_cv) \%>\% 
   plug_formula(mpg ~ .) \%>\% 
   plug_model(new_mod) \%>\%
-  plug_grid(grid_regular) \%>\%
+  plug_grid(grid_regular, levels = 2) \%>\%
   fit()
 
 # Extract the tuning fit:
