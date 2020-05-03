@@ -279,3 +279,8 @@ pull_tflow_fit_tuning <- function(x) {
 
   abort("The tidyflow does not have a tuning fit. Have you called `fit()` yet?")
 }
+
+recipe_or_formula <- function(x) {
+  rcp <- x$pre$results$recipe
+  if (!is.null(rcp)) rcp else ~1
+}

@@ -122,6 +122,11 @@ has_tune.model_spec <- function(x) {
   any_tune_args
 }
 
+has_tune.tidyflow <- function(x) {
+  # A formula never has tune params, so I hack it to return ~1
+  has_tune(recipe_or_formula(x)) | has_tune(pull_tflow_spec(x))
+}
+
 # ------------------------------------------------------------------------------
 
 # Since all actions within pre/fit/post are named, we want to be able to remove
