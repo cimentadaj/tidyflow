@@ -45,7 +45,7 @@ predict.tidyflow <- function(object, new_data, type = NULL, opts = list(), ...) 
 
   # If there's a tuning object but no final model
   if (!inherits(tuning, "try-error") && !tflow$trained) {
-    abort("You seem to have a model with tuning parameters but not a finalized model. Did you call complete_tidyflow()?")
+    abort("You seem to have a model with tuning parameters but not a finalized model. Did you call complete_tflow()?")
   }
 
   # If no tuning object is present but the model is not trained

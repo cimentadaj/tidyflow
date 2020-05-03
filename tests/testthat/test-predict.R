@@ -202,7 +202,7 @@ test_that("predict raises error when model not fit/tuned", {
 
   expect_error(
     predict(fit_tflow, new_data = mtcars),
-    "You seem to have a model with tuning parameters but not a finalized model. Did you call complete_tidyflow()?" #nolintr
+    "You seem to have a model with tuning parameters but not a finalized model. Did you call complete_tflow()?" #nolintr
   )
 
   expect_error(
@@ -211,8 +211,8 @@ test_that("predict raises error when model not fit/tuned", {
   )
 
   ## TODO:
-  ## When you implement complete_tidyflow() add a test that when tuning + complete_tidyflow result is expected
-  ## Also, if you rename complete_tidyflow you need to replace that in the error message from predict.tidyflow
+  ## When you implement complete_tflow() add a test that when tuning + complete_tflow result is expected
+  ## Also, if you rename complete_tflow you need to replace that in the error message from predict.tidyflow
 
   expect_error(
     predict(fit(drop_resample(fit_tflow))),

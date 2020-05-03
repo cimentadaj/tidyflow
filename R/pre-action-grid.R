@@ -166,7 +166,7 @@ replace_grid <- function(x, .f, ...) {
 fit.action_grid <- function(object, tflow) {
 
   if (!has_preprocessor_resample(tflow)) {
-    abort("The tidyflow does not have a resample specification. Did you want `plug_resample()`?") #nolintr
+    abort("The tidyflow has a grid specification but no resample specification. Did you want `plug_resample()`?") #nolintr
   }
 
   if (!has_spec(tflow)) {
