@@ -54,7 +54,6 @@ test_that("plug_grid resets model fit if trained before adding the grid", {
   expect_error(pull_tflow_fit(tflow))
 })
 
-
 test_that("Can add plug_grid after model fit and refit", {
   rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl + am), cyl, base = 10)
   tflow <- plug_recipe(tidyflow(mtcars), rcp)
@@ -313,7 +312,7 @@ test_that("If tune() is present, plug_grid must be present", {
 
   expect_error(
     fit(tflow),
-    regexp = "The recipe or model has `tune()` parameters but no have grid specification. Did you want `plug_grid()`?", #nolintr
+    regexp = "The recipe or model has `tune()` parameters but no grid specification. Did you want `plug_grid()`?", #nolintr
     fixed = TRUE
   )
 

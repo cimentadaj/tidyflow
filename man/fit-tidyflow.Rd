@@ -68,7 +68,7 @@ tuned_res <-
   plug_resample(vfold_cv) \%>\% 
   replace_formula(mpg ~ .) \%>\% 
   replace_model(new_mod) \%>\%
-  plug_grid(grid_regular) \%>\%
+  plug_grid(grid_regular, levels = 2) \%>\%
   fit()
 
 # Extract the tuning fit:

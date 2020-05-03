@@ -117,7 +117,7 @@ fit.action_resample <- function(object, tflow) {
   has_grid <- has_preprocessor_grid(tflow)
 
   if (has_tuning && !has_grid) {
-    abort("The recipe or model has `tune()` parameters but no have grid specification. Did you want `plug_grid()`?") #nolintr
+    abort("The recipe or model has `tune()` parameters but no grid specification. Did you want `plug_grid()`?") #nolintr
   }
 
   has_tunable_rcp <-
