@@ -34,6 +34,10 @@ test_that("dropping a grid and refitting gives same result", {
   tflow <- plug_model(tflow, model)
 
   mod1_grid <- fit(tflow)
+
+  # When grid is ran, it should always return false
+  expect_false(mod1_grid$trained)
+  
   tflow <- drop_grid(mod1_grid)
   tflow <- plug_grid(tflow, dials::grid_regular)
   mod2_no_grid <- fit(tflow)
@@ -373,7 +377,7 @@ test_that("Cannot run grid tuning without resamples", {
 
   expect_error(
     fit(tflow),
-    regexp = "The tidyflow does not have a resample specification. Did you want `plug_resample()`?", #nolintr
+    regexp = "The tidyflow has a grid specification but no resample specification. Did you want `plug_resample()`?", #nolintr
     fixed = TRUE
   )
 })

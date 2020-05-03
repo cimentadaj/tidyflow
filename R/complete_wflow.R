@@ -75,5 +75,6 @@ complete_tflow <- function (x, best_params, control = control_tidyflow()) {
   }
 
   x$fit$fit$fit <- fit
+  x$trained <- TRUE
   x
 }

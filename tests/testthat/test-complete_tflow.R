@@ -22,4 +22,7 @@ test_that("complete_tflow fits model on correct data with/without split", {
 
   # This should be 24 rows, the default percentage in initial_split
   expect_true(24 == pull_tflow_fit(final_res)$fit$nobs)
+
+  # Should always switch the true for trained
+  expect_true(final_res$trained)
 })
