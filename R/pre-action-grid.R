@@ -173,6 +173,10 @@ fit.action_grid <- function(object, tflow) {
     abort("The tidyflow does not have a model specification to extract the tuning parameters. Did you want `plug_model()`?") #nolintr
   }
 
+  if (!has_tune(tflow)) {
+    abort("The tidyflow has a grid specification but no tuning placeholders. Did you mean to specify `tune()` in your model or recipe?") #nolintr
+  }
+
   # Including recipe + model
   all_params <- tune::parameters(tflow)
 

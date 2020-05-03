@@ -334,6 +334,31 @@ test_that("If tune() is present, plug_grid must be present", {
   )
 })
 
+test_that("If plug_grid is present, tune() must be present somewhere", {
+  tflow <- tidyflow(mtcars, seed = 2315)
+  tflow <- plug_recipe(tflow, ~ recipes::recipe(mpg ~ cyl + am, .x))
+  tflow <- plug_split(tflow, rsample::initial_split)
+  tflow <- plug_resample(tflow, rsample::vfold_cv)
+  tflow <- plug_grid(tflow, dials::grid_regular, levels = 2)
+
+  model <- parsnip::set_engine(
+    parsnip::linear_reg(),
+    "lm"
+  )
+
+  tflow <- plug_model(tflow, model)
+
+  expect_error(
+    fit(tflow),
+    regexp = "The tidyflow has a grid specification but no tuning placeholders. Did you mean to specify `tune()` in your model or recipe?", #nolintr
+    fixed = TRUE
+  )
+
+  model <- parsnip::set_engine(parsnip::linear_reg(penalty = tune::tune(), mixture = tune::tune()), "glmnet")
+  tflow <- replace_model(tflow, model)
+  expect_s3_class(fit(tflow), "tidyflow")
+})
+
 test_that("Cannot run grid tuning without resamples", {
   tflow <- tidyflow(mtcars, seed = 2315)
   tflow <- plug_recipe(tflow, ~ recipes::recipe(mpg ~ cyl + am, .x))
