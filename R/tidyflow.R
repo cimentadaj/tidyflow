@@ -295,7 +295,7 @@ print_preprocessor_recipe <- function(x) {
 
   cat_line("")
 
-  step_names <- map_chr(steps, pull_step_name)
+  step_names <- vapply(steps, pull_step_name, character(1))
 
   if (n_steps <= 10L) {
     cli::cat_bullet(step_names)

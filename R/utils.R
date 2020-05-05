@@ -224,3 +224,7 @@ tblattr_2_df <- function(x) {
   attr(x, "parameters") <- as.data.frame(attr(x, "parameters"))
   x
 }
+
+compact <- function(.x) {
+  Filter(length, .x)
+}

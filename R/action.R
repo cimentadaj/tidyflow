@@ -128,7 +128,7 @@ is_action <- function(x) {
 is_list_of_actions <- function(x) {
   x <- compact(x)
 
-  all(map_lgl(x, is_action))
+  all(vapply(x, is_action, logical(1)))
 }
 
 clean_list <- function(x) {
