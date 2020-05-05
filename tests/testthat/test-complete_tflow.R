@@ -2,7 +2,7 @@ test_that("complete_tflow fits model on correct data with/without split", {
   mod1 <- parsnip::set_engine(parsnip::linear_reg(penalty = tune::tune(), mixture = tune::tune()), "glmnet")
   mod <- tidyflow(mtcars, seed = 52315)
   mod <- plug_recipe(mod, ~ recipes::step_ns(recipes::recipe(mpg ~ ., data = .), disp, deg_free = tune::tune()))
-  mod <- plug_resample(mod, rsample::vfold_cv)
+  mod <- plug_resample(mod, rsample::vfold_cv, v = 2)
   mod <- plug_model(mod, mod1)
   mod <- plug_grid(mod, dials::grid_regular, levels = 2)
   res <- fit(mod)

@@ -24,12 +24,12 @@ test_that("dropping a resample and refitting gives same result", {
   tflow <- tidyflow(mtcars, seed = 2315)
   tflow <- plug_recipe(tflow, ~ recipes::recipe(mpg ~ cyl, .x))
   tflow <- plug_split(tflow, rsample::initial_split)
-  tflow <- plug_resample(tflow, rsample::vfold_cv)
+  tflow <- plug_resample(tflow, rsample::vfold_cv, v = 2)
   tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
 
   mod1_resample <- fit(tflow)
   tflow <- drop_resample(mod1_resample)
-  tflow <- plug_resample(tflow, rsample::vfold_cv)
+  tflow <- plug_resample(tflow, rsample::vfold_cv, v = 2)
   mod2_no_resample <- fit(tflow)
 
   expect_equal(rsplit2df(strip_elapsed(mod1_resample)),
@@ -42,7 +42,7 @@ test_that("plug_resample can work with recipe or formula", {
   tflow <- tidyflow(mtcars, seed = 2315)
   tflow <- plug_recipe(tflow, ~ recipes::recipe(mpg ~ cyl, .x))
   tflow <- plug_split(tflow, rsample::initial_split)
-  tflow <- plug_resample(tflow, rsample::vfold_cv)
+  tflow <- plug_resample(tflow, rsample::vfold_cv, v = 2)
   tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
 
   mod1_recipe <- fit(tflow)
@@ -69,7 +69,7 @@ test_that("drop_resample removes the action and the result", {
   tidyflow <- plug_recipe(tidyflow(mtcars),
                           ~ recipes::recipe(mpg ~ cyl, data = .x))
   
-  tidyflow <- plug_resample(tidyflow, rsample::vfold_cv)
+  tidyflow <- plug_resample(tidyflow, rsample::vfold_cv, v = 2)
   tidyflow <- plug_model(tidyflow, lm_model)
   mod1 <- fit(tidyflow)
   tidyflow <- drop_resample(tidyflow)
@@ -91,7 +91,7 @@ test_that("Fit resample, drop a resample and refit is the same as normal fitting
   tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
 
   mod1_no_resample <- fit(tflow)
-  resample_mod <- fit(plug_resample(mod1_no_resample, rsample::vfold_cv))
+  resample_mod <- fit(plug_resample(mod1_no_resample, rsample::vfold_cv, v = 2))
   mod2_no_resample <- fit(drop_resample(resample_mod))
 
   # Setting the time elapsed to NULL, since there can be very minor
@@ -108,7 +108,7 @@ test_that("Adding a resample to a trained model drops trained flag", {
   tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
 
   mod1_no_resample <- fit(tflow)
-  resample_mod <- plug_resample(mod1_no_resample, rsample::vfold_cv)
+  resample_mod <- plug_resample(mod1_no_resample, rsample::vfold_cv, v = 2)
 
   # no fit
   expect_error(pull_tflow_fit(resample_mod))
@@ -124,7 +124,7 @@ test_that("Can add resample after model fit and refit", {
   tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
 
   mod1_no_resample <- fit(tflow)
-  mod2_resample <- fit(plug_resample(mod1_no_resample, rsample::vfold_cv))
+  mod2_resample <- fit(plug_resample(mod1_no_resample, rsample::vfold_cv, v = 2))
 
   expect_is(pull_tflow_fit_tuning(mod2_resample), "rset")
   expect_false(mod2_resample$trained)

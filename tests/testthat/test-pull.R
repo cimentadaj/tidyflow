@@ -189,7 +189,7 @@ test_that("error if not a tidyflow", {
 # pull_tflow_resample()
 tidyflow <- tidyflow(mtcars, seed = 54132)
 tidyflow <- plug_split(tidyflow, rsample::initial_split)
-tidyflow <- plug_resample(tidyflow, rsample::vfold_cv)
+tidyflow <- plug_resample(tidyflow, rsample::vfold_cv, v = 2)
 tidyflow <- plug_recipe(tidyflow, ~ recipes::recipe(.x, mpg ~ cyl))
 tidyflow <- plug_model(tidyflow,
                        parsnip::set_engine(parsnip::linear_reg(), "lm"))
@@ -214,7 +214,7 @@ test_that("pull_tflow_resample error if not a tidyflow", {
 # pull_tflow_grid()
 tidyflow <- tidyflow(mtcars, seed = 54132)
 tidyflow <- plug_split(tidyflow, rsample::initial_split)
-tidyflow <- plug_resample(tidyflow, rsample::vfold_cv)
+tidyflow <- plug_resample(tidyflow, rsample::vfold_cv, v = 2)
 tidyflow <- plug_recipe(tidyflow, ~ recipes::recipe(.x, mpg ~ .))
 mod <- parsnip::set_engine(parsnip::linear_reg(penalty = tune::tune(),
                                                mixture = tune::tune()),
@@ -222,7 +222,7 @@ mod <- parsnip::set_engine(parsnip::linear_reg(penalty = tune::tune(),
 
 tidyflow <- plug_model(tidyflow, mod)
 
-tidyflow <- plug_grid(tidyflow, dials::grid_regular, levels = 2)
+tidyflow <- plug_grid(tidyflow, dials::grid_regular, levels = 1)
 
 test_that("pull_tflow_grid can pull a resample", {
   tidyflow <- fit(tidyflow)
@@ -312,11 +312,12 @@ test_training(tidyflow)
 test_training(plug_formula(drop_recipe(tidyflow), mpg ~ cyl))
 
 # With recipe + resample
-test_training(plug_resample(tidyflow, rsample::vfold_cv))
+test_training(plug_resample(tidyflow, rsample::vfold_cv, v = 2))
 
 # With formula + resample
 tflow <- plug_resample(plug_formula(drop_recipe(tidyflow), mpg ~ cyl),
-                       rsample::vfold_cv)
+                       rsample::vfold_cv,
+                       v = 2)
 test_training(tflow)
 
 # ------------------------------------------------------------------------------
@@ -390,11 +391,12 @@ test_testing(tidyflow)
 test_testing(plug_formula(drop_recipe(tidyflow), mpg ~ cyl))
 
 # With recipe + resample
-test_testing(plug_resample(tidyflow, rsample::vfold_cv))
+test_testing(plug_resample(tidyflow, rsample::vfold_cv, v = 2))
 
 # With formula + resample
 tflow <- plug_resample(plug_formula(drop_recipe(tidyflow), mpg ~ cyl),
-                       rsample::vfold_cv)
+                       rsample::vfold_cv,
+                       v = 2)
 
 test_training(tflow)
 # ------------------------------------------------------------------------------
@@ -405,7 +407,7 @@ model <- parsnip::set_engine(model, "lm")
 tidyflow <- tidyflow(mtcars)
 tidyflow <- plug_model(tidyflow, model)
 tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
-tidyflow <- plug_resample(tidyflow, rsample::vfold_cv)
+tidyflow <- plug_resample(tidyflow, rsample::vfold_cv, v = 2)
 
 test_that("pull_tflow_fit_tuning can pull a model tuning result", {
   tidyflow <- fit(tidyflow)
@@ -423,7 +425,7 @@ test_that("pull_tflow_fit_tuning can pull a model tuning result", {
 
   expect_equal(
     nrow(res),
-    10
+    2
   )
 })
 
