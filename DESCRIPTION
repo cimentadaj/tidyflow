@@ -35,7 +35,8 @@ Suggests:
     recipes,
     rmarkdown,
     testthat (>= 2.3.0),
-    glmnet
+    glmnet,
+    kernlab
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

@@ -77,3 +77,82 @@ test_that("Specifying the seed returns the same results using resample", {
     )
 
 })
+
+test_that("tidyflow with random numbers across each pre step gives same result as tidymodels", {
+
+  ## Tidyflow modeling
+  mtcars$cyl <- as.factor(mtcars$cyl)
+  svm_mod <-
+    parsnip::set_engine(
+      parsnip::set_mode(
+        parsnip::svm_rbf(cost = tune::tune(), rbf_sigma = tune::tune()),
+        "classification"
+      ),
+      "kernlab")
+
+  rec <-
+    ~ recipes::step_ns(recipes::recipe(cyl ~ ., data = .x),
+                       qsec,
+                       deg_free = round(runif(1, 0, 10)))
+
+  tflow <- tidyflow(mtcars, seed = 4943)
+  tflow <- plug_recipe(plug_split(tflow, rsample::initial_split), rec)
+  tflow <- plug_grid(plug_resample(tflow, rsample::bootstraps, times = 1),
+                     dials::grid_latin_hypercube,
+                     size = 1)
+  tflow <- plug_model(tflow, svm_mod)
+  # Final result
+  tflow <- fit(tflow)
+
+  ## Tidymodels modeling
+  set.seed(4943)
+
+  # These are steps to make sure that the final result matches perfectly.
+  # Since we run mold inside tidyflow, that reorders some columns.
+  # Here we take some steps to make sure evrything is the same
+  rownames(mtcars) <- NULL
+  col_order <- c("cyl", "mpg", "disp", "hp",
+                 "drat", "wt", "qsec", "vs", "am",
+                 "gear", "carb")
+  mtcars <- mtcars[col_order]
+  mtcars <- rsample::training(rsample::initial_split(mtcars))
+
+  set.seed(4943)
+  mtcars_rs <- rsample::bootstraps(mtcars, times = 1)
+
+  set.seed(4943)
+  rec <-
+    recipes::step_ns(recipes::recipe(cyl ~ ., data = mtcars),
+                     qsec,
+                     deg_free = round(runif(1, 0, 10)))
+
+  set.seed(4943)
+  grid <- dials::grid_latin_hypercube(dials::cost(range = c(-10, 5)),
+                                      dials::rbf_sigma(range = c(-10, 0)),
+                                      size = 1)
+
+  set.seed(4943)
+  rec_form <-
+    tune::tune_grid(
+      object = svm_mod,
+      preprocessor = rec,
+      resamples = mtcars_rs,
+      control = control_grid(),
+      grid = grid
+    )
+
+  x <- tblattr_2_df(pull_tflow_fit_tuning(tflow))
+  y <- tblattr_2_df(rec_form)
+
+  # Both dataframes should be exactly the same
+  # This means that running the same iteration
+  # with random steps at the initial split,
+  # the recipe, the resample and the grid,
+  # it will returns the same result in both instances
+
+  expect_equal(as.data.frame(x),
+               as.data.frame(y),
+               check.attributes = FALSE)
+
+  
+})

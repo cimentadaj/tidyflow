@@ -4,7 +4,7 @@
 \alias{plug_grid}
 \alias{drop_grid}
 \alias{replace_grid}
-\title{Add a split specification to a tidyflow}
+\title{Add a grid specification to a tidyflow}
 \usage{
 plug_grid(x, .f, ...)
 
