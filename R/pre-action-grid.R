@@ -16,14 +16,19 @@
 #'   split will need to be refit.
 #'
 #' @details
-#' The grid specification is an optional step in the tidyflow. You can add a
-#' dataframe, prepare a recipe and fit the model without adding a grid
+#' The grid specification is an optional step in the tidyflow. You can add
+#' the data, prepare a recipe and fit the model without adding a grid
 #' specification.
 #'
 #' The tuning parameters defined in the model and recipe are extracted
-#' and passed to \code{.f}. This should return an object of class
-#' \code{param_grid}. These functions come from the \code{\link[dials]{dials}}
-#' package.
+#' and passed to \code{.f}. If \code{expand = TRUE}, the result of \code{.f}
+#' should return be an object of class \code{param_grid}. The functions used
+#' to generate the grid values should come from the \code{\link[dials]{dials}}
+#' package. However, if \code{expand = FALSE}, only `expand.grid` is supported in
+#' \code{.f} and each parameter should not be a parameter object (for example
+#' \code{\link[dials]{mixture}}). Rather, they should be the raw values used
+#' to expand, such as \code{mixture = c(0, 0.5, 1)}. For more details see
+#' the description of \code{expand} argument and the example section.
 #'
 #' If a tuning parameter in the model/recipe is assigned a name (that is,
 #' \code{tune("new_name")}) and the user is interested in specifying
@@ -40,7 +45,16 @@
 #' @param ... arguments passed to \code{.f}. The processing of \code{...}
 #' respects the quotation rules from \code{.f}. In other words, if the function
 #' allows variables as strings \strong{and} as names, the user can specify both.
-#' See the example sections.
+#' See the example section.
+#'
+#' @param expand A logical stating whether to treat `.f` as an expanding
+#' function. This behavior changes how `plug_grid` works in important ways.
+#' In particular, `.f` should only be \code{`expand.grid`} and any arguments in
+#' `...` should be all the tuning parameters defined in the tidyflow to be
+#' expanded. This does not support parameter objects like
+#' \code{\link[dials]{mixture}} but rather the raw values to be expanded
+#' by \code{expand.grid}. For example, instead of \code{penalty = dials::mixture()}
+#' it should be \code{mixture = c(0, 0.5, 1)}. See the example section.
 #'
 #' @return
 #' `x`, updated with either a new or removed grid specification.
@@ -102,21 +116,37 @@
 #' res3 %>%
 #'   pull_tflow_fit_tuning() %>%
 #'   show_best("rsq")
-#' 
-#' # Finally, you can also tune values from a recipe directly
+#'
+#' # If you want to create all possible combination of grid values,
+#' # you must use only `expand.grid` and `expand = TRUE`.
 #' res4 <-
+#'  mod %>%
+#'  replace_grid(expand.grid,
+#'               penalty = seq(0.01, 0.02, 0.005),
+#'               mixture = c(0, 0.5, 1),
+#'               expand = TRUE) %>%
+#'  fit()
+#'
+#' # See how they values are not random, but rather
+#' # all combination of the supplied values
+#' res4 %>%
+#'  pull_tflow_fit_tuning() %>%
+#'  collect_metrics()
+#' 
+#' # You can also tune values from a recipe directly
+#' res5 <-
 #'   res3 %>%
 #'   drop_formula() %>% 
 #'   plug_recipe(~ recipe(mpg ~ ., data = .) %>% step_ns(hp, deg_free = tune())) %>%
 #'   fit()
 #' 
-#' res4 %>%
+#' res5 %>%
 #'   pull_tflow_fit_tuning() %>%
 #'   show_best("rsq")
 #' }
 #' 
-plug_grid <- function(x, .f, ...) {
-  .dots <- enquos(...)
+plug_grid <- function(x, .f, ..., expand = FALSE) {
+  .dots <- c(as.list(enquos(...)), expand = expand)
 
   if (!is_uniquely_named(.dots)) {
     fun_name <- as.character(match.call())[1]
@@ -156,10 +186,10 @@ drop_grid <- function(x) {
 
 #' @rdname plug_grid
 #' @export
-replace_grid <- function(x, .f, ...) {
+replace_grid <- function(x, .f, ..., expand = FALSE) {
   x <- drop_grid(x)
   .f <- enquo(.f)
-  plug_grid(x, !!.f, ...)
+  plug_grid(x, !!.f, ..., expand = expand)
 }
 
 # ------------------------------------------------------------------------------
@@ -195,24 +225,78 @@ fit.action_grid <- function(object, tflow) {
   # keep the names of parameters defined in `...` not
   # and update the all_params
   name_args <- names(formals(object[[1]]))
-  parameters_names <- setdiff(names(args), name_args)
-  if (length(parameters_names) != 0) {
-    all_params <- rlang::exec(
+  parameters_names <- setdiff(names(args), c(name_args, "expand"))
+
+  if (args$expand) {
+
+    if (names(object)[1] != "expand.grid") {
+      rlang::abort("When `expand = TRUE`, `plug_grid` only accepts the function `expand.grid` in `.f` for expanding the arguments") #nolintr
+    }
+
+    ind_exp <- which(names(args) == "expand")
+    args <- args[-ind_exp]
+
+    param_specific <- vapply(args,
+                             inherits,
+                             "param",
+                             FUN.VALUE = logical(1)
+                             )
+
+    if (any(param_specific)) {
+      rlang::abort("When `expand = TRUE`, `plug_grid` arguments should not be parameter objects such as deg_free() or mixture(). They should be vectors to be expanded such as deg_free = 1:10 or mixture = 0:1") #nolintr
+    }
+
+    # Focing all params to have an NA in args2 is a hack
+    # for update to try to update the specified params
+    # into all_params. This way, at least if the user
+    # specified the name of parameters wrong or is missing
+    # particular parameters, update takes care of raising the error.
+    # Once that's checked, I just run the function specified
+    # with the specified parameters.
+    args2 <- args
+    args2 <- lapply(args2, function(x) NA)
+
+    rlang::exec(
       stats::update,
       all_params,
-      !!!args[parameters_names]
+      !!!args2[parameters_names]
     )
-  }
 
-  grid_res <- rlang::exec(
-    # function body
-    object[[1]],
-    all_params,
-    !!!args
-  )
+    grid_res <- rlang::exec(
+      # function body
+      object[[1]],
+      !!!args
+    )
 
-  if (!inherits(grid_res, "param_grid")) {
-    abort("The grid function should return an object of class `param_grid`.")
+    if (!inherits(grid_res, "data.frame")) {
+      abort("The grid function should return an object of class `data.frame` if expand is `TRUE`.") #nolintr
+    }
+    
+  } else {
+
+    if (names(object)[1] == "expand.grid") {
+      rlang::abort("`expand.grid` is only permitted when `expand = TRUE`. Did you want `expand = TRUE`?")
+    }
+
+    if (length(parameters_names) != 0) {
+      all_params <- rlang::exec(
+        stats::update,
+        all_params,
+        !!!args[parameters_names]
+      )
+    }
+
+    grid_res <- rlang::exec(
+      # function body
+      object[[1]],
+      all_params,
+      !!!args
+    )
+
+    if (!inherits(grid_res, "param_grid")) {
+      abort("The grid function should return an object of class `param_grid`.")
+    }
+
   }
 
   tflow$pre$results$grid <- grid_res
@@ -246,3 +330,5 @@ new_action_grid <- function(.f, .dots, name_f) {
 # test that when no recipe is present params returns empty params
 # test that when model is present but not recipe, model params are returned
 # test that when recipe is present but not model, recipe params are returned
+# add support for expand_grid, such that you can combine vectors and param objects
+# for example tidyr::expand_grid(deg_free = 1:10, grid_regular(penalty()))

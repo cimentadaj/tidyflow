@@ -6,11 +6,11 @@
 \alias{replace_grid}
 \title{Add a grid specification to a tidyflow}
 \usage{
-plug_grid(x, .f, ...)
+plug_grid(x, .f, ..., expand = FALSE)
 
 drop_grid(x)
 
-replace_grid(x, .f, ...)
+replace_grid(x, .f, ..., expand = FALSE)
 }
 \arguments{
 \item{x}{A tidyflow}
@@ -22,7 +22,16 @@ and recipe. Must return an object of class \code{param_grid}. See package
 \item{...}{arguments passed to \code{.f}. The processing of \code{...}
 respects the quotation rules from \code{.f}. In other words, if the function
 allows variables as strings \strong{and} as names, the user can specify both.
-See the example sections.}
+See the example section.}
+
+\item{expand}{A logical stating whether to treat \code{.f} as an expanding
+function. This behavior changes how \code{plug_grid} works in important ways.
+In particular, \code{.f} should only be \code{`expand.grid`} and any arguments in
+\code{...} should be all the tuning parameters defined in the tidyflow to be
+expanded. This does not support parameter objects like
+\code{\link[dials]{mixture}} but rather the raw values to be expanded
+by \code{expand.grid}. For example, instead of \code{penalty = dials::mixture()}
+it should be \code{mixture = c(0, 0.5, 1)}. See the example section.}
 }
 \value{
 \code{x}, updated with either a new or removed grid specification.
@@ -43,14 +52,19 @@ split will need to be refit.
 }
 }
 \details{
-The grid specification is an optional step in the tidyflow. You can add a
-dataframe, prepare a recipe and fit the model without adding a grid
+The grid specification is an optional step in the tidyflow. You can add
+the data, prepare a recipe and fit the model without adding a grid
 specification.
 
 The tuning parameters defined in the model and recipe are extracted
-and passed to \code{.f}. This should return an object of class
-\code{param_grid}. These functions come from the \code{\link[dials]{dials}}
-package.
+and passed to \code{.f}. If \code{expand = TRUE}, the result of \code{.f}
+should return be an object of class \code{param_grid}. The functions used
+to generate the grid values should come from the \code{\link[dials]{dials}}
+package. However, if \code{expand = FALSE}, only \code{expand.grid} is supported in
+\code{.f} and each parameter should not be a parameter object (for example
+\code{\link[dials]{mixture}}). Rather, they should be the raw values used
+to expand, such as \code{mixture = c(0, 0.5, 1)}. For more details see
+the description of \code{expand} argument and the example section.
 
 If a tuning parameter in the model/recipe is assigned a name (that is,
 \code{tune("new_name")}) and the user is interested in specifying
@@ -115,14 +129,30 @@ res3 \%>\%
   pull_tflow_fit_tuning() \%>\%
   show_best("rsq")
 
-# Finally, you can also tune values from a recipe directly
+# If you want to create all possible combination of grid values,
+# you must use only `expand.grid` and `expand = TRUE`.
 res4 <-
+ mod \%>\%
+ replace_grid(expand.grid,
+              penalty = seq(0.01, 0.02, 0.005),
+              mixture = c(0, 0.5, 1),
+              expand = TRUE) \%>\%
+ fit()
+
+# See how they values are not random, but rather
+# all combination of the supplied values
+res4 \%>\%
+ pull_tflow_fit_tuning() \%>\%
+ collect_metrics()
+
+# You can also tune values from a recipe directly
+res5 <-
   res3 \%>\%
   drop_formula() \%>\% 
   plug_recipe(~ recipe(mpg ~ ., data = .) \%>\% step_ns(hp, deg_free = tune())) \%>\%
   fit()
 
-res4 \%>\%
+res5 \%>\%
   pull_tflow_fit_tuning() \%>\%
   show_best("rsq")
 }

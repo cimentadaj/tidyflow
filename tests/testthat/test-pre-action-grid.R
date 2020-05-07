@@ -646,3 +646,153 @@ test_that("Specifying tuning params in model and recipe works well in both", {
   expect_true(between(res$pre$results$grid$mixture, 0, 0.1))
 })
 
+tflow <- plug_recipe(tidyflow(mtcars),
+                     ~ recipes::step_ns(recipes::recipe(mpg ~ ., data = .x), qsec, deg_free = tune::tune()))
+
+tflow <- plug_model(plug_resample(tflow, rsample::vfold_cv),
+                    parsnip::set_engine(parsnip::linear_reg(penalty = tune::tune(), mixture = tune::tune()), "glmnet"))
+
+test_that("plug_grid and replace_grid works with expand = TRUE and expand.grid correctly", {
+  res1 <- fit(
+    plug_grid(tflow,
+              expand.grid,
+              deg_free = 1:2,
+              penalty = 0.001,
+              mixture = 1,
+              expand = TRUE)
+  )
+
+  check_expand_grid <- function(res) {
+    res_tune <- pull_tflow_fit_tuning(res)$.metrics
+    # All combinations of 1:2, 0.001 and 1 is 4
+    expect_equal(unique(vapply(res_tune,
+                               nrow,
+                               FUN.VALUE = numeric(1))),
+                 4)
+
+    all_combinations <- data.frame(penalty = rep(0.001, 4),
+                                   mixture = 1,
+                                   deg_free = c(1, 1, 2, 2))
+
+    # Match all combinations from the grid from the groundtruth
+    # combination of values
+    expect_true(
+      unique(vapply(res_tune,
+                    function(x) all(x[c("penalty", "mixture", "deg_free")] == all_combinations),
+                    FUN.VALUE = logical(1)))
+    )
+  }
+
+  check_expand_grid(res1)
+
+  tflow <- plug_grid(tflow, dials::grid_regular)
+  
+  res2 <- fit(replace_grid(tflow,
+                           expand.grid,
+                           deg_free = 1:2,
+                           penalty = 0.001,
+                           mixture = 1,
+                           expand = TRUE)
+              )
+  check_expand_grid(res2)
+  
+})
+
+test_that("When expand = FALSE, expand grid is not permitted", {
+  expect_error(
+    fit(
+      plug_grid(tflow,
+                expand.grid,
+                deg_free = 1:2,
+                penalty = 0.001,
+                mixture = 1,
+                expand = FALSE)
+    ),
+    "`expand.grid` is only permitted when `expand = TRUE`. Did you want `expand = TRUE`?",
+    fixed = TRUE
+  )
+})
+
+test_that("Missing parameter when expand = TRUE raises error", {
+  expect_error(
+    fit(
+      plug_grid(tflow,
+                expand.grid,
+                deg_free = 1:2,
+                penalty = 0.001,
+                expand = TRUE)
+    ),
+    "The provided `grid` is missing the following parameter columns that have been marked for tuning by `tune()`: 'mixture'.",
+    fixed = TRUE
+  )
+})
+
+test_that("When expand = TRUE, only expand grid is supported", {
+  expect_error(
+    fit(
+      plug_grid(tflow,
+                dials::grid_regular,
+                deg_free = 1:2,
+                penalty = 0.001,
+                expand = TRUE)
+    ),
+    "When `expand = TRUE`, `plug_grid` only accepts the function `expand.grid` in `.f` for expanding the arguments",
+    fixed = TRUE
+  )
+
+})
+
+test_that("When expand = TRUE, misspelled tuning param raises error", {
+  expect_error(
+    fit(
+      plug_grid(tflow,
+                expand.grid,
+                deg_free = 1:2,
+                penalty = 0.001,
+                mixture = 0:1,
+                mmixture = 0:1,
+                expand = TRUE)
+    ),
+    "At least one parameter does not match any id's in the set: 'mmixture'",
+    fixed = TRUE
+  )
+
+})
+
+test_that("When expand = TRUE, names get checked for unique", {
+  expect_error(
+    fit(
+      plug_grid(tflow,
+                expand.grid,
+                deg_free = 1:2,
+                penalty = 0.001,
+                penalty = 0.001,            
+                expand = TRUE)
+    ),
+    "Arguments in `...` for `plug_grid` should be uniquely named",
+    fixed = TRUE
+  )
+
+})
+
+
+test_that("When expand = TRUE, custom tune names must be used in arguments", {
+  tflow <- replace_recipe(tflow,
+                          ~ recipes::step_ns(recipes::recipe(mpg ~ ., data = .x),
+                                             qsec,
+                                             deg_free = tune::tune("my_deg_free")
+                                             ))
+
+  expect_error(
+    fit(
+      plug_grid(tflow,
+                expand.grid,
+                deg_free = 1:2,
+                penalty = 0.001,
+                mixture = 0:1,
+                expand = TRUE)
+    ),
+    "At least one parameter does not match any id's in the set: 'deg_free'",
+    fixed = TRUE
+  )
+})
