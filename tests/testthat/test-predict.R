@@ -200,7 +200,7 @@ test_that("predict raises error when model not fit/tuned", {
 
   expect_error(
     predict(fit_tflow, new_data = mtcars),
-    "You seem to have a model with tuning parameters but not a finalized model. Did you call complete_tflow()?" #nolintr
+    "You seem to have a model with tuning parameters or a resample but not a finalized model. Did you call complete_tflow()?" #nolintr
   )
 
   expect_error(
@@ -227,7 +227,6 @@ test_that("predict raises error when model not fit/tuned", {
 
   expect_equal(nrow(res), 24)
 })
-
 
 test_that("predict_training/testing works as expected", {
   rcp <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, data = .), cyl, base = 10) #nolintr
@@ -257,4 +256,13 @@ test_that("predict_training/testing works as expected", {
   res_tst <- predict_training(fit(tflow))
   expect_true(".pred" %in% names(res_tst))
   expect_s3_class(res_tst, "tbl_df")
+
+  tflow <- plug_resample(tflow, rsample::vfold_cv)
+  res_tflow <- fit(tflow)
+
+  expect_error(
+    predict_training(res_tflow),
+    "You seem to have a model with tuning parameters or a resample but not a finalized model. Did you call complete_tflow()?",
+    fixed = TRUE
+  )
 })
