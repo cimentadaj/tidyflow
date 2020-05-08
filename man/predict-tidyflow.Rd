@@ -3,9 +3,15 @@
 \name{predict-tidyflow}
 \alias{predict-tidyflow}
 \alias{predict.tidyflow}
+\alias{predict_training}
+\alias{predict_testing}
 \title{Predict from a tidyflow}
 \usage{
 \method{predict}{tidyflow}(object, new_data, type = NULL, opts = list(), ...)
+
+predict_training(object, type = NULL, opts = list(), ...)
+
+predict_testing(object, type = NULL, opts = list(), ...)
 }
 \arguments{
 \item{object}{A tidyflow that has been fit by \code{\link[=fit.tidyflow]{fit.tidyflow()}}}
@@ -47,7 +53,10 @@ Default value is \code{FALSE}.
 A data frame of model predictions, with as many rows as \code{new_data} has.
 }
 \description{
-This is the \code{predict()} method for a fit tidyflow object.
+This is the \code{predict()} method for a fit tidyflow object. In addition,
+when a split is specifid, \code{predict_training} and \code{predict_testing}
+automatically predict and apply any preprocessing to the training
+and testing data.
 }
 \examples{
 library(parsnip)
@@ -69,6 +78,11 @@ tflow <- fit(tflow)
 
 # This will automatically `bake()` the recipe on `new_data`,
 # applying the log step to `disp`, and then fit the regression.
-predict(tflow, new_data = pull_tflow_testing(tflow, prep = TRUE))
+predict(tflow, new_data = pull_tflow_testing(tflow))
+
+# More automatic
+predict_testing(tflow)
+
+predict_training(tflow)
 
 }

@@ -189,8 +189,6 @@ test_that("blueprint will get passed on to hardhat::forge()", {
   expect_false(identical(prediction_with_intercept, prediction_no_intercept))
 })
 
-
-
 test_that("predict raises error when model not fit/tuned", {
   rcp <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, data = .), cyl, base = 10) #nolintr
   tflow <- tidyflow(mtcars)
@@ -228,4 +226,35 @@ test_that("predict raises error when model not fit/tuned", {
                  new_data = pull_tflow_training(fit_tflow, TRUE))
 
   expect_equal(nrow(res), 24)
+})
+
+
+test_that("predict_training/testing works as expected", {
+  rcp <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, data = .), cyl, base = 10) #nolintr
+  tflow <- tidyflow(mtcars)
+  tflow <- plug_recipe(tflow, rcp)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
+  fit_tflow <- fit(tflow)
+
+  expect_error(
+    predict_training(fit_tflow),
+    "`predict_training` can only work when a split preprocessor has been specifid. Did you want `plug_split`?",
+    fixed = TRUE
+  )
+
+  expect_error(
+    predict_testing(fit_tflow),
+    "`predict_testing` can only work when a split preprocessor has been specifid. Did you want `plug_split`?",
+    fixed = TRUE
+  )
+
+
+  tflow <- plug_split(tflow, rsample::initial_split)
+  res_tr <- predict_training(fit(tflow))
+  expect_true(".pred" %in% names(res_tr))
+  expect_s3_class(res_tr, "tbl_df")
+
+  res_tst <- predict_training(fit(tflow))
+  expect_true(".pred" %in% names(res_tst))
+  expect_s3_class(res_tst, "tbl_df")
 })

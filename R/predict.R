@@ -1,7 +1,10 @@
 #' Predict from a tidyflow
 #'
 #' @description
-#' This is the `predict()` method for a fit tidyflow object.
+#' This is the `predict()` method for a fit tidyflow object. In addition,
+#' when a split is specifid, `predict_training` and `predict_testing`
+#' automatically predict and apply any preprocessing to the training
+#' and testing data.
 #'
 #' @inheritParams parsnip::predict.model_fit
 #'
@@ -37,7 +40,12 @@
 #'
 #' # This will automatically `bake()` the recipe on `new_data`,
 #' # applying the log step to `disp`, and then fit the regression.
-#' predict(tflow, new_data = pull_tflow_testing(tflow, prep = TRUE))
+#' predict(tflow, new_data = pull_tflow_testing(tflow))
+#'
+#' # More automatic
+#' predict_testing(tflow)
+#'
+#' predict_training(tflow)
 #'
 predict.tidyflow <- function(object, new_data, type = NULL, opts = list(), ...) {
   tflow <- object
@@ -58,4 +66,43 @@ predict.tidyflow <- function(object, new_data, type = NULL, opts = list(), ...) 
   new_data <- forged$predictors
   fit <- pull_tflow_fit(tflow)
   predict(fit, new_data, type = type, opts = opts, ...)
+}
+
+#' @rdname predict-tidyflow
+#' @export
+predict_training <- function(object, type = NULL, opts = list(), ...) {
+  if (!has_preprocessor_split(object)) {
+    rlang::abort("`predict_training` can only work when a split preprocessor has been specifid. Did you want `plug_split`?")
+  }
+
+  tr_dt <- pull_tflow_training(object)
+  res <-
+    tibble::as_tibble(
+      cbind(
+        tr_dt,
+        predict(object, new_data = tr_dt, type = type, opts = opts, ...)
+      )
+    )
+
+  res
+}
+
+#' @rdname predict-tidyflow
+#' @export
+predict_testing <- function(object, type = NULL, opts = list(), ...) {
+  if (!has_preprocessor_split(object)) {
+    rlang::abort("`predict_testing` can only work when a split preprocessor has been specifid. Did you want `plug_split`?")
+  }
+
+  tst_dt <- pull_tflow_testing(object)
+
+  res <-
+    tibble::as_tibble(
+      cbind(
+        tst_dt,
+        predict(object, new_data = tst_dt, type = type, opts = opts, ...)
+      )
+    )
+
+  res
 }

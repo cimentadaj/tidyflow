@@ -28,7 +28,8 @@ Imports:
     rlang (>= 0.4.1),
     tune (>= 0.1.0),
     rsample (>= 0.0.6),
-    dials (>= 0.0.6)
+    dials (>= 0.0.6),
+    tibble (>= 3.0.1)
 Suggests: 
     covr,
     knitr,
