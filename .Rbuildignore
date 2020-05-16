@@ -9,3 +9,4 @@
 ^tidyflow\.Rproj$
 ^\.Rproj\.user$
 ^test.R$
+^\.github$
