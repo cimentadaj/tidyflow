@@ -78,7 +78,3 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
-      - name: Test coverage
-        run: |
-          remotes::install_deps(dependencies = TRUE)
-          covr::codecov()
