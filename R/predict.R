@@ -48,23 +48,23 @@
 #' predict_training(tflow)
 #'
 predict.tidyflow <- function(object, new_data, type = NULL, opts = list(), ...) {
-  tflow <- object
-  tuning <- try(pull_tflow_fit_tuning(tflow), silent = TRUE)
+  x <- object
+  tuning <- try(pull_tflow_fit_tuning(x), silent = TRUE)
 
   # If there's a tuning object but no final model
-  if (!inherits(tuning, "try-error") && !tflow$trained) {
+  if (!inherits(tuning, "try-error") && !x$trained) {
     abort("You seem to have a model with tuning parameters or a resample but not a finalized model. Did you call complete_tflow()?")
   }
 
   # If no tuning object is present but the model is not trained
-  if (inherits(tuning, "try-error") && !tflow$trained) {
+  if (inherits(tuning, "try-error") && !x$trained) {
     abort("Tidyflow has not yet been trained. Did you call fit()?")
   }
 
-  blueprint <- pull_tflow_mold(tflow)$blueprint
+  blueprint <- pull_tflow_mold(x)$blueprint
   forged <- hardhat::forge(new_data, blueprint)
   new_data <- forged$predictors
-  fit <- pull_tflow_fit(tflow)
+  fit <- pull_tflow_fit(x)
   predict(fit, new_data, type = type, opts = opts, ...)
 }
 

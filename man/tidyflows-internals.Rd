@@ -6,9 +6,9 @@
 \alias{.fit_model}
 \title{Internal tidyflow functions}
 \usage{
-.fit_pre(tflow)
+.fit_pre(x)
 
-.fit_model(tflow, control)
+.fit_model(x, control)
 }
 \arguments{
 \item{control}{A \code{\link[=control_tidyflow]{control_tidyflow()}} object}

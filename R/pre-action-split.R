@@ -113,7 +113,7 @@ replace_split <- function(x, .f, ...) {
 }
 
 # ------------------------------------------------------------------------------
-fit.action_split <- function(object, tflow) {
+fit.action_split <- function(object, x) {
 
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)
@@ -122,7 +122,7 @@ fit.action_split <- function(object, tflow) {
     # function body
     object[[1]],
     # function args
-    tflow$pre$mold,
+    x$pre$mold,
     !!!args
   )
 
@@ -130,11 +130,11 @@ fit.action_split <- function(object, tflow) {
     abort("The split function should return an object of class `rsplit`.")
   }
 
-  tflow$pre$mold <- rsample::training(split_res)
-  tflow$pre$results$split <- split_res
+  x$pre$mold <- rsample::training(split_res)
+  x$pre$results$split <- split_res
   
   # All pre steps return the `tflow`
-  tflow
+  x
 }
 
 # Exclude blueprint; it doesn't apply to data

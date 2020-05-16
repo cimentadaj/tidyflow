@@ -130,29 +130,29 @@ fit.tidyflow <- function(tflow, ..., control = control_tidyflow()) {
 #'
 #' partially_fit_tidyflow <- .fit_pre(formula_tidyflow)
 #' fit_tidyflow <- .fit_model(partially_fit_tidyflow, control_tidyflow())
-.fit_pre <- function(tflow) {
-  n <- length(tflow[["pre"]]$actions)
+.fit_pre <- function(x) {
+  n <- length(x[["pre"]]$actions)
 
   for (i in seq_len(n)) {
     # If no seed has been specified, `set.seed` supports NULL as random
-    set.seed(tflow$pre$seed)
-    action <- tflow[["pre"]]$actions[[i]]
-    # Update the `tflow` as we iterate through pre steps
-    tflow <- fit(action, tflow)
+    set.seed(x$pre$seed)
+    action <- x[["pre"]]$actions[[i]]
+    # Update the `x` as we iterate through pre steps
+    x <- fit(action, x)
   }
 
-  # But only return the tflow, it contains the final set of data in `mold`
-  tflow
+  # But only return the x, it contains the final set of data in `mold`
+  x
 }
 
 #' @rdname tidyflows-internals
 #' @export
-.fit_model <- function(tflow, control) {
+.fit_model <- function(x, control) {
   # If no seed has been specified, `set.seed` supports NULL as random
-  set.seed(tflow$pre$seed)
+  set.seed(x$pre$seed)
 
-  object <- tflow[["fit"]][["actions"]][["model"]]
-  fit(object, tflow = tflow, control = control)
+  object <- x[["fit"]][["actions"]][["model"]]
+  fit(object, x = x, control = control)
 }
 
 # ------------------------------------------------------------------------------

@@ -204,30 +204,30 @@ replace_grid <- function(x, .f, ...) {
 }
 
 # ------------------------------------------------------------------------------
-fit.action_grid <- function(object, tflow) {
+fit.action_grid <- function(object, x) {
 
-  if (!has_preprocessor_resample(tflow)) {
+  if (!has_preprocessor_resample(x)) {
     abort("The tidyflow has a grid specification but no resample specification. Did you want `plug_resample()`?") #nolintr
   }
 
-  if (!has_spec(tflow)) {
+  if (!has_spec(x)) {
     abort("The tidyflow does not have a model specification to extract the tuning parameters. Did you want `plug_model()`?") #nolintr
   }
 
-  if (!has_tune(tflow)) {
+  if (!has_tune(x)) {
     abort("The tidyflow has a grid specification but no tuning placeholders. Did you mean to specify `tune()` in your model or recipe?") #nolintr
   }
 
   # Including recipe + model
-  all_params <- tune::parameters(tflow)
-  dt <- pull_tflow_mold(tflow)$predictors
+  all_params <- tune::parameters(x)
+  dt <- pull_tflow_mold(x)$predictors
 
   # For some reason, running set seed before tune::parameters
   # does not return the same random grid as running the
   # grid out side. I tested this a few times and putting the
   # seed here makes sure that the same grid is always returned
   # consistent with grids OUTSIDE tflow.
-  set.seed(tflow$pre$seed)
+  set.seed(x$pre$seed)
   all_params <- dials::finalize(all_params, dt)
 
   ## object[[2]] are the arguments as quosures
@@ -302,10 +302,10 @@ fit.action_grid <- function(object, tflow) {
 
   }
 
-  tflow$pre$results$grid <- grid_res
+  x$pre$results$grid <- grid_res
   
   # All pre steps return the `tflow`
-  tflow
+  x
 }
 
 # Exclude blueprint; it doesn't apply to data

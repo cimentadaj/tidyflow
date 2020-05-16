@@ -107,27 +107,27 @@ replace_resample <- function(x, .f, ...) {
 }
 
 # ------------------------------------------------------------------------------
-fit.action_resample <- function(object, tflow) {
-  preprocessor <- tflow$pre$results$recipe %||% tflow$pre$actions$formula$formula
+fit.action_resample <- function(object, x) {
+  preprocessor <- x$pre$results$recipe %||% x$pre$actions$formula$formula
 
   has_tuning <-
     has_tune(preprocessor) ||
-    has_tune(pull_tflow_spec(tflow))
+    has_tune(pull_tflow_spec(x))
   
-  has_grid <- has_preprocessor_grid(tflow)
+  has_grid <- has_preprocessor_grid(x)
 
   if (has_tuning && !has_grid) {
     abort("The recipe or model has `tune()` parameters but no grid specification. Did you want `plug_grid()`?") #nolintr
   }
 
   has_tunable_rcp <-
-    has_preprocessor_recipe(tflow) &&
-    has_tune(tflow$pre$results$recipe)
+    has_preprocessor_recipe(x) &&
+    has_tune(x$pre$results$recipe)
   
   # Since a tidyflow will alows need to have a formula or recipe
   # the result of mold when it reaches a resample, will always be
   # a mold structure. Let's convert that to a data frame
-  mold <- combine_outcome_preds(tflow$pre$mold)
+  mold <- combine_outcome_preds(x$pre$mold)
   
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)
@@ -144,10 +144,10 @@ fit.action_resample <- function(object, tflow) {
     abort("The resample function should return an object of class `rset`.")
   }
 
-  tflow$pre$results$resample <- resample_res
+  x$pre$results$resample <- resample_res
   
   # All pre steps return the `tflow`
-  tflow
+  x
 }
 
 # Exclude blueprint; it doesn't apply to data

@@ -91,36 +91,36 @@ replace_model <- function(x, spec, formula = NULL) {
 }
 
 # ------------------------------------------------------------------------------
-fit.action_model <- function(object, tflow, control, ...) {
+fit.action_model <- function(object, x, control, ...) {
   control_parsnip <- control$control_parsnip
   spec <- object$spec
   formula <- object$formula
-  resample_res <- tflow$pre$results$resample
-  grid_res <- tflow$pre$results$grid
+  resample_res <- x$pre$results$resample
+  grid_res <- x$pre$results$grid
 
-  if (has_tune(spec) && !has_preprocessor_grid(tflow)) {
+  if (has_tune(spec) && !has_preprocessor_grid(x)) {
     abort("The model contains parameters with `tune()` but no grid specification has been made. Did you want `plug_grid`?") #nolintr
   }
 
   # It means that they specified a resample and no grid
   if (!is.null(resample_res) && is.null(grid_res)) {
     control_resamples <- control$control_resamples
-    obj <- tflow$pre$results$recipe %||% tflow$pre$actions$formula$formula
+    obj <- x$pre$results$recipe %||% x$pre$actions$formula$formula
 
-    tflow$fit$fit$tuning <-
+    x$fit$fit$tuning <-
       tune::fit_resamples(object = spec,
                           preprocessor = obj,
                           resamples = resample_res,
                           control = control_resamples
                           )
     
-    return(tflow)
+    return(x)
     # It means that they specified a resample AND a grid, so tuning is wanted
   } else if (!is.null(resample_res) && !is.null(grid_res)) {
     control_grid <- control$control_grid
-    obj <- tflow$pre$results$recipe %||% tflow$pre$actions$formula$formula
+    obj <- x$pre$results$recipe %||% x$pre$actions$formula$formula
 
-    tflow$fit$fit$tuning <-
+    x$fit$fit$tuning <-
       tune::tune_grid(object = spec,
                       preprocessor = obj,
                       resamples = resample_res,
@@ -128,10 +128,10 @@ fit.action_model <- function(object, tflow, control, ...) {
                       control = control_grid
                       )
 
-    return(tflow)
+    return(x)
   }
 
-  mold <- tflow$pre$mold
+  mold <- x$pre$mold
 
   if (is.null(mold)) {
     abort("Internal error: No mold exists. `tidyflow` pre stage has not been run.")
@@ -144,10 +144,10 @@ fit.action_model <- function(object, tflow, control, ...) {
     fit <- fit_from_formula(spec, mold, control_parsnip, formula)
   }
 
-  tflow$fit$fit$fit <- fit
+  x$fit$fit$fit <- fit
 
   # Only the tidyflow is returned
-  tflow
+  x
 }
 
 fit_from_xy <- function(spec, mold, control_parsnip) {
