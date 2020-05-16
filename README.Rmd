@@ -16,10 +16,8 @@ knitr::opts_chunk$set(
 # tidyflow
 
 <!-- badges: start -->
-<!-- [![Travis build status](https://travis-ci.org/tidymodels/workflows.svg?branch=master)](https://travis-ci.org/tidymodels/workflows) -->
-<!-- [![Codecov test coverage](https://codecov.io/gh/tidymodels/workflows/branch/master/graph/badge.svg)](https://codecov.io/gh/tidymodels/workflows?branch=master) -->
-<!-- [![R build status](https://github.com/tidymodels/workflows/workflows/R-CMD-check/badge.svg)](https://github.com/tidymodels/workflows) -->
 [![R build status](https://github.com/cimentadaj/tidyflow/workflows/R-CMD-check/badge.svg)](https://github.com/cimentadaj/tidyflow/actions)
+[![Codecov test coverage](https://codecov.io/gh/cimentadaj/tidyflow/branch/master/graph/badge.svg)](https://codecov.io/gh/cimentadaj/tidyflow?branch=master)
 <!-- badges: end -->
 
 ## What is a tidyflow? 
@@ -36,60 +34,36 @@ knitr::opts_chunk$set(
  
 ## Installation
 
-<!-- You can install tidyflow from Github with: -->
-
-<!-- ``` r -->
-<!-- install.packages("workflows") -->
-<!-- ``` -->
-
 You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("tidymodels/workflows")
+devtools::install_github("cimentadaj/tidyflow")
 ```
  
 ## Example
 
-<!-- Suppose you were modeling data on cars. Say...the fuel efficiency of 32 cars. You know that the relationship between engine displacement and miles-per-gallon is nonlinear, and you would like to model that as a spline before adding it to a Bayesian linear regression model. You might have a recipe to specify the spline: -->
+```{r }
+library(tidymodels)
+library(tidyflow)
 
-<!-- ```{r spline-rec, eval = FALSE} -->
-<!-- library(recipes) -->
-<!-- library(parsnip) -->
-<!-- library(tidyflow) -->
+# Build tidyflow
+tflow <-
+  mtcars %>%
+  tidyflow() %>%
+  plug_split(initial_split) %>%
+  plug_formula(mpg ~ .) %>%
+  plug_model(linear_reg())
 
-<!-- spline_cars <- recipe(mpg ~ ., data = mtcars) %>%  -->
-<!--   step_ns(disp, deg_free = 10) -->
-<!-- ``` -->
+# Fit model
+fit_m <- fit(tflow)
 
-<!-- and a model object: -->
+# Predict on testing
+fit_m %>%
+  predict_testing()
 
-<!-- ```{r car-mod, eval = FALSE} -->
-<!-- bayes_lm <- linear_reg() %>%  -->
-<!--   set_engine("stan") -->
-<!-- ``` -->
+```
 
-<!-- To use these, you would generally run: -->
+## Code of Conduct
 
-<!-- ```{r car-fit, eval = FALSE} -->
-<!-- spline_cars_prepped <- prep(spline_cars, mtcars) -->
-<!-- bayes_lm_fit <- fit(bayes_lm, mpg ~ ., data = juice(spline_cars_prepped)) -->
-<!-- ``` -->
-
-<!-- You can't predict on new samples using `bayes_lm_fit` without the prepped version of `spline_cars` around. You also might have other models and recipes in your workspace. This might lead to getting them mixed-up or forgetting to save the model/recipe pair that you are most interested in. -->
-
-<!-- workflows makes this easier by combining these objects together: -->
-
-<!-- ```{r tflow, eval = FALSE} -->
-<!-- car_tflow <- workflow() %>%  -->
-<!--   plug_recipe(spline_cars) %>%  -->
-<!--   plug_model(bayes_lm) -->
-<!-- ``` -->
-
-<!-- Now you can prepare the recipe and estimate the model via a single call to `fit()`: -->
-
-<!-- ```{r tflow-fit, eval = FALSE} -->
-<!-- car_tflow_fit <- fit(car_tflow, data = mtcars) -->
-<!-- ``` -->
-
-<!-- You can alter existing workflows using `replace_recipe()` / `replace_model()` and `drop_recipe()` / `drop_model()`. -->
+Please note that the tidyflow project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
