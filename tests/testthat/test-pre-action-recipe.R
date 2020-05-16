@@ -296,4 +296,3 @@ test_that("recipe is applied on training data", {
   )
   
 })
-

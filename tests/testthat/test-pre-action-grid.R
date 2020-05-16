@@ -325,6 +325,18 @@ test_that("Cannot run grid tuning without resamples", {
     regexp = "The tidyflow has a grid specification but no resample specification. Did you want `plug_resample()`?", #nolintr
     fixed = TRUE
   )
+
+  tflow <- replace_recipe(tflow,
+                          ~ recipes::step_ns(recipes::recipe(mpg ~ ., .x),
+                                             qsec,
+                                             deg_free = tune::tune()))
+
+  expect_error(
+    fit(tflow),
+    regexp = "The tidyflow has a grid specification but no resample specification. Did you want `plug_resample()`?", #nolintr
+    fixed = TRUE
+  )
+
 })
 
 test_that("parameters on tidyflow returns same tuning params as tuning", {
