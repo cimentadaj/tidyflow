@@ -84,11 +84,9 @@ test_that("tidyflow with random numbers across each pre step gives same result a
   mtcars$cyl <- as.factor(mtcars$cyl)
   svm_mod <-
     parsnip::set_engine(
-      parsnip::set_mode(
-        parsnip::svm_rbf(cost = tune::tune(), rbf_sigma = tune::tune()),
-        "classification"
-      ),
-      "kernlab")
+      parsnip::rand_forest("classification", mtry = tune::tune()),
+      "randomForest",
+      )
 
   rec <-
     ~ recipes::step_ns(recipes::recipe(cyl ~ ., data = .x),
@@ -99,7 +97,7 @@ test_that("tidyflow with random numbers across each pre step gives same result a
   tflow <- plug_recipe(plug_split(tflow, rsample::initial_split), rec)
   tflow <- plug_grid(plug_resample(tflow, rsample::bootstraps, times = 1),
                      dials::grid_latin_hypercube,
-                     size = 1)
+                     size = 2)
   tflow <- plug_model(tflow, svm_mod)
   # Final result
   tflow <- fit(tflow)
@@ -127,9 +125,8 @@ test_that("tidyflow with random numbers across each pre step gives same result a
                      deg_free = round(runif(1, 0, 10)))
 
   set.seed(4943)
-  grid <- dials::grid_latin_hypercube(dials::cost(range = c(-10, 5)),
-                                      dials::rbf_sigma(range = c(-10, 0)),
-                                      size = 1)
+  grid <- dials::grid_latin_hypercube(dials::finalize(dials::mtry(), mtcars[-1]),
+                                      size = 2)
 
   set.seed(4943)
   rec_form <-
@@ -153,6 +150,4 @@ test_that("tidyflow with random numbers across each pre step gives same result a
   expect_equal(as.data.frame(x),
                as.data.frame(y),
                check.attributes = FALSE)
-
-  
 })

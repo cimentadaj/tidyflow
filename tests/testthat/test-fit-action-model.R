@@ -147,3 +147,46 @@ test_that("update a model after model fit", {
   expect_error(pull_tflow_fit(tidyflow),
                "The tidyflow does not have a model fit. Have you called `fit[(][)]` yet?") #nolintr
 })
+
+test_that("If tune is specified in model, grid needs to be specified", {
+  mod1 <-
+    parsnip::set_engine(
+      parsnip::linear_reg(penalty = tune::tune()),
+      "glmnet"
+    )
+
+  tflow <-
+    plug_formula(plug_split(tidyflow(mtcars), rsample::initial_split),
+                 mpg ~ .)
+  
+  tflow <- plug_model(tflow, mod1)
+
+  expect_error(
+    fit(tflow),
+    "The model contains parameters with `tune()` but no grid specification has been made. Did you want `plug_grid`?", #nolintr
+    fixed = TRUE
+  )
+
+})
+
+test_that("tune() parameters which need finalize are completed on the run", {
+  # mtry is estimated from data as the number of predictors. If
+  # you run tune_grid with a model with tune and haven't finalized
+  # mtry, it will raise an error.
+  rf_model <- parsnip::rand_forest(mode = "regression", mtry = tune::tune())
+  rf_model <- parsnip::set_engine(rf_model, "randomForest")
+  tflow <- tidyflow(mtcars)
+  tflow <- plug_formula(tflow, mpg ~ .)
+  tflow  <- plug_model(tflow, rf_model)
+  tflow  <- plug_resample(tflow, rsample::vfold_cv, v = 2)
+  tflow  <- plug_grid(tflow, dials::grid_regular, levels = 2)
+
+  # Just check that it runs successfully
+  tflow <- fit(tflow)
+  expect_s3_class(tflow, "tidyflow")
+
+  # Check that the mtry values are always capped at 10,
+  # since the number of predictors are 10.
+  expect_equal(c(1, 10), pull_tflow_grid(tflow)$mtry)
+
+})

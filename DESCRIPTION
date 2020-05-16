@@ -37,7 +37,7 @@ Suggests:
     rmarkdown,
     testthat (>= 2.3.0),
     glmnet,
-    kernlab
+    randomForest
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

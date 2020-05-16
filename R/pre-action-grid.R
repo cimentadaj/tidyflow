@@ -220,6 +220,7 @@ fit.action_grid <- function(object, tflow) {
 
   # Including recipe + model
   all_params <- tune::parameters(tflow)
+  dt <- pull_tflow_mold(tflow)$predictors
 
   # For some reason, running set seed before tune::parameters
   # does not return the same random grid as running the
@@ -227,6 +228,7 @@ fit.action_grid <- function(object, tflow) {
   # seed here makes sure that the same grid is always returned
   # consistent with grids OUTSIDE tflow.
   set.seed(tflow$pre$seed)
+  all_params <- dials::finalize(all_params, dt)
 
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)

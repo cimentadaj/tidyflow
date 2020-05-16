@@ -98,6 +98,10 @@ fit.action_model <- function(object, tflow, control, ...) {
   resample_res <- tflow$pre$results$resample
   grid_res <- tflow$pre$results$grid
 
+  if (has_tune(spec) && !has_preprocessor_grid(tflow)) {
+    abort("The model contains parameters with `tune()` but no grid specification has been made. Did you want `plug_grid`?") #nolintr
+  }
+
   # It means that they specified a resample and no grid
   if (!is.null(resample_res) && is.null(grid_res)) {
     control_resamples <- control$control_resamples
