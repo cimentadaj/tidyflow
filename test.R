@@ -14,7 +14,8 @@ tflow <-
   plug_split(initial_split) %>%
   plug_resample(vfold_cv) %>% 
   plug_formula(am ~ .) %>%
-  plug_grid(grid_regular) %>% 
+  plug_grid(grid_regular,
+            mtry = mtry(c(1, 10))) %>% 
   plug_model(mod1)
 
 res <-
