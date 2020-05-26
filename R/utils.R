@@ -87,14 +87,22 @@ has_tune <- function(x) {
 }
 
 has_tune.recipe <- function(x) {
-  steps <- x$steps[[1]]
-  tune_calls <- vapply(steps, is.language, logical(1))
+  steps <- x$steps
+
+  detect_tune1 <- function(step) any(vapply(step, function(x) is.language(x), logical(1)))
+
+  tune_calls <- vapply(steps, detect_tune1, logical(1))
 
   # Even if tune is defined as tune("a new name"), by converting
   # the call object to character, the first slot is always the
   # function call. Any args specified will be slot 2, 3, 4, ...
-  res <- vapply(steps[tune_calls],
-                function(x) as.character(x)[[1]] == "tune", logical(1))
+  detect_tune2 <- function(step) {
+    step <- Filter(function(x) length(x) != 0, step)
+    any(vapply(step, function(x) as.character(x)[[1]] == "tune", logical(1)))
+  }
+
+  res <- vapply(steps[tune_calls], detect_tune2, logical(1))
+
   # Any argument has a tune() call?
   any(res)
 }

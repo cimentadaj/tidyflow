@@ -428,7 +428,7 @@ test_that("Tuning is applied with all pre steps", {
       object = pull_tflow_spec(mod1_grid),
       preprocessor = mod1_grid$pre$results$recipe,
       resamples = pull_tflow_resample(mod1_grid),
-      grid = mod1_grid$pre$results$grid
+      grid = mod1_grid$pre$results$grid$grid
     )
 
   expect_true(

@@ -302,7 +302,8 @@ fit.action_grid <- function(object, x) {
 
   }
 
-  x$pre$results$grid <- grid_res
+  x$pre$results$grid$grid <- grid_res
+  x$pre$results$grid$params <- all_params
   
   # All pre steps return the `tflow`
   x

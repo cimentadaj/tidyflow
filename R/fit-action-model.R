@@ -96,7 +96,9 @@ fit.action_model <- function(object, x, control, ...) {
   spec <- object$spec
   formula <- object$formula
   resample_res <- x$pre$results$resample
-  grid_res <- x$pre$results$grid
+  grid_res <- x$pre$results$grid$grid
+  param_res <- x$pre$results$grid$params
+
 
   if (has_tune(spec) && !has_preprocessor_grid(x)) {
     abort("The model contains parameters with `tune()` but no grid specification has been made. Did you want `plug_grid`?") #nolintr
@@ -125,9 +127,9 @@ fit.action_model <- function(object, x, control, ...) {
                       preprocessor = obj,
                       resamples = resample_res,
                       grid = grid_res,
-                      control = control_grid
+                      control = control_grid,
+                      param_info = param_res
                       )
-
     return(x)
   }
 

@@ -146,14 +146,19 @@ pull_tflow_training <- function(x, prep = FALSE) {
   # No need to check if there's a split or it has been fit
   # pull_tflow_split does.
   training_data <- rsample::training(pull_tflow_split(x))
+  preproc <- x$pre$actions$recipe$recipe_res %||% x$pre$results$recipe %||% x$pre$actions$formula$formula
 
   if (prep) {
-    training_data <- hardhat::forge(training_data, pull_tflow_mold(x)$blueprint,
-                                    outcomes = TRUE)
-    training_data <- combine_outcome_preds(training_data)
+    if (has_tune(preproc) && !x$trained) {
+      abort("You seem to have a recipe with tuning parameters but not a finalized model. Did you call complete_tflow()?")
+    } else {
+      training_data <- hardhat::mold(preproc, training_data)
+      training_data <- combine_outcome_preds(training_data)
+    }
   }
-
+  
   training_data
+
 }
 
 #' @rdname tidyflow-extractors
@@ -163,11 +168,15 @@ pull_tflow_testing <- function(x, prep = FALSE) {
   # No need to check if there's a split or it has been fit
   # pull_tflow_split does.
   test_data <- rsample::testing(pull_tflow_split(x))
+  preproc <- x$pre$actions$recipe$recipe_res %||% x$pre$results$recipe %||% x$pre$actions$formula$formula
 
   if (prep) {
-    test_data <- hardhat::forge(test_data, pull_tflow_mold(x)$blueprint,
-                                outcomes = TRUE)
-    test_data <- combine_outcome_preds(test_data)
+    if (has_tune(preproc) && !x$trained) {
+      abort("You seem to have a recipe with tuning parameters but not a finalized model. Did you call complete_tflow()?")
+    } else {
+      test_data <- hardhat::mold(preproc, test_data)
+      test_data <- combine_outcome_preds(test_data)
+    }
   }
 
   test_data
@@ -198,7 +207,7 @@ pull_tflow_grid <- function(x) {
     abort("The tidyflow must have a grid preprocessor.")
   }
 
-  x$pre$results$grid
+  x$pre$results$grid$grid
 }
 
 

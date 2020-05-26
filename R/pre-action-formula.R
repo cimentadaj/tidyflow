@@ -77,19 +77,19 @@ replace_formula <- function(x, formula, ..., blueprint = NULL) {
 
 # ------------------------------------------------------------------------------
 
-fit.action_formula <- function(object, tidyflow) {
+fit.action_formula <- function(object, x) {
   formula <- object$formula
   blueprint <- object$blueprint
   
   # TODO - Strip out the formula environment at some time?
-  tidyflow$pre$mold <- hardhat::mold(formula,
-                                     tidyflow$pre$mold,
-                                     blueprint = blueprint)
+  x$pre$mold <- hardhat::mold(formula = formula,
+                              data = x$pre$mold,
+                              blueprint = blueprint)
 
-  tidyflow$pre$results$formula <- tidyflow$pre$mold
+  x$pre$results$formula <- x$pre$mold
 
   # All pre steps return the `tidyflow`
-  tidyflow
+  x
 }
 
 # ------------------------------------------------------------------------------
