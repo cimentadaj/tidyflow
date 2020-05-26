@@ -124,10 +124,17 @@ fit.action_resample <- function(object, x) {
     has_preprocessor_recipe(x) &&
     has_tune(x$pre$results$recipe)
   
-  # Since a tidyflow will alows need to have a formula or recipe
-  # the result of mold when it reaches a resample, will always be
-  # a mold structure. Let's convert that to a data frame
-  mold <- combine_outcome_preds(x$pre$mold)
+  # There are complications when we apply the recipe to the resample
+  # (the previous step to resample is the recipe) because when
+  #  we pass the resample to fit_resample, the recipe is applied
+  # **again** to the resample and it can raise some errors.
+  # So we always apply the resample either to the training data
+  # (if there is a split) or the complete data
+  if (has_preprocessor_split(x)) {
+    mold <- rsample::training(x$pre$results$split)
+  } else {
+    mold <- x$data
+  }
   
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)

@@ -108,8 +108,8 @@ test_that("tidyflow with random numbers across each pre step gives same result a
   # These are steps to make sure that the final result matches perfectly.
   # Since we run mold inside tidyflow, that reorders some columns.
   # Here we take some steps to make sure evrything is the same
-  rownames(mtcars) <- NULL
-  col_order <- c("cyl", "mpg", "disp", "hp",
+  ## rownames(mtcars) <- NULL
+  col_order <- c("mpg", "cyl", "disp", "hp",
                  "drat", "wt", "qsec", "vs", "am",
                  "gear", "carb")
   mtcars <- mtcars[col_order]

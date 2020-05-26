@@ -148,8 +148,8 @@ fit.action_recipe <- function(object, x) {
     x$pre$mold <- hardhat::mold(molded_data[x_vars], molded_data[y_var])
   } else {
     x$pre$mold <- hardhat::mold(rcp_data,
-                                    molded_data,
-                                    blueprint = blueprint)
+                                molded_data,
+                                blueprint = blueprint)
   }
 
 

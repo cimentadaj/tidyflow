@@ -264,3 +264,75 @@ test_that("Name of resample function is always saved as name in the list", {
   tidyflow <- replace_resample(tidyflow, rsample::bootstraps)
   expect_true("rsample::bootstraps" %in% names(tidyflow$pre$actions$resample))
 })
+
+
+test_that("Recipe is not applied to resample", {
+  glmnet_model <- parsnip::set_engine(
+    parsnip::linear_reg(penalty = 0.1, mixture = 0.5),
+    "glmnet"
+  )
+
+  mtcars$am <- as.factor(mtcars$am)
+  tflow <- tidyflow(mtcars, seed = 2315)
+  rcp <- ~ recipes::step_dummy(recipes::recipe(mpg ~ disp + am, .x), am)
+  tflow <- plug_split(tflow, rsample::initial_split)
+  tflow <- plug_recipe(tflow, rcp)
+  tflow <- plug_resample(tflow, rsample::vfold_cv, v = 2)
+  tflow <- plug_model(tflow, glmnet_model)
+  mod1 <- fit(tflow)
+  tuning_vals <- pull_tflow_fit_tuning(mod1)
+
+  nrow_split <- function(x) {
+    unique(
+      vapply(x,
+             function(.x) {
+               nrow(rsample::analysis(.x)) + nrow(rsample::assessment(.x))
+             },
+             FUN.VALUE = numeric(1))
+    )
+  }
+
+  # Resample is done on the training data
+  expect_equal(
+    nrow_split(tuning_vals$splits),
+    nrow(rsample::training(mod1$pre$results$split))
+  )
+
+  # Recipe should NOT be applied when fit_resamples. It is done
+  # via fit_resamples automatically. Let's compare that the resample
+  # is the same data as the training data without prepping.
+  training_resamples <-
+    lapply(tuning_vals$splits, function(x) {
+      tmp_df <- rbind(rsample::analysis(x), rsample::assessment(x))
+      tmp_df[order(tmp_df$mpg, tmp_df$disp), ]
+    })
+
+  training_data <- pull_tflow_training(mod1)
+  training_data <- training_data[order(training_data$mpg, training_data$disp), ]
+
+  # If this fails, it means that the recipe was applied to the resample
+  all_rset_match <- all(
+    vapply(training_resamples, function(x) all.equal(training_data, x),
+           FUN.VALUE = logical(1))
+  )
+
+  expect_true(all_rset_match)
+
+  # Finally, let's compare our results with the manual approach
+  # to tune_grid
+  set.seed(2315)
+  manual_mod1 <-
+    tune::fit_resamples(
+      object = pull_tflow_spec(mod1),
+      preprocessor = mod1$pre$results$recipe,
+      resamples = pull_tflow_resample(mod1)
+    )
+
+  expect_true(
+    all.equal.list(
+      tblattr_2_df(tuning_vals),
+      tblattr_2_df(manual_mod1)
+    )
+  )
+
+})

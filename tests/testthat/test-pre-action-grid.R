@@ -403,15 +403,14 @@ test_that("Tuning is applied with all pre steps", {
 
   # Recipe should NOT be applied when tuning grid. It is done
   # via tune_grid automatically. Let's compare that the resample
-  # is the same data as the training data.
+  # is the same data as the training data without prepping.
   training_resamples <-
     lapply(tuning_vals$splits, function(x) {
       tmp_df <- rbind(rsample::analysis(x), rsample::assessment(x))
       tmp_df[order(tmp_df$mpg, tmp_df$disp), ]
     })
 
-
-  training_data <- pull_tflow_training(mod1_grid, prep = TRUE)
+  training_data <- pull_tflow_training(mod1_grid)
   training_data <- training_data[order(training_data$mpg, training_data$disp), ]
 
   all_rset_match <- all(
