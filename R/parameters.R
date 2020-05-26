@@ -9,7 +9,8 @@
 #' @examples
 #' ## TODO
 #' 5 + 5
-#' 
+#'
+#' @name parameters-tidyflow
 #' @export
 parameters.tidyflow <- function(x, ...) {
 
