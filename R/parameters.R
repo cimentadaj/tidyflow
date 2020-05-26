@@ -11,7 +11,9 @@
 #' 5 + 5
 #'
 #' @name parameters-tidyflow
+#' 
 #' @export
+#' 
 parameters.tidyflow <- function(x, ...) {
 
   model <- try(tidyflow::pull_tflow_spec(x), silent = TRUE)
@@ -40,4 +42,8 @@ parameters.tidyflow <- function(x, ...) {
     param_data$component_id,
     param_data$object
   )
+}
+
+parameters <- function(object, ...) {
+  UseMethod("parameters")
 }

@@ -52,6 +52,10 @@ complete_tflow <- function (x, best_params, control = control_tidyflow()) {
     abort("The tidyflow must be tuned to be able to complete the final model") #nolintr
   }
 
+  if (inherits(pull_tflow_fit_tuning(x), "resample_results")) {
+    abort("`complete_tflow` cannot finalize a model with a resampling result. To finalize a model you need a tuning result. Did you want `plug_grid`?") #nolintr
+  }
+
   parsnip::check_final_param(best_params)
   mod <- tidyflow::pull_tflow_spec(x)
   mod <- tune::finalize_model(mod, best_params)
@@ -78,3 +82,4 @@ complete_tflow <- function (x, best_params, control = control_tidyflow()) {
   x$trained <- TRUE
   x
 }
+

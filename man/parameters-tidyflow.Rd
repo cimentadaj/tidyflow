@@ -5,7 +5,7 @@
 \alias{parameters.tidyflow}
 \title{Extract the parameters of a tidyflow}
 \usage{
-parameters.tidyflow(x, ...)
+\method{parameters}{tidyflow}(x, ...)
 }
 \arguments{
 \item{x}{A data frame or tibble used to begin the tidyflow. This is

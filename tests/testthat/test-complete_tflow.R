@@ -1,10 +1,12 @@
+mod <- tidyflow(mtcars, seed = 52315)
+mod <- plug_resample(mod, rsample::vfold_cv, v = 2)
+
 test_that("complete_tflow fits model on correct data with/without split", {
   mod1 <- parsnip::set_engine(parsnip::linear_reg(penalty = tune::tune(), mixture = tune::tune()), "glmnet")
-  mod <- tidyflow(mtcars, seed = 52315)
-  mod <- plug_recipe(mod, ~ recipes::step_ns(recipes::recipe(mpg ~ ., data = .), disp, deg_free = tune::tune()))
-  mod <- plug_resample(mod, rsample::vfold_cv, v = 2)
-  mod <- plug_model(mod, mod1)
   mod <- plug_grid(mod, dials::grid_regular, levels = 2)
+  mod <- plug_model(mod, mod1)
+  mod <- plug_recipe(mod, ~ recipes::step_ns(recipes::recipe(mpg ~ ., data = .), disp, deg_free = tune::tune()))
+
   res <- fit(mod)
 
   # Fitting on all data
@@ -26,3 +28,18 @@ test_that("complete_tflow fits model on correct data with/without split", {
   # Should always switch the true for trained
   expect_true(final_res$trained)
 })
+
+test_that("complete_tflow raises error when completing model with resample", {
+  mod1 <- parsnip::set_engine(parsnip::linear_reg(), "lm")
+  mod <- plug_formula(mod, mpg ~ .)
+  mod <- plug_model(mod, mod1)
+  mod <- fit(mod)
+
+  expect_error(
+    complete_tflow(mod),
+    "`complete_tflow` cannot finalize a model with a resampling result. To finalize a model you need a tuning result. Did you want `plug_grid`?",
+    fixed = TRUE
+  )
+})
+
+
