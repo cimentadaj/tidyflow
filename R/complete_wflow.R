@@ -27,7 +27,7 @@
 #' tuned_res <-
 #'  mtcars %>%
 #'   tidyflow() %>% 
-#'   plug_resample(vfold_cv) %>% 
+#'   plug_resample(vfold_cv, v = 2) %>% 
 #'   plug_formula(mpg ~ .) %>% 
 #'   plug_model(new_mod) %>%
 #'   plug_grid(grid_regular, levels = 2) %>%

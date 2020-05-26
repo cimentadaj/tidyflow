@@ -58,7 +58,7 @@
 #'                       "glmnet")
 #' tuned_res <-
 #'  formula_tidyflow %>%
-#'   plug_resample(vfold_cv) %>% 
+#'   plug_resample(vfold_cv, v = 2) %>% 
 #'   replace_formula(mpg ~ .) %>% 
 #'   replace_model(new_mod) %>%
 #'   plug_grid(grid_regular, levels = 2) %>%
