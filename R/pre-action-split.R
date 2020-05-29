@@ -74,7 +74,7 @@ plug_split <- function(x, .f, ...) {
       paste0("Arguments in `...` for `", fun_name, "` should be uniquely named")
     )
   }
-
+  
   # Capture name of function to put as name in action list
   # Easier for printing the split specification
   .f <- enquo(.f)
@@ -114,7 +114,7 @@ replace_split <- function(x, .f, ...) {
 
 # ------------------------------------------------------------------------------
 fit.action_split <- function(object, x) {
-
+  
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)
 
@@ -153,7 +153,8 @@ new_action_split <- function(.f, .dots, name_f) {
 }
 
 replace_fit <- function(x) {
-  if (x$trained) {
+  
+  if (x$trained || has_fit_tuning(x)) {
     x <-
       new_tidyflow(
         data = x$data,

@@ -34,37 +34,39 @@ test_that("dropping a split and refitting gives same result", {
 })
 
 
-test_that("plug_split resets model fit if trained before adding the split", {
+test_that("plug_split resets model/tuning fit before adding the split", {
   model <- parsnip::set_engine(parsnip::linear_reg(), "lm")
-  tflow <- plug_recipe(tidyflow(mtcars), ~ recipes::recipe(mpg ~ cyl, .))
+  tflow <- plug_recipe(tidyflow(mtcars), ~ recipes::recipe(mpg ~ ., .))
   tflow <- plug_model(tflow, model)
   tflow <- fit(tflow)
 
+  # Check everything is reset with model
   tflow <- plug_split(tflow, rsample::initial_split)
   expect_false(tflow$trained)
   expect_equal(tflow$data, tflow$pre$mold)
   expect_error(pull_tflow_fit(tflow))
 
-  res <- fit(tflow)
   # Fitted on the training data
+  res <- fit(tflow)
   expect_equal(nrow(pull_tflow_mold(res)$predictors), 24)
   expect_equal(nrow(pull_tflow_mold(res)$outcomes), 24)
-})
 
+  tflow <- plug_grid(res, dials::grid_regular, levels = 2)
+  tflow <- plug_resample(tflow, rsample::vfold_cv, v = 2)
+  tflow <- drop_split(tflow)
 
-test_that("Can add split after model fit and refit", {
-  rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)
-  tflow <- tidyflow(mtcars, seed = 542)
-  tflow <- plug_recipe(tflow, rcp)
-  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
+  mod <- parsnip::set_engine(parsnip::linear_reg(penalty = tune::tune(),
+                                                 mixture = tune::tune()),
+                             "glmnet")
 
-  mod1_no_split <- fit(tflow)
-  mod2_split <- fit(plug_split(mod1_no_split, rsample::initial_split))
+  tflow <- replace_model(tflow, mod)
+  tflow <- fit(tflow)
 
-  expect_equal(nobs(pull_tflow_fit(mod2_split)$fit),
-               nrow(pull_tflow_mold(mod2_split)$predictors))
-
-  expect_true(mod2_split$trained)
+  # Check that the tuning is reset once you plug in the split
+  tflow <- plug_split(tflow, rsample::initial_split)
+  expect_false(has_fit_tuning(tflow))
+  expect_equal(tflow$data, tflow$pre$mold)
+  expect_error(pull_tflow_fit_tuning(tflow))
 })
 
 test_that("Saves testing data after split", {
@@ -237,25 +239,6 @@ test_that("plug_split should return an object of class `rsplit`", {
     regexp = "The split function should return an object of class `rsplit`"
   )
 })
-
-test_that("plug_split resets model fit if trained before adding the split", {
-  model <- parsnip::set_engine(parsnip::linear_reg(), "lm")
-  tidyflow <- plug_recipe(tidyflow(mtcars), ~ recipes::recipe(mpg ~ cyl, .))
-  tidyflow <- plug_model(tidyflow, model)
-  tidyflow <- fit(tidyflow)
-
-  tidyflow <- plug_split(tidyflow, rsample::initial_split)
-  expect_false(tidyflow$trained)
-  expect_equal(pull_tflow_rawdata(tidyflow),
-               pull_tflow_mold(tidyflow))
-  expect_error(pull_tflow_fit(tidyflow))
-
-  res <- fit(tidyflow)
-  # Fitted on the training data
-  expect_equal(nrow(pull_tflow_mold(res)$predictors), 24)
-  expect_equal(nrow(pull_tflow_mold(res)$outcomes), 24)
-})
-
 
 # TODO
 # When you figure if you'll limit the order of operations

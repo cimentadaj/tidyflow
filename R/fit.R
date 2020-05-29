@@ -67,7 +67,7 @@
 #' # Extract the tuning fit:
 #' pull_tflow_fit_tuning(tuned_res)
 #'
-#' # TODO: Extract best params and refit once complete_wflow is ready
+#' # TODO: Extract best params and refit once complete_tflow is ready
 #'  
 #'
 fit.tidyflow <- function(tflow, ..., control = control_tidyflow()) {

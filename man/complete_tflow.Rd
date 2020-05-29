@@ -15,7 +15,7 @@ model. Ideally, the result of \code{\link[tune]{select_best}}.}
 \item{control}{A \code{\link{control_tidyflow}} object. The
 \code{\link[parsnip]{control_parsnip}} control object inside
 \code{\link{control_tidyflow}} is passed to
-\code{\link[parsnip]{fit_from_xy}} or \code{\link[parsnip]{fit_from_formula}}.}
+\code{\link[parsnip]{fit}} or \code{\link[parsnip]{fit}}.}
 }
 \value{
 The tidyflow \code{object} updated with the fitted best model. Can be
@@ -44,7 +44,7 @@ tuned_res <-
   plug_resample(vfold_cv, v = 2) \%>\% 
   plug_formula(mpg ~ .) \%>\% 
   plug_model(reg_mod) \%>\%
-  plug_grid(grid_regular, levels = 2) \%>\%
+  plug_grid(grid_regular, levels = 1) \%>\%
   fit()
 
 # Extract the best tuning fit:
@@ -61,6 +61,7 @@ pull_tflow_fit(final_model)
 # Since there was no `plug_split`, the final model is fitted
 # entirely on the data (no training/testing). If you try to predict
 # on either one, it will not work:
+\dontrun{
 final_model \%>\%
   predict_training()
 
@@ -74,5 +75,6 @@ tuned_split <-
 tuned_split \%>\%
  complete_tflow(best_params) \%>\%
  predict_training()
+}
 
 }

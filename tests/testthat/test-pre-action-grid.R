@@ -47,15 +47,29 @@ test_that("dropping a grid and refitting gives same result", {
                rsplit2df(mod2_no_grid))
 })
 
-test_that("plug_grid resets model fit if trained before adding the grid", {
+test_that("plug_grid resets model fit/tuning before adding the grid", {
   tflow <- plug_recipe(tidyflow(mtcars), ~ recipes::recipe(mpg ~ cyl + am, .))
   tflow <- plug_model(tflow, lm_model)
   tflow <- fit(tflow)
 
-  tflow <- plug_grid(tflow, dials::grid_regular, levels = 1)
-  expect_false(tflow$trained)
+  res <- plug_grid(tflow, dials::grid_regular, levels = 1)
+  expect_false(res$trained)
+  expect_equal(res$data, res$pre$mold)
+  expect_error(pull_tflow_fit(res))
+
+  mod <- parsnip::set_engine(parsnip::linear_reg(penalty = tune::tune(),
+                                                 mixture = tune::tune()),
+                             "glmnet")
+
+  tflow <- plug_resample(res, rsample::vfold_cv, v = 2)
+  tflow <- replace_model(tflow, mod)
+  tflow <- fit(tflow)
+
+  # Check that the tuning is reset once you plug in the split
+  tflow <- replace_grid(tflow, dials::grid_latin_hypercube)
+  expect_false(has_fit_tuning(tflow))
   expect_equal(tflow$data, tflow$pre$mold)
-  expect_error(pull_tflow_fit(tflow))
+  expect_error(pull_tflow_fit_tuning(tflow))
 })
 
 test_that("Can add plug_grid after model fit and refit", {

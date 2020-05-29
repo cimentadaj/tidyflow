@@ -111,44 +111,6 @@ mt_rec <-
 
 prep(mt_rec)
 
-library(tidymodels)
-devtools::load_all()
-library(mlbench)
-data(Ionosphere)
-Ionosphere <- Ionosphere %>% select(-V2) %>% mutate(cont = 1:nrow(.))
-
-svm_mod <-
-  svm_rbf(cost = tune("my_cost"), rbf_sigma = tune()) %>%
-  set_mode("classification") %>%
-  set_engine("kernlab")
-
-iono_rec <-
-  ~ recipe(Class ~ ., data = .)  %>%
-  # In case V1 is has a single value sampled
-  step_zv(all_predictors()) %>% 
-  # convert it to a dummy variable
-  step_dummy(V1) %>%
-  # Scale it the same as the others
-  step_range(matches("V1_")) %>% 
-  step_ns(cont, deg_free = tune())
-
-tflow <-
-  Ionosphere %>% 
-  tidyflow(seed = 4943) %>%
-  plug_recipe(iono_rec) %>%
-  plug_resample(bootstraps, times = 30) %>%
-  plug_model(svm_mod) %>%
-  plug_grid(grid_latin_hypercube,
-            my_cost = cost(c(-10, 10)),
-            size = 10)
-
-t1 <- tflow %>% fit()
-best_params <- t1 %>% pull_tflow_fit_tuning() %>% select_best("accuracy")
-control = control_tidyflow()
-
-t2 <- complete_tflow(t1, t1 %>% pull_tflow_fit_tuning() %>% select_best("accuracy"))
-
-
 ## TODO
 # This is to become a test in the package to make sure both tidyflow
 # and tidymodels returns the same result always.

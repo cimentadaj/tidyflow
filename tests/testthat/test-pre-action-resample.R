@@ -100,8 +100,8 @@ test_that("Fit resample, drop a resample and refit is the same as normal fitting
                strip_elapsed(mod2_no_resample))
 })
 
-test_that("Adding a resample to a trained model drops trained flag", {
-  rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ cyl), cyl, base = 10)
+test_that("plug_resample resets model fit before adding the resample", {
+  rcp <- ~ recipes::step_log(recipes::recipe(.x, mpg ~ .), cyl, base = 10)
   tflow <- tidyflow(mtcars, seed = 542)
   tflow <- plug_split(tflow, rsample::initial_split)
   tflow <- plug_recipe(tflow, rcp)
@@ -113,6 +113,10 @@ test_that("Adding a resample to a trained model drops trained flag", {
   # no fit
   expect_error(pull_tflow_fit(resample_mod))
   expect_false(resample_mod$trained)
+
+  # No need to include checking if adding a resample
+  # removes the tuning because you can never add a resample if there's
+  # a tuning: it is a necessary step to do the tuning before hand.
 })
 
 
