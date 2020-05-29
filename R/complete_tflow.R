@@ -1,17 +1,20 @@
 #' Fit the best model from a tuning grid
 #' 
-#' @details
-#' In the future, there will also be _postprocessing_ steps that can be added
-#' after the model has been fit.
 #' @param x A tidyflow
 #' @param best_params A 1 row tibble with the best parameters to fit the final
 #' model. Ideally, the result of \code{\link[tune]{select_best}}.
-#' @param control A [control_tidyflow()] object
+#' @param control A \code{\link{control_tidyflow}} object. The
+#' \code{\link[parsnip]{control_parsnip}} control object inside
+#' \code{\link{control_tidyflow}} is passed to
+#' \code{\link[parsnip]{fit_from_xy}} or \code{\link[parsnip]{fit_from_formula}}.
+#'
+#' @details The finalized model is fitted on the training data if
+#' \code{plug_split} was specified otherwise on the complete data.
 #' 
-#' @return
-#' 
-#' The tidyflow `object`, updated with the fitted best model. Can be extracted
-#' with \code{\link{pull_tflow_fit}}.
+#' @return The tidyflow `object` updated with the fitted best model. Can be
+#' extracted with \code{\link{pull_tflow_fit}} and used to predict on the
+#' training or test data with \code{\link{predict_training}} or
+#' \code{\link{predict_testing}}
 #'
 #' @export
 #' @examples
@@ -21,27 +24,43 @@
 #' library(rsample)
 #'
 #' # Fit a regularized regression through a grid search.
-#' # Do this by updating the already defined model:
-#' new_mod <- set_engine(linear_reg(penalty = tune(), mixture = tune()),
-#'                       "glmnet")
+#' reg_mod <- set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet")
 #' tuned_res <-
 #'  mtcars %>%
 #'   tidyflow() %>% 
 #'   plug_resample(vfold_cv, v = 2) %>% 
 #'   plug_formula(mpg ~ .) %>% 
-#'   plug_model(new_mod) %>%
+#'   plug_model(reg_mod) %>%
 #'   plug_grid(grid_regular, levels = 2) %>%
 #'   fit()
 #'
-#' # Extract the tuning fit:
+#' # Extract the best tuning fit:
 #' best_params <- select_best(pull_tflow_fit_tuning(tuned_res), "rmse")
 #'
+#' # Finalize the best model and refit on the whole dataset
 #' final_model <-
 #'   tuned_res %>%
 #'   complete_tflow(best_params)
 #'
 #' # Extract final model with:
 #' pull_tflow_fit(final_model)
+#'
+#' # Since there was no `plug_split`, the final model is fitted
+#' # entirely on the data (no training/testing). If you try to predict
+#' # on either one, it will not work:
+#' final_model %>%
+#'   predict_training()
+#'
+#' # Add a split step, fit again and then finalize the model
+#' # to predict on the training set
+#' tuned_split <-
+#'   tuned_res %>%
+#'   plug_split(initial_split) %>%
+#'   fit()
+#'
+#' tuned_split %>%
+#'  complete_tflow(best_params) %>%
+#'  predict_training()
 #' 
 complete_tflow <- function (x, best_params, control = control_tidyflow()) {
   if (!inherits(x, "tidyflow")) {
