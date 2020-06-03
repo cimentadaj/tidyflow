@@ -112,12 +112,37 @@ test_that("recipe preprocessing is done to the `new_data`", {
   tidyflow <- tidyflow(mtcars_with_log)
   tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
   tidyflow <- plug_model(tidyflow, mod)
-
   fit_tidyflow <- fit(tidyflow)
-
   result2 <- predict(fit_tidyflow, mtcars_with_log)
 
   expect_equal(result1, result2)
+})
+
+test_that("recipe preprocessing is done with predict_training/predict_testing", {
+  check_predict <- function(fun) {
+    mod <- parsnip::set_engine(parsnip::linear_reg(), "lm")
+    rec <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, .), cyl)
+    tidyflow <- tidyflow(mtcars, seed = 23131)
+    tidyflow <- plug_split(tidyflow, rsample::initial_split)
+    tidyflow <- plug_recipe(tidyflow, rec)
+    tidyflow <- plug_model(tidyflow, mod)
+    fit_tidyflow <- fit(tidyflow)
+    result1 <- fun(fit_tidyflow)
+
+    # pre-log the data
+    mtcars_with_log <- mtcars
+    mtcars_with_log$cyl <- log(mtcars_with_log$cyl)
+    tidyflow <- tidyflow(mtcars_with_log, seed = 23131)
+    tidyflow <- plug_split(tidyflow, rsample::initial_split)
+    tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
+    tidyflow <- plug_model(tidyflow, mod)
+    fit_tidyflow2 <- fit(tidyflow)
+    result2 <- fun(fit_tidyflow)
+    expect_equal(result1, result2)
+  }
+
+  check_predict(predict_training)
+  check_predict(predict_testing)
 })
 
 test_that("`new_data` must have all of the original predictors", {

@@ -75,6 +75,7 @@ predict_training <- function(object, type = NULL, opts = list(), ...) {
     rlang::abort("`predict_training` can only work when a split preprocessor has been specifid. Did you want `plug_split`?")
   }
 
+  # No need for prep = TRUE, since predict.tidyflow already applies the bake
   tr_dt <- pull_tflow_training(object)
   res <-
     tibble::as_tibble(
@@ -94,6 +95,7 @@ predict_testing <- function(object, type = NULL, opts = list(), ...) {
     rlang::abort("`predict_testing` can only work when a split preprocessor has been specifid. Did you want `plug_split`?")
   }
 
+  # No need for prep = TRUE, since predict.tidyflow already applies the bake
   tst_dt <- pull_tflow_testing(object)
 
   res <-
