@@ -8,14 +8,9 @@
 #'
 #' - Fitting the underlying parsnip model using [parsnip::fit.model_spec()].
 #'
-#' @details
-#' In the future, there will also be _postprocessing_ steps that can be added
-#' after the model has been fit.
-#'
 #' @param tflow A tidyflow object
-#' @param ... Not used
-#'
 #' @param control A [control_tidyflow()] object
+#' @param ... Not used
 #'
 #' @return
 #' If a tuning grid has been specified with \code{\link{plug_grid}}, then the
@@ -34,9 +29,8 @@
 #' library(rsample)
 #'
 #' # Fit a simple linear model
-#' model <- linear_reg()
-#' model <- set_engine(model, "lm")
-#'
+#' model <- set_engine(linear_reg(), "lm")
+#' 
 #' formula_tidyflow <-
 #'  mtcars %>%
 #'  tidyflow() %>%
@@ -69,8 +63,7 @@
 #'
 #' # TODO: Extract best params and refit once complete_tflow is ready
 #'  
-#'
-fit.tidyflow <- function(tflow, ..., control = control_tidyflow()) {
+fit.tidyflow <- function(tflow, control = control_tidyflow(), ...) {
 
   if (!has_raw_data(tflow)) {
     abort("`data` must be specified to fit a tidyflow; Do you need `plug_data`?")

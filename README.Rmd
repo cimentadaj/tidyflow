@@ -60,7 +60,7 @@ fit_m <- fit(tflow)
 
 # Predict on testing
 fit_m %>%
-  predict_testing()
+  predict_training()
 
 ```
 

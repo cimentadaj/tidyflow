@@ -25,7 +25,60 @@ A \code{control_tidyflow} object for tweaking the tidyflow fitting/tuning proces
 }
 \description{
 \code{control_tidyflow()} holds the control parameters for a tidyflow.
+It allows you to specify control options for \code{parsnip}, \code{resamples}
+and \code{grid}.
 }
 \examples{
-control_tidyflow()
+library(parsnip)
+library(rsample)
+library(tune)
+library(tidyflow)
+
+# Build tidyflow
+tflow <-
+  mtcars \%>\%
+  tidyflow() \%>\%
+  plug_split(initial_split) \%>\%
+  plug_formula(mpg ~ .) \%>\%
+  plug_resample(vfold_cv, v = 2) \%>\% 
+  plug_model(set_engine(linear_reg(), "lm"))
+
+# For each resample object, we want the predictions
+ct <- control_tidyflow(control_resample = control_resamples(save_pred = TRUE,
+                                                            verbose = TRUE))
+
+# Specify the control object
+fit_m <- fit(tflow, control = ct)
+fit_m
+
+# Extract the predictions
+fit_m \%>\%
+  pull_tflow_fit_tuning() \%>\%
+  .[[".predictions"]]
+
+# `control_resamples` is only used when there is a resample but not
+# grid. When there is a resample and a grid, `control_grid` should be
+# used.
+ct <- control_tidyflow(control_grid = control_grid(verbose = TRUE,
+                                                   save_pred = TRUE))
+
+# Since there is no grid specification, this is ignored.
+# No messages should be printed nor a new .predictions
+# columns in the result
+fit_m <- fit(tflow, control = ct)
+fit_m
+
+# control_parsnip controls the options of the model
+# For example, verbosity controls the messags of the model
+ct <- control_tidyflow(control_parsnip = control_parsnip(verbosity = 2))
+
+# Run a regularized regression with only one independent variable.
+# This is not possible, it will raise an error and we will see it
+# because of verbosity
+res <-
+  tflow \%>\%
+  replace_model(set_engine(linear_reg(penalty = 0, mixture = 1), "glmnet")) \%>\%
+  replace_formula(mpg ~ cyl) \%>\% 
+  fit(control = ct)
+
 }

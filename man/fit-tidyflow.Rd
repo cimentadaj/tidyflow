@@ -5,14 +5,14 @@
 \alias{fit.tidyflow}
 \title{Fit a tidyflow object}
 \usage{
-\method{fit}{tidyflow}(tflow, ..., control = control_tidyflow())
+\method{fit}{tidyflow}(tflow, control = control_tidyflow(), ...)
 }
 \arguments{
 \item{tflow}{A tidyflow object}
 
-\item{...}{Not used}
-
 \item{control}{A \code{\link[=control_tidyflow]{control_tidyflow()}} object}
+
+\item{...}{Not used}
 }
 \value{
 If a tuning grid has been specified with \code{\link{plug_grid}}, then the
@@ -29,10 +29,6 @@ Fitting a tidyflow currently involves two main steps:
 \item Fitting the underlying parsnip model using \code{\link[parsnip:fit.model_spec]{parsnip::fit.model_spec()}}.
 }
 }
-\details{
-In the future, there will also be \emph{postprocessing} steps that can be added
-after the model has been fit.
-}
 \examples{
 library(parsnip)
 library(recipes)
@@ -41,8 +37,7 @@ library(dials)
 library(rsample)
 
 # Fit a simple linear model
-model <- linear_reg()
-model <- set_engine(model, "lm")
+model <- set_engine(linear_reg(), "lm")
 
 formula_tidyflow <-
  mtcars \%>\%
@@ -76,5 +71,4 @@ pull_tflow_fit_tuning(tuned_res)
 
 # TODO: Extract best params and refit once complete_tflow is ready
  
-
 }
