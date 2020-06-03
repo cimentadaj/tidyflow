@@ -108,21 +108,6 @@ fit.tidyflow <- function(tflow, control = control_tidyflow(), ...) {
 #'
 #' @name tidyflows-internals
 #' @keywords internal
-#' @export
-#' @examples
-#' library(parsnip)
-#' library(recipes)
-#'
-#' model <- linear_reg()
-#' model <- set_engine(model, "lm")
-#'
-#' base_tidyflow <- tidyflow(mtcars)
-#' base_tidyflow <- plug_model(base_tidyflow, model)
-#'
-#' formula_tidyflow <- plug_formula(base_tidyflow, mpg ~ cyl + log(disp))
-#'
-#' partially_fit_tidyflow <- .fit_pre(formula_tidyflow)
-#' fit_tidyflow <- .fit_model(partially_fit_tidyflow, control_tidyflow())
 .fit_pre <- function(x) {
   n <- length(x[["pre"]]$actions)
 
@@ -139,7 +124,6 @@ fit.tidyflow <- function(tflow, control = control_tidyflow(), ...) {
 }
 
 #' @rdname tidyflows-internals
-#' @export
 .fit_model <- function(x, control) {
   # If no seed has been specified, `set.seed` supports NULL as random
   set.seed(x$pre$seed)

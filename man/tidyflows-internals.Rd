@@ -29,19 +29,4 @@ tidyflow}
 the tuning package, \href{https://github.com/tidymodels/tune}{tune}, and the
 general user should never need to worry about them.
 }
-\examples{
-library(parsnip)
-library(recipes)
-
-model <- linear_reg()
-model <- set_engine(model, "lm")
-
-base_tidyflow <- tidyflow(mtcars)
-base_tidyflow <- plug_model(base_tidyflow, model)
-
-formula_tidyflow <- plug_formula(base_tidyflow, mpg ~ cyl + log(disp))
-
-partially_fit_tidyflow <- .fit_pre(formula_tidyflow)
-fit_tidyflow <- .fit_model(partially_fit_tidyflow, control_tidyflow())
-}
 \keyword{internal}
