@@ -12,7 +12,7 @@ Authors@R:
              email = "davis@rstudio.com"),
       person(given = "RStudio",
              role = "cph"))
-Description: Managing a modelling flow such as data, training/testing splitting, resampling, preprocessing and statistical modelling, can often be challenging. The goal of 'tidyflow' is to streamline this process by bundling your tidyflow within the same object.
+Description: Managing a modelling flow such as data, training/testing splitting, resampling, preprocessing and statistical modelling can often be challenging. The goal of 'tidyflow' is to streamline this process by bundling your tidyflow in the same object, making it a mutable plan for exploratory modeling.
 License: MIT + file LICENSE
 URL: https://github.com/cimentadaj/tidyflow
 BugReports: https://github.com/cimentadaj/tidyflow/issues
