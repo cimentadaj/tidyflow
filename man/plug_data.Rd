@@ -33,10 +33,11 @@ data will need to be refit.
 }
 }
 \details{
-To fit a tidyflow, \code{data} \emph{must} be specified. We advise that the data passed
-to the \code{tidyflow} has already been tested with the recipe before hand.
-The \code{tidyflow} is not an ideal workflow for prototyping with the
-recipe rather for prototyping with the model/grid/resample/split.
+\code{plug_data()} is a required step to construct a minimal tidyflow. We
+advise that the data passed to the \code{tidyflow} has already been tested
+with the recipe before hand. The \code{tidyflow} is not an ideal workflow
+for prototyping with the recipe rather for prototyping with the
+model/grid/resample/split.
 }
 \examples{
 

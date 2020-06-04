@@ -11,10 +11,11 @@
 #'   data will need to be refit.
 #'
 #' @details
-#' To fit a tidyflow, `data` _must_ be specified. We advise that the data passed
-#' to the \code{tidyflow} has already been tested with the recipe before hand.
-#' The \code{tidyflow} is not an ideal workflow for prototyping with the
-#' recipe rather for prototyping with the model/grid/resample/split.
+#' `plug_data()` is a required step to construct a minimal tidyflow. We
+#' advise that the data passed to the \code{tidyflow} has already been tested
+#' with the recipe before hand. The \code{tidyflow} is not an ideal workflow
+#' for prototyping with the recipe rather for prototyping with the
+#' model/grid/resample/split.
 #'
 #' @param x A tidyflow
 #'
