@@ -63,7 +63,8 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
-          install.packages("glmnet")
+          install.packages("desc")
+          x <- desc::desc()$get_deps(); install.packges(x$package[x$type == "Suggests"])
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 

@@ -22,15 +22,11 @@ knitr::opts_chunk$set(
 
 ## What is a tidyflow? 
 
-<!-- A tidyflow is an object that can bundle together your data, splitting, resampling, preprocessing, modeling, and post-processing requests. For example, if you have a `recipe` and `parsnip` model, these can be combined into a workflow. The advantages are: -->
+A tidyflow is a fork of [workflows](https://workflows.tidymodels.org/) that can bundle together your data, splitting, resampling, preprocessing, modeling, and grid search. Having all these steps separated into different objects can prove to be difficult. One can predict on the testing data by mistake, forget whether the recipe has been baked or not, or simply do not remember the name of all the tuning parameters to specify in the grid. `tidyflow` is a package aimed at bundling all of these steps into a a coherent flow. The advantages are:
 
-<!--  * You don't have to keep track of separate objects in your workspace. -->
+ * You don't have to keep track of separate objects in your workspace.
 
-<!--  * The recipe prepping and model fitting can be executed using a single call to `fit()`. -->
-
-<!--  * If you have custom tuning parameter settings, these can be defined using a simpler interface when combined with [tune](https://github.com/tidymodels/tune). -->
-
-<!--  * In the future, workflows will be able to add post-processing operations, such as modifying the probability cutoff for two-class models. -->
+ * The split, resample, recipe prepping, model fitting and grid search can be executed using a single call to `fit()`.
  
 ## Installation
 
@@ -61,8 +57,40 @@ fit_m <- fit(tflow)
 # Predict on testing
 fit_m %>%
   predict_training()
-
 ```
+
+```{r }
+# Build tidyflow
+tflow <-
+  mtcars %>%
+  tidyflow() %>%
+  plug_split(initial_split) %>%
+  plug_formula(mpg ~ .) %>%
+  plug_resample(vfold_cv) %>%
+  plug_grid(grid_regular) %>% 
+  plug_model(set_engine(linear_reg(penalty = tune(), mixture = tune())), "glmnet")
+
+# Fit model
+fit_m <- fit(tflow)
+
+# Extract tuning grid
+fit_m %>%
+  pull_tflow_fit_tuning()
+
+# Fit best model on the entire training data
+final_m <-
+  fit_m %>%
+  complete_tflow(metric = "rmse")
+
+# Predict on train
+final_m %>%
+  predict_train()
+
+# Predict on testing
+fit_m %>%
+  predict_testing()
+```
+
 
 ## Code of Conduct
 
