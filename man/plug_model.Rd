@@ -44,28 +44,46 @@ the tidyflow.
 \examples{
 library(parsnip)
 
-lm_model <- linear_reg()
-lm_model <- set_engine(lm_model, "lm")
-
+# Define two competing model:
+lm_model <- set_engine(linear_reg(), "lm")
 regularized_model <- set_engine(lm_model, "glmnet")
 
-wf <- tidyflow(mtcars)
-wf <- plug_model(wf, lm_model)
+# Define a minimal tidyflow: data + formula + model
+wf <-
+  mtcars \%>\%
+  tidyflow() \%>\%
+  plug_formula(mpg ~ .) \%>\% 
+  plug_model(lm_model)
+
 wf
 
-wf <- plug_formula(wf, mpg ~ .)
-wf
-
+# We can drop the model at any time and the remaining steps
+# are intact
 drop_model(wf)
 
+# We can fit the model with `fit`:
 fitted <- fit(wf)
-fitted
 
+# Extract the model if needed:
+fitted \%>\%
+  pull_tflow_fit()
+
+# If we remove the model from the fitted `tidyflow`,
+# the fit is dropped:
 drop_model(fitted)
 
-drop_model(wf)
+# We could replace the model from the initial tidyflow with
+# the regularized model with `replace_model`
 
-replace_model(wf, regularized_model)
-replace_model(fitted, regularized_model)
+## TODO: when https://github.com/cimentadaj/tidyflow/issues/4 is fixed
+## replace wf with fitted here.
+
+reg_fitted <-
+  wf \%>\%
+  replace_model(regularized_model) \%>\%
+  fit()
+
+reg_fitted \%>\%
+  pull_tflow_fit()
 
 }
