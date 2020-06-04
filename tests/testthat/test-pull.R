@@ -342,7 +342,7 @@ pull_tflow_tests <- function(tflow, fun, fun_str) {
       fixed = TRUE
     )
 
-    t2 <- complete_tflow(t1, tune::select_best(pull_tflow_fit_tuning(t1), "accuracy"))
+    t2 <- complete_tflow(t1, metric = "accuracy")
     r2 <- fun(t2, prep = TRUE)
     # Check that the tuning value in the recipe is applied. This means
     # that qsec is added 10 new columns for the natural splines
@@ -360,7 +360,7 @@ pull_tflow_tests <- function(tflow, fun, fun_str) {
     rec <- ~ step_range(recipes::recipe(am ~ ., data = .), qsec)
     t1 <- fit(plug_recipe(tflow, rec))
     r1 <- fun(t1, prep = TRUE)
-    t2 <- complete_tflow(t1, tune::select_best(pull_tflow_fit_tuning(t1), "accuracy"))
+    t2 <- complete_tflow(t1, metric = "accuracy")
     r2 <- fun(t2, prep = TRUE)
     expect_equal(r1, r2)
   })
@@ -382,7 +382,7 @@ pull_tflow_tests <- function(tflow, fun, fun_str) {
     expect_true(all(c("cyl_X6", "cyl_X8") %in% names(r1)))
 
     # Just to check, see if it matches the same result with complete_tflow
-    t2 <- complete_tflow(t1, tune::select_best(pull_tflow_fit_tuning(t1), "accuracy"))
+    t2 <- complete_tflow(t1, metric = "accuracy")
     r2 <- fun(t2, prep = TRUE)
     expect_equal(r1, r2)
   })
@@ -390,7 +390,7 @@ pull_tflow_tests <- function(tflow, fun, fun_str) {
   test_that(paste0(fun_str, " returns training data prepped with formula"), {
     t1 <- fit(plug_formula(tflow, am ~ .))
     r1 <- fun(t1, prep = TRUE)
-    t2 <- complete_tflow(t1, tune::select_best(pull_tflow_fit_tuning(t1), "accuracy"))
+    t2 <- complete_tflow(t1, metric = "accuracy")
     r2 <- fun(t2, prep = TRUE)
     expect_equal(r1, r2)
   })

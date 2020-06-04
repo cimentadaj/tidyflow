@@ -1,8 +1,20 @@
 #' Fit the best model from a tuning grid
 #' 
 #' @param x A tidyflow
+#' @param metric The metric of reference from which to pick the best model
+#' @param ... Extra arguments passed to
+#' \code{\link[tune]{select_by_one_std_err}} or
+#' \code{\link[tune]{select_by_pct_loss}}
 #' @param best_params A 1 row tibble with the best parameters to fit the final
-#' model. Ideally, the result of \code{\link[tune]{select_best}}.
+#' model. Should have the same format as the result of
+#' \code{\link[tune]{select_best}},
+#' \code{\link[tune]{select_by_one_std_err}} or
+#' \code{\link[tune]{select_by_pct_loss}}. If \code{best_params} is specified,
+#' the \code{method}, \code{metric} and \code{...} arguments are ignored.
+#' @param method which method to use. The possible values are
+#' \code{\link[tune]{select_best}}, \code{\link[tune]{select_by_one_std_err}} or
+#' \code{\link[tune]{select_by_pct_loss}}. By default, it uses
+#' \code{\link[tune]{select_best}}.
 #' @param control A \code{\link{control_tidyflow}} object. The
 #' \code{\link[parsnip]{control_parsnip}} control object inside
 #' \code{\link{control_tidyflow}} is passed to
@@ -34,15 +46,34 @@
 #'   plug_grid(grid_regular, levels = 1) %>%
 #'   fit()
 #'
-#' # Extract the best tuning fit:
-#' best_params <- select_best(pull_tflow_fit_tuning(tuned_res), "rmse")
-#'
 #' # Finalize the best model and refit on the whole dataset
-#' final_model <-
-#'   tuned_res %>%
-#'   complete_tflow(best_params)
+#' final_model <- complete_tflow(tuned_res, metric = "rmse")
 #'
-#' # Extract final model with:
+#' # complete_tflow uses tune::select_best as the default method. However,
+#' # tune::select_by_one_std_err and
+#' # tune::select_by_pct_loss can be used. These need to specify the metric and
+#' # the tuning value from which to sort the selection. For example:
+#' final_model_stderr <- complete_tflow(tuned_res,
+#'                                      metric = "rmse",
+#'                                      method = "select_by_one_std_err",
+#'                                      penalty)
+#'
+#' # select_by_one_std_err finalizs the best model with the simplest tuning
+#' # values within one standard deviation from most optimal
+#' # combination. For more information on these methods, see
+#' # ?select_best
+#'
+#' # You can also specify the best parameters, in case you want
+#' # to override the automatic extraction of the best fit. If you
+#' # specify `best_params` it will override all other arguments
+#'
+#' best_params <- select_best(pull_tflow_fit_tuning(tuned_res), metric = "rmse")
+#' final_model_custom <- complete_tflow(tuned_res, best_params = best_params)
+#'
+#' # To see the final tuning values, extract the model spec
+#' pull_tflow_spec(final_model)
+#'
+#' # To extract the final fitted model:
 #' pull_tflow_fit(final_model)
 #'
 #' # Since there was no `plug_split`, the final model is fitted
@@ -56,15 +87,22 @@
 #' # to predict on the training set
 #' tuned_split <-
 #'   tuned_res %>%
+#'   replace_grid(grid_regular) %>% 
 #'   plug_split(initial_split) %>%
 #'   fit()
 #'
 #' tuned_split %>%
-#'  complete_tflow(best_params) %>%
+#'  complete_tflow(metric = "rmse") %>%
 #'  predict_training()
 #' }
 #' 
-complete_tflow <- function (x, best_params, control = control_tidyflow()) {
+complete_tflow <- function (x,
+                            metric,
+                            ...,
+                            best_params = NULL,
+                            method = c("select_best", "select_by_one_std_err", "select_by_pct_loss"),
+                            control = control_tidyflow()) {
+  
   if (!inherits(x, "tidyflow")) {
     stop("`x` should be a tidyflow")
   }
@@ -75,6 +113,14 @@ complete_tflow <- function (x, best_params, control = control_tidyflow()) {
 
   if (inherits(pull_tflow_fit_tuning(x), "resample_results")) {
     abort("`complete_tflow` cannot finalize a model with a resampling result. To finalize a model you need a tuning result. Did you want `plug_grid`?") #nolintr
+  }
+
+  select_fun <- match.arg(method)
+
+  if (is.null(best_params)) {
+    tune_grid <- pull_tflow_fit_tuning(x)
+    raw_select_fun <- getExportedValue("tune", select_fun)
+    best_params <- raw_select_fun(x = tune_grid, metric = metric, ...)
   }
 
   parsnip::check_final_param(best_params)
@@ -103,4 +149,3 @@ complete_tflow <- function (x, best_params, control = control_tidyflow()) {
   x$trained <- TRUE
   x
 }
-
