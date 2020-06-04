@@ -24,7 +24,7 @@ replace_data(x, data, ...)
 }
 \description{
 \itemize{
-\item \code{plug_data()} specifies the raw data used in the analysis. This data is used
+\item \code{plug_data()} specifies the data used in the analysis. This data is used
 for the preprocessing and fitting the model.
 \item \code{drop_data()} removes the data from the tidyflow.
 \item \code{replace_data()} first removes the data, then replaces the previous
@@ -33,7 +33,10 @@ data will need to be refit.
 }
 }
 \details{
-To fit a tidyflow, \code{data} \emph{must} be specified.
+To fit a tidyflow, \code{data} \emph{must} be specified. We advise that the data passed
+to the \code{tidyflow} has already been tested with the recipe before hand.
+The \code{tidyflow} is not an ideal workflow for prototyping with the
+recipe rather for prototyping with the model/grid/resample/split.
 }
 \examples{
 

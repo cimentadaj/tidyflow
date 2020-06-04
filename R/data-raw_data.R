@@ -1,7 +1,7 @@
 #' Add a data to a tidyflow
 #'
 #' @description
-#' - `plug_data()` specifies the raw data used in the analysis. This data is used
+#' - `plug_data()` specifies the data used in the analysis. This data is used
 #'   for the preprocessing and fitting the model.
 #'
 #' - `drop_data()` removes the data from the tidyflow.
@@ -11,14 +11,16 @@
 #'   data will need to be refit.
 #'
 #' @details
-#' To fit a tidyflow, `data` _must_ be specified.
+#' To fit a tidyflow, `data` _must_ be specified. We advise that the data passed
+#' to the \code{tidyflow} has already been tested with the recipe before hand.
+#' The \code{tidyflow} is not an ideal workflow for prototyping with the
+#' recipe rather for prototyping with the model/grid/resample/split.
 #'
 #' @param x A tidyflow
 #'
 #' @param data A data frame or tibble.
 #'
 #' @param ... Not used.
-#'
 #'
 #' @return
 #' `x`, updated with either a new or removed data frame.
