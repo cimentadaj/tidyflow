@@ -16,7 +16,7 @@ jobs:
       - name: Install rmarkdown
         run: Rscript -e 'install.packages(c("rmarkdown", "remotes", "devtools")); remotes::install_deps(dependencies = TRUE); devtools::install()'
       - name: Render README
-        run: Rscript -e 'rmarkdown::render("README.Rmd")'
+        run: Rscript -e 'options(crayon.enabled = FALSE); rmarkdown::render("README.Rmd")'
       - name: Commit results
         run: |
           git pull origin master
