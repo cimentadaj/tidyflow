@@ -41,17 +41,28 @@ devtools::install_github("cimentadaj/tidyflow")
 
 Simple example:
 
-```{r, message = FALSE}
+```{r, message = FALSE, eval = FALSE}
 library(tidymodels)
 library(tidyflow)
+```
 
+```{r, echo = FALSE, message = FALSE}
+library(rsample)
+library(tune)
+library(parsnip)
+library(rsample)
+library(dials)
+library(tidyflow)
+```
+
+```{r}
 # Build tidyflow
 tflow <-
   mtcars %>%
   tidyflow() %>%
   plug_split(initial_split) %>%
   plug_formula(mpg ~ .) %>%
-  plug_model(linear_reg())
+  plug_model(set_engine(linear_reg(), "lm"))
 
 # Fit model
 fit_m <- fit(tflow)
@@ -72,7 +83,7 @@ tflow <-
   plug_formula(mpg ~ .) %>%
   plug_resample(vfold_cv) %>%
   plug_grid(grid_regular) %>% 
-  plug_model(set_engine(linear_reg(penalty = tune(), mixture = tune())), "glmnet")
+  plug_model(set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet"))
 
 # Fit model
 fit_m <- fit(tflow)
@@ -88,10 +99,10 @@ final_m <-
 
 # Predict on train
 final_m %>%
-  predict_train()
+  predict_training()
 
 # Predict on testing
-fit_m %>%
+final_m %>%
   predict_testing()
 ```
 
