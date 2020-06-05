@@ -7,19 +7,21 @@
 \alias{predict_testing}
 \title{Predict from a tidyflow}
 \usage{
-\method{predict}{tidyflow}(object, new_data, type = NULL, opts = list(), ...)
+\method{predict}{tidyflow}(x, new_data, type = NULL, opts = list(), ...)
 
 predict_training(object, type = NULL, opts = list(), ...)
 
 predict_testing(object, type = NULL, opts = list(), ...)
 }
 \arguments{
-\item{object}{A tidyflow that has been fit by \code{\link[=fit.tidyflow]{fit.tidyflow()}}}
+\item{x}{A tidyflow that has been fitted by \code{\link[=fit.tidyflow]{fit.tidyflow()}}}
 
 \item{new_data}{A data frame containing the new predictors to preprocess
 and predict on. Usually, this would be extracted from the tidyflow
-with \code{\link{pull_tflow_testing}} with \code{prep = TRUE} or
-\code{\link{pull_tflow_training}} with \code{prep = TRUE}.}
+with \code{\link{pull_tflow_testing}} or
+\code{\link{pull_tflow_training}}. Note that \code{predict.tidyflow}
+already applies the recipe or formula automatically. It is not advised to
+preprocess the \code{newdata} before passing it to \code{predict.tidyflow}.}
 
 \item{type}{A single character value or \code{NULL}. Possible values
 are "numeric", "class", "prob", "conf_int", "pred_int", "quantile",
@@ -48,31 +50,34 @@ Default value is \code{FALSE}.
 \item \code{time}: the time(s) for hazard probability estimates
 (not implemented yet)
 }}
+
+\item{object}{An object of class \code{model_fit}}
 }
 \value{
 A data frame of model predictions, with as many rows as \code{new_data} has.
 }
 \description{
-This is the \code{predict()} method for a fit tidyflow object. In addition,
-when a split is specifid, \code{predict_training} and \code{predict_testing}
-automatically predict and apply any preprocessing to the training
-and testing data.
+\code{predict()} method for a fitted tidyflow object. This method
+can be applied to new data and if a recipe is defined in the
+\code{tidyflow}, the steps are applied to the new data.
+Alternatively, when a split is specified, \code{predict_training} and
+\code{predict_testing} automatically predict and apply any preprocessing to
+the training and testing data.
 }
 \examples{
 library(parsnip)
 library(recipes)
 library(rsample)
+library(tune)
 
-model <- linear_reg()
-model <- set_engine(model, "lm")
+model <- set_engine(linear_reg(), "lm")
 
-tflow <- tidyflow(mtcars)
-tflow <- plug_split(tflow, initial_split)
-tflow <- plug_model(tflow, model)
-
-rcp <- ~ step_log(recipe(mpg ~ cyl + disp, .), disp)
-
-tflow <- plug_recipe(tflow, rcp)
+tflow <-
+ mtcars \%>\%
+ tidyflow() \%>\%
+ plug_split(initial_split) \%>\%
+ plug_model(model) \%>\%
+ plug_recipe(~ recipe(mpg ~ cyl + disp, .) \%>\% step_log(disp))
 
 tflow <- fit(tflow)
 
@@ -80,9 +85,30 @@ tflow <- fit(tflow)
 # applying the log step to `disp`, and then fit the regression.
 predict(tflow, new_data = pull_tflow_testing(tflow))
 
-# More automatic
+# When a split has been specified through `plug_split`,
+# predict_training/predict_testing automatically extract
+# everything and applies the recip/formula:
 predict_testing(tflow)
-
 predict_training(tflow)
+
+# When a grid search has been performed, the user needs to
+# finalize the model through complete_tflow and then
+# predict/predict_training/predict_testing will work.
+res <-
+ tflow \%>\%
+ # Adds a grid search for the polynomials of qsec
+ replace_recipe(~ recipe(mpg ~ ., data = .) \%>\% step_ns(hp, deg_free = tune())) \%>\%
+ plug_resample(vfold_cv, v = 2) \%>\% 
+ plug_grid(grid_regular) \%>\%
+ fit()
+
+# We can complete the tidyflow by fitting the best model
+# based on the RMSE metric and then predict:
+res \%>\%
+ complete_tflow(metric = "rmse") \%>\%
+ predict_training()
+
+# In short, to be able to predict, you need to have either a single model
+# or a finalized tuning grid with `complete_tflow`.
 
 }
