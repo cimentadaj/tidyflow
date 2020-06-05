@@ -2,7 +2,7 @@
 #'
 #' @description
 #' - `plug_resample()` specifies the type of resample used in the analysis. It
-#'   accepts a function \code{.f} that will be applied to the data. Only
+#'   accepts a function \code{.f} that will be applied to the raw data. Only
 #'   functions which return an \code{rset} object will be allowed. See
 #'   package \code{\link[rsample]{rsample}} and the details section.
 #'
@@ -15,8 +15,7 @@
 #'
 #' @details
 #' The resample specification is an optional step in the tidyflow. You can add a
-#' dataframe, prepare a recipe and fit the model without splitting into
-#' training/testing.
+#' dataframe, prepare a recipe and fit the model without adding a resample.
 #'
 #' When applied to the data, the function \code{.f} must return an object
 #' of class \code{rset}. These are functions which come from the
@@ -34,17 +33,17 @@
 #' as names, the user can specify both. See the example sections.
 #'
 #' @return
-#' `x`, updated with either a new or removed resample specification.
+#' The tidyflow `x`, updated with either a new or removed resample specification.
 #'
 #' @export
 #' @examples
+#' library(tibble)
 #' library(rsample)
 #'
-#' wf <- tidyflow()
-#' wf <- plug_data(wf, mtcars)
-#' 
-#' # Strata as string
-#' wf <- plug_resample(wf, vfold_cv, v = 5, strata = "cyl")
+#' wf <-
+#'  mtcars %>%
+#'  tidyflow() %>%
+#'  plug_resample(vfold_cv, v = 5, strata = "cyl")
 #'
 #' wf
 #' 
