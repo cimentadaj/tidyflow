@@ -3,9 +3,10 @@
 #' @description
 #' - `plug_grid()` specifies the type of grid used in the model tuning. It
 #'   accepts a function \code{.f} that will be fed the tuning parameters defined
-#'   in the model and the recipe. Only functions which return a \code{param_grid}
-#'   object will be allowed or \code{expand.grid}. See package
-#'   \code{\link[dials]{dials}} and the details/example section. If a model has
+#'   in the model and the recipe. Only grid functions which return a
+#'   \code{param_grid} object will be allowed or \code{expand.grid}. See the
+#'   details section for how \code{expand.grid} can be used and the package
+#'   \code{\link[dials]{dials}} for the grid functions. If a model has
 #'   been fit before adding the grid, it will need to be refit.
 #'
 #' - `drop_grid()` removes the grid specification from the tidyflow. Note
@@ -18,33 +19,49 @@
 #' @details
 #' The grid specification is an optional step in the tidyflow. You can add
 #' the data, prepare a recipe and fit the model without adding a grid
-#' specification.
+#' specification. However, for doing a grid search, the user will need to
+#' specify a resample and grid specification with \code{\link{plug_resample}}
+#' and \code{\link{plug_grid}} respectively.
 #'
-#' The tuning parameters defined in the model and recipe are extracted
-#' and passed to \code{.f}. If \code{expand.grid} is specified in \code{.f},
-#' the result of \code{.f} should be an object of class
-#' \code{data.frame}. Moreover, all tuning parameters defined in the model and
-#' recipe need to be specified in \code{...}. For example, instead of
-#' specifying \code{mixture = mixture()} from \code{\link[dials]{mixture}},
-#' you should specify the raw values used to expand: mixture = c(0, 0.5, 1).
-#' This applies to all tuning parameters defined in the model and recipe.
-#' However, if the \code{grid_*} functions from \code{\link[dials]{dials}}
-#' are specified, the user only needs to specify the function in \code{.f} and
-#' all tuning parameters are extracted automatically. In case where the user
-#' wants to override some of these arguments, it can do so by specifying the
-#' parameters in \code{...}. For example, limiting the range of mixture can be
-#' specified as: \code{mixture = mixture(range = c(0, 0.5))}. The benefit of this
-#' is that users need to specify only the arguments they are interested as all
-#' other tuning parameters are automatically extracted and assigned sensible
-#' values in \code{\link[dials]{dials}}. For more details see  the example
-#' section.
 #'
-#' If a tuning parameter in the model/recipe is assigned a name (that is,
+#' \code{plug_grid} accepts two types of functions.
+#'
+#' \itemize{
+#'  \item \code{expand.grid}: Using \code{expand.grid} allows to create a grid
+#'        of all possible combinations. For example, to create a grid of all
+#'        possible values in \code{penalty} and \code{mixture}, we can write
+#'        \code{plug_grid(expand.grid, penalty = seq(0.01, 0.05, 0.01),
+#'        mixture = seq(0, 1, 0.1))}. Defining the grid this way, requires
+#'        the user to define all tuning parameters explicitily in this step.
+#'        For example, instead of specifying \code{mixture = mixture()} from
+#'        \code{\link[dials]{mixture}}, the user should specify the raw values
+#'        used to expand: \code{mixture = c(0, 0.5, 1)}. This applies to all tuning
+#'        parameters defined in the model and recipe.
+#'
+#'  \item \code{grid_*}: If the \code{grid_*} functions from
+#'        \code{\link[dials]{dials}} are specified, the user only needs to
+#'        specify the function in \code{.f} and all tuning parameters are
+#'        extracted automatically. If the user wants to override the default
+#'        values for the parameters, it can do so by specifying the parameters
+#'        in \code{...}. For example, limiting the range of the mixture can be
+#'        specified as: \code{plug_grid(grid_regular,
+#'        mixture = mixture(range = c(0, 0.5)))}. The benefit of this approach
+#'        is that the user can hand-pick some parameters to change manually
+#'        while the remaining are assigned sensible values based on
+#'        \code{\link[dials]{dials}}. Parameters such as
+#'        \code{\link[dials]{mtry}} which need to be estimated from the data are
+#'        assigned default values through \code{\link[dials]{finalize}}, such
+#'        that the user doesn't have to set them manually. For more details
+#'        see the example section.
+#'
+#' }
+#' 
+#' Regardless of the type of function used in \code{plug_grid}, if a tuning
+#' parameter in the model/recipe is assigned a name (for example,
 #' \code{tune("new_name")}) and the user is interested in specifying
 #' the tuning values for that parameter using \code{plug_grid} or
 #' \code{replace_grid}, then the parameter name in \code{...} should have
-#' the custom name. See the example section for a concrete
-#' example.
+#' the custom name. See the example section for a concrete example.
 #'
 #' @param x A tidyflow
 #'
@@ -52,15 +69,15 @@
 #' and recipe. There are two type of functions that can be used here. For
 #' generating random grids, \code{.f} must return an object of class
 #' \code{param_grid}. In particular, the user doesn't need to specified the
-#' parameters in \code{...} since they can be extracted and passed directly to
+#' parameters in \code{...} since they are extracted and passed directly to
 #' the grid function. See package \code{\link[dials]{dials}} for all related
-#' functions. The other type of function that can be used is \code{expand.grid}.
-#' In particular, if `.f` is \code{`expand.grid`} all tuning arguments should be
-#' specified in `...`. This does not support parameter objects like
-#' \code{\link[dials]{mixture}} but rather the raw values to be expanded
-#' by \code{expand.grid}. For example, instead of \code{mixture = dials::mixture()}
-#' it should be \code{mixture = c(0, 0.5, 1)}. See the details section and
-#' example section for a more thorough description.
+#' \code{grid_*} functions. The other type of function that can be used is
+#' \code{expand.grid}. In particular, if `.f` is \code{expand.grid} all tuning
+#' arguments should be specified in `...`. This does not support parameter
+#' objects like \code{\link[dials]{mixture}} but rather the raw values to be
+#' expanded by \code{expand.grid}. For example, instead of
+#' \code{mixture = dials::mixture()} it should be \code{mixture = c(0, 0.5, 1)}.
+#' See the details section and example section for a more thorough description.
 #'
 #' @param ... arguments passed to \code{.f}. The processing of \code{...}
 #' respects the quotation rules from \code{.f}. In other words, if the function
@@ -68,7 +85,7 @@
 #' See the example section.
 #'
 #' @return
-#' `x`, updated with either a new or removed grid specification.
+#' The tidyflow `x`, updated with either a new or removed grid specification.
 #'
 #' @export
 #' @examples
@@ -80,23 +97,41 @@
 #' library(dials)
 #' library(recipes)
 #' 
-#' # Grid search with tuning parameters in model
+#' # Grid search:
 #' # No need to define the values of the tuning parameters
-#' # as they have defaults. For example, see dials::penalty()
+#' # as they have defaults. For example, see the output of dials::penalty()
+#'
+#' # `plug_grid` defines the grid. You can pass all of the arguments of
+#' # `grid_regular`:
 #' mod <-
 #'   mtcars %>%
 #'   tidyflow() %>%
 #'   plug_split(initial_split) %>%
 #'   plug_formula(mpg ~ .) %>% 
 #'   plug_resample(vfold_cv) %>%
-#'   plug_model(set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet")) %>% 
-#'   plug_grid(grid_regular)
+#'   plug_model(set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet")) %>%
+#'   plug_grid(grid_regular, levels = 5)
 #' 
 #' res <- fit(mod)
-#' 
+#'
+#' # See the grid that was generated after the fit:
 #' res %>%
-#'   pull_tflow_fit_tuning() %>%
-#'   show_best("rsq")
+#'   pull_tflow_grid()
+#'
+#' # The argument `levels = 5` tells it to generate 5 x 5 combination
+#' # of all possible vaues. That's why you have 25 rows.
+#'
+#' # You can extract the result from `plug_grid` with `pull_tflow_fit_tuning`:
+#' pull_tflow_fit_tuning(res)
+#'
+#' # Visualize it:
+#' pull_tflow_fit_tuning(res) %>%
+#'  autoplot()
+#'
+#' # And explore it:
+#'
+#' pull_tflow_fit_tuning(res) %>%
+#'  collect_metrics()
 #' 
 #' # If you want to specify tuning values, you can do so with
 #' # `plug_grid` or `replace_grid` but they must have the same
@@ -129,14 +164,20 @@
 #'   pull_tflow_fit_tuning() %>%
 #'   show_best("rsq")
 #'
-#' # If you want to create all possible combination of grid values,
-#' # you must use only `expand.grid` and `expand = TRUE`.
+#' # If you want to create a grid of all possible combination of the tuning
+#' # parameters, you must use only `expand.grid` and name every single
+#' # model parameter:
 #' res4 <-
 #'  mod %>%
 #'  replace_grid(expand.grid,
 #'               penalty = seq(0.01, 0.02, 0.005),
 #'               mixture = c(0, 0.5, 1)) %>%
 #'  fit()
+#'
+#' # The resulting grid is all of the possible combinations
+#' # from the values defined above:
+#' res4 %>%
+#'  pull_tflow_grid()
 #'
 #' # See how they values are not random, but rather
 #' # all combination of the supplied values
