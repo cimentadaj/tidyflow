@@ -66,6 +66,7 @@
 #' @name fit-tidyflow
 #' @export
 #' @examples
+#' \dontrun{
 #' library(parsnip)
 #' library(recipes)
 #' library(tune)
@@ -154,7 +155,7 @@
 #' bootstrap_res %>%
 #'  complete_tflow(metric = "rsq") %>%
 #'  predict_training()
-#' 
+#' }
 fit.tidyflow <- function(x, control = control_tidyflow(), ...) {
 
   if (!has_raw_data(x)) {

@@ -18,6 +18,7 @@
 #'
 #' @export
 #' @examples
+#' \dontrun{
 #' library(parsnip)
 #' library(rsample)
 #' library(tune)
@@ -69,7 +70,7 @@
 #'   replace_model(set_engine(linear_reg(penalty = 0, mixture = 1), "glmnet")) %>%
 #'   replace_formula(mpg ~ cyl) %>% 
 #'   fit(control = ct)
-#' 
+#' }
 control_tidyflow <- function(control_parsnip = NULL,
                              control_resamples = NULL,
                              control_grid = NULL) {

@@ -63,6 +63,7 @@ Alternatively, when a split is specified, \code{predict_training} and
 the training and testing data.
 }
 \examples{
+\dontrun{
 library(parsnip)
 library(recipes)
 library(rsample)
@@ -98,7 +99,7 @@ res <-
  # Adds a grid search for the polynomials of qsec
  replace_recipe(~ recipe(mpg ~ ., data = .) \%>\% step_ns(hp, deg_free = tune())) \%>\%
  plug_resample(vfold_cv, v = 2) \%>\% 
- plug_grid(grid_regular) \%>\%
+ plug_grid(grid_regular, levels = 1) \%>\%
  fit()
 
 # We can complete the tidyflow by fitting the best model
@@ -109,5 +110,5 @@ res \%>\%
 
 # In short, to be able to predict, you need to have either a single model
 # or a finalized tuning grid with `complete_tflow`.
-
+}
 }

@@ -30,6 +30,7 @@
 #'
 #' @export
 #' @examples
+#' \dontrun{
 #' library(parsnip)
 #' library(tune)
 #' library(dials)
@@ -79,7 +80,6 @@
 #' # Since there was no `plug_split`, the final model is fitted
 #' # entirely on the data (no training/testing). If you try to predict
 #' # on either one, it will not work:
-#' \dontrun{
 #' final_model %>%
 #'   predict_training()
 #' 

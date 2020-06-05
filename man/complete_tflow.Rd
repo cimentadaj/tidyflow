@@ -53,6 +53,7 @@ The finalized model is fitted on the training data if
 \code{plug_split} was specified otherwise on the complete data.
 }
 \examples{
+\dontrun{
 library(parsnip)
 library(tune)
 library(dials)
@@ -102,7 +103,6 @@ pull_tflow_fit(final_model)
 # Since there was no `plug_split`, the final model is fitted
 # entirely on the data (no training/testing). If you try to predict
 # on either one, it will not work:
-\dontrun{
 final_model \%>\%
   predict_training()
 

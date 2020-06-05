@@ -29,6 +29,7 @@ It allows you to specify control options for \code{parsnip}, \code{resamples}
 and \code{grid}.
 }
 \examples{
+\dontrun{
 library(parsnip)
 library(rsample)
 library(tune)
@@ -80,5 +81,5 @@ res <-
   replace_model(set_engine(linear_reg(penalty = 0, mixture = 1), "glmnet")) \%>\%
   replace_formula(mpg ~ cyl) \%>\% 
   fit(control = ct)
-
+}
 }

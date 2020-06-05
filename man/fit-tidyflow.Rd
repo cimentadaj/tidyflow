@@ -75,6 +75,7 @@ be the one described above skipping any steps that are not specified.
 }
 }
 \examples{
+\dontrun{
 library(parsnip)
 library(recipes)
 library(tune)
@@ -163,5 +164,5 @@ bootstrap_res <-
 bootstrap_res \%>\%
  complete_tflow(metric = "rsq") \%>\%
  predict_training()
-
+}
 }
