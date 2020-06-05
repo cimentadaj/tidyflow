@@ -46,7 +46,8 @@ dataframe, prepare a recipe and fit the model without adding a resample.
 
 When applied to the data, the function \code{.f} must return an object
 of class \code{rset}. These are functions which come from the
-\code{\link[rsample]{rsample}} package.
+\code{\link[rsample]{rsample}} package such as
+\code{\link[rsample]{vfold_cv}} and \code{\link[rsample]{bootstraps}}.
 }
 \examples{
 library(tibble)

@@ -19,7 +19,8 @@
 #'
 #' When applied to the data, the function \code{.f} must return an object
 #' of class \code{rset}. These are functions which come from the
-#' \code{\link[rsample]{rsample}} package.
+#' \code{\link[rsample]{rsample}} package such as
+#' \code{\link[rsample]{vfold_cv}} and \code{\link[rsample]{bootstraps}}.
 #'
 #' @param x A tidyflow
 #'
