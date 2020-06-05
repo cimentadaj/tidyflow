@@ -6,7 +6,6 @@ glmnet_model <- parsnip::set_engine(
   "glmnet"
 )
 
-
 test_that("can add a grid to a tidyflow", {
   tidyflow <- tidyflow()
   tidyflow <- plug_grid(tidyflow, dials::grid_regular)
@@ -626,7 +625,7 @@ test_that("Specifying parameters in `...` for plug_grid replaces default values"
 test_that("Specifying tuning params in model and recipe works well in both", {
   
   mod <- plug_split(tidyflow(mtcars), rsample::initial_split)
-  rec <- ~ recipes::step_ns(recipes::recipe(mpg ~ ., data = .), hp, deg_free = tune())
+  rec <- ~ recipes::step_ns(recipes::recipe(mpg ~ ., data = .), hp, deg_free = tune::tune())
   mod <- plug_recipe(mod, rec)
   mod <- plug_resample(mod, rsample::vfold_cv, v = 2)
   
@@ -796,4 +795,33 @@ test_that("When expand.grid, custom tune names must be used in arguments", {
     "At least one parameter does not match any id's in the set: 'deg_free'",
     fixed = TRUE
   )
+})
+
+test_that("When extracting fit from a tune resample, error hints", {
+  mod <- plug_split(tidyflow(mtcars), rsample::initial_split)
+  rec <- ~ recipes::step_ns(recipes::recipe(mpg ~ ., data = .), hp, deg_free = tune::tune())
+  mod <- plug_recipe(mod, rec)
+  mod <- plug_resample(mod, rsample::vfold_cv, v = 2)
+  
+  mod <- plug_grid(plug_model(mod, glmnet_model),
+                   dials::grid_regular,
+                   levels = 1
+                   )
+  res <- fit(mod)
+
+  expect_error(
+    pull_tflow_fit(res),
+    "The tidyflow does not have a model fit but a tuning resample. Did you want to finalize the model with `complete_tflow`?",
+    fixed = TRUE
+  )
+
+  tflow <- plug_formula(drop_recipe(drop_resample(drop_grid(res))), mpg ~ cyl)
+  res <- fit(replace_model(tflow, lm_model))
+
+  expect_error(
+    pull_tflow_fit_tuning(res),
+    "The tidyflow does not have a tuning resample but a model fit. Did you want `pull_tflow_fit`?",
+    fixed = TRUE
+  )
+  
 })

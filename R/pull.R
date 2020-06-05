@@ -275,6 +275,10 @@ pull_tflow_fit <- function(x) {
     return(x$fit$fit$fit)
   }
 
+  if (has_fit_tuning(x)) {
+    abort("The tidyflow does not have a model fit but a tuning resample. Did you want to finalize the model with `complete_tflow`?") #nolintr
+  }
+
   abort("The tidyflow does not have a model fit. Have you called `fit()` yet?")
 }
 
@@ -285,6 +289,10 @@ pull_tflow_fit_tuning <- function(x) {
 
   if (has_fit_tuning(x)) {
     return(x$fit$fit$tuning)
+  }
+
+  if (has_fit(x)) {
+    abort("The tidyflow does not have a tuning resample but a model fit. Did you want `pull_tflow_fit`?") #nolintr
   }
 
   abort("The tidyflow does not have a tuning fit. Have you called `fit()` yet?")
