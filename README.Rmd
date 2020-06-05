@@ -32,14 +32,16 @@ A tidyflow is a fork of [workflows](https://workflows.tidymodels.org/) that can 
 
 You can install the development version from [GitHub](https://github.com/) with:
 
-``` r
+```{r, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("cimentadaj/tidyflow")
 ```
  
 ## Example
 
-```{r }
+Simple example:
+
+```{r, message = FALSE}
 library(tidymodels)
 library(tidyflow)
 
@@ -58,6 +60,8 @@ fit_m <- fit(tflow)
 fit_m %>%
   predict_training()
 ```
+
+Complex example:
 
 ```{r }
 # Build tidyflow
