@@ -48,16 +48,16 @@ training/testing.
 
 When applied to the data, the function \code{.f} must return an object
 of class \code{rsplit}. These are functions which come from the
-\code{\link[rsample]{rsample}} package.
+\code{\link[rsample]{rsample}} package such as
+\code{\link[rsample]{initial_split}}.
 }
 \examples{
+library(tibble)
 library(rsample)
 
-wf <- tidyflow()
-wf <- plug_data(wf, mtcars)
-
-# Strata as string
-wf <- plug_split(wf, initial_split, prop = 0.8, strata = "cyl")
+mtcars \%>\%
+ tidyflow() \%>\%
+ plug_split(initial_split, prop = 0.8, strata = "cyl")
 
 wf
 

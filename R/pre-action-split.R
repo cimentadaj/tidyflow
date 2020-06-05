@@ -21,7 +21,8 @@
 #'
 #' When applied to the data, the function \code{.f} must return an object
 #' of class \code{rsplit}. These are functions which come from the
-#' \code{\link[rsample]{rsample}} package.
+#' \code{\link[rsample]{rsample}} package such as
+#' \code{\link[rsample]{initial_split}}.
 #'
 #' @param x A tidyflow
 #'
@@ -39,14 +40,13 @@
 #'
 #' @export
 #' @examples
+#' library(tibble)
 #' library(rsample)
 #'
-#' wf <- tidyflow()
-#' wf <- plug_data(wf, mtcars)
+#' mtcars %>%
+#'  tidyflow() %>%
+#'  plug_split(initial_split, prop = 0.8, strata = "cyl")
 #' 
-#' # Strata as string
-#' wf <- plug_split(wf, initial_split, prop = 0.8, strata = "cyl")
-#'
 #' wf
 #' 
 #' # Strata as unquoted name
@@ -61,7 +61,7 @@
 #'
 plug_split <- function(x, .f, ...) {
 
-  # TODO
+  ## TODO
   ## if (has_preprocessor_resample(x)) {
   ##   abort("A tidyflow must never have a resample before splitting the data")
   ## }
