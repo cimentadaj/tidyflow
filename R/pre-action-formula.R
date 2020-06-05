@@ -29,17 +29,21 @@
 #'   If `NULL`, [hardhat::default_formula_blueprint()] is used.
 #'
 #' @return
-#' `x`, updated with either a new or removed formula preprocessor.
+#' The tidyflow `x`, updated with either a new or removed formula preprocessor.
 #'
 #' @export
 #' @examples
-#' tidyflow <- tidyflow()
-#' tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
-#' tidyflow
 #'
-#' drop_formula(tidyflow)
+#' tflow <-
+#'   mtcars %>%
+#'   tidyflow(seed = 652341) %>% 
+#'   plug_formula(mpg ~ .)
 #'
-#' replace_formula(tidyflow, mpg ~ disp)
+#' tflow
+#'
+#' drop_formula(tflow)
+#'
+#' replace_formula(tflow, mpg ~ disp)
 plug_formula <- function(x, formula, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
   action <- new_action_formula(formula, blueprint)

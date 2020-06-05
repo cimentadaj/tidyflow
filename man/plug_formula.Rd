@@ -25,7 +25,7 @@ required.}
 If \code{NULL}, \code{\link[hardhat:default_formula_blueprint]{hardhat::default_formula_blueprint()}} is used.}
 }
 \value{
-\code{x}, updated with either a new or removed formula preprocessor.
+The tidyflow \code{x}, updated with either a new or removed formula preprocessor.
 }
 \description{
 \itemize{
@@ -45,11 +45,15 @@ To fit a tidyflow, one of \code{plug_formula()} or \code{plug_recipe()} \emph{mu
 specified, but not both.
 }
 \examples{
-tidyflow <- tidyflow()
-tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
-tidyflow
 
-drop_formula(tidyflow)
+tflow <-
+  mtcars \%>\%
+  tidyflow(seed = 652341) \%>\% 
+  plug_formula(mpg ~ .)
 
-replace_formula(tidyflow, mpg ~ disp)
+tflow
+
+drop_formula(tflow)
+
+replace_formula(tflow, mpg ~ disp)
 }
