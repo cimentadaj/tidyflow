@@ -72,11 +72,14 @@ test_that("drop_resample removes the action and the result", {
   tidyflow <- plug_resample(tidyflow, rsample::vfold_cv, v = 2)
   tidyflow <- plug_model(tidyflow, lm_model)
   mod1 <- fit(tidyflow)
-  tidyflow <- drop_resample(tidyflow)
+  tidyflow2 <- drop_resample(tidyflow)
 
   # Both are null on dropped tidyflow
-  expect_error(pull_tflow_resample(tidyflow))
-  expect_null(tidyflow$pre$actions$resample)
+  expect_error(pull_tflow_resample(tidyflow2))
+  expect_null(tidyflow2$pre$actions$resample)
+  # The fitted model with becomes the initial model after dropping the resample
+  # is the same as the initial model
+  expect_equal(tidyflow2, drop_resample(tidyflow))
 
   # Both are available on fitted tidyflow
   expect_is(pull_tflow_resample(mod1), "rset")
@@ -134,26 +137,6 @@ test_that("Can add resample after model fit and refit", {
   expect_false(mod2_resample$trained)
 })
 
-# TODO
-# After you define a fit method for resample, adapt this
-# example to remove the fit object after resample
-## test_that("remove a recipe after model fit", {
-##   lm_model <- parsnip::linear_reg()
-##   lm_model <- parsnip::set_engine(lm_model, "lm")
-
-##   rec <- recipes::recipe(mpg ~ cyl, mtcars)
-
-##   tidyflow_no_recipe <- tidyflow()
-##   tidyflow_no_recipe <- plug_model(tidyflow_no_recipe, lm_model)
-
-##   tidyflow_with_recipe  <- plug_recipe(tidyflow_no_recipe, rec)
-##   tidyflow_with_recipe <- fit(tidyflow_with_recipe, data = mtcars)
-
-##   tidyflow_removed_recipe <- drop_recipe(tidyflow_with_recipe)
-
-##   expect_equal(tidyflow_no_recipe$pre, tidyflow_removed_recipe$pre)
-## })
-
 test_that("update a resample specification", {
   tidyflow <- tidyflow()
   tidyflow <- plug_resample(tidyflow, rsample::bootstraps)
@@ -162,31 +145,6 @@ test_that("update a resample specification", {
   expect_equal(tidyflow$pre$actions$resample$`rsample::vfold_cv`,
                rsample::vfold_cv)
 })
-
-# TODO
-# After you define a fit method for resample, adapt this
-# example to remove the fit object after resample
-## test_that("update a recipe after model fit", {
-##   rec <- recipes::recipe(mpg ~ cyl, mtcars)
-##   rec2 <- recipes::recipe(mpg ~ disp, mtcars)
-
-##   lm_model <- parsnip::linear_reg()
-##   lm_model <- parsnip::set_engine(lm_model, "lm")
-
-##   tidyflow <- tidyflow()
-##   tidyflow <- plug_model(tidyflow, lm_model)
-##   tidyflow <- plug_recipe(tidyflow, rec)
-
-##   tidyflow <- fit(tidyflow, data = mtcars)
-
-##   # Should clear fitted model
-##   tidyflow <- replace_recipe(tidyflow, rec2)
-
-##   expect_equal(tidyflow$pre$actions$recipe$recipe, rec2)
-
-##   expect_equal(pull_tflow_spec(tidyflow), lm_model)
-##   expect_null(pull_tflow_mold(tidyflow))
-## })
 
 test_that("cannot add two resample specifications", {
   tidyflow <- tidyflow()

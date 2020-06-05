@@ -214,14 +214,15 @@ test_that("blueprint will get passed on to hardhat::forge()", {
   expect_false(identical(prediction_with_intercept, prediction_no_intercept))
 })
 
+rcp <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, data = .), cyl, base = 10) #nolintr
+tflow <- tidyflow(mtcars)
+tflow <- plug_split(tflow, rsample::initial_split)
+tflow <- plug_recipe(tflow, rcp)
+tflow <- plug_resample(tflow, rsample::vfold_cv, v = 2)
+tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
+fit_tflow <- fit(tflow)
+
 test_that("predict raises error when model not fit/tuned", {
-  rcp <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, data = .), cyl, base = 10) #nolintr
-  tflow <- tidyflow(mtcars)
-  tflow <- plug_split(tflow, rsample::initial_split)
-  tflow <- plug_recipe(tflow, rcp)
-  tflow <- plug_resample(tflow, rsample::vfold_cv)
-  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
-  fit_tflow <- fit(tflow)
 
   expect_error(
     predict(fit_tflow, new_data = mtcars),
@@ -233,24 +234,38 @@ test_that("predict raises error when model not fit/tuned", {
     "Tidyflow has not yet been trained. Did you call fit()?"
   )
 
-  ## TODO:
-  ## When you implement complete_tflow() add a test that when tuning + complete_tflow result is expected
-  ## Also, if you rename complete_tflow you need to replace that in the error message from predict.tidyflow
-
   expect_error(
     predict(fit(drop_resample(fit_tflow))),
     'argument "new_data" is missing, with no default'
   )
 
   res <- predict(fit(drop_resample(fit_tflow)),
-                 new_data = pull_tflow_testing(fit_tflow, TRUE))
+                 new_data = pull_tflow_testing(fit_tflow))
 
   expect_equal(nrow(res), 8)
 
   res <- predict(fit(drop_resample(fit_tflow)),
-                 new_data = pull_tflow_training(fit_tflow, TRUE))
+                 new_data = pull_tflow_training(fit_tflow))
 
   expect_equal(nrow(res), 24)
+})
+
+test_that("Tuning + complete_tflow works just as well with predict", {
+  rcp <- ~ recipes::step_ns(recipes::recipe(mpg ~ ., data = .), hp, deg_free = tune::tune())
+  tflow <- replace_recipe(fit_tflow, rcp) #nolintr
+  fit_tune <- fit(plug_grid(tflow, dials::grid_regular, levels = 2))
+  finalized_mod <- complete_tflow(fit_tune, metric = "rmse")
+
+  res <- predict(finalized_mod, new_data = pull_tflow_testing(finalized_mod))
+
+  expect_equal(nrow(res), 8)
+  expect_identical(predict_testing(finalized_mod)[".pred"], res)
+
+  res <- predict(finalized_mod,
+                 new_data = pull_tflow_training(finalized_mod))
+
+  expect_equal(nrow(res), 24)
+  expect_identical(predict_training(finalized_mod)[".pred"], res)
 })
 
 test_that("predict_training/testing works as expected", {

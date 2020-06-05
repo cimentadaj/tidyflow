@@ -452,37 +452,6 @@ test_that("Tuning is applied with all pre steps", {
   )
 })
 
-# TODO
-# Add test checking that if tune() if specified, the recipe mold should never
-# be the last mold to extract. This can happen if it is allowed to run fit
-# with a grid and recipe (w/ tun()) but without a resample. Test that it
-# cannot be done and add explanation in text why this is important
-## test_that("Cannot run grid tuning without resamples", {
-##   tflow <- tidyflow(mtcars, seed = 2315)
-##   rcp <-
-##     ~ recipes::step_ns(
-##       recipes::recipe(mpg ~ disp + am, .x),
-##       disp,
-##       deg_free = tune()
-##     )
-##   tflow <- plug_split(tflow, rsample::initial_split)
-##   tflow <- plug_recipe(tflow, rcp)
-##   tflow <- plug_resample(tflow, rsample::vfold_cv)
-##   tflow <- plug_grid(tflow, dials::grid_regular)
-##   model <- parsnip::set_engine(
-##     parsnip::linear_reg(penalty = tune::tune(), mixture = tune::tune()),
-##     "glmnet"
-##   )
-##   tflow <- plug_model(tflow, model)
-##   mod1_grid <- fit(tflow)
-
-##   expect_error(
-##     fit(tflow),
-##     regexp = "The tidyflow does not have a resamples specification. Did you want `plug_resample()`?", #nolintr
-##     fixed = TRUE
-##   )
-## })
-
 test_that("Repeating param names throws error", {
   mod <- plug_split(tidyflow(mtcars), rsample::initial_split)
   mod <- plug_resample(plug_formula(mod, mpg ~ .), rsample::vfold_cv, v = 2)
@@ -576,9 +545,8 @@ test_that("Specifying parameters in `...` for plug_grid replaces default values"
                    )
   res <- fit(mod)
 
-  ## TODO: When pull_grid exists, put it here
-  expect_true(between(res$pre$results$grid$penalty, -1, 0))
-  expect_true(between(res$pre$results$grid$mixture, 0, 0.5))
+  expect_true(between(pull_tflow_grid(res)$penalty, -1, 0))
+  expect_true(between(pull_tflow_grid(res)$mixture, 0, 0.5))
 
   # Also works when both tuning params have different names
   model <-

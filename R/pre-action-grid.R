@@ -258,7 +258,7 @@ fit.action_grid <- function(object, x) {
   if (!has_tune(x)) {
     abort("The tidyflow has a grid specification but no tuning placeholders. Did you mean to specify `tune()` in your model or recipe?") #nolintr
   }
-
+  
   # Including recipe + model
   all_params <- tune::parameters(x)
   dt <- pull_tflow_mold(x)$predictors
@@ -375,5 +375,3 @@ new_action_grid <- function(.f, .dots, name_f) {
 # test that when no recipe is present params returns empty params
 # test that when model is present but not recipe, model params are returned
 # test that when recipe is present but not model, recipe params are returned
-# add support for expand_grid, such that you can combine vectors and param objects
-# for example tidyr::expand_grid(deg_free = 1:10, grid_regular(penalty()))

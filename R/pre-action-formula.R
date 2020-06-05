@@ -88,7 +88,9 @@ fit.action_formula <- function(object, x) {
   formula <- object$formula
   blueprint <- object$blueprint
   
-  # TODO - Strip out the formula environment at some time?
+  # Strip out the formula environment because it can be heavy
+  # in some scenarios
+  environment(formula) <- NULL
   x$pre$mold <- hardhat::mold(formula = formula,
                               data = x$pre$mold,
                               blueprint = blueprint)

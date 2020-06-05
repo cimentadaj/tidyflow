@@ -24,6 +24,8 @@ test_that("default resamples control is created", {
 # When https://github.com/tidymodels/tune/issues/183 is fixed
 # uncomment this test. Right now you're forcing all input
 # to be coerced to the class.
+# The issue is now fixed: waiting for tune to be released to CRAN to
+# run this
 ## test_that("resamples control is validated", {
 ##   expect_error(
 ##     control_tidyflow(control_resamples = 1),

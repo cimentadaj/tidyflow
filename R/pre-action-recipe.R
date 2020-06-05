@@ -100,16 +100,6 @@
 plug_recipe <- function(x, .f, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
   validate_recipes_available()
-
-  ## TODO
-  ## For when `...` is supported
-  ## if (!is_uniquely_named(.dots)) {
-  ##   fun_name <- as.character(match.call())[1]
-  ##   abort(
-  ##     paste0("Arguments in `...` for `", fun_name, "` should be uniquely named")
-  ##   )
-  ## }
-
   action <- new_action_recipe(.f, blueprint)
   plug_action(x, action, "recipe")
 }

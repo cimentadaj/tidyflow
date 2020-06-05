@@ -239,14 +239,3 @@ test_that("plug_split should return an object of class `rsplit`", {
     regexp = "The split function should return an object of class `rsplit`"
   )
 })
-
-# TODO
-# When you figure if you'll limit the order of operations
-# so that a split must by always set before an rsample
-# fix this test
-## test_that("Error when a resample is defined before a split", {
-##   # For plug_split
-##   tidyflow <- plug_resample(tidyflow(), rsample::vfold_cv)
-##   expect_error(tidyflow %>% plug_split(rsample::initial_split),
-##                regexp = "A tidyflow must never have a resample before splitting the data") # nolintr
-## })

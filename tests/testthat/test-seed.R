@@ -1,71 +1,55 @@
-## TODO eliminate all pipes from here
-rcp <-
-  ~ .x %>%
-    recipes::recipe(mpg ~ cyl) %>%
-    recipes::step_log(cyl, base = 10)
+rcp <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, data = .x),
+                           cyl,
+                           base = 10)
 
 test_that("Not specifying the seed returns different results using split", {
 
-    mod <-
-      mtcars %>%
-      tidyflow() %>%
-      plug_split(rsample::initial_split) %>%
-      plug_recipe(rcp) %>%
-      plug_model(parsnip::set_engine(parsnip::linear_reg(), "lm"))
+  tflow <- plug_recipe(plug_split(tidyflow(mtcars), rsample::initial_split), rcp)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
 
-      first_mod <- mod %>% fit()
-      second_mod <- mod %>% fit()
+  first_mod <- fit(tflow)
+  second_mod <- fit(tflow)
 
-      expect_false(identical(first_mod, second_mod))
+  expect_false(identical(first_mod, second_mod))
 })
 
 test_that("Specifying the seed returns the same results using split", {
 
-    mod <-
-      mtcars %>%
-      tidyflow(seed = 25131) %>%
-      plug_split(rsample::initial_split) %>%
-      plug_recipe(rcp) %>%
-      plug_model(parsnip::set_engine(parsnip::linear_reg(), "lm"))
+  tflow <- plug_split(tidyflow(mtcars, seed = 25131), rsample::initial_split)
+  tflow <- plug_recipe(tflow, rcp)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
+  
 
-      first_mod <- mod %>% fit()
-      second_mod <- mod %>% fit()
+  first_mod <- fit(tflow)
+  second_mod <- fit(tflow)
 
-      # Setting the time elapsed to NULL, since there can be very minor
-      # differences in time fitting the model for comparison.
-      expect_equal(strip_elapsed(first_mod), strip_elapsed(second_mod))
+  # Setting the time elapsed to NULL, since there can be very minor
+  # differences in time fitting the model for comparison.
+  expect_equal(strip_elapsed(first_mod), strip_elapsed(second_mod))
 })
 
 test_that("Not specifying the seed returns different results using resample", {
+  tflow <- plug_recipe(plug_resample(tidyflow(mtcars), rsample::vfold_cv), rcp)
+  tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
 
-    mod <-
-      mtcars %>%
-      tidyflow() %>%
-      plug_resample(rsample::vfold_cv) %>%
-      plug_recipe(rcp) %>%
-      plug_model(parsnip::set_engine(parsnip::linear_reg(), "lm"))
+  first_mod <- fit(tflow)
+  second_mod <- fit(tflow)
 
-      first_mod <- mod %>% fit()
-      second_mod <- mod %>% fit()
-
-      expect_false(identical(first_mod, second_mod))
+  expect_false(identical(first_mod, second_mod))
 })
 
 test_that("Specifying the seed returns the same results using resample", {
 
-  mod <-
-    mtcars %>%
-    tidyflow(seed = 25131) %>%
-    plug_resample(rsample::vfold_cv) %>%
-    plug_recipe(rcp) %>%
-    plug_model(parsnip::set_engine(parsnip::linear_reg(), "lm"))
+    tflow <- plug_resample(tidyflow(mtcars, seed = 25131), rsample::vfold_cv)
+    tflow <- plug_recipe(tflow, rcp)
+    tflow <- plug_model(tflow, parsnip::set_engine(parsnip::linear_reg(), "lm"))
 
     ## all.equal doesn't work with list columns from rsplit
     ## `rsplit2df` simply accesses the rset_res and tuning_res
     ## and converts them to data frame so that expect_equal
     ## can pass.
-    first_mod <- mod %>% fit() %>% rsplit2df()
-    second_mod <- mod %>% fit() %>% rsplit2df()
+    first_mod <- rsplit2df(fit(tflow))
+    second_mod <- rsplit2df(fit(tflow))
 
     # You were using expect_equal but expect equal
     # uses some sort of all.equal for tibble
