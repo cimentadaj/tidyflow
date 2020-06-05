@@ -34,6 +34,9 @@
 #' @export
 #' @examples
 #'
+#' # Just for the pipe: %>%
+#' library(tibble)
+#'
 #' tflow <-
 #'   mtcars %>%
 #'   tidyflow(seed = 652341) %>% 
