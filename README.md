@@ -13,15 +13,20 @@ coverage](https://codecov.io/gh/cimentadaj/tidyflow/branch/master/graph/badge.sv
 
 ## What is a tidyflow?
 
-<!-- A tidyflow is an object that can bundle together your data, splitting, resampling, preprocessing, modeling, and post-processing requests. For example, if you have a `recipe` and `parsnip` model, these can be combined into a workflow. The advantages are: -->
+A tidyflow is a fork of [workflows](https://workflows.tidymodels.org/)
+that can bundle together your data, splitting, resampling,
+preprocessing, modeling, and grid search. Having all these steps
+separated into different objects can prove to be difficult. One can
+predict on the testing data by mistake, forget whether the recipe has
+been baked or not, or simply do not remember the name of all the tuning
+parameters to specify in the grid. `tidyflow` is a package aimed at
+bundling all of these steps into a a coherent flow. Among the advantages
+are:
 
-<!--  * You don't have to keep track of separate objects in your workspace. -->
+  - You don’t have to keep track of separate objects in your workspace.
 
-<!--  * The recipe prepping and model fitting can be executed using a single call to `fit()`. -->
-
-<!--  * If you have custom tuning parameter settings, these can be defined using a simpler interface when combined with [tune](https://github.com/tidymodels/tune). -->
-
-<!--  * In the future, workflows will be able to add post-processing operations, such as modifying the probability cutoff for two-class models. -->
+  - The split, resample, recipe prepping, model fitting and grid search
+    can be executed using a single call to `fit()`.
 
 ## Installation
 
@@ -35,55 +40,115 @@ devtools::install_github("cimentadaj/tidyflow")
 
 ## Example
 
+Simple example:
+
 ``` r
 library(tidymodels)
-#> ── Attaching packages ────────────────────────────────────── tidymodels 0.1.0 ──
-#> ✔ broom     0.5.4           ✔ recipes   0.1.12     
-#> ✔ dials     0.0.6           ✔ rsample   0.0.6      
-#> ✔ dplyr     0.8.99.9003     ✔ tibble    3.0.1.9000 
-#> ✔ ggplot2   3.3.0.9000      ✔ tune      0.1.0      
-#> ✔ infer     0.5.1           ✔ workflows 0.1.1      
-#> ✔ parsnip   0.1.0           ✔ yardstick 0.0.6      
-#> ✔ purrr     0.3.4
-#> ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
-#> ✖ purrr::discard()  masks scales::discard()
-#> ✖ dplyr::filter()   masks stats::filter()
-#> ✖ dplyr::lag()      masks stats::lag()
-#> ✖ ggplot2::margin() masks dials::margin()
-#> ✖ recipes::step()   masks stats::step()
 library(tidyflow)
-#> 
-#> Attaching package: 'tidyflow'
-#> The following objects are masked from 'package:workflows':
-#> 
-#>     .fit_model, .fit_pre
+```
 
+``` r
 # Build tidyflow
 tflow <-
   mtcars %>%
   tidyflow() %>%
   plug_split(initial_split) %>%
   plug_formula(mpg ~ .) %>%
-  plug_model(linear_reg())
+  plug_model(set_engine(linear_reg(), "lm"))
 
 # Fit model
 fit_m <- fit(tflow)
-#> Warning: Engine set to `lm`.
 
 # Predict on testing
 fit_m %>%
+  predict_training()
+#> [90m# A tibble: 24 x 12[39m
+#>      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred
+#>    [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m
+#> [90m 1[39m  21       6  160    110  3.9   2.62  16.5     0     1     4     4  21.5
+#> [90m 2[39m  21       6  160    110  3.9   2.88  17.0     0     1     4     4  21.9
+#> [90m 3[39m  22.8     4  108     93  3.85  2.32  18.6     1     1     4     1  25.1
+#> [90m 4[39m  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  21.9
+#> [90m 5[39m  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2  18.4
+#> [90m 6[39m  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1  21.8
+#> [90m 7[39m  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4  15.6
+#> [90m 8[39m  24.4     4  147.    62  3.69  3.19  20       1     0     4     2  25.6
+#> [90m 9[39m  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4  18.7
+#> [90m10[39m  16.4     8  276.   180  3.07  4.07  17.4     0     0     3     3  13.9
+#> [90m# … with 14 more rows[39m
+```
+
+Complex example:
+
+``` r
+# Build tidyflow
+tflow <-
+  mtcars %>%
+  tidyflow() %>%
+  plug_split(initial_split) %>%
+  plug_formula(mpg ~ .) %>%
+  plug_resample(vfold_cv) %>%
+  plug_grid(grid_regular) %>% 
+  plug_model(set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet"))
+
+# Fit model
+fit_m <- fit(tflow)
+
+# Extract tuning grid
+fit_m %>%
+  pull_tflow_fit_tuning()
+#> #  10-fold cross-validation 
+#> [90m# A tibble: 10 x 4[39m
+#>    splits         id     .metrics          .notes          
+#>    [3m[90m<list>[39m[23m         [3m[90m<chr>[39m[23m  [3m[90m<list>[39m[23m            [3m[90m<list>[39m[23m          
+#> [90m 1[39m [90m<split [21/3]>[39m Fold01 [90m<tibble [18 × 5]>[39m [90m<tibble [0 × 1]>[39m
+#> [90m 2[39m [90m<split [21/3]>[39m Fold02 [90m<tibble [18 × 5]>[39m [90m<tibble [0 × 1]>[39m
+#> [90m 3[39m [90m<split [21/3]>[39m Fold03 [90m<tibble [18 × 5]>[39m [90m<tibble [0 × 1]>[39m
+#> [90m 4[39m [90m<split [21/3]>[39m Fold04 [90m<tibble [18 × 5]>[39m [90m<tibble [0 × 1]>[39m
+#> [90m 5[39m [90m<split [22/2]>[39m Fold05 [90m<tibble [18 × 5]>[39m [90m<tibble [0 × 1]>[39m
+#> [90m 6[39m [90m<split [22/2]>[39m Fold06 [90m<tibble [18 × 5]>[39m [90m<tibble [0 × 1]>[39m
+#> [90m 7[39m [90m<split [22/2]>[39m Fold07 [90m<tibble [18 × 5]>[39m [90m<tibble [0 × 1]>[39m
+#> [90m 8[39m [90m<split [22/2]>[39m Fold08 [90m<tibble [18 × 5]>[39m [90m<tibble [0 × 1]>[39m
+#> [90m 9[39m [90m<split [22/2]>[39m Fold09 [90m<tibble [18 × 5]>[39m [90m<tibble [0 × 1]>[39m
+#> [90m10[39m [90m<split [22/2]>[39m Fold10 [90m<tibble [18 × 5]>[39m [90m<tibble [0 × 1]>[39m
+
+# Fit best model on the entire training data
+final_m <-
+  fit_m %>%
+  complete_tflow(metric = "rmse")
+
+# Predict on train
+final_m %>%
+  predict_training()
+#> [90m# A tibble: 24 x 12[39m
+#>      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred
+#>    [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m
+#> [90m 1[39m  21       6  160    110  3.9   2.88  17.0     0     1     4     4  22.1
+#> [90m 2[39m  22.8     4  108     93  3.85  2.32  18.6     1     1     4     1  26.5
+#> [90m 3[39m  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  20.7
+#> [90m 4[39m  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2  17.0
+#> [90m 5[39m  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1  20.1
+#> [90m 6[39m  24.4     4  147.    62  3.69  3.19  20       1     0     4     2  23.0
+#> [90m 7[39m  22.8     4  141.    95  3.92  3.15  22.9     1     0     4     2  23.1
+#> [90m 8[39m  17.8     6  168.   123  3.92  3.44  18.9     1     0     4     4  20.1
+#> [90m 9[39m  16.4     8  276.   180  3.07  4.07  17.4     0     0     3     3  15.6
+#> [90m10[39m  17.3     8  276.   180  3.07  3.73  17.6     0     0     3     3  16.1
+#> [90m# … with 14 more rows[39m
+
+# Predict on testing
+final_m %>%
   predict_testing()
-#> # A tibble: 8 x 12
+#> [90m# A tibble: 8 x 12[39m
 #>     mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred
-#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1  21.4     6 258     110  3.08  3.22  19.4     1     0     3     1  19.3
-#> 2  24.4     4 147.     62  3.69  3.19  20       1     0     4     2  20.3
-#> 3  32.4     4  78.7    66  4.08  2.2   19.5     1     1     4     1  25.1
-#> 4  33.9     4  71.1    65  4.22  1.84  19.9     1     1     4     1  26.9
-#> 5  15.5     8 318     150  2.76  3.52  16.9     0     0     3     2  16.2
-#> 6  13.3     8 350     245  3.73  3.84  15.4     0     0     3     4  15.6
-#> 7  26       4 120.     91  4.43  2.14  16.7     0     1     5     2  23.5
-#> 8  30.4     4  95.1   113  3.77  1.51  16.9     1     1     5     2  23.2
+#>   [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m
+#> [90m1[39m  21       6 160     110  3.9   2.62  16.5     0     1     4     4  22.5
+#> [90m2[39m  14.3     8 360     245  3.21  3.57  15.8     0     0     3     4  15.0
+#> [90m3[39m  19.2     6 168.    123  3.92  3.44  18.3     1     0     4     4  20.1
+#> [90m4[39m  10.4     8 460     215  3     5.42  17.8     0     0     3     4  12.0
+#> [90m5[39m  32.4     4  78.7    66  4.08  2.2   19.5     1     1     4     1  27.5
+#> [90m6[39m  13.3     8 350     245  3.73  3.84  15.4     0     0     3     4  15.2
+#> [90m7[39m  27.3     4  79      66  4.08  1.94  18.9     1     1     4     1  27.8
+#> [90m8[39m  21.4     4 121     109  4.11  2.78  18.6     1     1     4     2  25.4
 ```
 
 ## Code of Conduct
