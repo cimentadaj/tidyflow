@@ -13,41 +13,64 @@
 #'   recipe function. Any model that has already been fit based on this
 #'   recipe will need to be refit.
 #'
-#' @details
-#' To fit a tidyflow, one of `plug_formula()` or `plug_recipe()` _must_ be
-#' specified, but not both.
-#'
 #' @param x A tidyflow
 #' 
-#' @param .f A function or a formula
+#' @param .f A function or a formula with a recipe inside. See the details
+#' section.
 #'
-#' If a *function*, it is used as is.
-#'
-#' If a *formula*, e.g. ‘~ recipe(mpg ~ cyl, data = .x)’, it is converted to a
-#' function. The only the first argument in the recipe function is passed
-#' to the data. Other arguments will be ignored. If a *formula*, the argument
-#' name can be either `.` or `.x`. See the examples section for more details.
-#' 
 #' @param ... Not used.
 #'
 #' @param blueprint A hardhat blueprint used for fine tuning the preprocessing.
 #'   If `NULL`, [hardhat::default_recipe_blueprint()] is used.
 #'
+#' @details
+#'
+#' To fit a tidyflow, one of `plug_formula()` or `plug_recipe()` _must_ be
+#' specified, but not both.
+#'
+#' \code{.f} can be either a function or a formula. In either case, both
+#' things should have only one argument and return the recipe applied to
+#' the only argument, which is assumed to be the data.
+#' 
+#' \itemize{
+#'   \item If a function is supplied, it is assumed that there is one argument
+#'   and that argument is for the data. The output should be the recipe
+#'   applied to the main argument. The *function* is used as is.
+#'
+#'   \item If a *formula*, e.g. \code{~ recipe(mpg ~ cyl, data = .)}, it is
+#'   converted to a function. It is also assumed that the first argument in the
+#'   recipe function is passed to the data. Other arguments will be ignored.
+#'   If a *formula*, the argument name can be either `.` or `.x`. See the
+#'   examples section for more details.
+#' }
+#'
+#' Since the recipe step in a \code{tidyflow} is not the ideal step for
+#' exploration, we suggest that the user constructs the recipe outside
+#' the \code{tidyflow} and applies it to the data beforehand, just to make sure
+#' it works. After making sure the recipe can be fitted without errors, the user
+#' can provide the function or formula for the recipe. Defining a recipe without
+#' testing on the data can lead to errors on \code{recipe} that are best fixed
+#' in an interactive fashion.
+#'
 #' @return
-#' `x`, updated with either a new or removed recipe function.
+#' The tidyflow `x`, updated with either a new or removed recipe function.
 #'
 #' @export
 #' @examples
 #' library(recipes)
 #' library(parsnip)
 #'
+#' # Passing a function to `plug_recipe`
 #' recipe_fun <- function(.x) {
 #'   recipe(mpg ~ ., data = .x) %>%
 #'    step_center(all_predictors()) %>%
 #'    step_scale(all_predictors())
 #' }
 #'
-#' # Specify an already created recipe function
+#' # Let's make sure that it works with the data first
+#' recipe_fun(mtcars)
+#'
+#' # Specify the function to be applied to the data in `plug_recipe`
 #' tflow <-
 #'  mtcars %>%
 #'  tidyflow() %>%
@@ -55,10 +78,10 @@
 #'  plug_model(set_engine(linear_reg(), "lm"))
 #' 
 #' # Fit the model
-#' tflow %>%
-#'  fit()
+#' fit(tflow)
 #'
-#' # Remove the old recipe, specify one on the fly and fit again
+#' # Specify a formula of a recipe. Remove the old one and specify one on the
+#' # fly:
 #' tflow %>%
 #'  replace_recipe(~ recipe(mpg ~ cyl, data = .) %>% step_log(cyl, base = 10)) %>%
 #'  fit()
@@ -78,6 +101,7 @@ plug_recipe <- function(x, .f, ..., blueprint = NULL) {
   ellipsis::check_dots_empty()
   validate_recipes_available()
 
+  ## TODO
   ## For when `...` is supported
   ## if (!is_uniquely_named(.dots)) {
   ##   fun_name <- as.character(match.call())[1]
