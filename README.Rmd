@@ -30,7 +30,7 @@ A tidyflow is a fork of [workflows](https://workflows.tidymodels.org/) that can 
  
 ## Installation
 
-You can install the development version from [GitHub](https://github.com/) with:
+You can install the development version from [GitHub](https://github.com/) with: 
 
 ```{r, eval = FALSE}
 # install.packages("devtools")
