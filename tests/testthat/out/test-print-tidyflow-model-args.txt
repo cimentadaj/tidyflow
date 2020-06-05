@@ -1,10 +1,11 @@
 > plug_model(tidyflow(), model)
 == Tidyflow ====================================================================
 Data: None
-Preprocessor: None
-Model: linear_reg()
-
--- Model -----------------------------------------------------------------------
+Split: None
+Recipe/Formula: None
+Resample: None
+Grid: None
+Model:
 Linear Regression Model Specification (regression)
 
 Main Arguments:

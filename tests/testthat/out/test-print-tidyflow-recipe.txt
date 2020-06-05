@@ -1,8 +1,9 @@
 > plug_recipe(tidyflow(), rec)
 == Tidyflow ====================================================================
 Data: None
-Preprocessor: Recipe
+Split: None
+Recipe: available
+Resample: None
+Grid: None
 Model: None
-
--- Preprocessor ----------------------------------------------------------------
 

@@ -1,9 +1,9 @@
 > plug_formula(tidyflow(), y ~ x)
 == Tidyflow ====================================================================
 Data: None
-Preprocessor: Formula
-Model: None
-
--- Preprocessor ----------------------------------------------------------------
+Split: None
 Formula: y ~ x
+Resample: None
+Grid: None
+Model: None
 

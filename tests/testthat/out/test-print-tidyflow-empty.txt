@@ -1,6 +1,9 @@
 > tidyflow()
 == Tidyflow ====================================================================
 Data: None
-Preprocessor: None
+Split: None
+Recipe/Formula: None
+Resample: None
+Grid: None
 Model: None
 

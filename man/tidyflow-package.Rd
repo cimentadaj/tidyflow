@@ -6,7 +6,7 @@
 \alias{_PACKAGE}
 \title{tidyflow: Modeling Tidyflows}
 \description{
-Managing a modelling flow such as data, training/testing splitting, resampling, preprocessing and statistical modelling, can often be challenging. The goal of 'tidyflow' is to streamline this process by bundling your tidyflow within the same object.
+Managing a modelling flow such as data, training/testing splitting, resampling, preprocessing and statistical modelling can often be challenging. The goal of 'tidyflow' is to streamline this process by bundling your tidyflow in the same object, making it a mutable plan for exploratory modeling.
 }
 \seealso{
 Useful links:
