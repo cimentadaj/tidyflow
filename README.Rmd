@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 ## What is a tidyflow? 
 
-A tidyflow is a fork of [workflows](https://workflows.tidymodels.org/) that can bundle together your data, splitting, resampling, preprocessing, modeling, and grid search. Having all these steps separated into different objects can prove to be difficult. One can predict on the testing data by mistake, forget whether the recipe has been baked or not, or simply do not remember the name of all the tuning parameters to specify in the grid. `tidyflow` is a package aimed at bundling all of these steps into a a coherent flow. The advantages are:
+A tidyflow is a fork of [workflows](https://workflows.tidymodels.org/) that can bundle together your data, splitting, resampling, preprocessing, modeling, and grid search. Having all these steps separated into different objects can prove to be difficult. One can predict on the testing data by mistake, forget whether the recipe has been baked or not, or simply do not remember the name of all the tuning parameters to specify in the grid. `tidyflow` is a package aimed at bundling all of these steps into a a coherent flow. Among the advantages are:
 
  * You don't have to keep track of separate objects in your workspace.
 
