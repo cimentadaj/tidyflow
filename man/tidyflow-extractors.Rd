@@ -53,12 +53,13 @@ section.
 }
 \description{
 These functions extract various elements from a tidyflow object. If they do
-not exist yet, an error is thrown.
+not exist yet, an error is thrown. \strong{Most of these steps can only be executed
+after the \code{tidyflow} has been fitted}.
 \itemize{
 \item \code{pull_tflow_rawdata()} returns the complete raw/untrained data.
 \item \code{pull_tflow_split()} returns the split object from the function specified
 in \code{\link{plug_split}}.
-\item \code{pull_tflow_training()} returns the training data from the split. Only
+\item \code{pull_tflow_training()} turns the training data from the split. Only
 works when a split has been specified with \code{\link{plug_split}}.
 If \code{prep = TRUE}, the preprocessing (either recipe or formula)
 is applied to the data.
@@ -72,8 +73,8 @@ function that should be applied to the data to apply the recipe.
 \code{\link{pull_tflow_prepped_recipe}} returns the recipe already applied
 to the training data.
 \item \code{pull_tflow_resample()} returns the resample object from the function
-specified in \code{\link{plug_resample}}. This resample object already
-has the preprocessor applied (either formula or recipe).
+specified in \code{\link{plug_resample}}. The resample object does not
+have the preprocessor applied (either formula or recipe).
 \item \code{pull_tflow_grid()} returns the grid data frame from which the tuning
 parameter was made.
 \item \code{pull_tflow_prepped_recipe()} returns the prepped recipe. It is
@@ -91,18 +92,18 @@ library(parsnip)
 library(recipes)
 library(rsample)
 
-model <- linear_reg()
-model <- set_engine(model, "lm")
+model <- set_engine(linear_reg(), "lm")
 
 recipe <- ~ recipe(.x, mpg ~ cyl + disp) \%>\% step_log(disp)
 
-base_tflow <- tidyflow()
-base_tflow <- plug_data(base_tflow, mtcars)
-base_tflow <- plug_split(base_tflow, initial_split)
-base_tflow <- plug_model(base_tflow, model)
+tflow <-
+ mtcars \%>\%
+ tidyflow() \%>\%
+ plug_split(initial_split) \%>\%
+ plug_model(model)
 
-recipe_tflow <- plug_recipe(base_tflow, recipe)
-formula_tflow <- plug_formula(base_tflow, mpg ~ cyl + log(disp))
+recipe_tflow <- plug_recipe(tflow, recipe)
+formula_tflow <- plug_formula(tflow, mpg ~ cyl + log(disp))
 
 fit_recipe_tflow <- fit(recipe_tflow)
 fit_formula_tflow <- fit(formula_tflow)
