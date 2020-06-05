@@ -10,7 +10,7 @@
 #'
 #' @inheritParams parsnip::predict.model_fit
 #'
-#' @param x A tidyflow that has been fitted by [fit.tidyflow()]
+#' @param object A tidyflow that has been fitted by [fit.tidyflow()]
 #'
 #' @param new_data A data frame containing the new predictors to preprocess
 #'   and predict on. Usually, this would be extracted from the tidyflow
@@ -28,6 +28,7 @@
 #' library(parsnip)
 #' library(recipes)
 #' library(rsample)
+#' library(dials)
 #' library(tune)
 #'
 #' model <- set_engine(linear_reg(), "lm")
@@ -71,7 +72,8 @@
 #' # In short, to be able to predict, you need to have either a single model
 #' # or a finalized tuning grid with `complete_tflow`.
 #' 
-predict.tidyflow <- function(x, new_data, type = NULL, opts = list(), ...) {
+predict.tidyflow <- function(object, new_data, type = NULL, opts = list(), ...) {
+  x <- object
   tuning <- try(pull_tflow_fit_tuning(x), silent = TRUE)
 
   # If there's a tuning object but no final model

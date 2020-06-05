@@ -55,7 +55,8 @@ of class \code{rsplit}. These are functions which come from the
 library(tibble)
 library(rsample)
 
-mtcars \%>\%
+wf <-
+ mtcars \%>\%
  tidyflow() \%>\%
  plug_split(initial_split, prop = 0.8, strata = "cyl")
 

@@ -7,14 +7,14 @@
 \alias{predict_testing}
 \title{Predict from a tidyflow}
 \usage{
-\method{predict}{tidyflow}(x, new_data, type = NULL, opts = list(), ...)
+\method{predict}{tidyflow}(object, new_data, type = NULL, opts = list(), ...)
 
 predict_training(object, type = NULL, opts = list(), ...)
 
 predict_testing(object, type = NULL, opts = list(), ...)
 }
 \arguments{
-\item{x}{A tidyflow that has been fitted by \code{\link[=fit.tidyflow]{fit.tidyflow()}}}
+\item{object}{A tidyflow that has been fitted by \code{\link[=fit.tidyflow]{fit.tidyflow()}}}
 
 \item{new_data}{A data frame containing the new predictors to preprocess
 and predict on. Usually, this would be extracted from the tidyflow
@@ -50,8 +50,6 @@ Default value is \code{FALSE}.
 \item \code{time}: the time(s) for hazard probability estimates
 (not implemented yet)
 }}
-
-\item{object}{An object of class \code{model_fit}}
 }
 \value{
 A data frame of model predictions, with as many rows as \code{new_data} has.
@@ -68,6 +66,7 @@ the training and testing data.
 library(parsnip)
 library(recipes)
 library(rsample)
+library(dials)
 library(tune)
 
 model <- set_engine(linear_reg(), "lm")
