@@ -1,0 +1,221 @@
+---
+title: "An introduction to tidyflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{An introduction to tidyflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(tidyflow)
+```
+
+## High level description
+
+The workflow in machine learning is very standard and can be summarized in these steps:
+
+* Separate into training/testing
+
+* Feature engineering / Preprocessing
+
+* Cross validation
+
+* Tuning
+
+* Model definition
+
+* Fit model
+
+
+Although some of these steps can be exchanged (feature engineering and preprocessing can be done before separating into training/testing), the process is somewhat fixed. For example, you cannot
+perform tuning before defining a cross-validation resample or evaluate a model without fitting it.
+
+`tidyflow` takes advantage of this fixed order to create a simple and easy interface to the `tidymodels` ecosystem. `tidyflow` works by defining steps which are directly mapped to the workflow defined above:
+
+* Separate into training/testing --> `plug_split`
+
+* Feature engineering / Preprocessing --> `plug_recipe` / `plug_formula`
+
+* Cross validation --> `plug_resample`
+
+* Tuning --> `plug_grid`
+
+* Model definition --> `plug_model`
+
+* Fit a model --> `fit`
+
+Let's work out a manual example.
+
+## Example
+
+Let's construct a worklow that fits a linear model to `mtcars` but only on the training data:
+
+```{r, message = FALSE}
+library(tidymodels)
+library(tidyflow)
+
+tflow <-
+  mtcars %>%
+  tidyflow(seed = 52131) %>%
+  plug_formula(mpg ~ .) %>% 
+  plug_split(initial_split) %>%
+  plug_model(linear_reg() %>% set_engine("lm"))
+
+tflow
+```
+
+The output of `tflow` describes the current workflow definition. You might be wondering, what are these `initial_split` or `linear_reg()` expressions. `tidyflow` is built upon `tidymodels` so it works with the core functions of this ecosystem. `initial_split` is the function that separates the data into training/testing and `linear_reg()` is the model definition. With this definition, we can just `fit` the model:
+
+```{r}
+res <- fit(tflow)
+res
+```
+
+The result of `fit` is the same `tflow` but with a fitted model. You might see some of the lines of the output at the bottom of the printout. We can extract the model with `pull_tflow_fit`:
+
+```{r}
+pull_tflow_fit(res)$fit
+```
+
+Now, let's add a preprocessing step where we normalize all variables:
+
+```{r}
+res2 <-
+  tflow %>%
+  drop_formula() %>%
+  plug_recipe(~ recipe(mpg ~ ., data = .x) %>% step_scale(all_predictors())) %>%
+  fit()
+
+pull_tflow_fit(res2)$fit
+```
+
+`tidyflow` allows you to recycle the entire flow and drop/replace any parts that you want to. Let's now add a cross-validation step and fit the model:
+
+```{r}
+res3 <-
+  res2 %>%
+  plug_resample(vfold_cv, v = 10) %>%
+  fit()
+
+pull_tflow_fit_tuning(res3)
+```
+
+When a resample has been specified, the final result of `fit` cannot be a single model as before because the model has been fitted 10 times. Instead it returns the resample object that is usually returned in `tidymodels`. In the same spirit of `pull_tflow_fit`, to extract the resample objects, we used `pull_tflow_fit_tuning`. 
+
+`fit` will always return either a model object or a tune/resamples object depending on the `tidyflow` specification. The rules for what to expect are simple: if there's a resample specification or a resample specification with tuning parameters, the result will be a resample dataframe, otherwise it will be a model.
+
+All `tidymodels` helpers to work with resample objects work just as well. For example:
+
+```{r}
+res3 %>%
+  pull_tflow_fit_tuning() %>%
+  collect_metrics()
+```
+
+Resampling is often used within a grid search context, where we want to find the most optimal value for predicting the data. `plug_grid` allows you to specify the type of grid that you want to use. For example, let's replace our linear model with a regularized regression, find the most optimal `penalty` and `mixture` values using a regular spaced grid of values:
+
+```{r }
+
+res4 <-
+  res3 %>%
+  plug_grid(grid_regular) %>%
+  replace_model(linear_reg(penalty = tune(), mixture = tune()) %>% set_engine("glmnet")) %>%
+  fit()
+
+res4
+```
+
+Since we specified a resampling with a grid search, the result will be a resample/tuning object. We can extract it with `pull_tflow_fit_tuning` and check which are the best tuning values:
+
+```{r}
+
+res4 %>%
+  pull_tflow_fit_tuning() %>%
+  select_best(metric = "rmse")
+
+```
+
+At this point, we need to *finalize* our `tidyflow`. This means that after figuring out which are the best tuning parameters, we want to train the model with these tuning values on the entire training data. `complete_tflow` figures out the best tuning values from the resamples object and train the model for you:
+
+```{r}
+final_model <-
+  res4 %>%
+  complete_tflow(metric = "rmse")
+
+final_model
+```
+
+One of the advantages of `tidyflow` is that it was built to work well within the machine learning workflow. To use this model to predict on the training data, you only have to call `predict_training`:
+
+```{r}
+final_model %>%
+  predict_training()
+```
+
+Similarly, you can use `predict_testing`:
+
+```{r}
+final_model %>%
+  predict_testing()
+```
+
+These functions are useful because they're safe: it's not rare that you mistakenly predict on the testing data thinking it was the training data or that you forget to apply all of the preprocessing on the testing data. The `predict_*` functions take care of applying all of your preprocessing on either the training or testing data, freeing the user of having to remember all these different things.
+
+Although this brief tutorial walked you through a `tidyflow` step by step, the richness of `tidyflow` is that it allows you to express this pipeline very quickly and to iterate as quickly as possible. For example, we can summarize the entire steps from before in a quick and readable expression:
+
+```{r}
+tflow <-
+  mtcars %>%
+  tidyflow(seed = 52131) %>%
+  plug_recipe(~ recipe(mpg ~ ., data = .x) %>% step_scale(all_predictors())) %>%
+  plug_split(initial_split) %>%
+  plug_resample(vfold_cv) %>% 
+  plug_grid(grid_regular) %>%
+  plug_model(linear_reg(penalty = tune(), mixture = tune()) %>% set_engine("glmnet"))
+
+tflow %>%
+  fit() %>%
+  pull_tflow_fit_tuning() %>%
+  collect_metrics()
+```
+
+`tidyflow` has several advantages:
+
+* You only specify the data once (no need to pass it to the recipe, the split, the cross-validation, the final fitting, the predicting, etc...)
+
+* You provide a seed in the `tidyflow` and it makes sure the same `tidyflow` is **always** reproducible
+
+* No need to deal with separate objects (training data, cross-validated set, separate tuning grid, separate recipe)
+
+* No need to remember which `fit` function to use (`fit_resample`, `tune_grid`, `fit`): `fit` takes care of that and always returns either a model or a resamples/tune object
+
+* It's very safe with respect to the training/testing dataset: everything is applied on the training data by default and `predict_training` and `predict_testing` make sure that you never have to do predictions manually, avoiding unexpected mistakes.
+
+* You can replace any step with ease. For example, you can build a complex workflow with a particular dataset and simply replace the data with a new data source and execute the `tidyflow`. In other settings, this means that you have to replace the data slot in the recipe, the split, the cross-validation, etc..
+
+
+## What is expected?
+
+All `plug_*` functions and `tidyflow()` return a `tidyflow` object. However, what do they accept? The first argument is always a `tidyflow` and the remaining arguments add the steps used in the analysis. Below is a lookup table of what each accepts:
+
+* `plug_split`: a function to be applied to the data. This is assumed to be a function such as `initial_split` or similar functions from the `rsample` package.
+
+* `plug_formula`: the formula of the model definition. A `tidyflow` needs to specify either a formula or a recipe, **but not both**.
+
+* `plug_recipe`: a formula containing a recipe that will be applied to the training data. A `tidyflow` needs to specify either a formula or a recipe, **but not both**.
+
+* `plug_resample`: a function to be applied to the preprocessed data. This is assumed to be a function such as `vfold_cv` or similar functions from the `rsample` package.
+
+* `plug_grid`: a function to be applied to the tuning placeholders in the recipe or the data. This is assumed to be a function such as `grid_regular` or similar functions from the `dials` package.
+
+* `plug_model`: a model object from packages such as `parsnip`. 
+
+Despite these `plug_*` not having a single unified interface on which arguments they accept, we believe these `plug_*` functions are easy to remember as they can be mapped directly to the machine learning workflow. Any feedback on how to improve the interface or functionality is more than welcome. Please file an issue on Github [here](https://github.com/cimentadaj/tidyflow/issues).
