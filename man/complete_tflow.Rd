@@ -19,20 +19,20 @@ complete_tflow(
 \item{metric}{The metric of reference from which to pick the best model}
 
 \item{...}{Extra arguments passed to
-\code{\link[tune]{select_by_one_std_err}} or
-\code{\link[tune]{select_by_pct_loss}}}
+\code{\link[tune:show_best]{select_by_one_std_err}} or
+\code{\link[tune:show_best]{select_by_pct_loss}}}
 
 \item{best_params}{A 1 row tibble with the best parameters to fit the final
 model. Should have the same format as the result of
-\code{\link[tune]{select_best}},
-\code{\link[tune]{select_by_one_std_err}} or
-\code{\link[tune]{select_by_pct_loss}}. If \code{best_params} is specified,
+\code{\link[tune:show_best]{select_best}},
+\code{\link[tune:show_best]{select_by_one_std_err}} or
+\code{\link[tune:show_best]{select_by_pct_loss}}. If \code{best_params} is specified,
 the \code{method}, \code{metric} and \code{...} arguments are ignored.}
 
 \item{method}{which method to use. The possible values are
-\code{\link[tune]{select_best}}, \code{\link[tune]{select_by_one_std_err}} or
-\code{\link[tune]{select_by_pct_loss}}. By default, it uses
-\code{\link[tune]{select_best}}.}
+\code{\link[tune:show_best]{select_best}}, \code{\link[tune:show_best]{select_by_one_std_err}} or
+\code{\link[tune:show_best]{select_by_pct_loss}}. By default, it uses
+\code{\link[tune:show_best]{select_best}}.}
 
 \item{control}{A \code{\link{control_tidyflow}} object. The
 \code{\link[parsnip]{control_parsnip}} control object inside

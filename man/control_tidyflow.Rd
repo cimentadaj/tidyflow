@@ -12,13 +12,13 @@ control_tidyflow(
 }
 \arguments{
 \item{control_parsnip}{A parsnip control object. If \code{NULL}, a default control
-argument is constructed from \code{\link[parsnip:control_parsnip]{parsnip::control_parsnip()}}.}
+argument is constructed from \code{\link[parsnip]{control_parsnip}}.}
 
 \item{control_resamples}{A resamples control object. If \code{NULL}, a default control
-argument is constructed from \code{\link[tune:control_resamples]{tune::control_resamples()}}.}
+argument is constructed from \code{\link[tune:control_grid]{control_resamples}}.}
 
 \item{control_grid}{A grid control object. If \code{NULL}, a default control
-argument is constructed from \code{\link[tune:control_grid]{tune::control_grid()}}.}
+argument is constructed from \code{\link[tune]{control_grid}}.}
 }
 \value{
 A \code{control_tidyflow} object for tweaking the tidyflow fitting/tuning process.

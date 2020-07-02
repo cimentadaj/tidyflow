@@ -6,7 +6,7 @@
 #'   in the model and the recipe. Only grid functions which return a
 #'   \code{data.frame} object will be allowed or \code{expand.grid}. See the
 #'   details section for how \code{expand.grid} can be used and the package
-#'   \code{\link[dials]{dials}} for the grid functions. If a model has
+#'   \code{\link[dials:dials-package]{dials}} for the grid functions. If a model has
 #'   been fit before adding the grid, it will need to be refit.
 #'
 #' - `drop_grid()` removes the grid specification from the tidyflow. Note
@@ -39,7 +39,7 @@
 #'        parameters defined in the model and recipe.
 #'
 #'  \item \code{grid_*}: If the \code{grid_*} functions from
-#'        \code{\link[dials]{dials}} are specified, the user only needs to
+#'        \code{\link[dials:dials-package]{dials}} are specified, the user only needs to
 #'        specify the function in \code{.f} and all tuning parameters are
 #'        extracted automatically. If the user wants to override the default
 #'        values for the parameters, it can do so by specifying the parameters
@@ -48,7 +48,7 @@
 #'        mixture = mixture(range = c(0, 0.5)))}. The benefit of this approach
 #'        is that the user can hand-pick some parameters to change manually
 #'        while the remaining are assigned sensible values based on
-#'        \code{\link[dials]{dials}}. Parameters such as
+#'        \code{\link[dials:dials-package]{dials}}. Parameters such as
 #'        \code{\link[dials]{mtry}} which need to be estimated from the data are
 #'        assigned default values through \code{\link[dials]{finalize}}, such
 #'        that the user doesn't have to set them manually. For more details
@@ -70,7 +70,7 @@
 #' generating random grids, \code{.f} must return an object of class
 #' \code{data.frame}. In particular, the user doesn't need to specified the
 #' parameters in \code{...} since they are extracted and passed directly to
-#' the grid function. See package \code{\link[dials]{dials}} for all related
+#' the grid function. See package \code{\link[dials:dials-package]{dials}} for all related
 #' \code{grid_*} functions. The other type of function that can be used is
 #' \code{expand.grid}. In particular, if `.f` is \code{expand.grid} all tuning
 #' arguments should be specified in `...`. This does not support parameter
