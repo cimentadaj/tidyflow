@@ -4,7 +4,7 @@
 #' - `plug_grid()` specifies the type of grid used in the model tuning. It
 #'   accepts a function \code{.f} that will be fed the tuning parameters defined
 #'   in the model and the recipe. Only grid functions which return a
-#'   \code{data.frame} object will be allowed or \code{expand.grid}. See the
+#'   \code{param_grid} object will be allowed or \code{expand.grid}. See the
 #'   details section for how \code{expand.grid} can be used and the package
 #'   \code{\link[dials]{dials}} for the grid functions. If a model has
 #'   been fit before adding the grid, it will need to be refit.
@@ -68,7 +68,7 @@
 #' @param .f A function which will be passed to the tuned arguments from the model
 #' and recipe. There are two type of functions that can be used here. For
 #' generating random grids, \code{.f} must return an object of class
-#' \code{data.frame}. In particular, the user doesn't need to specified the
+#' \code{param_grid}. In particular, the user doesn't need to specified the
 #' parameters in \code{...} since they are extracted and passed directly to
 #' the grid function. See package \code{\link[dials]{dials}} for all related
 #' \code{grid_*} functions. The other type of function that can be used is
@@ -337,8 +337,8 @@ fit.action_grid <- function(object, x) {
       !!!args
     )
 
-    if (!inherits(grid_res, c("tbl_df", "tbl", "data.frame"))) {
-      abort("The grid function should return an object of class `data.frame`.")
+    if (!inherits(grid_res, "param_grid")) {
+      abort("The grid function should return an object of class `param_grid`.")
     }
 
   }

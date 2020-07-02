@@ -224,12 +224,12 @@ tidyflow <- plug_model(tidyflow, mod)
 
 tidyflow <- plug_grid(tidyflow, dials::grid_regular, levels = 1)
 
-test_that("pull_tflow_grid can pull a grid", {
+test_that("pull_tflow_grid can pull a resample", {
   tidyflow <- fit(tidyflow)
-  expect_is(pull_tflow_grid(tidyflow), "tbl_df")
+  expect_is(pull_tflow_grid(tidyflow), "param_grid")
 })
 
-test_that("pull_tflow_grid error if not a tidyflow", {
+test_that("pull_tflow_resample error if not a tidyflow", {
   expect_error(pull_tflow_grid(tidyflow),
                "Tidyflow has not yet been trained. Do you need to call `fit()`?"
                )
