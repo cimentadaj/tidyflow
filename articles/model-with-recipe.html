@@ -92,12 +92,249 @@
 
     
     
-<p>This vignette aims to exemplify how you can use recipes within a <code>tidyflow</code>. The content and analysis is taken directly from the great work of the <code>tidymodels</code> team <a href="https://www.tidymodels.org/start/recipes/">here</a>.</p>
+<p>This vignette aims to exemplify how you can use recipes within a <code>tidyflow</code>.</p>
+<p>A tidyflow is a bundle of steps that allow you to bundle together your data, splitting, resampling, preprocessing, modeling, and grid search. For preprocessing your data, the <code>tidymodels</code> ecosystem contains the <code>recipes</code> package. This package allows to create very concise and clean pipelines of transforming your data. Let’s create a very simple recipe that takes the logarithm of the variable <code>qsec</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/tidymodels/tidymodels">tidymodels</a></span>)
+<span class="co">#&gt; ── Attaching packages ────────────────────────────────────── tidymodels 0.1.0 ──</span>
+<span class="co">#&gt; ✔ broom     0.5.6      ✔ recipes   0.1.13</span>
+<span class="co">#&gt; ✔ dials     0.0.8      ✔ rsample   0.0.7 </span>
+<span class="co">#&gt; ✔ dplyr     1.0.0      ✔ tibble    3.0.2 </span>
+<span class="co">#&gt; ✔ ggplot2   3.3.2      ✔ tune      0.1.1 </span>
+<span class="co">#&gt; ✔ infer     0.5.2      ✔ workflows 0.1.2 </span>
+<span class="co">#&gt; ✔ parsnip   0.1.2      ✔ yardstick 0.0.6 </span>
+<span class="co">#&gt; ✔ purrr     0.3.4</span>
+<span class="co">#&gt; ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──</span>
+<span class="co">#&gt; ✖ purrr::discard() masks scales::discard()</span>
+<span class="co">#&gt; ✖ dplyr::filter()  masks stats::filter()</span>
+<span class="co">#&gt; ✖ dplyr::lag()     masks stats::lag()</span>
+<span class="co">#&gt; ✖ recipes::step()  masks stats::step()</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">nycflights13</span>)
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: 'tidyflow'</span>
+<span class="co">#&gt; The following object is masked from 'package:tune':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     parameters</span>
+<span class="co">#&gt; The following object is masked from 'package:dials':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     parameters</span>
+</pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw">rcp</span> <span class="op">&lt;-</span>
+  <span class="kw">mtcars</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span>(<span class="kw">mpg</span> <span class="op">~</span> <span class="kw">.</span>) <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html">step_log</a></span>(<span class="kw">qsec</span>)
+  
+<span class="kw">rcp</span>
+<span class="co">#&gt; Data Recipe</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Inputs:</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;       role #variables</span>
+<span class="co">#&gt;    outcome          1</span>
+<span class="co">#&gt;  predictor         10</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Operations:</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Log transformation on qsec</span>
+</pre></div>
+<p>The recipe contains the model formula (<code>mpg ~ .</code>) and a preprocessing step <code><a href="https://recipes.tidymodels.org/reference/step_log.html">step_log(qsec)</a></code>. How do we incorporate this in our <code>tidyflow</code>? We use <code>plug_recipe</code> but we need to change this recipe to be a formula:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="kw">rcp</span> <span class="op">&lt;-</span>
+  <span class="op">~</span> <span class="kw">.x</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span>(<span class="kw">mpg</span> <span class="op">~</span> <span class="kw">.</span>) <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html">step_log</a></span>(<span class="kw">qsec</span>)
 
+<span class="kw">tflow</span> <span class="op">&lt;-</span>
+  <span class="kw">mtcars</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span>(seed = <span class="fl">5131</span>) <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span>(<span class="kw">rcp</span>)
+
+<span class="kw">tflow</span>
+<span class="co">#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
+<span class="co">#&gt; Data: 32 rows x 11 columns</span>
+<span class="co">#&gt; Split: None</span>
+<span class="co">#&gt; Recipe: available</span>
+<span class="co">#&gt; Resample: None</span>
+<span class="co">#&gt; Grid: None</span>
+<span class="co">#&gt; Model: None</span>
+</pre></div>
+<p>Did you notice that we replace <code>mtcars</code> with <code>.x</code> and that <code>.x</code> has a <code><a href="https://rdrr.io/r/base/tilde.html">~</a></code> in front of it? Those are the only two things that changes from our previous recipe. <code>tidyflow</code> already knows that <code>.x</code> will be the placeholder for the data and will figure out where to place the recipe in the order of execution.</p>
+<p>Having said this, there’s no need to specify a formula for the model definition: the recipe already contains this formula! So let’s split the data into training and testing and fit a linear regression:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="kw">tflow</span> <span class="op">&lt;-</span>
+  <span class="kw">tflow</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span>(<span class="kw">initial_split</span>) <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span>(<span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html">linear_reg</a></span>() <span class="op">%&gt;%</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span>(<span class="st">"lm"</span>))
+
+<span class="kw">final_model</span> <span class="op">&lt;-</span> <span class="kw">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span>()
+
+<span class="kw">final_model</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit</a></span>()
+<span class="co">#&gt; parsnip model object</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Fit time:  4ms </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Call:</span>
+<span class="co">#&gt; stats::lm(formula = ..y ~ ., data = data)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Coefficients:</span>
+<span class="co">#&gt; (Intercept)          cyl         disp           hp         drat           wt  </span>
+<span class="co">#&gt;  -35.739311     0.329900     0.003209    -0.015191     1.656429    -2.376667  </span>
+<span class="co">#&gt;        qsec           vs           am         gear         carb  </span>
+<span class="co">#&gt;   19.316946     0.767142     3.789040     0.074718    -0.278102</span>
+</pre></div>
+<p>Defining your preprocessing steps in the recipe has several advantages among which are that the <code>tidyflow</code> takes care of applying these preprocessing steps in the training/testing data automatically. You can automatically predict on the training data and expect the <code>tidyflow</code> to calculate the log of <code>qsec</code> automatically:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="kw">final_model</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span>()
+<span class="co">#&gt; # A tibble: 24 x 12</span>
+<span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span>
+<span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt;  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4  22.4</span>
+<span class="co">#&gt;  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4  22.4</span>
+<span class="co">#&gt;  3  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  20.9</span>
+<span class="co">#&gt;  4  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1  20.5</span>
+<span class="co">#&gt;  5  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4  13.6</span>
+<span class="co">#&gt;  6  24.4     4  147.    62  3.69  3.19  20       1     0     4     2  22.0</span>
+<span class="co">#&gt;  7  22.8     4  141.    95  3.92  3.15  22.9     1     0     4     2  24.6</span>
+<span class="co">#&gt;  8  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4  19.3</span>
+<span class="co">#&gt;  9  16.4     8  276.   180  3.07  4.07  17.4     0     0     3     3  15.0</span>
+<span class="co">#&gt; 10  17.3     8  276.   180  3.07  3.73  17.6     0     0     3     3  16.1</span>
+<span class="co">#&gt; # … with 14 more rows</span>
+</pre></div>
+<p>Note that the <code>qsec</code> column here is untransformed but the model used to predict on the new <code>.pred</code> column was indeed logged. How can you be sure? You can extract the transformed training data with <code>pull_tflow_training</code> with <code>prep = TRUE</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="kw">final_model</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_training</a></span>(prep = <span class="fl">TRUE</span>)
+<span class="co">#&gt;     mpg cyl  disp  hp drat    wt     qsec vs am gear carb</span>
+<span class="co">#&gt; 1  21.0   6 160.0 110 3.90 2.620 2.800933  0  1    4    4</span>
+<span class="co">#&gt; 2  21.0   6 160.0 110 3.90 2.875 2.834389  0  1    4    4</span>
+<span class="co">#&gt; 3  21.4   6 258.0 110 3.08 3.215 2.967333  1  0    3    1</span>
+<span class="co">#&gt; 4  18.1   6 225.0 105 2.76 3.460 3.006672  1  0    3    1</span>
+<span class="co">#&gt; 5  14.3   8 360.0 245 3.21 3.570 2.762538  0  0    3    4</span>
+<span class="co">#&gt; 6  24.4   4 146.7  62 3.69 3.190 2.995732  1  0    4    2</span>
+<span class="co">#&gt; 7  22.8   4 140.8  95 3.92 3.150 3.131137  1  0    4    2</span>
+<span class="co">#&gt; 8  19.2   6 167.6 123 3.92 3.440 2.906901  1  0    4    4</span>
+<span class="co">#&gt; 9  16.4   8 275.8 180 3.07 4.070 2.856470  0  0    3    3</span>
+<span class="co">#&gt; 10 17.3   8 275.8 180 3.07 3.730 2.867899  0  0    3    3</span>
+<span class="co">#&gt; 11 15.2   8 275.8 180 3.07 3.780 2.890372  0  0    3    3</span>
+<span class="co">#&gt; 12 10.4   8 472.0 205 2.93 5.250 2.889260  0  0    3    4</span>
+<span class="co">#&gt; 13 14.7   8 440.0 230 3.23 5.345 2.857619  0  0    3    4</span>
+<span class="co">#&gt; 14 32.4   4  78.7  66 4.08 2.200 2.968875  1  1    4    1</span>
+<span class="co">#&gt; 15 33.9   4  71.1  65 4.22 1.835 2.990720  1  1    4    1</span>
+<span class="co">#&gt; 16 21.5   4 120.1  97 3.70 2.465 2.996232  1  0    3    1</span>
+<span class="co">#&gt; 17 15.5   8 318.0 150 2.76 3.520 2.825537  0  0    3    2</span>
+<span class="co">#&gt; 18 15.2   8 304.0 150 3.15 3.435 2.850707  0  0    3    2</span>
+<span class="co">#&gt; 19 19.2   8 400.0 175 3.08 3.845 2.836150  0  0    3    2</span>
+<span class="co">#&gt; 20 27.3   4  79.0  66 4.08 1.935 2.939162  1  1    4    1</span>
+<span class="co">#&gt; 21 15.8   8 351.0 264 4.22 3.170 2.674149  0  1    5    4</span>
+<span class="co">#&gt; 22 19.7   6 145.0 175 3.62 2.770 2.740840  0  1    5    6</span>
+<span class="co">#&gt; 23 15.0   8 301.0 335 3.54 3.570 2.681022  0  1    5    8</span>
+<span class="co">#&gt; 24 21.4   4 121.0 109 4.11 2.780 2.923162  1  1    4    2</span>
+</pre></div>
+<p>One drawback from the print out of the <code>tidyflow</code> is that you can really see the type of preprocessing that was used for fitting the model. <code>pull_tflow_prepped_recipe</code> returns the fitted recipe on the final model and contains all the steps used in the recipe:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="kw">final_model</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_prepped_recipe</a></span>()
+<span class="co">#&gt; Data Recipe</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Inputs:</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;       role #variables</span>
+<span class="co">#&gt;    outcome          1</span>
+<span class="co">#&gt;  predictor         10</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Training data contained 24 data points and no missing data.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Operations:</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Log transformation on qsec [trained]</span>
+</pre></div>
+<p>Another advantage of a recipe preprocessing step is that it allows to perform a grid search on values defined in the preprocessing. For example, suppose we want to calculate the polynomial of <code>sec</code>. We could try <code>qsec^2</code>, <code>qsec^3</code>, etc… Until we find a polynomial that maximizes our predictive accuracy. Recipes accept an object called <code>tune</code> that signals that we will try many values for a particular argument (polynomials in this case). If you specify a <code>plug_split</code>, <code>tidyflow</code> can figure out some possible values to use are run the entire grid search for you. For example:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="co"># New recipe that will try many values for degree</span>
+<span class="co"># degree here means the polynomial degree.</span>
+<span class="co"># For example, qsec^2, qsec^3, etc...</span>
+<span class="kw">rcp</span> <span class="op">&lt;-</span>
+  <span class="op">~</span> <span class="kw">.x</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span>(<span class="kw">mpg</span> <span class="op">~</span> <span class="kw">.</span>) <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_poly.html">step_poly</a></span>(<span class="kw">qsec</span>, degree = <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span>())
+
+<span class="kw">final_model</span> <span class="op">&lt;-</span>
+  <span class="kw">tflow</span> <span class="op">%&gt;%</span> <span class="co"># Reuse the same tidyflow from before</span>
+  <span class="fu"><a href="../reference/plug_recipe.html">replace_recipe</a></span>(<span class="kw">rcp</span>) <span class="op">%&gt;%</span> <span class="co"># Replace the recipe with the new one</span>
+  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span>(<span class="kw">vfold_cv</span>) <span class="op">%&gt;%</span> <span class="co"># Plug in the cross-validation for grid search</span>
+  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span>(<span class="kw">grid_regular</span>) <span class="op">%&gt;%</span> <span class="co"># Plug in the type of grid search</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span>()
+
+<span class="kw">final_model</span>
+<span class="co">#&gt; ══ Tidyflow [tuned] ════════════════════════════════════════════════════════════</span>
+<span class="co">#&gt; Data: 32 rows x 11 columns</span>
+<span class="co">#&gt; Split: initial_split w/ default args</span>
+<span class="co">#&gt; Recipe: available</span>
+<span class="co">#&gt; Resample: vfold_cv w/ default args</span>
+<span class="co">#&gt; Grid: grid_regular w/ default args</span>
+<span class="co">#&gt; Model:</span>
+<span class="co">#&gt; Linear Regression Model Specification (regression)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Computational engine: lm </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Tuning results: </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; # A tibble: 5 x 4</span>
+<span class="co">#&gt;   splits         id     .metrics         .notes          </span>
+<span class="co">#&gt;   &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;           &lt;list&gt;          </span>
+<span class="co">#&gt; 1 &lt;split [21/3]&gt; Fold01 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt; 2 &lt;split [21/3]&gt; Fold02 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt; 3 &lt;split [21/3]&gt; Fold03 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt; 4 &lt;split [21/3]&gt; Fold04 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt; 5 &lt;split [22/2]&gt; Fold05 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ... and 5 more lines.</span>
+</pre></div>
+<p>The result is now a tuning grid and <strong>not</strong> a final model. As expected, this is because <code>tidyflow</code> already fit many models using different values for <code>degree</code>. We can explore the performance of the model with this model.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="kw">final_model</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>()
+</pre></div>
+<p><img src="model-with-recipe_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<p>The lowest error for both the <span class="math inline">\(RMSE\)</span> and the <span class="math inline">\(R^2\)</span> seems to be a model of <code>degree = 2</code>. We can specify this directly into <code>complete_tflow</code> or just allow <code>complete_tflow</code> to determine this for you:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="co"># Manual approach</span>
+<span class="kw">best_model</span> <span class="op">&lt;-</span> <span class="kw">final_model</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span>(best_params = <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(degree = <span class="fl">2</span>))
+
+<span class="co"># Allow `complete_tflow` to determine this for you</span>
+<span class="kw">best_model</span> <span class="op">&lt;-</span> <span class="kw">final_model</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span>(metric = <span class="st">"rmse"</span>)
+
+<span class="kw">best_model</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span>()
+<span class="co">#&gt; # A tibble: 24 x 12</span>
+<span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span>
+<span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt;  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4  21.0</span>
+<span class="co">#&gt;  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4  22.0</span>
+<span class="co">#&gt;  3  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  20.6</span>
+<span class="co">#&gt;  4  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1  19.2</span>
+<span class="co">#&gt;  5  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4  12.8</span>
+<span class="co">#&gt;  6  24.4     4  147.    62  3.69  3.19  20       1     0     4     2  23.2</span>
+<span class="co">#&gt;  7  22.8     4  141.    95  3.92  3.15  22.9     1     0     4     2  23.1</span>
+<span class="co">#&gt;  8  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4  19.4</span>
+<span class="co">#&gt;  9  16.4     8  276.   180  3.07  4.07  17.4     0     0     3     3  14.4</span>
+<span class="co">#&gt; 10  17.3     8  276.   180  3.07  3.73  17.6     0     0     3     3  16.8</span>
+<span class="co">#&gt; # … with 14 more rows</span>
+</pre></div>
+<p>The <code>recipes</code> package and <code>tidymodels</code> and very powerful tools for doing machine learning. In this vignette, I tried to extend their work by providing a unified interface for working with <code>tidymodels</code> that uses the recipe framework bundled together with all the other common machine learning steps.</p>
+<p>Want to see tidyflow and recipes in action? The <code>tidymodels</code> team has a vignette showcasing how to use <code>recipes</code> and <code>tidymodels</code> <a href="https://www.tidymodels.org/start/recipes/">here</a>. I’ve adapted their code to fully run within a <code>tidyflow</code> workflow. Here’s the replication code:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/tidymodels/tidymodels">tidymodels</a></span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://github.com/hadley/nycflights13">nycflights13</a></span>)
+
+<span class="co">## Start initial preprocessing</span>
 <span class="kw">flight_data</span> <span class="op">&lt;-</span> 
   <span class="kw">flights</span> <span class="op">%&gt;%</span> 
   <span class="fu">mutate</span>(
@@ -118,15 +355,20 @@
   <span class="co"># encoded as factors (instead of character strings)</span>
   <span class="fu">mutate_if</span>(<span class="kw">is.character</span>, <span class="kw">as.factor</span>)
 
-<span class="kw">flight_rec</span> <span class="op">&lt;-</span>
-  <span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span>(<span class="kw">arr_delay</span> <span class="op">~</span> <span class="kw">.</span>, data = <span class="kw">.x</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/roles.html">update_role</a></span>(<span class="kw">flight</span>, <span class="kw">time_hour</span>, new_role = <span class="st">"ID"</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_date.html">step_date</a></span>(<span class="kw">date</span>, features = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"dow"</span>, <span class="st">"month"</span>)) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_holiday.html">step_holiday</a></span>(<span class="kw">date</span>, holidays = <span class="kw">timeDate</span>::<span class="fu"><a href="https://rdrr.io/pkg/timeDate/man/holiday-Listing.html">listHolidays</a></span>(<span class="st">"US"</span>)) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_rm.html">step_rm</a></span>(<span class="kw">date</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_dummy.html">step_dummy</a></span>(<span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_nominal</a></span>(), <span class="op">-</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_outcomes</a></span>()) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_zv.html">step_zv</a></span>(<span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_predictors</a></span>())
+<span class="co">## End initial preprocessing</span>
 
+<span class="co"># Model formula and recipe preprocessing</span>
+<span class="kw">flight_rec</span> <span class="op">&lt;-</span>
+  <span class="op">~</span> <span class="kw">.x</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span>(<span class="kw">arr_delay</span> <span class="op">~</span> <span class="kw">.</span>) <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/roles.html">update_role</a></span>(<span class="kw">flight</span>, <span class="kw">time_hour</span>, new_role = <span class="st">"ID"</span>) <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_date.html">step_date</a></span>(<span class="kw">date</span>, features = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"dow"</span>, <span class="st">"month"</span>)) <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_holiday.html">step_holiday</a></span>(<span class="kw">date</span>, holidays = <span class="kw">timeDate</span>::<span class="fu"><a href="https://rdrr.io/pkg/timeDate/man/holiday-Listing.html">listHolidays</a></span>(<span class="st">"US"</span>)) <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_rm.html">step_rm</a></span>(<span class="kw">date</span>) <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_dummy.html">step_dummy</a></span>(<span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_nominal</a></span>(), <span class="op">-</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_outcomes</a></span>()) <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_zv.html">step_zv</a></span>(<span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_predictors</a></span>())
+
+<span class="co"># tidyflow preparation with the recipe</span>
 <span class="kw">tflow</span> <span class="op">&lt;-</span>
   <span class="kw">flight_data</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span>(seed = <span class="fl">555</span>) <span class="op">%&gt;%</span>
@@ -134,251 +376,204 @@
   <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span>(<span class="kw">flight_rec</span>) <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span>(<span class="fu"><a href="https://parsnip.tidymodels.org/reference/logistic_reg.html">logistic_reg</a></span>() <span class="op">%&gt;%</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span>(<span class="st">"glm"</span>))
 
+<span class="co"># Fit final model</span>
 <span class="kw">flights_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span>(<span class="kw">tflow</span>)
 
-<span class="kw">flights_fit</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit</a></span>() <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/tidy.html">tidy</a></span>()
-
+<span class="co"># Predict on testing and evaluate a `roc_curve`</span>
 <span class="kw">flights_fit</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/predict-tidyflow.html">predict_testing</a></span>(type = <span class="st">"prob"</span>) <span class="op">%&gt;%</span>
   <span class="fu">roc_curve</span>(truth = <span class="kw">arr_delay</span>, <span class="kw">.pred_late</span>) <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>()
 </pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/tidymodels/tidymodels">tidymodels</a></span>) <span class="co"># for the rsample package, along with the rest of tidymodels</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">modeldata</span>)  <span class="co"># for the cells data</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="kw">cells</span>, package = <span class="st">"modeldata"</span>)
-
-<span class="kw">rf_mod</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/rand_forest.html">rand_forest</a></span>(trees = <span class="fl">1000</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span>(<span class="st">"ranger"</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html">set_mode</a></span>(<span class="st">"classification"</span>)
-
-<span class="kw">rf_fit</span> <span class="op">&lt;-</span>
-  <span class="kw">cells</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span>(seed = <span class="fl">123</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span>(<span class="kw">initial_split</span>, strata = <span class="st">"class"</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span>(<span class="kw">class</span> <span class="op">~</span> <span class="kw">.</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span>(<span class="kw">rf_mod</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span>()
-
-<span class="kw">rf_fit_pred</span> <span class="op">&lt;-</span>
-  <span class="fu">bind_cols</span>(
-    <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span>(<span class="kw">rf_fit</span>, type = <span class="st">"prob"</span>), <span class="co"># probabilities</span>
-    <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(<span class="kw">rf_fit</span>, <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_training</a></span>(<span class="kw">rf_fit</span>)) <span class="co"># class predictions</span>
-  )
-
-<span class="kw">rf_fit_pred</span> <span class="op">%&gt;%</span>
-  <span class="fu">roc_auc</span>(truth = <span class="kw">class</span>, <span class="kw">.pred_PS</span>)
-
-<span class="kw">rf_fit_pred</span> <span class="op">%&gt;%</span>
-  <span class="fu">accuracy</span>(truth = <span class="kw">class</span>, <span class="kw">.pred_class</span>)
-
-<span class="kw">rf_fit_pred</span> <span class="op">&lt;-</span>
-  <span class="fu">bind_cols</span>(
-    <span class="fu"><a href="../reference/predict-tidyflow.html">predict_testing</a></span>(<span class="kw">rf_fit</span>, type = <span class="st">"prob"</span>), <span class="co"># probabilities</span>
-    <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(<span class="kw">rf_fit</span>, <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_testing</a></span>(<span class="kw">rf_fit</span>)) <span class="co"># class predictions</span>
-  )
-
-<span class="kw">rf_fit_pred</span> <span class="op">%&gt;%</span>
-  <span class="fu">roc_auc</span>(truth = <span class="kw">class</span>, <span class="kw">.pred_PS</span>)
-
-<span class="kw">rf_fit_pred</span> <span class="op">%&gt;%</span>
-  <span class="fu">accuracy</span>(truth = <span class="kw">class</span>, <span class="kw">.pred_class</span>)
-
-<span class="kw">rf_fit_rs</span> <span class="op">&lt;-</span>
-  <span class="kw">rf_fit</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span>(<span class="kw">vfold_cv</span>, v = <span class="fl">10</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span>()
-</pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/tidymodels/tidymodels">tidymodels</a></span>)  <span class="co"># for the tune package, along with the rest of tidymodels</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">modeldata</span>)   <span class="co"># for the cells data</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">vip</span>)         <span class="co"># for variable importance plots</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="kw">cells</span>, package = <span class="st">"modeldata"</span>)
-<span class="kw">cells</span>
-
-<span class="kw">tune_spec</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/decision_tree.html">decision_tree</a></span>(
-    cost_complexity = <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span>(),
-    tree_depth = <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span>()
-  ) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span>(<span class="st">"rpart"</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html">set_mode</a></span>(<span class="st">"classification"</span>)
-
-<span class="kw">tflow</span> <span class="op">&lt;-</span>
-  <span class="kw">cells</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span>(seed = <span class="fl">123</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span>(<span class="kw">class</span> <span class="op">~</span> <span class="kw">.</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span>(<span class="kw">initial_split</span>, strata = <span class="st">"class"</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span>(<span class="kw">vfold_cv</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span>(<span class="kw">grid_regular</span>, levels = <span class="fl">5</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span>(<span class="kw">tune_spec</span>)
-
-<span class="kw">tree_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span>(<span class="kw">tflow</span>)
-<span class="kw">tree_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>(<span class="kw">tree_fit</span>)
-
-<span class="kw">tree_res</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span>()
-
-<span class="kw">tree_res</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu">mutate</span>(tree_depth = <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw">tree_depth</span>)) <span class="op">%&gt;%</span>
-  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="kw">cost_complexity</span>, <span class="kw">mean</span>, color = <span class="kw">tree_depth</span>)) <span class="op">+</span>
-  <span class="fu">geom_line</span>(size = <span class="fl">1.5</span>, alpha = <span class="fl">0.6</span>) <span class="op">+</span>
-  <span class="fu">geom_point</span>(size = <span class="fl">2</span>) <span class="op">+</span>
-  <span class="fu">facet_wrap</span>(<span class="op">~</span> <span class="kw">.metric</span>, scales = <span class="st">"free"</span>, nrow = <span class="fl">2</span>) <span class="op">+</span>
-  <span class="fu">scale_x_log10</span>(labels = <span class="kw">scales</span>::<span class="fu"><a href="https://scales.r-lib.org//reference/label_number.html">label_number</a></span>()) <span class="op">+</span>
-  <span class="fu">scale_color_viridis_d</span>(option = <span class="st">"plasma"</span>, begin = <span class="fl">.9</span>, end = <span class="fl">0</span>)
-
-<span class="kw">tree_res</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span>(<span class="st">"roc_auc"</span>)
-
-<span class="kw">final_wf</span> <span class="op">&lt;-</span>  <span class="kw">tree_fit</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span>(metric = <span class="st">"roc_auc"</span>)
-
-<span class="kw">final_wf</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit</a></span>()
-
-<span class="kw">final_wf</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit</a></span>() <span class="op">%&gt;%</span> 
-  <span class="fu">vip</span>()
-
-<span class="kw">final_wf</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_testing</a></span>(type = <span class="st">"prob"</span>) <span class="op">%&gt;%</span>
-  <span class="fu">roc_curve</span>(<span class="kw">class</span>, <span class="kw">.pred_PS</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>()
-</pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/tidymodels/tidymodels">tidymodels</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">readr</span>)       <span class="co"># for importing data</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">vip</span>)         <span class="co"># for variable importance plots</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">readr</span>)
-
-<span class="kw">hotels</span> <span class="op">&lt;-</span> 
-  <span class="fu">read_csv</span>(<span class="st">'https://tidymodels.org/start/case-study/hotels.csv'</span>) <span class="op">%&gt;%</span>
-  <span class="fu">mutate_if</span>(<span class="kw">is.character</span>, <span class="kw">as.factor</span>) 
-
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="kw">hotels</span>)
-<span class="co">#&gt; [1] 50000    23</span>
-
-<span class="kw">lr_mod</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/logistic_reg.html">logistic_reg</a></span>(penalty = <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span>(), mixture = <span class="fl">1</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span>(<span class="st">"glmnet"</span>)
-
-<span class="kw">holidays</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"AllSouls"</span>, <span class="st">"AshWednesday"</span>, <span class="st">"ChristmasEve"</span>, <span class="st">"Easter"</span>, 
-              <span class="st">"ChristmasDay"</span>, <span class="st">"GoodFriday"</span>, <span class="st">"NewYearsDay"</span>, <span class="st">"PalmSunday"</span>)
-
-<span class="kw">lr_recipe</span> <span class="op">&lt;-</span> 
-  <span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span>(<span class="kw">children</span> <span class="op">~</span> <span class="kw">.</span>, data = <span class="kw">.x</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_date.html">step_date</a></span>(<span class="kw">arrival_date</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_holiday.html">step_holiday</a></span>(<span class="kw">arrival_date</span>, holidays = <span class="kw">holidays</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_rm.html">step_rm</a></span>(<span class="kw">arrival_date</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_dummy.html">step_dummy</a></span>(<span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_nominal</a></span>(), <span class="op">-</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_outcomes</a></span>()) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_zv.html">step_zv</a></span>(<span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_predictors</a></span>()) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_normalize.html">step_normalize</a></span>(<span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_predictors</a></span>())
-
-<span class="kw">tflow</span> <span class="op">&lt;-</span>
-  <span class="kw">hotels</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span>(seed = <span class="fl">123</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span>(<span class="kw">initial_split</span>, strata = <span class="st">"children"</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span>(<span class="kw">validation_split</span>, strata = <span class="st">"children"</span>, prop = <span class="fl">0.8</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span>(<span class="kw">lr_recipe</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span>(<span class="kw">expand.grid</span>, penalty = <span class="fl">10</span><span class="op">^</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="fl">4</span>, <span class="op">-</span><span class="fl">1</span>, length.out = <span class="fl">30</span>)) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span>(<span class="kw">lr_mod</span>)
-
-<span class="kw">cntrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control_tidyflow.html">control_tidyflow</a></span>(control_grid = <span class="fu"><a href="https://tune.tidymodels.org/reference/control_grid.html">control_grid</a></span>(save_pred = <span class="fl">TRUE</span>))
-<span class="kw">p_res</span> <span class="op">&lt;-</span> <span class="kw">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span>(control = <span class="kw">cntrl</span>)
-
-<span class="kw">p_res</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="kw">.metric</span> <span class="op">==</span> <span class="st">"roc_auc"</span>) <span class="op">%&gt;%</span> 
-  <span class="fu">ggplot</span>(<span class="fu">aes</span>(x = <span class="kw">penalty</span>, y = <span class="kw">mean</span>)) <span class="op">+</span> 
-  <span class="fu">geom_point</span>() <span class="op">+</span> 
-  <span class="fu">geom_line</span>() <span class="op">+</span> 
-  <span class="fu">ylab</span>(<span class="st">"Area under the ROC Curve"</span>) <span class="op">+</span>
-  <span class="fu">scale_x_log10</span>(labels = <span class="kw">scales</span>::<span class="fu"><a href="https://scales.r-lib.org//reference/label_number.html">label_number</a></span>())
-
-<span class="kw">top_models</span> <span class="op">&lt;-</span>
-  <span class="kw">p_res</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span>(<span class="st">"roc_auc"</span>, n = <span class="fl">15</span>) <span class="op">%&gt;%</span> 
-  <span class="fu">arrange</span>(<span class="kw">penalty</span>) 
-
-<span class="kw">lr_best</span> <span class="op">&lt;-</span>
-  <span class="kw">top_models</span> <span class="op">%&gt;%</span>
-  <span class="fu">slice</span>(<span class="fl">12</span>)
-
-<span class="kw">lr_auc</span> <span class="op">&lt;-</span>
-  <span class="kw">p_res</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_predictions</a></span>(parameters = <span class="kw">lr_best</span>) <span class="op">%&gt;%</span> 
-  <span class="fu">roc_curve</span>(<span class="kw">children</span>, <span class="kw">.pred_children</span>) <span class="op">%&gt;%</span> 
-  <span class="fu">mutate</span>(model = <span class="st">"Logistic Regression"</span>)
-
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="kw">lr_auc</span>)
-
-<span class="kw">cores</span> <span class="op">&lt;-</span> <span class="kw">parallel</span>::<span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span>() <span class="op">-</span> <span class="fl">2</span>
-
-<span class="kw">rf_mod</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/rand_forest.html">rand_forest</a></span>(mtry = <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span>(), min_n = <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span>(), trees = <span class="fl">1000</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span>(<span class="st">"ranger"</span>, num.threads = <span class="kw">cores</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html">set_mode</a></span>(<span class="st">"classification"</span>)
-
-<span class="kw">rf_recipe</span> <span class="op">&lt;-</span> 
-  <span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span>(<span class="kw">children</span> <span class="op">~</span> <span class="kw">.</span>, data = <span class="kw">.x</span>) <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_date.html">step_date</a></span>(<span class="kw">arrival_date</span>) <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_holiday.html">step_holiday</a></span>(<span class="kw">arrival_date</span>) <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_rm.html">step_rm</a></span>(<span class="kw">arrival_date</span>) 
-
-<span class="kw">tflow</span> <span class="op">&lt;-</span>
-  <span class="kw">tflow</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_recipe.html">replace_recipe</a></span>(<span class="kw">rf_recipe</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_model.html">replace_model</a></span>(<span class="kw">rf_mod</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_grid.html">replace_grid</a></span>(<span class="kw">grid_latin_hypercube</span>, size = <span class="fl">25</span>)
-
-<span class="kw">rf_res</span> <span class="op">&lt;-</span> <span class="kw">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span>(control = <span class="kw">cntrl</span>)
-
-<span class="kw">rf_res</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>() <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html">ylim</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.88</span>, <span class="fl">0.93</span>))
-
-
-<span class="kw">rf_best</span> <span class="op">&lt;-</span> 
-  <span class="kw">rf_res</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">select_best</a></span>(metric = <span class="st">"roc_auc"</span>)
-
-<span class="kw">rf_auc</span> <span class="op">&lt;-</span> 
-  <span class="kw">rf_res</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_predictions</a></span>(parameters = <span class="kw">rf_best</span>) <span class="op">%&gt;%</span> 
-  <span class="fu">roc_curve</span>(<span class="kw">children</span>, <span class="kw">.pred_children</span>) <span class="op">%&gt;%</span> 
-  <span class="fu">mutate</span>(model = <span class="st">"Random Forest"</span>)
-
-<span class="fu">bind_rows</span>(<span class="kw">rf_auc</span>, <span class="kw">lr_auc</span>) <span class="op">%&gt;%</span> 
-  <span class="fu">ggplot</span>(<span class="fu">aes</span>(x = <span class="fl">1</span> <span class="op">-</span> <span class="kw">specificity</span>, y = <span class="kw">sensitivity</span>, col = <span class="kw">model</span>)) <span class="op">+</span> 
-  <span class="fu">geom_path</span>(lwd = <span class="fl">1.5</span>, alpha = <span class="fl">0.8</span>) <span class="op">+</span>
-  <span class="fu">geom_abline</span>(lty = <span class="fl">3</span>) <span class="op">+</span> 
-  <span class="fu">coord_equal</span>() <span class="op">+</span> 
-  <span class="fu">scale_color_viridis_d</span>(option = <span class="st">"plasma"</span>, end = <span class="fl">.6</span>)
-
-
-<span class="kw">final_res</span> <span class="op">&lt;-</span>
-  <span class="kw">rf_res</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span>(metric = <span class="st">"roc_auc"</span>)
-
-<span class="kw">final_res</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_testing</a></span>(type = <span class="st">"prob"</span>) <span class="op">%&gt;%</span>
-  <span class="fu">roc_curve</span>(<span class="kw">children</span>, <span class="kw">.pred_children</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>()
-</pre></div>
+<p><img src="model-with-recipe_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
+<!-- ```{r} -->
+<!-- library(tidymodels) # for the rsample package, along with the rest of tidymodels -->
+<!-- library(tidyflow) -->
+<!-- library(modeldata)  # for the cells data -->
+<!-- data(cells, package = "modeldata") -->
+<!-- rf_mod <-  -->
+<!--   rand_forest(trees = 1000) %>%  -->
+<!--   set_engine("ranger") %>%  -->
+<!--   set_mode("classification") -->
+<!-- rf_fit <- -->
+<!--   cells %>% -->
+<!--   tidyflow(seed = 123) %>% -->
+<!--   plug_split(initial_split, strata = "class") %>% -->
+<!--   plug_formula(class ~ .) %>%  -->
+<!--   plug_model(rf_mod) %>% -->
+<!--   fit() -->
+<!-- rf_fit_pred <- -->
+<!--   bind_cols( -->
+<!--     predict_training(rf_fit, type = "prob"), # probabilities -->
+<!--     predict(rf_fit, pull_tflow_training(rf_fit)) # class predictions -->
+<!--   ) -->
+<!-- rf_fit_pred %>% -->
+<!--   roc_auc(truth = class, .pred_PS) -->
+<!-- rf_fit_pred %>% -->
+<!--   accuracy(truth = class, .pred_class) -->
+<!-- rf_fit_pred <- -->
+<!--   bind_cols( -->
+<!--     predict_testing(rf_fit, type = "prob"), # probabilities -->
+<!--     predict(rf_fit, pull_tflow_testing(rf_fit)) # class predictions -->
+<!--   ) -->
+<!-- rf_fit_pred %>% -->
+<!--   roc_auc(truth = class, .pred_PS) -->
+<!-- rf_fit_pred %>% -->
+<!--   accuracy(truth = class, .pred_class) -->
+<!-- rf_fit_rs <- -->
+<!--   rf_fit %>% -->
+<!--   plug_resample(vfold_cv, v = 10) %>% -->
+<!--   fit() -->
+<!-- ``` -->
+<!-- ```{r } -->
+<!-- library(tidymodels)  # for the tune package, along with the rest of tidymodels -->
+<!-- library(tidyflow) -->
+<!-- library(modeldata)   # for the cells data -->
+<!-- library(vip)         # for variable importance plots -->
+<!-- data(cells, package = "modeldata") -->
+<!-- cells -->
+<!-- tune_spec <-  -->
+<!--   decision_tree( -->
+<!--     cost_complexity = tune(), -->
+<!--     tree_depth = tune() -->
+<!--   ) %>%  -->
+<!--   set_engine("rpart") %>%  -->
+<!--   set_mode("classification") -->
+<!-- tflow <- -->
+<!--   cells %>% -->
+<!--   tidyflow(seed = 123) %>% -->
+<!--   plug_formula(class ~ .) %>%  -->
+<!--   plug_split(initial_split, strata = "class") %>% -->
+<!--   plug_resample(vfold_cv) %>% -->
+<!--   plug_grid(grid_regular, levels = 5) %>% -->
+<!--   plug_model(tune_spec) -->
+<!-- tree_fit <- fit(tflow) -->
+<!-- tree_res <- pull_tflow_fit_tuning(tree_fit) -->
+<!-- tree_res %>% -->
+<!--   collect_metrics() -->
+<!-- tree_res %>% -->
+<!--   collect_metrics() %>% -->
+<!--   mutate(tree_depth = factor(tree_depth)) %>% -->
+<!--   ggplot(aes(cost_complexity, mean, color = tree_depth)) + -->
+<!--   geom_line(size = 1.5, alpha = 0.6) + -->
+<!--   geom_point(size = 2) + -->
+<!--   facet_wrap(~ .metric, scales = "free", nrow = 2) + -->
+<!--   scale_x_log10(labels = scales::label_number()) + -->
+<!--   scale_color_viridis_d(option = "plasma", begin = .9, end = 0) -->
+<!-- tree_res %>% -->
+<!--   show_best("roc_auc") -->
+<!-- final_wf <-  tree_fit %>% complete_tflow(metric = "roc_auc") -->
+<!-- final_wf %>% pull_tflow_fit() -->
+<!-- final_wf %>%  -->
+<!--   pull_tflow_fit() %>%  -->
+<!--   vip() -->
+<!-- final_wf %>% -->
+<!--   predict_testing(type = "prob") %>% -->
+<!--   roc_curve(class, .pred_PS) %>% -->
+<!--   autoplot() -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- library(tidymodels) -->
+<!-- library(tidyflow) -->
+<!-- library(readr)       # for importing data -->
+<!-- library(vip)         # for variable importance plots -->
+<!-- library(readr) -->
+<!-- hotels <-  -->
+<!--   read_csv('https://tidymodels.org/start/case-study/hotels.csv') %>% -->
+<!--   mutate_if(is.character, as.factor)  -->
+<!-- dim(hotels) -->
+<!-- #> [1] 50000    23 -->
+<!-- lr_mod <-  -->
+<!--   logistic_reg(penalty = tune(), mixture = 1) %>%  -->
+<!--   set_engine("glmnet") -->
+<!-- holidays <- c("AllSouls", "AshWednesday", "ChristmasEve", "Easter",  -->
+<!--               "ChristmasDay", "GoodFriday", "NewYearsDay", "PalmSunday") -->
+<!-- lr_recipe <-  -->
+<!--   ~ recipe(children ~ ., data = .x) %>%  -->
+<!--   step_date(arrival_date) %>%  -->
+<!--   step_holiday(arrival_date, holidays = holidays) %>%  -->
+<!--   step_rm(arrival_date) %>%  -->
+<!--   step_dummy(all_nominal(), -all_outcomes()) %>%  -->
+<!--   step_zv(all_predictors()) %>%  -->
+<!--   step_normalize(all_predictors()) -->
+<!-- tflow <- -->
+<!--   hotels %>% -->
+<!--   tidyflow(seed = 123) %>% -->
+<!--   plug_split(initial_split, strata = "children") %>% -->
+<!--   plug_resample(validation_split, strata = "children", prop = 0.8) %>% -->
+<!--   plug_recipe(lr_recipe) %>% -->
+<!--   plug_grid(expand.grid, penalty = 10^seq(-4, -1, length.out = 30)) %>%  -->
+<!--   plug_model(lr_mod) -->
+<!-- cntrl <- control_tidyflow(control_grid = control_grid(save_pred = TRUE)) -->
+<!-- p_res <- tflow %>% fit(control = cntrl) -->
+<!-- p_res %>% -->
+<!--   pull_tflow_fit_tuning() %>%  -->
+<!--   collect_metrics() %>% -->
+<!--   filter(.metric == "roc_auc") %>%  -->
+<!--   ggplot(aes(x = penalty, y = mean)) +  -->
+<!--   geom_point() +  -->
+<!--   geom_line() +  -->
+<!--   ylab("Area under the ROC Curve") + -->
+<!--   scale_x_log10(labels = scales::label_number()) -->
+<!-- top_models <- -->
+<!--   p_res %>% -->
+<!--   pull_tflow_fit_tuning() %>%  -->
+<!--   show_best("roc_auc", n = 15) %>%  -->
+<!--   arrange(penalty)  -->
+<!-- lr_best <- -->
+<!--   top_models %>% -->
+<!--   slice(12) -->
+<!-- lr_auc <- -->
+<!--   p_res %>% -->
+<!--   pull_tflow_fit_tuning() %>%  -->
+<!--   collect_predictions(parameters = lr_best) %>%  -->
+<!--   roc_curve(children, .pred_children) %>%  -->
+<!--   mutate(model = "Logistic Regression") -->
+<!-- autoplot(lr_auc) -->
+<!-- cores <- parallel::detectCores() - 2 -->
+<!-- rf_mod <-  -->
+<!--   rand_forest(mtry = tune(), min_n = tune(), trees = 1000) %>%  -->
+<!--   set_engine("ranger", num.threads = cores) %>%  -->
+<!--   set_mode("classification") -->
+<!-- rf_recipe <-  -->
+<!--   ~ recipe(children ~ ., data = .x) %>%  -->
+<!--     step_date(arrival_date) %>%  -->
+<!--     step_holiday(arrival_date) %>%  -->
+<!--     step_rm(arrival_date)  -->
+<!-- tflow <- -->
+<!--   tflow %>% -->
+<!--   replace_recipe(rf_recipe) %>% -->
+<!--   replace_model(rf_mod) %>% -->
+<!--   replace_grid(grid_latin_hypercube, size = 25) -->
+<!-- rf_res <- tflow %>% fit(control = cntrl) -->
+<!-- rf_res %>% -->
+<!--   pull_tflow_fit_tuning() %>% -->
+<!--   autoplot() + -->
+<!--   ylim(c(0.88, 0.93)) -->
+<!-- rf_best <-  -->
+<!--   rf_res %>% -->
+<!--   pull_tflow_fit_tuning() %>%  -->
+<!--   select_best(metric = "roc_auc") -->
+<!-- rf_auc <-  -->
+<!--   rf_res %>% -->
+<!--   pull_tflow_fit_tuning() %>%  -->
+<!--   collect_predictions(parameters = rf_best) %>%  -->
+<!--   roc_curve(children, .pred_children) %>%  -->
+<!--   mutate(model = "Random Forest") -->
+<!-- bind_rows(rf_auc, lr_auc) %>%  -->
+<!--   ggplot(aes(x = 1 - specificity, y = sensitivity, col = model)) +  -->
+<!--   geom_path(lwd = 1.5, alpha = 0.8) + -->
+<!--   geom_abline(lty = 3) +  -->
+<!--   coord_equal() +  -->
+<!--   scale_color_viridis_d(option = "plasma", end = .6) -->
+<!-- final_res <- -->
+<!--   rf_res %>% -->
+<!--   complete_tflow(metric = "roc_auc") -->
+<!-- final_res %>% -->
+<!--   predict_testing(type = "prob") %>% -->
+<!--   roc_curve(children, .pred_children) %>% -->
+<!--   autoplot() -->
+<!-- ``` -->
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

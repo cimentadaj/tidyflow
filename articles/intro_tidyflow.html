@@ -184,7 +184,7 @@
 <span class="co">#&gt;        qsec           vs           am         gear         carb  </span>
 <span class="co">#&gt;   3.047e+00   -4.109e+00    2.135e+00    1.200e+00   -3.165e-01</span>
 </pre></div>
-<p>Now, let’s add a preprocessing step where we normalize all variables:</p>
+<p>Suppose that after looking at the results you want to go back and normalize all variables. You can reuse the entire <code>tidyflow</code> and just replace the formula with a recipe. Let’s add a preprocessing step where we normalize all variables:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
 <span class="kw">res2</span> <span class="op">&lt;-</span>
   <span class="kw">tflow</span> <span class="op">%&gt;%</span>
@@ -203,7 +203,7 @@
 <span class="co">#&gt;        qsec           vs           am         gear         carb  </span>
 <span class="co">#&gt;     5.32065     -2.09136      1.08653      0.88467     -0.56773</span>
 </pre></div>
-<p><code>tidyflow</code> allows you to recycle the entire flow and drop/replace any parts that you want to. Let’s now add a cross-validation step and fit the model:</p>
+<p><code>tidyflow</code> allows you to recycle the entire flow and drop/replace any parts that you want to. Why did we drop the formula before adding a recipe? Because <code>tidyflow</code> the ‘preprocessing’ step only accepts either a formula or a recipe. For simpler models, a formula might be enough, but if you want to add additional preprocessing step, the recipe can be handy. Let’s now add a cross-validation step and fit the model:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit">
 <span class="kw">res3</span> <span class="op">&lt;-</span>
   <span class="kw">res2</span> <span class="op">%&gt;%</span>
@@ -280,7 +280,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ... and 5 more lines.</span>
 </pre></div>
-<p>Since we specified a resampling with a grid search, the result will be a resample/tuning object. We can extract it with <code>pull_tflow_fit_tuning</code> and check which are the best tuning values:</p>
+<p>Since we specified a cross-validating resampling with a grid search, the result will be a resample/tuning object. We can extract it with <code>pull_tflow_fit_tuning</code> and check which are the best tuning values:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit">
 
 <span class="kw">res4</span> <span class="op">%&gt;%</span>
@@ -386,35 +386,31 @@
   <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span>(<span class="kw">grid_regular</span>) <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span>(<span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html">linear_reg</a></span>(penalty = <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span>(), mixture = <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span>()) <span class="op">%&gt;%</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span>(<span class="st">"glmnet"</span>))
 
-<span class="kw">tflow</span> <span class="op">%&gt;%</span>
+<span class="kw">final_model</span> <span class="op">&lt;-</span>
+  <span class="kw">tflow</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span>()
-<span class="co">#&gt; # A tibble: 18 x 8</span>
-<span class="co">#&gt;         penalty mixture .metric .estimator  mean     n std_err .config</span>
-<span class="co">#&gt;           &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;  </span>
-<span class="co">#&gt;  1 0.0000000001   0.05  rmse    standard   3.92     10  0.878  Model1 </span>
-<span class="co">#&gt;  2 0.0000000001   0.05  rsq     standard   0.964    10  0.0200 Model1 </span>
-<span class="co">#&gt;  3 0.00001        0.05  rmse    standard   3.92     10  0.878  Model2 </span>
-<span class="co">#&gt;  4 0.00001        0.05  rsq     standard   0.964    10  0.0200 Model2 </span>
-<span class="co">#&gt;  5 1              0.05  rmse    standard   2.84     10  0.380  Model3 </span>
-<span class="co">#&gt;  6 1              0.05  rsq     standard   0.946    10  0.0448 Model3 </span>
-<span class="co">#&gt;  7 0.0000000001   0.525 rmse    standard   3.98     10  0.905  Model4 </span>
-<span class="co">#&gt;  8 0.0000000001   0.525 rsq     standard   0.964    10  0.0199 Model4 </span>
-<span class="co">#&gt;  9 0.00001        0.525 rmse    standard   3.98     10  0.905  Model5 </span>
-<span class="co">#&gt; 10 0.00001        0.525 rsq     standard   0.964    10  0.0199 Model5 </span>
-<span class="co">#&gt; 11 1              0.525 rmse    standard   2.83     10  0.430  Model6 </span>
-<span class="co">#&gt; 12 1              0.525 rsq     standard   0.944    10  0.0436 Model6 </span>
-<span class="co">#&gt; 13 0.0000000001   1     rmse    standard   3.98     10  0.908  Model7 </span>
-<span class="co">#&gt; 14 0.0000000001   1     rsq     standard   0.965    10  0.0199 Model7 </span>
-<span class="co">#&gt; 15 0.00001        1     rmse    standard   3.98     10  0.908  Model8 </span>
-<span class="co">#&gt; 16 0.00001        1     rsq     standard   0.965    10  0.0199 Model8 </span>
-<span class="co">#&gt; 17 1              1     rmse    standard   2.85     10  0.383  Model9 </span>
-<span class="co">#&gt; 18 1              1     rsq     standard   0.917    10  0.0638 Model9</span>
+  <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span>(metric = <span class="st">"rmse"</span>)
+
+<span class="kw">final_model</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span>()
+<span class="co">#&gt; # A tibble: 24 x 12</span>
+<span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span>
+<span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt;  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4  22.5</span>
+<span class="co">#&gt;  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4  22.1</span>
+<span class="co">#&gt;  3  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  21.0</span>
+<span class="co">#&gt;  4  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2  17.8</span>
+<span class="co">#&gt;  5  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1  20.5</span>
+<span class="co">#&gt;  6  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4  15.5</span>
+<span class="co">#&gt;  7  24.4     4  147.    62  3.69  3.19  20       1     0     4     2  22.9</span>
+<span class="co">#&gt;  8  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4  19.5</span>
+<span class="co">#&gt;  9  17.8     6  168.   123  3.92  3.44  18.9     1     0     4     4  19.6</span>
+<span class="co">#&gt; 10  10.4     8  472    205  2.93  5.25  18.0     0     0     3     4  12.6</span>
+<span class="co">#&gt; # … with 14 more rows</span>
 </pre></div>
 <p><code>tidyflow</code> has several advantages:</p>
 <ul>
-<li><p>You only specify the data once (no need to pass it to the recipe, the split, the cross-validation, the final fitting, the predicting, etc…)</p></li>
+<li><p>You only specify the data once (no need to pass it to the recipe, the split, the cross-validation, the final fitting, prediction, etc…)</p></li>
 <li><p>You provide a seed in the <code>tidyflow</code> and it makes sure the same <code>tidyflow</code> is <strong>always</strong> reproducible</p></li>
 <li><p>No need to deal with separate objects (training data, cross-validated set, separate tuning grid, separate recipe)</p></li>
 <li><p>No need to remember which <code>fit</code> function to use (<code>fit_resample</code>, <code>tune_grid</code>, <code>fit</code>): <code>fit</code> takes care of that and always returns either a model or a resamples/tune object</p></li>

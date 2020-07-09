@@ -107,7 +107,7 @@
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<p>Simple example:</p>
+<p><code>tidyflow</code> builds upon the work in <code>tidymodels</code> to create an expressive workflow for doing machine learning. Let’s suppose we want to fit a linear model to the model <code>mpg ~ .</code> on the training data of <code>mtcars</code>. We can define the split (training/testing), define our formula, define the statistical model and fit the tidyflow:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/tidymodels/tidymodels">tidymodels</a></span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span>)
@@ -119,62 +119,115 @@
   <span class="fu"><a href="reference/tidyflow.html">tidyflow</a></span>() <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/plug_split.html">plug_split</a></span>(<span class="kw">initial_split</span>) <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/plug_formula.html">plug_formula</a></span>(<span class="kw">mpg</span> <span class="op">~</span> <span class="kw">.</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/plug_model.html">plug_model</a></span>(<span class="fu">set_engine</span>(<span class="fu">linear_reg</span>(), <span class="st">"lm"</span>))
+  <span class="fu"><a href="reference/plug_model.html">plug_model</a></span>(<span class="fu">linear_reg</span>() <span class="op">%&gt;%</span> <span class="fu">set_engine</span>(<span class="st">"lm"</span>))
 
 <span class="co"># Fit model</span>
 <span class="kw">fit_m</span> <span class="op">&lt;-</span> <span class="fu">fit</span>(<span class="kw">tflow</span>)
 
+<span class="kw">fit_m</span>
+<span class="co">#&gt; ══ Tidyflow [trained] ══════════════════════════════════════════════════════════</span>
+<span class="co">#&gt; Data: 32 rows x 11 columns</span>
+<span class="co">#&gt; Split: initial_split w/ default args</span>
+<span class="co">#&gt; Formula: mpg ~ .</span>
+<span class="co">#&gt; Resample: None</span>
+<span class="co">#&gt; Grid: None</span>
+<span class="co">#&gt; Model:</span>
+<span class="co">#&gt; Linear Regression Model Specification (regression)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Computational engine: lm </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Fitted model:</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Call:</span>
+<span class="co">#&gt; stats::lm(formula = ..y ~ ., data = data)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Coefficients:</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ...</span>
+<span class="co">#&gt; and 5 more lines.</span>
+</pre></div>
+<p><code>tidyflow</code> will execute this order of steps: data -&gt; split training/testing -&gt; apply the formula and model to the training data. With this final model we can use the <code>predict_training</code> function to automatically predict on the training data:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit">
 <span class="co"># Predict on testing</span>
 <span class="kw">fit_m</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/predict-tidyflow.html">predict_training</a></span>()
 <span class="co">#&gt; # A tibble: 24 x 12</span>
 <span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span>
 <span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt;  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4  22.0</span>
-<span class="co">#&gt;  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4  21.8</span>
-<span class="co">#&gt;  3  22.8     4  108     93  3.85  2.32  18.6     1     1     4     1  27.7</span>
-<span class="co">#&gt;  4  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  22.2</span>
-<span class="co">#&gt;  5  24.4     4  147.    62  3.69  3.19  20       1     0     4     2  22.9</span>
-<span class="co">#&gt;  6  22.8     4  141.    95  3.92  3.15  22.9     1     0     4     2  24.0</span>
-<span class="co">#&gt;  7  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4  20.2</span>
-<span class="co">#&gt;  8  16.4     8  276.   180  3.07  4.07  17.4     0     0     3     3  14.5</span>
-<span class="co">#&gt;  9  15.2     8  276.   180  3.07  3.78  18       0     0     3     3  15.5</span>
-<span class="co">#&gt; 10  10.4     8  472    205  2.93  5.25  18.0     0     0     3     4  12.2</span>
+<span class="co">#&gt;  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4  20.4</span>
+<span class="co">#&gt;  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4  20.6</span>
+<span class="co">#&gt;  3  22.8     4  108     93  3.85  2.32  18.6     1     1     4     1  27.5</span>
+<span class="co">#&gt;  4  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  20.5</span>
+<span class="co">#&gt;  5  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2  18.2</span>
+<span class="co">#&gt;  6  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1  19.4</span>
+<span class="co">#&gt;  7  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4  14.2</span>
+<span class="co">#&gt;  8  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4  18.5</span>
+<span class="co">#&gt;  9  17.8     6  168.   123  3.92  3.44  18.9     1     0     4     4  19.4</span>
+<span class="co">#&gt; 10  16.4     8  276.   180  3.07  4.07  17.4     0     0     3     3  14.8</span>
 <span class="co">#&gt; # … with 14 more rows</span>
 </pre></div>
-<p>Complex example:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
+<p>Similarly, you can use <code>predict_testing</code> for predicting on the testing data.</p>
+<p>However, the usefulness of <code>tidyflow</code> is clearer when we perform more complex modelling. Let’s extend the previous model to include a cross-validation resample and to perform a grid search for a regularized regression:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="co"># Grid search will be performed on the penalty and mixture arguments</span>
+<span class="kw">regularized_mod</span> <span class="op">&lt;-</span> <span class="fu">linear_reg</span>(penalty = <span class="fu">tune</span>(), mixture = <span class="fu">tune</span>()) <span class="op">%&gt;%</span> <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>)
+
 <span class="co"># Build tidyflow</span>
 <span class="kw">tflow</span> <span class="op">&lt;-</span>
-  <span class="kw">mtcars</span> <span class="op">%&gt;%</span>
+  <span class="kw">mtcars</span> <span class="op">%&gt;%</span> <span class="co"># Start with the data</span>
   <span class="fu"><a href="reference/tidyflow.html">tidyflow</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/plug_split.html">plug_split</a></span>(<span class="kw">initial_split</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/plug_formula.html">plug_formula</a></span>(<span class="kw">mpg</span> <span class="op">~</span> <span class="kw">.</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/plug_resample.html">plug_resample</a></span>(<span class="kw">vfold_cv</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/plug_grid.html">plug_grid</a></span>(<span class="kw">grid_regular</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="reference/plug_model.html">plug_model</a></span>(<span class="fu">set_engine</span>(<span class="fu">linear_reg</span>(penalty = <span class="fu">tune</span>(), mixture = <span class="fu">tune</span>()), <span class="st">"glmnet"</span>))
+  <span class="fu"><a href="reference/plug_split.html">plug_split</a></span>(<span class="kw">initial_split</span>) <span class="op">%&gt;%</span> <span class="co"># Split into training/testing</span>
+  <span class="fu"><a href="reference/plug_formula.html">plug_formula</a></span>(<span class="kw">mpg</span> <span class="op">~</span> <span class="kw">.</span>) <span class="op">%&gt;%</span> <span class="co"># Define model specification</span>
+  <span class="fu"><a href="reference/plug_resample.html">plug_resample</a></span>(<span class="kw">vfold_cv</span>) <span class="op">%&gt;%</span> <span class="co"># Specify resample: cross-validation</span>
+  <span class="fu"><a href="reference/plug_grid.html">plug_grid</a></span>(<span class="kw">grid_regular</span>) <span class="op">%&gt;%</span>  <span class="co"># Define type of grid search</span>
+  <span class="fu"><a href="reference/plug_model.html">plug_model</a></span>(<span class="kw">regularized_mod</span>) <span class="co"># Define the type of model</span>
 
 <span class="co"># Fit model</span>
 <span class="kw">fit_m</span> <span class="op">&lt;-</span> <span class="fu">fit</span>(<span class="kw">tflow</span>)
-
+<span class="kw">fit_m</span>
+<span class="co">#&gt; ══ Tidyflow [tuned] ════════════════════════════════════════════════════════════</span>
+<span class="co">#&gt; Data: 32 rows x 11 columns</span>
+<span class="co">#&gt; Split: initial_split w/ default args</span>
+<span class="co">#&gt; Formula: mpg ~ .</span>
+<span class="co">#&gt; Resample: vfold_cv w/ default args</span>
+<span class="co">#&gt; Grid: grid_regular w/ default args</span>
+<span class="co">#&gt; Model:</span>
+<span class="co">#&gt; Linear Regression Model Specification (regression)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Main Arguments:</span>
+<span class="co">#&gt;   penalty = tune()</span>
+<span class="co">#&gt;   mixture = tune()</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Computational engine: glmnet </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Tuning results: </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; # A tibble: 5 x 4</span>
+<span class="co">#&gt;   splits         id     .metrics          .notes          </span>
+<span class="co">#&gt;   &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;            &lt;list&gt;          </span>
+<span class="co">#&gt; 1 &lt;split [21/3]&gt; Fold01 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt; 2 &lt;split [21/3]&gt; Fold02 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt; 3 &lt;split [21/3]&gt; Fold03 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt; 4 &lt;split [21/3]&gt; Fold04 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt; 5 &lt;split [22/2]&gt; Fold05 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ... and 5 more lines.</span>
+</pre></div>
+<p>The result is <strong>not</strong> a final model as before, but rather a grid search result. We can extract that and visualize it:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit">
 <span class="co"># Extract tuning grid</span>
 <span class="kw">fit_m</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>()
-<span class="co">#&gt; #  10-fold cross-validation </span>
-<span class="co">#&gt; # A tibble: 10 x 4</span>
-<span class="co">#&gt;    splits         id     .metrics          .notes          </span>
-<span class="co">#&gt;    &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;            &lt;list&gt;          </span>
-<span class="co">#&gt;  1 &lt;split [21/3]&gt; Fold01 &lt;tibble [18 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  2 &lt;split [21/3]&gt; Fold02 &lt;tibble [18 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  3 &lt;split [21/3]&gt; Fold03 &lt;tibble [18 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  4 &lt;split [21/3]&gt; Fold04 &lt;tibble [18 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  5 &lt;split [22/2]&gt; Fold05 &lt;tibble [18 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  6 &lt;split [22/2]&gt; Fold06 &lt;tibble [18 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  7 &lt;split [22/2]&gt; Fold07 &lt;tibble [18 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  8 &lt;split [22/2]&gt; Fold08 &lt;tibble [18 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  9 &lt;split [22/2]&gt; Fold09 &lt;tibble [18 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 10 &lt;split [22/2]&gt; Fold10 &lt;tibble [18 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-
+  <span class="fu"><a href="reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span>
+  <span class="fu">autoplot</span>()
+</pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-8-1.png" width="100%"></p>
+<p>You can finalize the <code>tidyflow</code> with <code>complete_tflow</code> which will select the best tuning parameters and train the model on the entire training data. This final model can be used for predicting on the training data and on the testing data automatically:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit">
 <span class="co"># Fit best model on the entire training data</span>
 <span class="kw">final_m</span> <span class="op">&lt;-</span>
   <span class="kw">fit_m</span> <span class="op">%&gt;%</span>
@@ -186,16 +239,16 @@
 <span class="co">#&gt; # A tibble: 24 x 12</span>
 <span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span>
 <span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt;  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4  21.9</span>
-<span class="co">#&gt;  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4  21.9</span>
-<span class="co">#&gt;  3  22.8     4  108     93  3.85  2.32  18.6     1     1     4     1  25.9</span>
-<span class="co">#&gt;  4  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  20.7</span>
-<span class="co">#&gt;  5  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2  16.9</span>
-<span class="co">#&gt;  6  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1  20.3</span>
-<span class="co">#&gt;  7  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4  13.7</span>
-<span class="co">#&gt;  8  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4  19.8</span>
-<span class="co">#&gt;  9  17.3     8  276.   180  3.07  3.73  17.6     0     0     3     3  16.1</span>
-<span class="co">#&gt; 10  15.2     8  276.   180  3.07  3.78  18       0     0     3     3  16.3</span>
+<span class="co">#&gt;  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4  22.2</span>
+<span class="co">#&gt;  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4  21.6</span>
+<span class="co">#&gt;  3  22.8     4  108     93  3.85  2.32  18.6     1     1     4     1  26.2</span>
+<span class="co">#&gt;  4  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  21.8</span>
+<span class="co">#&gt;  5  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2  18.2</span>
+<span class="co">#&gt;  6  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4  16.4</span>
+<span class="co">#&gt;  7  22.8     4  141.    95  3.92  3.15  22.9     1     0     4     2  23.5</span>
+<span class="co">#&gt;  8  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4  20.0</span>
+<span class="co">#&gt;  9  17.8     6  168.   123  3.92  3.44  18.9     1     0     4     4  20.0</span>
+<span class="co">#&gt; 10  16.4     8  276.   180  3.07  4.07  17.4     0     0     3     3  16.3</span>
 <span class="co">#&gt; # … with 14 more rows</span>
 
 <span class="co"># Predict on testing</span>
@@ -204,14 +257,14 @@
 <span class="co">#&gt; # A tibble: 8 x 12</span>
 <span class="co">#&gt;     mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span>
 <span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt; 1  24.4     4 147.     62  3.69  3.19  20       1     0     4     2  23.3</span>
-<span class="co">#&gt; 2  22.8     4 141.     95  3.92  3.15  22.9     1     0     4     2  24.9</span>
-<span class="co">#&gt; 3  17.8     6 168.    123  3.92  3.44  18.9     1     0     4     4  20.2</span>
-<span class="co">#&gt; 4  16.4     8 276.    180  3.07  4.07  17.4     0     0     3     3  15.5</span>
-<span class="co">#&gt; 5  10.4     8 472     205  2.93  5.25  18.0     0     0     3     4  12.6</span>
-<span class="co">#&gt; 6  27.3     4  79      66  4.08  1.94  18.9     1     1     4     1  27.6</span>
-<span class="co">#&gt; 7  30.4     4  95.1   113  3.77  1.51  16.9     1     1     5     2  25.2</span>
-<span class="co">#&gt; 8  15       8 301     335  3.54  3.57  14.6     0     1     5     8  12.1</span>
+<span class="co">#&gt; 1  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1  21.3</span>
+<span class="co">#&gt; 2  24.4     4  147.    62  3.69  3.19  20       1     0     4     2  23.7</span>
+<span class="co">#&gt; 3  17.3     8  276.   180  3.07  3.73  17.6     0     0     3     3  17.1</span>
+<span class="co">#&gt; 4  10.4     8  472    205  2.93  5.25  18.0     0     0     3     4  13.0</span>
+<span class="co">#&gt; 5  10.4     8  460    215  3     5.42  17.8     0     0     3     4  12.5</span>
+<span class="co">#&gt; 6  21.5     4  120.    97  3.7   2.46  20.0     1     0     3     1  25.4</span>
+<span class="co">#&gt; 7  15.5     8  318    150  2.76  3.52  16.9     0     0     3     2  18.2</span>
+<span class="co">#&gt; 8  13.3     8  350    245  3.73  3.84  15.4     0     0     3     4  15.8</span>
 </pre></div>
 </div>
 <div id="code-of-conduct" class="section level2">
