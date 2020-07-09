@@ -216,7 +216,7 @@ in an interactive fashion.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/tidymodels/recipes'>recipes</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/parsnip'>parsnip</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://parsnip.tidymodels.org'>parsnip</a></span>)
 
 <span class='co'># Passing a function to `plug_recipe`</span>
 <span class='kw'>recipe_fun</span> <span class='op'>&lt;-</span> <span class='fu'>function</span>(<span class='kw'>.x</span>) {
@@ -263,7 +263,7 @@ in an interactive fashion.</p>
 #&gt; Fitted model:
 #&gt; 
 #&gt; Call:
-#&gt; stats::lm(formula = formula, data = data)
+#&gt; stats::lm(formula = ..y ~ ., data = data)
 #&gt; 
 #&gt; Coefficients:
 #&gt; 
@@ -290,7 +290,7 @@ in an interactive fashion.</p>
 #&gt; Fitted model:
 #&gt; 
 #&gt; Call:
-#&gt; stats::lm(formula = formula, data = data)
+#&gt; stats::lm(formula = ..y ~ ., data = data)
 #&gt; 
 #&gt; Coefficients:
 #&gt; 
@@ -322,7 +322,7 @@ in an interactive fashion.</p>
 #&gt; Fitted model:
 #&gt; 
 #&gt; Call:
-#&gt; stats::lm(formula = formula, data = data)
+#&gt; stats::lm(formula = ..y ~ ., data = data)
 #&gt; 
 #&gt; Coefficients:
 #&gt; 

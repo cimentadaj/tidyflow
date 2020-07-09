@@ -189,9 +189,9 @@ value of <code>type</code>. Possible arguments are:</p><ul>
 is the parameter for the tail area of the intervals
 (e.g. confidence level for confidence intervals).
 Default value is 0.95.</p></li>
-<li><p><code>std_error</code>: add the standard error of fit or
-prediction for <code>type</code>s of "conf_int" and "pred_int".
-Default value is <code>FALSE</code>.</p></li>
+<li><p><code>std_error</code>: add the standard error of fit or prediction (on
+the scale of the linear predictors) for <code>type</code>s of "conf_int"
+and "pred_int". Default value is <code>FALSE</code>.</p></li>
 <li><p><code>quantile</code>: the quantile(s) for quantile regression
 (not implemented yet)</p></li>
 <li><p><code>time</code>: the time(s) for hazard probability estimates
@@ -206,7 +206,7 @@ Default value is <code>FALSE</code>.</p></li>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/parsnip'>parsnip</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://parsnip.tidymodels.org'>parsnip</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/tidymodels/recipes'>recipes</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://rsample.tidymodels.org'>rsample</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/dials'>dials</a></span>)
@@ -239,7 +239,7 @@ Default value is <code>FALSE</code>.</p></li>
 <span class='kw'>res</span> <span class='op'>&lt;-</span>
  <span class='kw'>tflow</span> <span class='op'>%&gt;%</span>
  <span class='co'># Adds a grid search for the polynomials of qsec</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>replace_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, data = <span class='kw'>.</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span>(<span class='kw'>hp</span>, deg_free = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>())) <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>replace_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, data = <span class='kw'>.</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span>(<span class='kw'>hp</span>, deg_free = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>())) <span class='op'>%&gt;%</span>
  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_resample.html'>plug_resample</a></span>(<span class='kw'>vfold_cv</span>, v = <span class='fl'>2</span>) <span class='op'>%&gt;%</span> 
  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_grid.html'>plug_grid</a></span>(<span class='kw'>grid_regular</span>, levels = <span class='fl'>1</span>) <span class='op'>%&gt;%</span>
  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>()

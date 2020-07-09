@@ -183,8 +183,8 @@ formula/recipe and the model</p></li>
 extract only the training data.</p></li>
 <li><p>Apply the formula or the recipe to the training data. Whenever the
 user specifies a resample or a grid, the recipe is not applied. Instead,
-the recipe is passed to either <code><a href='https://rdrr.io/pkg/tune/man/fit_resamples.html'>fit_resamples</a></code> or
-<code><a href='https://rdrr.io/pkg/tune/man/tune_grid.html'>tune_grid</a></code> and let these functions apply it.</p></li>
+the recipe is passed to either <code><a href='https://tune.tidymodels.org/reference/fit_resamples.html'>fit_resamples</a></code> or
+<code><a href='https://tune.tidymodels.org/reference/tune_grid.html'>tune_grid</a></code> and let these functions apply it.</p></li>
 <li><p>Apply the resample function to the training data. As described in
 the item above, the recipe is not applied to the training data previous
 to this step.</p></li>
@@ -205,7 +205,7 @@ be the one described above skipping any steps that are not specified.</p></li>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/parsnip'>parsnip</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://parsnip.tidymodels.org'>parsnip</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/tidymodels/recipes'>recipes</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/tidymodels/tune'>tune</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/dials'>dials</a></span>)
@@ -253,7 +253,7 @@ be the one described above skipping any steps that are not specified.</p></li>
 <span class='co'># We can accumulate steps and add a cross-validation and tuning grid.</span>
 <span class='co'># Fit a regularized regression through a grid search.</span>
 <span class='co'># Do this by updating the already defined model:</span>
-<span class='kw'>new_mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>(), mixture = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>()),
+<span class='kw'>new_mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>(), mixture = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>()),
                       <span class='st'>"glmnet"</span>)
 <span class='kw'>tuned_res</span> <span class='op'>&lt;-</span>
   <span class='kw'>recipe_tidyflow</span> <span class='op'>%&gt;%</span>

@@ -241,7 +241,7 @@ see the example section.</p></li>
 
 <p>Regardless of the type of function used in <code>plug_grid</code>, if a tuning
 parameter in the model/recipe is assigned a name (for example,
-<code><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune("new_name")</a></code>) and the user is interested in specifying
+<code><a href='https://tune.tidymodels.org/reference/tune.html'>tune("new_name")</a></code>) and the user is interested in specifying
 the tuning values for that parameter using <code>plug_grid</code> or
 <code>replace_grid</code>, then the parameter name in <code>...</code> should have
 the custom name. See the example section for a concrete example.</p>
@@ -249,7 +249,7 @@ the custom name. See the example section for a concrete example.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/parsnip'>parsnip</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://parsnip.tidymodels.org'>parsnip</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://rsample.tidymodels.org'>rsample</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/tidymodels/tune'>tune</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/dials'>dials</a></span>)
@@ -267,7 +267,7 @@ the custom name. See the example section for a concrete example.</p>
   <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>plug_split</a></span>(<span class='kw'>initial_split</span>) <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>plug_formula</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>) <span class='op'>%&gt;%</span> 
   <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_resample.html'>plug_resample</a></span>(<span class='kw'>vfold_cv</span>) <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_model.html'>plug_model</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>(), mixture = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>()), <span class='st'>"glmnet"</span>)) <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_model.html'>plug_model</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>(), mixture = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>()), <span class='st'>"glmnet"</span>)) <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_grid.html'>plug_grid</a></span>(<span class='kw'>grid_regular</span>, levels = <span class='fl'>5</span>)
 
 <span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>mod</span>)
@@ -289,7 +289,7 @@ the custom name. See the example section for a concrete example.</p>
 <span class='co'># And explore it:</span>
 
 <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span>(<span class='kw'>res</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tune/man/collect_predictions.html'>collect_metrics</a></span>()
+ <span class='fu'><a href='https://tune.tidymodels.org/reference/collect_predictions.html'>collect_metrics</a></span>()
 
 <span class='co'># If you want to specify tuning values, you can do so with</span>
 <span class='co'># `plug_grid` or `replace_grid` but they must have the same</span>
@@ -301,13 +301,13 @@ the custom name. See the example section for a concrete example.</p>
 
 <span class='kw'>res2</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span>() <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/tune/man/show_best.html'>show_best</a></span>(<span class='st'>"rsq"</span>)
+  <span class='fu'><a href='https://tune.tidymodels.org/reference/show_best.html'>show_best</a></span>(<span class='st'>"rsq"</span>)
 
 <span class='co'># If tune assigns a name, then `plug_grid` or `replace_grid` must</span>
 <span class='co'># use that name to replace it</span>
 <span class='kw'>model</span> <span class='op'>&lt;-</span>
   <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(
-    <span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>(<span class='st'>"my_penalty"</span>), mixture = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>(<span class='st'>"my_mixture"</span>)),
+    <span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>(<span class='st'>"my_penalty"</span>), mixture = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>(<span class='st'>"my_mixture"</span>)),
     <span class='st'>"glmnet"</span>
   )
 
@@ -320,7 +320,7 @@ the custom name. See the example section for a concrete example.</p>
 
 <span class='kw'>res3</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span>() <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/tune/man/show_best.html'>show_best</a></span>(<span class='st'>"rsq"</span>)
+  <span class='fu'><a href='https://tune.tidymodels.org/reference/show_best.html'>show_best</a></span>(<span class='st'>"rsq"</span>)
 
 <span class='co'># If you want to create a grid of all possible combination of the tuning</span>
 <span class='co'># parameters, you must use only `expand.grid` and name every single</span>
@@ -341,18 +341,18 @@ the custom name. See the example section for a concrete example.</p>
 <span class='co'># all combination of the supplied values</span>
 <span class='kw'>res4</span> <span class='op'>%&gt;%</span>
  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span>() <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tune/man/collect_predictions.html'>collect_metrics</a></span>()
+ <span class='fu'><a href='https://tune.tidymodels.org/reference/collect_predictions.html'>collect_metrics</a></span>()
 
 <span class='co'># You can also tune values from a recipe directly</span>
 <span class='kw'>res5</span> <span class='op'>&lt;-</span>
   <span class='kw'>res3</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>drop_formula</a></span>() <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, data = <span class='kw'>.</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span>(<span class='kw'>hp</span>, deg_free = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>())) <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, data = <span class='kw'>.</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span>(<span class='kw'>hp</span>, deg_free = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>())) <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>()
 
 <span class='kw'>res5</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span>() <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/tune/man/show_best.html'>show_best</a></span>(<span class='st'>"rsq"</span>)
+  <span class='fu'><a href='https://tune.tidymodels.org/reference/show_best.html'>show_best</a></span>(<span class='st'>"rsq"</span>)
 }
 </div></pre>
   </div>

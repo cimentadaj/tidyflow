@@ -152,7 +152,7 @@
     <p>A tibble of class parameters</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>parameters</code> extracts the <code><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></code> parameters
+    <p><code>parameters</code> extracts the <code><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></code> parameters
 from both the model and recipe. In principle, the user never should need to
 extract them. Behind the scenes, <code>tidyflow</code> extracts them and generates
 random values based on the defaults by <code>link[dials]{dials}</code>. However,
@@ -177,7 +177,7 @@ model and after the model fit.</p>
 #&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='output co'>#&gt; <span class='message'></span>
 #&gt; <span class='message'>Attaching package: ‘recipes’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:stats’:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    step</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/parsnip'>parsnip</a></span>)
+#&gt; <span class='message'>    step</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://parsnip.tidymodels.org'>parsnip</a></span>)
 
 <span class='kw'>tflow</span> <span class='op'>&lt;-</span>
   <span class='kw'>mtcars</span> <span class='op'>%&gt;%</span>
@@ -197,7 +197,7 @@ model and after the model fit.</p>
 <span class='co'># But if we add tuning parameters, we can check which ones:</span>
 <span class='kw'>tflow</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>drop_formula</a></span>() <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, data = <span class='kw'>.</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span>(<span class='kw'>hp</span>, deg_free = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>())) <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, data = <span class='kw'>.</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span>(<span class='kw'>hp</span>, deg_free = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>())) <span class='op'>%&gt;%</span>
   <span class='kw'>tidyflow</span>::<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/parameters-tidyflow.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 1 parameters for tuning
 #&gt; 
 #&gt;        id parameter type object class
@@ -208,8 +208,8 @@ model and after the model fit.</p>
 <span class='kw'>tflow</span> <span class='op'>&lt;-</span>
   <span class='kw'>tflow</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>drop_formula</a></span>() <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, data = <span class='kw'>.</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span>(<span class='kw'>hp</span>, deg_free = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>())) <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_model.html'>replace_model</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>(), mixture = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>()), <span class='st'>"glmnet"</span>))
+  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, data = <span class='kw'>.</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span>(<span class='kw'>hp</span>, deg_free = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>())) <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_model.html'>replace_model</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>(), mixture = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>()), <span class='st'>"glmnet"</span>))
 
 <span class='kw'>tidyflow</span>::<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/parameters-tidyflow.html'>parameters</a></span>(<span class='kw'>tflow</span>)</div><div class='output co'>#&gt; Collection of 3 parameters for tuning
 #&gt; 

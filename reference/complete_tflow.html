@@ -155,24 +155,24 @@
     <tr>
       <th>...</th>
       <td><p>Extra arguments passed to
-<code><a href='https://rdrr.io/pkg/tune/man/show_best.html'>select_by_one_std_err</a></code> or
-<code><a href='https://rdrr.io/pkg/tune/man/show_best.html'>select_by_pct_loss</a></code></p></td>
+<code><a href='https://tune.tidymodels.org/reference/show_best.html'>select_by_one_std_err</a></code> or
+<code><a href='https://tune.tidymodels.org/reference/show_best.html'>select_by_pct_loss</a></code></p></td>
     </tr>
     <tr>
       <th>best_params</th>
       <td><p>A 1 row tibble with the best parameters to fit the final
 model. Should have the same format as the result of
-<code><a href='https://rdrr.io/pkg/tune/man/show_best.html'>select_best</a></code>,
-<code><a href='https://rdrr.io/pkg/tune/man/show_best.html'>select_by_one_std_err</a></code> or
-<code><a href='https://rdrr.io/pkg/tune/man/show_best.html'>select_by_pct_loss</a></code>. If <code>best_params</code> is specified,
+<code><a href='https://tune.tidymodels.org/reference/show_best.html'>select_best</a></code>,
+<code><a href='https://tune.tidymodels.org/reference/show_best.html'>select_by_one_std_err</a></code> or
+<code><a href='https://tune.tidymodels.org/reference/show_best.html'>select_by_pct_loss</a></code>. If <code>best_params</code> is specified,
 the <code>method</code>, <code>metric</code> and <code>...</code> arguments are ignored.</p></td>
     </tr>
     <tr>
       <th>method</th>
       <td><p>which method to use. The possible values are
-<code><a href='https://rdrr.io/pkg/tune/man/show_best.html'>select_best</a></code>, <code><a href='https://rdrr.io/pkg/tune/man/show_best.html'>select_by_one_std_err</a></code> or
-<code><a href='https://rdrr.io/pkg/tune/man/show_best.html'>select_by_pct_loss</a></code>. By default, it uses
-<code><a href='https://rdrr.io/pkg/tune/man/show_best.html'>select_best</a></code>.</p></td>
+<code><a href='https://tune.tidymodels.org/reference/show_best.html'>select_best</a></code>, <code><a href='https://tune.tidymodels.org/reference/show_best.html'>select_by_one_std_err</a></code> or
+<code><a href='https://tune.tidymodels.org/reference/show_best.html'>select_by_pct_loss</a></code>. By default, it uses
+<code><a href='https://tune.tidymodels.org/reference/show_best.html'>select_best</a></code>.</p></td>
     </tr>
     <tr>
       <th>control</th>
@@ -196,13 +196,13 @@ training or test data with <code><a href='https://rdrr.io/pkg/tidyflow/man/predi
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/parsnip'>parsnip</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://parsnip.tidymodels.org'>parsnip</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/tidymodels/tune'>tune</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/dials'>dials</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://rsample.tidymodels.org'>rsample</a></span>)
 
 <span class='co'># Fit a regularized regression through a grid search.</span>
-<span class='kw'>reg_mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>(), mixture = <span class='fu'><a href='https://rdrr.io/pkg/tune/man/tune.html'>tune</a></span>()), <span class='st'>"glmnet"</span>)
+<span class='kw'>reg_mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>(), mixture = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>()), <span class='st'>"glmnet"</span>)
 <span class='kw'>tuned_res</span> <span class='op'>&lt;-</span>
  <span class='kw'>mtcars</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow.html'>tidyflow</a></span>() <span class='op'>%&gt;%</span> 
@@ -233,7 +233,7 @@ training or test data with <code><a href='https://rdrr.io/pkg/tidyflow/man/predi
 <span class='co'># to override the automatic extraction of the best fit. If you</span>
 <span class='co'># specify `best_params` it will override all other arguments</span>
 
-<span class='kw'>best_params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tune/man/show_best.html'>select_best</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span>(<span class='kw'>tuned_res</span>), metric = <span class='st'>"rmse"</span>)
+<span class='kw'>best_params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://tune.tidymodels.org/reference/show_best.html'>select_best</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span>(<span class='kw'>tuned_res</span>), metric = <span class='st'>"rmse"</span>)
 <span class='kw'>final_model_custom</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/complete_tflow.html'>complete_tflow</a></span>(<span class='kw'>tuned_res</span>, best_params = <span class='kw'>best_params</span>)
 
 <span class='co'># To see the final tuning values, extract the model spec</span>

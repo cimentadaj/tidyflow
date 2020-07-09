@@ -187,7 +187,7 @@ used for those purposes.</p></td>
     <p><code><a href='https://rdrr.io/pkg/tidyflow/man/plug_model.html'>plug_model()</a></code> is a required step to construct a minimal tidyflow.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/parsnip'>parsnip</a></span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://parsnip.tidymodels.org'>parsnip</a></span>)
 
 <span class='co'># Define two competing model:</span>
 <span class='kw'>lm_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(), <span class='st'>"lm"</span>)
@@ -227,10 +227,10 @@ used for those purposes.</p></td>
 <span class='kw'>fitted</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit</a></span>()</div><div class='output co'>#&gt; parsnip model object
 #&gt; 
-#&gt; Fit time:  5ms 
+#&gt; Fit time:  4ms 
 #&gt; 
 #&gt; Call:
-#&gt; stats::lm(formula = formula, data = data)
+#&gt; stats::lm(formula = ..y ~ ., data = data)
 #&gt; 
 #&gt; Coefficients:
 #&gt; (Intercept)          cyl         disp           hp         drat           wt  
