@@ -323,7 +323,6 @@ test_training(tflow)
 
 # Specific tests for when when = TRUE with tuning values in recipe and/or
 # formula preprocessor
-
 pull_tflow_tests <- function(tflow, fun, fun_str) {
   test_that(paste0(fun_str, ", prep = TRUE, raises error when tune is in recipe and works when complete_tflow"), {
 
@@ -346,10 +345,10 @@ pull_tflow_tests <- function(tflow, fun, fun_str) {
     r2 <- fun(t2, prep = TRUE)
     # Check that the tuning value in the recipe is applied. This means
     # that qsec is added 10 new columns for the natural splines
-    expect_equal(ncol(r2), 20)
+    expect_equal(ncol(r2), 16)
     # check the columns names are the 10 new natural splines for qsec
     expect_true(
-      all(paste0("qsec_ns_", formatC(1:10, flag = "0", digits = 1)) %in% names(r2))
+      all(paste0("qsec_ns_", 1:6) %in% names(r2))
     )
   })
 

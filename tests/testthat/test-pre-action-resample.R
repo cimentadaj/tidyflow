@@ -133,7 +133,8 @@ test_that("Can add resample after model fit and refit", {
   mod1_no_resample <- fit(tflow)
   mod2_resample <- fit(plug_resample(mod1_no_resample, rsample::vfold_cv, v = 2))
 
-  expect_is(pull_tflow_fit_tuning(mod2_resample), "rset")
+  resample_class <- c("resample_results", "tune_results", "tbl_df", "tbl", "data.frame")
+  expect_is(pull_tflow_fit_tuning(mod2_resample), resample_class)
   expect_false(mod2_resample$trained)
 })
 

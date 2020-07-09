@@ -48,6 +48,10 @@ tflow <- fit(plug_grid(tflow, dials::grid_regular, levels = 10))
 
 test_that("complete_tflow works exactly with select_best", {
   best_tune <- select_best(pull_tflow_fit_tuning(tflow), metric = "rmse")
+  # Remove the config column JUST so you can compare the
+  # tuning parameter values. This column is used in all other
+  # settings.
+  best_tune$.config <- NULL
   best_model <- complete_tflow(tflow, metric = "rmse")
   model_params <- lapply(pull_tflow_spec(best_model)$args, rlang::eval_tidy)
   expect_identical(model_params, as.list(best_tune))
@@ -88,7 +92,13 @@ test_that("complete_tflow works exactly with select_by_pct_loss", {
 test_that("best_params overrides method in complete_tflow", {
   # Extract best tune but add a random number to make sure that
   # complete_tflow uses this `best_params` over the best one
-  best_tune <- select_best(pull_tflow_fit_tuning(tflow), metric = "rmse") + 0.05
+  best_tune <- select_best(pull_tflow_fit_tuning(tflow), metric = "rmse")
+  
+  # Remove .config just to be able to treat best_tune as a numeric df
+  # and add 0.05 below. This is because .config is a character vector.
+  best_tune$.config <- NULL
+  
+  best_tune <- best_tune + 0.05
   random_model <- complete_tflow(tflow, metric = "rmse", best_params = best_tune)
   model_params <- lapply(pull_tflow_spec(random_model)$args, rlang::eval_tidy)
   expect_identical(model_params, as.list(best_tune))

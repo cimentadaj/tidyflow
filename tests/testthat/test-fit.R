@@ -108,7 +108,8 @@ test_that("can `fit()` regardless of order", {
   tflow <- plug_model(tflow, mod)
   result <- fit(tflow)
 
-  expect_is(pull_tflow_fit_tuning(result), "rset")
+  resample_class <- c("resample_results", "tune_results", "tbl_df", "tbl", "data.frame")
+  expect_is(pull_tflow_fit_tuning(result), resample_class)
 
   # 'Random order'
   tflow2 <- tidyflow(seed = 23151)
@@ -119,7 +120,7 @@ test_that("can `fit()` regardless of order", {
   tflow2 <- plug_data(tflow2, mtcars)
   result2 <- fit(tflow2)
 
-  expect_is(pull_tflow_fit_tuning(result2), "rset")
+  expect_is(pull_tflow_fit_tuning(result2), resample_class)
 
   expect_equal(rsplit2df(result),
                rsplit2df(result2))
