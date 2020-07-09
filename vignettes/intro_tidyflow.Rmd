@@ -81,7 +81,7 @@ The result of `fit` is the same `tflow` but with a fitted model. You might see s
 pull_tflow_fit(res)$fit
 ```
 
-Now, let's add a preprocessing step where we normalize all variables:
+Suppose that after looking at the results you want to go back and normalize all variables. You can reuse the entire `tidyflow` and just replace the formula with a recipe. Let's add a preprocessing step where we normalize all variables:
 
 ```{r}
 res2 <-
@@ -93,7 +93,7 @@ res2 <-
 pull_tflow_fit(res2)$fit
 ```
 
-`tidyflow` allows you to recycle the entire flow and drop/replace any parts that you want to. Let's now add a cross-validation step and fit the model:
+`tidyflow` allows you to recycle the entire flow and drop/replace any parts that you want to. Why did we drop the formula before adding a recipe? Because `tidyflow` the 'preprocessing' step only accepts either a formula or a recipe. For simpler models, a formula might be enough, but if you want to add additional preprocessing step, the recipe can be handy. Let's now add a cross-validation step and fit the model:
 
 ```{r}
 res3 <-
@@ -129,7 +129,7 @@ res4 <-
 res4
 ```
 
-Since we specified a resampling with a grid search, the result will be a resample/tuning object. We can extract it with `pull_tflow_fit_tuning` and check which are the best tuning values:
+Since we specified a cross-validating resampling with a grid search, the result will be a resample/tuning object. We can extract it with `pull_tflow_fit_tuning` and check which are the best tuning values:
 
 ```{r}
 
@@ -177,15 +177,18 @@ tflow <-
   plug_grid(grid_regular) %>%
   plug_model(linear_reg(penalty = tune(), mixture = tune()) %>% set_engine("glmnet"))
 
-tflow %>%
+final_model <-
+  tflow %>%
   fit() %>%
-  pull_tflow_fit_tuning() %>%
-  collect_metrics()
+  complete_tflow(metric = "rmse")
+
+final_model %>%
+  predict_training()
 ```
 
 `tidyflow` has several advantages:
 
-* You only specify the data once (no need to pass it to the recipe, the split, the cross-validation, the final fitting, the predicting, etc...)
+* You only specify the data once (no need to pass it to the recipe, the split, the cross-validation, the final fitting, prediction, etc...)
 
 * You provide a seed in the `tidyflow` and it makes sure the same `tidyflow` is **always** reproducible
 

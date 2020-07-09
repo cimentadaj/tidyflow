@@ -47,6 +47,7 @@ Fitting a tidyflow currently involves several steps:
 formula/recipe and the model
 \item Execute each step in the \code{tidyflow} in this order:
 \itemize{
+
 \item Apply the split passed by \code{\link[rsample]{initial_split}} and
 extract only the training data.
 

@@ -38,7 +38,9 @@ Suggests:
     testthat (>= 2.3.0),
     glmnet,
     randomForest,
-    tidymodels
+    tidymodels,
+    nycflights13,
+    timeDate
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

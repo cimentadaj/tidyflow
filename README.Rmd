@@ -39,7 +39,7 @@ devtools::install_github("cimentadaj/tidyflow")
  
 ## Example
 
-Simple example:
+`tidyflow` builds upon the work in `tidymodels` to create an expressive workflow for doing machine learning. Let's suppose we want to fit a linear model to the model `mpg ~ .` on the training data of `mtcars`. We can define the split (training/testing), define our formula, define the statistical model and fit the tidyflow:
 
 ```{r, message = FALSE, eval = FALSE}
 library(tidymodels)
@@ -49,7 +49,6 @@ library(tidyflow)
 ```{r, echo = FALSE, message = FALSE}
 library(rsample)
 library(tune)
-
 library(parsnip)
 library(rsample)
 library(dials)
@@ -63,36 +62,57 @@ tflow <-
   tidyflow() %>%
   plug_split(initial_split) %>%
   plug_formula(mpg ~ .) %>%
-  plug_model(set_engine(linear_reg(), "lm"))
+  plug_model(linear_reg() %>% set_engine("lm"))
 
 # Fit model
 fit_m <- fit(tflow)
 
+fit_m
+```
+
+`tidyflow` will execute this order of steps: data -> split training/testing -> apply the formula and model to the training data. With this final model we can use the `predict_training` function to automatically predict on the training data:
+
+```{r}
 # Predict on testing
 fit_m %>%
   predict_training()
 ```
 
-Complex example:
+Similarly, you can use `predict_testing` for predicting on the testing data.
 
-```{r }
+However, the usefulness of `tidyflow` is clearer when we perform more complex modelling. Let's extend the previous model to include a cross-validation resample and to perform a grid search for a regularized regression:
+
+```{r}
+# Grid search will be performed on the penalty and mixture arguments
+regularized_mod <- linear_reg(penalty = tune(), mixture = tune()) %>% set_engine("glmnet")
+
 # Build tidyflow
 tflow <-
-  mtcars %>%
+  mtcars %>% # Start with the data
   tidyflow() %>%
-  plug_split(initial_split) %>%
-  plug_formula(mpg ~ .) %>%
-  plug_resample(vfold_cv) %>%
-  plug_grid(grid_regular) %>% 
-  plug_model(set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet"))
+  plug_split(initial_split) %>% # Split into training/testing
+  plug_formula(mpg ~ .) %>% # Define model specification
+  plug_resample(vfold_cv) %>% # Specify resample: cross-validation
+  plug_grid(grid_regular) %>%  # Define type of grid search
+  plug_model(regularized_mod) # Define the type of model
 
 # Fit model
 fit_m <- fit(tflow)
+fit_m
+```
 
+The result is **not** a final model as before, but rather a grid search result. We can extract that and visualize it:
+
+```{r}
 # Extract tuning grid
 fit_m %>%
-  pull_tflow_fit_tuning()
+  pull_tflow_fit_tuning() %>%
+  autoplot()
+```
 
+You can finalize the `tidyflow` with `complete_tflow` which will select the best tuning parameters and train the model on the entire training data. This final model can be used for predicting on the training data and on the testing data automatically:
+
+```{r}
 # Fit best model on the entire training data
 final_m <-
   fit_m %>%

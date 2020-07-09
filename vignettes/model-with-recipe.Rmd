@@ -10,21 +10,144 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  eval = FALSE
+  comment = "#>"
+  ## eval = FALSE
 )
 ```
 
 
-This vignette aims to exemplify how you can use recipes within a `tidyflow`. The content and analysis is taken directly from the great work of the `tidymodels` team [here](https://www.tidymodels.org/start/recipes/).
+This vignette aims to exemplify how you can use recipes within a `tidyflow`.
 
+A tidyflow is a bundle of steps that allow you to bundle together your data, splitting, resampling, preprocessing, modeling, and grid search. For preprocessing your data, the `tidymodels` ecosystem contains the `recipes` package. This package allows to create very concise and clean pipelines of transforming your data. Let's create a very simple recipe that takes the logarithm of the variable `qsec`:
 
+```{r}
+library(tidymodels)
+library(tidyflow)
+```
+
+```{r, echo = FALSE, message = FALSE}
+library(rsample)
+library(tune)
+library(parsnip)
+library(rsample)
+library(dials)
+library(tidyflow)
+```
+
+```{r }
+rcp <-
+  mtcars %>%
+  recipe(mpg ~ .) %>%
+  step_log(qsec)
+  
+rcp
+```
+
+The recipe contains the model formula (`mpg ~ .`) and a preprocessing step `step_log(qsec)`. How do we incorporate this in our `tidyflow`? We use `plug_recipe` but we need to change this recipe to be a formula:
+
+```{r}
+rcp <-
+  ~ .x %>%
+    recipe(mpg ~ .) %>%
+    step_log(qsec)
+
+tflow <-
+  mtcars %>%
+  tidyflow(seed = 5131) %>%
+  plug_recipe(rcp)
+
+tflow
+```
+
+Did you notice that we replace `mtcars` with `.x` and that `.x` has a `~` in front of it? Those are the only two things that changes from our previous recipe. `tidyflow` already knows that `.x` will be the placeholder for the data and will figure out where to place the recipe in the order of execution. 
+
+Having said this, there's no need to specify a formula for the model definition: the recipe already contains this formula! So let's split the data into training and testing and fit a linear regression:
+
+```{r}
+tflow <-
+  tflow %>%
+  plug_split(initial_split) %>%
+  plug_model(linear_reg() %>% set_engine("lm"))
+
+final_model <- tflow %>% fit()
+
+final_model %>%
+  pull_tflow_fit()
+```
+
+Defining your preprocessing steps in the recipe has several advantages among which are that the `tidyflow` takes care of applying these preprocessing steps in the training/testing data automatically. You can automatically predict on the training data and expect the `tidyflow` to calculate the log of `qsec` automatically:
+
+```{r}
+final_model %>%
+  predict_training()
+```
+
+Note that the `qsec` column here is untransformed but the model used to predict on the new `.pred` column was indeed logged. How can you be sure? You can extract the transformed training data with `pull_tflow_training` with `prep = TRUE`:
+
+```{r}
+final_model %>%
+  pull_tflow_training(prep = TRUE)
+```
+
+One drawback from the print out of the `tidyflow` is that you can really see the type of preprocessing that was used for fitting the model. `pull_tflow_prepped_recipe` returns the fitted recipe on the final model and contains all the steps used in the recipe:
+
+```{r}
+final_model %>%
+  pull_tflow_prepped_recipe()
+```
+
+Another advantage of a recipe preprocessing step is that it allows to perform a grid search on values defined in the preprocessing. For example, suppose we want to calculate the polynomial of `sec`. We could try `qsec^2`, `qsec^3`, etc... Until we find a polynomial that maximizes our predictive accuracy. Recipes accept an object called `tune` that signals that we will try many values for a particular argument (polynomials in this case). If you specify a `plug_split`, `tidyflow` can figure out some possible values to use are run the entire grid search for you. For example:
+
+```{r}
+# New recipe that will try many values for degree
+# degree here means the polynomial degree.
+# For example, qsec^2, qsec^3, etc...
+rcp <-
+  ~ .x %>%
+    recipe(mpg ~ .) %>%
+    step_poly(qsec, degree = tune())
+
+final_model <-
+  tflow %>% # Reuse the same tidyflow from before
+  replace_recipe(rcp) %>% # Replace the recipe with the new one
+  plug_resample(vfold_cv) %>% # Plug in the cross-validation for grid search
+  plug_grid(grid_regular) %>% # Plug in the type of grid search
+  fit()
+
+final_model
+```
+
+The result is now a tuning grid and **not** a final model. As expected, this is because `tidyflow` already fit many models using different values for `degree`. We can explore the performance of the model with this model.
+
+```{r}
+final_model %>%
+  pull_tflow_fit_tuning() %>%
+  autoplot()
+```
+
+The lowest error for both the $RMSE$ and the $R^2$ seems to be a model of `degree = 2`. We can specify this directly into `complete_tflow` or just allow `complete_tflow` to determine this for you:
+
+```{r}
+# Manual approach
+best_model <- final_model %>% complete_tflow(best_params = data.frame(degree = 2))
+
+# Allow `complete_tflow` to determine this for you
+best_model <- final_model %>% complete_tflow(metric = "rmse")
+
+best_model %>%
+  predict_training()
+```
+
+The `recipes` package and `tidymodels` and very powerful tools for doing machine learning. In this vignette, I tried to extend their work by providing a unified interface for working with `tidymodels` that uses the recipe framework bundled together with all the other common machine learning steps.
+
+Want to see tidyflow and recipes in action? The `tidymodels` team has a vignette showcasing how to use `recipes` and `tidymodels` [here](https://www.tidymodels.org/start/recipes/). I've adapted their code to fully run within a `tidyflow` workflow. Here's the replication code:
 
 ```{r }
 library(tidymodels)
 library(tidyflow)
 library(nycflights13)
 
+## Start initial preprocessing
 flight_data <- 
   flights %>% 
   mutate(
@@ -45,15 +168,20 @@ flight_data <-
   # encoded as factors (instead of character strings)
   mutate_if(is.character, as.factor)
 
-flight_rec <-
-  ~ recipe(arr_delay ~ ., data = .x) %>% 
-  update_role(flight, time_hour, new_role = "ID") %>% 
-  step_date(date, features = c("dow", "month")) %>% 
-  step_holiday(date, holidays = timeDate::listHolidays("US")) %>% 
-  step_rm(date) %>% 
-  step_dummy(all_nominal(), -all_outcomes()) %>% 
-  step_zv(all_predictors())
+## End initial preprocessing
 
+# Model formula and recipe preprocessing
+flight_rec <-
+  ~ .x %>%
+    recipe(arr_delay ~ .) %>% 
+    update_role(flight, time_hour, new_role = "ID") %>% 
+    step_date(date, features = c("dow", "month")) %>% 
+    step_holiday(date, holidays = timeDate::listHolidays("US")) %>% 
+    step_rm(date) %>% 
+    step_dummy(all_nominal(), -all_outcomes()) %>% 
+    step_zv(all_predictors())
+
+# tidyflow preparation with the recipe
 tflow <-
   flight_data %>%
   tidyflow(seed = 555) %>%
@@ -61,256 +189,252 @@ tflow <-
   plug_recipe(flight_rec) %>%
   plug_model(logistic_reg() %>% set_engine("glm"))
 
+# Fit final model
 flights_fit <- fit(tflow)
 
-flights_fit %>% 
-  pull_tflow_fit() %>% 
-  tidy()
-
+# Predict on testing and evaluate a `roc_curve`
 flights_fit %>%
   predict_testing(type = "prob") %>%
   roc_curve(truth = arr_delay, .pred_late) %>% 
   autoplot()
-
-
 ```
 
 
-```{r}
-library(tidymodels) # for the rsample package, along with the rest of tidymodels
-library(tidyflow)
-library(modeldata)  # for the cells data
+<!-- ```{r} -->
+<!-- library(tidymodels) # for the rsample package, along with the rest of tidymodels -->
+<!-- library(tidyflow) -->
+<!-- library(modeldata)  # for the cells data -->
 
-data(cells, package = "modeldata")
+<!-- data(cells, package = "modeldata") -->
 
-rf_mod <- 
-  rand_forest(trees = 1000) %>% 
-  set_engine("ranger") %>% 
-  set_mode("classification")
+<!-- rf_mod <-  -->
+<!--   rand_forest(trees = 1000) %>%  -->
+<!--   set_engine("ranger") %>%  -->
+<!--   set_mode("classification") -->
 
-rf_fit <-
-  cells %>%
-  tidyflow(seed = 123) %>%
-  plug_split(initial_split, strata = "class") %>%
-  plug_formula(class ~ .) %>% 
-  plug_model(rf_mod) %>%
-  fit()
+<!-- rf_fit <- -->
+<!--   cells %>% -->
+<!--   tidyflow(seed = 123) %>% -->
+<!--   plug_split(initial_split, strata = "class") %>% -->
+<!--   plug_formula(class ~ .) %>%  -->
+<!--   plug_model(rf_mod) %>% -->
+<!--   fit() -->
 
-rf_fit_pred <-
-  bind_cols(
-    predict_training(rf_fit, type = "prob"), # probabilities
-    predict(rf_fit, pull_tflow_training(rf_fit)) # class predictions
-  )
+<!-- rf_fit_pred <- -->
+<!--   bind_cols( -->
+<!--     predict_training(rf_fit, type = "prob"), # probabilities -->
+<!--     predict(rf_fit, pull_tflow_training(rf_fit)) # class predictions -->
+<!--   ) -->
 
-rf_fit_pred %>%
-  roc_auc(truth = class, .pred_PS)
+<!-- rf_fit_pred %>% -->
+<!--   roc_auc(truth = class, .pred_PS) -->
 
-rf_fit_pred %>%
-  accuracy(truth = class, .pred_class)
+<!-- rf_fit_pred %>% -->
+<!--   accuracy(truth = class, .pred_class) -->
 
-rf_fit_pred <-
-  bind_cols(
-    predict_testing(rf_fit, type = "prob"), # probabilities
-    predict(rf_fit, pull_tflow_testing(rf_fit)) # class predictions
-  )
+<!-- rf_fit_pred <- -->
+<!--   bind_cols( -->
+<!--     predict_testing(rf_fit, type = "prob"), # probabilities -->
+<!--     predict(rf_fit, pull_tflow_testing(rf_fit)) # class predictions -->
+<!--   ) -->
 
-rf_fit_pred %>%
-  roc_auc(truth = class, .pred_PS)
+<!-- rf_fit_pred %>% -->
+<!--   roc_auc(truth = class, .pred_PS) -->
 
-rf_fit_pred %>%
-  accuracy(truth = class, .pred_class)
+<!-- rf_fit_pred %>% -->
+<!--   accuracy(truth = class, .pred_class) -->
 
-rf_fit_rs <-
-  rf_fit %>%
-  plug_resample(vfold_cv, v = 10) %>%
-  fit()
+<!-- rf_fit_rs <- -->
+<!--   rf_fit %>% -->
+<!--   plug_resample(vfold_cv, v = 10) %>% -->
+<!--   fit() -->
 
-```
+<!-- ``` -->
 
-```{r }
-library(tidymodels)  # for the tune package, along with the rest of tidymodels
-library(tidyflow)
-library(modeldata)   # for the cells data
-library(vip)         # for variable importance plots
+<!-- ```{r } -->
+<!-- library(tidymodels)  # for the tune package, along with the rest of tidymodels -->
+<!-- library(tidyflow) -->
+<!-- library(modeldata)   # for the cells data -->
+<!-- library(vip)         # for variable importance plots -->
 
-data(cells, package = "modeldata")
-cells
+<!-- data(cells, package = "modeldata") -->
+<!-- cells -->
 
-tune_spec <- 
-  decision_tree(
-    cost_complexity = tune(),
-    tree_depth = tune()
-  ) %>% 
-  set_engine("rpart") %>% 
-  set_mode("classification")
+<!-- tune_spec <-  -->
+<!--   decision_tree( -->
+<!--     cost_complexity = tune(), -->
+<!--     tree_depth = tune() -->
+<!--   ) %>%  -->
+<!--   set_engine("rpart") %>%  -->
+<!--   set_mode("classification") -->
 
-tflow <-
-  cells %>%
-  tidyflow(seed = 123) %>%
-  plug_formula(class ~ .) %>% 
-  plug_split(initial_split, strata = "class") %>%
-  plug_resample(vfold_cv) %>%
-  plug_grid(grid_regular, levels = 5) %>%
-  plug_model(tune_spec)
+<!-- tflow <- -->
+<!--   cells %>% -->
+<!--   tidyflow(seed = 123) %>% -->
+<!--   plug_formula(class ~ .) %>%  -->
+<!--   plug_split(initial_split, strata = "class") %>% -->
+<!--   plug_resample(vfold_cv) %>% -->
+<!--   plug_grid(grid_regular, levels = 5) %>% -->
+<!--   plug_model(tune_spec) -->
 
-tree_fit <- fit(tflow)
-tree_res <- pull_tflow_fit_tuning(tree_fit)
+<!-- tree_fit <- fit(tflow) -->
+<!-- tree_res <- pull_tflow_fit_tuning(tree_fit) -->
 
-tree_res %>%
-  collect_metrics()
+<!-- tree_res %>% -->
+<!--   collect_metrics() -->
 
-tree_res %>%
-  collect_metrics() %>%
-  mutate(tree_depth = factor(tree_depth)) %>%
-  ggplot(aes(cost_complexity, mean, color = tree_depth)) +
-  geom_line(size = 1.5, alpha = 0.6) +
-  geom_point(size = 2) +
-  facet_wrap(~ .metric, scales = "free", nrow = 2) +
-  scale_x_log10(labels = scales::label_number()) +
-  scale_color_viridis_d(option = "plasma", begin = .9, end = 0)
+<!-- tree_res %>% -->
+<!--   collect_metrics() %>% -->
+<!--   mutate(tree_depth = factor(tree_depth)) %>% -->
+<!--   ggplot(aes(cost_complexity, mean, color = tree_depth)) + -->
+<!--   geom_line(size = 1.5, alpha = 0.6) + -->
+<!--   geom_point(size = 2) + -->
+<!--   facet_wrap(~ .metric, scales = "free", nrow = 2) + -->
+<!--   scale_x_log10(labels = scales::label_number()) + -->
+<!--   scale_color_viridis_d(option = "plasma", begin = .9, end = 0) -->
 
-tree_res %>%
-  show_best("roc_auc")
+<!-- tree_res %>% -->
+<!--   show_best("roc_auc") -->
 
-final_wf <-  tree_fit %>% complete_tflow(metric = "roc_auc")
+<!-- final_wf <-  tree_fit %>% complete_tflow(metric = "roc_auc") -->
 
-final_wf %>% pull_tflow_fit()
+<!-- final_wf %>% pull_tflow_fit() -->
 
-final_wf %>% 
-  pull_tflow_fit() %>% 
-  vip()
+<!-- final_wf %>%  -->
+<!--   pull_tflow_fit() %>%  -->
+<!--   vip() -->
 
-final_wf %>%
-  predict_testing(type = "prob") %>%
-  roc_curve(class, .pred_PS) %>%
-  autoplot()
-```
-
-
-```{r}
-library(tidymodels)
-library(tidyflow)
-library(readr)       # for importing data
-library(vip)         # for variable importance plots
-library(readr)
-
-hotels <- 
-  read_csv('https://tidymodels.org/start/case-study/hotels.csv') %>%
-  mutate_if(is.character, as.factor) 
-
-dim(hotels)
-#> [1] 50000    23
-
-lr_mod <- 
-  logistic_reg(penalty = tune(), mixture = 1) %>% 
-  set_engine("glmnet")
-
-holidays <- c("AllSouls", "AshWednesday", "ChristmasEve", "Easter", 
-              "ChristmasDay", "GoodFriday", "NewYearsDay", "PalmSunday")
-
-lr_recipe <- 
-  ~ recipe(children ~ ., data = .x) %>% 
-  step_date(arrival_date) %>% 
-  step_holiday(arrival_date, holidays = holidays) %>% 
-  step_rm(arrival_date) %>% 
-  step_dummy(all_nominal(), -all_outcomes()) %>% 
-  step_zv(all_predictors()) %>% 
-  step_normalize(all_predictors())
-
-tflow <-
-  hotels %>%
-  tidyflow(seed = 123) %>%
-  plug_split(initial_split, strata = "children") %>%
-  plug_resample(validation_split, strata = "children", prop = 0.8) %>%
-  plug_recipe(lr_recipe) %>%
-  plug_grid(expand.grid, penalty = 10^seq(-4, -1, length.out = 30)) %>% 
-  plug_model(lr_mod)
-
-cntrl <- control_tidyflow(control_grid = control_grid(save_pred = TRUE))
-p_res <- tflow %>% fit(control = cntrl)
-
-p_res %>%
-  pull_tflow_fit_tuning() %>% 
-  collect_metrics() %>%
-  filter(.metric == "roc_auc") %>% 
-  ggplot(aes(x = penalty, y = mean)) + 
-  geom_point() + 
-  geom_line() + 
-  ylab("Area under the ROC Curve") +
-  scale_x_log10(labels = scales::label_number())
-
-top_models <-
-  p_res %>%
-  pull_tflow_fit_tuning() %>% 
-  show_best("roc_auc", n = 15) %>% 
-  arrange(penalty) 
-
-lr_best <-
-  top_models %>%
-  slice(12)
-
-lr_auc <-
-  p_res %>%
-  pull_tflow_fit_tuning() %>% 
-  collect_predictions(parameters = lr_best) %>% 
-  roc_curve(children, .pred_children) %>% 
-  mutate(model = "Logistic Regression")
-
-autoplot(lr_auc)
-
-cores <- parallel::detectCores() - 2
-
-rf_mod <- 
-  rand_forest(mtry = tune(), min_n = tune(), trees = 1000) %>% 
-  set_engine("ranger", num.threads = cores) %>% 
-  set_mode("classification")
-
-rf_recipe <- 
-  ~ recipe(children ~ ., data = .x) %>% 
-    step_date(arrival_date) %>% 
-    step_holiday(arrival_date) %>% 
-    step_rm(arrival_date) 
-
-tflow <-
-  tflow %>%
-  replace_recipe(rf_recipe) %>%
-  replace_model(rf_mod) %>%
-  replace_grid(grid_latin_hypercube, size = 25)
-
-rf_res <- tflow %>% fit(control = cntrl)
-
-rf_res %>%
-  pull_tflow_fit_tuning() %>%
-  autoplot() +
-  ylim(c(0.88, 0.93))
+<!-- final_wf %>% -->
+<!--   predict_testing(type = "prob") %>% -->
+<!--   roc_curve(class, .pred_PS) %>% -->
+<!--   autoplot() -->
+<!-- ``` -->
 
 
-rf_best <- 
-  rf_res %>%
-  pull_tflow_fit_tuning() %>% 
-  select_best(metric = "roc_auc")
+<!-- ```{r} -->
+<!-- library(tidymodels) -->
+<!-- library(tidyflow) -->
+<!-- library(readr)       # for importing data -->
+<!-- library(vip)         # for variable importance plots -->
+<!-- library(readr) -->
 
-rf_auc <- 
-  rf_res %>%
-  pull_tflow_fit_tuning() %>% 
-  collect_predictions(parameters = rf_best) %>% 
-  roc_curve(children, .pred_children) %>% 
-  mutate(model = "Random Forest")
+<!-- hotels <-  -->
+<!--   read_csv('https://tidymodels.org/start/case-study/hotels.csv') %>% -->
+<!--   mutate_if(is.character, as.factor)  -->
 
-bind_rows(rf_auc, lr_auc) %>% 
-  ggplot(aes(x = 1 - specificity, y = sensitivity, col = model)) + 
-  geom_path(lwd = 1.5, alpha = 0.8) +
-  geom_abline(lty = 3) + 
-  coord_equal() + 
-  scale_color_viridis_d(option = "plasma", end = .6)
+<!-- dim(hotels) -->
+<!-- #> [1] 50000    23 -->
+
+<!-- lr_mod <-  -->
+<!--   logistic_reg(penalty = tune(), mixture = 1) %>%  -->
+<!--   set_engine("glmnet") -->
+
+<!-- holidays <- c("AllSouls", "AshWednesday", "ChristmasEve", "Easter",  -->
+<!--               "ChristmasDay", "GoodFriday", "NewYearsDay", "PalmSunday") -->
+
+<!-- lr_recipe <-  -->
+<!--   ~ recipe(children ~ ., data = .x) %>%  -->
+<!--   step_date(arrival_date) %>%  -->
+<!--   step_holiday(arrival_date, holidays = holidays) %>%  -->
+<!--   step_rm(arrival_date) %>%  -->
+<!--   step_dummy(all_nominal(), -all_outcomes()) %>%  -->
+<!--   step_zv(all_predictors()) %>%  -->
+<!--   step_normalize(all_predictors()) -->
+
+<!-- tflow <- -->
+<!--   hotels %>% -->
+<!--   tidyflow(seed = 123) %>% -->
+<!--   plug_split(initial_split, strata = "children") %>% -->
+<!--   plug_resample(validation_split, strata = "children", prop = 0.8) %>% -->
+<!--   plug_recipe(lr_recipe) %>% -->
+<!--   plug_grid(expand.grid, penalty = 10^seq(-4, -1, length.out = 30)) %>%  -->
+<!--   plug_model(lr_mod) -->
+
+<!-- cntrl <- control_tidyflow(control_grid = control_grid(save_pred = TRUE)) -->
+<!-- p_res <- tflow %>% fit(control = cntrl) -->
+
+<!-- p_res %>% -->
+<!--   pull_tflow_fit_tuning() %>%  -->
+<!--   collect_metrics() %>% -->
+<!--   filter(.metric == "roc_auc") %>%  -->
+<!--   ggplot(aes(x = penalty, y = mean)) +  -->
+<!--   geom_point() +  -->
+<!--   geom_line() +  -->
+<!--   ylab("Area under the ROC Curve") + -->
+<!--   scale_x_log10(labels = scales::label_number()) -->
+
+<!-- top_models <- -->
+<!--   p_res %>% -->
+<!--   pull_tflow_fit_tuning() %>%  -->
+<!--   show_best("roc_auc", n = 15) %>%  -->
+<!--   arrange(penalty)  -->
+
+<!-- lr_best <- -->
+<!--   top_models %>% -->
+<!--   slice(12) -->
+
+<!-- lr_auc <- -->
+<!--   p_res %>% -->
+<!--   pull_tflow_fit_tuning() %>%  -->
+<!--   collect_predictions(parameters = lr_best) %>%  -->
+<!--   roc_curve(children, .pred_children) %>%  -->
+<!--   mutate(model = "Logistic Regression") -->
+
+<!-- autoplot(lr_auc) -->
+
+<!-- cores <- parallel::detectCores() - 2 -->
+
+<!-- rf_mod <-  -->
+<!--   rand_forest(mtry = tune(), min_n = tune(), trees = 1000) %>%  -->
+<!--   set_engine("ranger", num.threads = cores) %>%  -->
+<!--   set_mode("classification") -->
+
+<!-- rf_recipe <-  -->
+<!--   ~ recipe(children ~ ., data = .x) %>%  -->
+<!--     step_date(arrival_date) %>%  -->
+<!--     step_holiday(arrival_date) %>%  -->
+<!--     step_rm(arrival_date)  -->
+
+<!-- tflow <- -->
+<!--   tflow %>% -->
+<!--   replace_recipe(rf_recipe) %>% -->
+<!--   replace_model(rf_mod) %>% -->
+<!--   replace_grid(grid_latin_hypercube, size = 25) -->
+
+<!-- rf_res <- tflow %>% fit(control = cntrl) -->
+
+<!-- rf_res %>% -->
+<!--   pull_tflow_fit_tuning() %>% -->
+<!--   autoplot() + -->
+<!--   ylim(c(0.88, 0.93)) -->
 
 
-final_res <-
-  rf_res %>%
-  complete_tflow(metric = "roc_auc")
+<!-- rf_best <-  -->
+<!--   rf_res %>% -->
+<!--   pull_tflow_fit_tuning() %>%  -->
+<!--   select_best(metric = "roc_auc") -->
 
-final_res %>%
-  predict_testing(type = "prob") %>%
-  roc_curve(children, .pred_children) %>%
-  autoplot()
-```
+<!-- rf_auc <-  -->
+<!--   rf_res %>% -->
+<!--   pull_tflow_fit_tuning() %>%  -->
+<!--   collect_predictions(parameters = rf_best) %>%  -->
+<!--   roc_curve(children, .pred_children) %>%  -->
+<!--   mutate(model = "Random Forest") -->
+
+<!-- bind_rows(rf_auc, lr_auc) %>%  -->
+<!--   ggplot(aes(x = 1 - specificity, y = sensitivity, col = model)) +  -->
+<!--   geom_path(lwd = 1.5, alpha = 0.8) + -->
+<!--   geom_abline(lty = 3) +  -->
+<!--   coord_equal() +  -->
+<!--   scale_color_viridis_d(option = "plasma", end = .6) -->
+
+
+<!-- final_res <- -->
+<!--   rf_res %>% -->
+<!--   complete_tflow(metric = "roc_auc") -->
+
+<!-- final_res %>% -->
+<!--   predict_testing(type = "prob") %>% -->
+<!--   roc_curve(children, .pred_children) %>% -->
+<!--   autoplot() -->
+<!-- ``` -->
