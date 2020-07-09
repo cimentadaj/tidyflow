@@ -332,10 +332,10 @@ section.</p>
 <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_preprocessor</a></span>(<span class='kw'>recipe_tflow</span>)</div><div class='output co'>#&gt; &lt;lambda&gt;
 #&gt; function (..., .x = ..1, .y = ..2, . = ..1) 
 #&gt; recipe(.x, mpg ~ cyl + disp) %&gt;% step_log(disp)
-#&gt; &lt;environment: 0x7f8e2de9ad28&gt;
+#&gt; &lt;environment: 0x7fc12afb6268&gt;
 #&gt; attr(,"class")
 #&gt; [1] "rlang_lambda_function" "function"             </div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_preprocessor</a></span>(<span class='kw'>formula_tflow</span>)</div><div class='output co'>#&gt; mpg ~ cyl + log(disp)
-#&gt; &lt;environment: 0x7f8e2de9ad28&gt;</div><div class='input'>
+#&gt; &lt;environment: 0x7fc12afb6268&gt;</div><div class='input'>
 <span class='co'># The `spec` is the parsnip spec before it has been fit.</span>
 <span class='co'># The `fit` is the fit parsnip model.</span>
 <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_spec</a></span>(<span class='kw'>fit_formula_tflow</span>)</div><div class='output co'>#&gt; Linear Regression Model Specification (regression)
@@ -343,14 +343,14 @@ section.</p>
 #&gt; Computational engine: lm 
 #&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit</a></span>(<span class='kw'>fit_formula_tflow</span>)</div><div class='output co'>#&gt; parsnip model object
 #&gt; 
-#&gt; Fit time:  2ms 
+#&gt; Fit time:  4ms 
 #&gt; 
 #&gt; Call:
 #&gt; stats::lm(formula = ..y ~ ., data = data)
 #&gt; 
 #&gt; Coefficients:
 #&gt; (Intercept)          cyl  `log(disp)`  
-#&gt;     70.7902       0.1413      -9.7985  
+#&gt;     69.2598       0.3228      -9.7909  
 #&gt; </div><div class='input'>
 <span class='co'># The mold is returned from `hardhat::mold()`, and contains the</span>
 <span class='co'># predictors, outcomes, and information about the preprocessing</span>
@@ -362,9 +362,9 @@ section.</p>
 #&gt; </span><span style='color: #555555;'> 1</span><span>     6  5.08
 #&gt; </span><span style='color: #555555;'> 2</span><span>     4  4.68
 #&gt; </span><span style='color: #555555;'> 3</span><span>     6  5.55
-#&gt; </span><span style='color: #555555;'> 4</span><span>     8  5.89
-#&gt; </span><span style='color: #555555;'> 5</span><span>     6  5.42
-#&gt; </span><span style='color: #555555;'> 6</span><span>     4  4.95
+#&gt; </span><span style='color: #555555;'> 4</span><span>     6  5.42
+#&gt; </span><span style='color: #555555;'> 5</span><span>     8  5.89
+#&gt; </span><span style='color: #555555;'> 6</span><span>     4  4.99
 #&gt; </span><span style='color: #555555;'> 7</span><span>     6  5.12
 #&gt; </span><span style='color: #555555;'> 8</span><span>     6  5.12
 #&gt; </span><span style='color: #555555;'> 9</span><span>     8  5.62
@@ -378,9 +378,9 @@ section.</p>
 #&gt; </span><span style='color: #555555;'> 1</span><span>  21  
 #&gt; </span><span style='color: #555555;'> 2</span><span>  22.8
 #&gt; </span><span style='color: #555555;'> 3</span><span>  21.4
-#&gt; </span><span style='color: #555555;'> 4</span><span>  18.7
-#&gt; </span><span style='color: #555555;'> 5</span><span>  18.1
-#&gt; </span><span style='color: #555555;'> 6</span><span>  22.8
+#&gt; </span><span style='color: #555555;'> 4</span><span>  18.1
+#&gt; </span><span style='color: #555555;'> 5</span><span>  14.3
+#&gt; </span><span style='color: #555555;'> 6</span><span>  24.4
 #&gt; </span><span style='color: #555555;'> 7</span><span>  19.2
 #&gt; </span><span style='color: #555555;'> 8</span><span>  17.8
 #&gt; </span><span style='color: #555555;'> 9</span><span>  16.4
@@ -401,73 +401,73 @@ section.</p>
 #&gt; 
 #&gt; </div><div class='input'>
 <span class='co'># The raw training and testing</span>
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_training</a></span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt;                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-#&gt; Mazda RX4          21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-#&gt; Datsun 710         22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-#&gt; Hornet 4 Drive     21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-#&gt; Hornet Sportabout  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-#&gt; Valiant            18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-#&gt; Merc 230           22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
-#&gt; Merc 280           19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
-#&gt; Merc 280C          17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
-#&gt; Merc 450SE         16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
-#&gt; Merc 450SL         17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
-#&gt; Cadillac Fleetwood 10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
-#&gt; Chrysler Imperial  14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
-#&gt; Honda Civic        30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
-#&gt; Toyota Corolla     33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
-#&gt; Dodge Challenger   15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
-#&gt; AMC Javelin        15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
-#&gt; Camaro Z28         13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
-#&gt; Pontiac Firebird   19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
-#&gt; Fiat X1-9          27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
-#&gt; Porsche 914-2      26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
-#&gt; Ford Pantera L     15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
-#&gt; Ferrari Dino       19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
-#&gt; Maserati Bora      15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
-#&gt; Volvo 142E         21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_testing</a></span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt;                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-#&gt; Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_training</a></span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt;                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+#&gt; Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+#&gt; Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+#&gt; Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+#&gt; Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
 #&gt; Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 #&gt; Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
-#&gt; Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+#&gt; Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+#&gt; Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+#&gt; Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+#&gt; Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+#&gt; Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
 #&gt; Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
-#&gt; Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+#&gt; Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+#&gt; Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
 #&gt; Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
-#&gt; Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2</div><div class='input'>
+#&gt; Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+#&gt; AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+#&gt; Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+#&gt; Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+#&gt; Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+#&gt; Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+#&gt; Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+#&gt; Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+#&gt; Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_testing</a></span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt;                    mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+#&gt; Mazda RX4 Wag     21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+#&gt; Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+#&gt; Merc 230          22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+#&gt; Merc 450SLC       15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+#&gt; Fiat 128          32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+#&gt; Toyota Corolla    33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+#&gt; Porsche 914-2     26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+#&gt; Volvo 142E        21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</div><div class='input'>
 <span class='co'># Or with the preprocessor (recipe/formula) applied</span>
 <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_training</a></span>(<span class='kw'>fit_recipe_tflow</span>, prep = <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;     mpg cyl     disp
 #&gt; 1  21.0   6 5.075174
 #&gt; 2  22.8   4 4.682131
 #&gt; 3  21.4   6 5.552960
-#&gt; 4  18.7   8 5.886104
-#&gt; 5  18.1   6 5.416100
-#&gt; 6  22.8   4 4.947340
+#&gt; 4  18.1   6 5.416100
+#&gt; 5  14.3   8 5.886104
+#&gt; 6  24.4   4 4.988390
 #&gt; 7  19.2   6 5.121580
 #&gt; 8  17.8   6 5.121580
 #&gt; 9  16.4   8 5.619676
 #&gt; 10 17.3   8 5.619676
 #&gt; 11 10.4   8 6.156979
-#&gt; 12 14.7   8 6.086775
-#&gt; 13 30.4   4 4.326778
-#&gt; 14 33.9   4 4.264087
-#&gt; 15 15.5   8 5.762051
-#&gt; 16 15.2   8 5.717028
-#&gt; 17 13.3   8 5.857933
-#&gt; 18 19.2   8 5.991465
-#&gt; 19 27.3   4 4.369448
-#&gt; 20 26.0   4 4.789989
-#&gt; 21 15.8   8 5.860786
-#&gt; 22 19.7   6 4.976734
-#&gt; 23 15.0   8 5.707110
-#&gt; 24 21.4   4 4.795791</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_testing</a></span>(<span class='kw'>fit_recipe_tflow</span>, prep = <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;    mpg cyl     disp
+#&gt; 12 10.4   8 6.131226
+#&gt; 13 14.7   8 6.086775
+#&gt; 14 30.4   4 4.326778
+#&gt; 15 21.5   4 4.788325
+#&gt; 16 15.5   8 5.762051
+#&gt; 17 15.2   8 5.717028
+#&gt; 18 13.3   8 5.857933
+#&gt; 19 19.2   8 5.991465
+#&gt; 20 27.3   4 4.369448
+#&gt; 21 30.4   4 4.554929
+#&gt; 22 15.8   8 5.860786
+#&gt; 23 19.7   6 4.976734
+#&gt; 24 15.0   8 5.707110</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_testing</a></span>(<span class='kw'>fit_recipe_tflow</span>, prep = <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;    mpg cyl     disp
 #&gt; 1 21.0   6 5.075174
-#&gt; 2 14.3   8 5.886104
-#&gt; 3 24.4   4 4.988390
+#&gt; 2 18.7   8 5.886104
+#&gt; 3 22.8   4 4.947340
 #&gt; 4 15.2   8 5.619676
-#&gt; 5 10.4   8 6.131226
-#&gt; 6 32.4   4 4.365643
-#&gt; 7 21.5   4 4.788325
-#&gt; 8 30.4   4 4.554929</div><div class='input'>
+#&gt; 5 32.4   4 4.365643
+#&gt; 6 33.9   4 4.264087
+#&gt; 7 26.0   4 4.789989
+#&gt; 8 21.4   4 4.795791</div><div class='input'>
 <span class='co'># A useful shortcut is to extract the prepped recipe from the tidyflow</span>
 <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_prepped_recipe</a></span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt; Data Recipe
 #&gt; 
