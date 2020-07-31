@@ -339,9 +339,9 @@ cat_line <- function(...) {
   cat(paste0(..., collapse = "\n"), "\n", sep = "")
 }
 
-number_formatter <- function(tx) { 
+number_formatter <- function(tx) {
   div <- findInterval(as.numeric(gsub("\\,", "", tx)),
-                      c(0, 1e3, 1e6, 1e9, 1e12) )
-  intm <- round( as.numeric(gsub("\\,","",tx))/10^(3*(div-1)), 2)
-  paste0(intm, c("","K","M","B","T")[div] )
+                      c(0, 1e3, 1e6, 1e9, 1e12))
+  intm <- round(as.numeric(gsub("\\,", "", tx)) / 10^ (3 * (div - 1)), 2)
+  paste0(intm, c("", "K", "M", "B", "T")[div])
 }
