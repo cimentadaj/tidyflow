@@ -1,5 +1,5 @@
 #' Fit the best model from a tuning grid
-#' 
+#'
 #' @param x A tidyflow
 #' @param metric The metric of reference from which to pick the best model
 #' @param ... Extra arguments passed to
@@ -9,10 +9,12 @@
 #' model. Should have the same format as the result of
 #' \code{\link[tune:show_best]{select_best}},
 #' \code{\link[tune:show_best]{select_by_one_std_err}} or
-#' \code{\link[tune:show_best]{select_by_pct_loss}}. If \code{best_params} is specified,
-#' the \code{method}, \code{metric} and \code{...} arguments are ignored.
+#' \code{\link[tune:show_best]{select_by_pct_loss}}. If \code{best_params} is
+#' specified, the \code{method}, \code{metric} and \code{...} arguments are
+#' ignored.
 #' @param method which method to use. The possible values are
-#' \code{\link[tune:show_best]{select_best}}, \code{\link[tune:show_best]{select_by_one_std_err}} or
+#' \code{\link[tune:show_best]{select_best}},
+#' \code{\link[tune:show_best]{select_by_one_std_err}} or
 #' \code{\link[tune:show_best]{select_by_pct_loss}}. By default, it uses
 #' \code{\link[tune:show_best]{select_best}}.
 #' @param control A \code{\link{control_tidyflow}} object. The
@@ -22,7 +24,7 @@
 #'
 #' @details The finalized model is fitted on the training data if
 #' \code{plug_split} was specified otherwise on the complete data.
-#' 
+#'
 #' @return The tidyflow `object` updated with the fitted best model. Can be
 #' extracted with \code{\link{pull_tflow_fit}} and used to predict on the
 #' training or test data with \code{\link{predict_training}} or
@@ -37,12 +39,13 @@
 #' library(rsample)
 #'
 #' # Fit a regularized regression through a grid search.
-#' reg_mod <- set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet")
+#' reg_mod <- set_engine(linear_reg(penalty = tune(), mixture = tune()),
+#'                       "glmnet")
 #' tuned_res <-
 #'  mtcars %>%
-#'   tidyflow() %>% 
-#'   plug_resample(vfold_cv, v = 2) %>% 
-#'   plug_formula(mpg ~ .) %>% 
+#'   tidyflow() %>%
+#'   plug_resample(vfold_cv, v = 2) %>%
+#'   plug_formula(mpg ~ .) %>%
 #'   plug_model(reg_mod) %>%
 #'   plug_grid(grid_regular, levels = 1) %>%
 #'   fit()
@@ -82,12 +85,12 @@
 #' # on either one, it will not work:
 #' final_model %>%
 #'   predict_training()
-#' 
+#'
 #' # Add a split step, fit again and then finalize the model
 #' # to predict on the training set
 #' tuned_split <-
 #'   tuned_res %>%
-#'   replace_grid(grid_regular) %>% 
+#'   replace_grid(grid_regular) %>%
 #'   plug_split(initial_split) %>%
 #'   fit()
 #'
@@ -95,14 +98,16 @@
 #'  complete_tflow(metric = "rmse") %>%
 #'  predict_training()
 #' }
-#' 
-complete_tflow <- function (x,
-                            metric,
-                            ...,
-                            best_params = NULL,
-                            method = c("select_best", "select_by_one_std_err", "select_by_pct_loss"),
-                            control = control_tidyflow()) {
-  
+#'
+complete_tflow <- function(x,
+                           metric,
+                           ...,
+                           best_params = NULL,
+                           method = c("select_best",
+                                      "select_by_one_std_err",
+                                      "select_by_pct_loss"),
+                           control = control_tidyflow()) {
+
   if (!inherits(x, "tidyflow")) {
     stop("`x` should be a tidyflow")
   }
@@ -127,7 +132,7 @@ complete_tflow <- function (x,
   mod <- tidyflow::pull_tflow_spec(x)
   mod <- tune::finalize_model(mod, best_params)
   x$fit$actions$model$spec <- mod
-  
+
   if (has_preprocessor_recipe(x)) {
     rec <- tidyflow::pull_tflow_preprocessor(x)
     dt <- combine_outcome_preds(pull_tflow_mold(x))

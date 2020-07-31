@@ -26,11 +26,13 @@ complete_tflow(
 model. Should have the same format as the result of
 \code{\link[tune:show_best]{select_best}},
 \code{\link[tune:show_best]{select_by_one_std_err}} or
-\code{\link[tune:show_best]{select_by_pct_loss}}. If \code{best_params} is specified,
-the \code{method}, \code{metric} and \code{...} arguments are ignored.}
+\code{\link[tune:show_best]{select_by_pct_loss}}. If \code{best_params} is
+specified, the \code{method}, \code{metric} and \code{...} arguments are
+ignored.}
 
 \item{method}{which method to use. The possible values are
-\code{\link[tune:show_best]{select_best}}, \code{\link[tune:show_best]{select_by_one_std_err}} or
+\code{\link[tune:show_best]{select_best}},
+\code{\link[tune:show_best]{select_by_one_std_err}} or
 \code{\link[tune:show_best]{select_by_pct_loss}}. By default, it uses
 \code{\link[tune:show_best]{select_best}}.}
 
@@ -60,12 +62,13 @@ library(dials)
 library(rsample)
 
 # Fit a regularized regression through a grid search.
-reg_mod <- set_engine(linear_reg(penalty = tune(), mixture = tune()), "glmnet")
+reg_mod <- set_engine(linear_reg(penalty = tune(), mixture = tune()),
+                      "glmnet")
 tuned_res <-
  mtcars \%>\%
-  tidyflow() \%>\% 
-  plug_resample(vfold_cv, v = 2) \%>\% 
-  plug_formula(mpg ~ .) \%>\% 
+  tidyflow() \%>\%
+  plug_resample(vfold_cv, v = 2) \%>\%
+  plug_formula(mpg ~ .) \%>\%
   plug_model(reg_mod) \%>\%
   plug_grid(grid_regular, levels = 1) \%>\%
   fit()
@@ -110,7 +113,7 @@ final_model \%>\%
 # to predict on the training set
 tuned_split <-
   tuned_res \%>\%
-  replace_grid(grid_regular) \%>\% 
+  replace_grid(grid_regular) \%>\%
   plug_split(initial_split) \%>\%
   fit()
 

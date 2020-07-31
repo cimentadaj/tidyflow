@@ -160,7 +160,7 @@
 fit.tidyflow <- function(x, control = control_tidyflow(), ...) {
 
   if (!has_raw_data(x)) {
-    abort("`data` must be specified to fit a tidyflow; Do you need `plug_data`?")
+    abort("`data` must be specified to fit a tidyflow; Do you need `plug_data`?") #nolintr
   }
 
   ellipsis::check_dots_empty()
