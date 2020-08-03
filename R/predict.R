@@ -79,7 +79,7 @@ predict.tidyflow <- function(object, new_data, type = NULL, opts = list(), ...) 
 
   # If there's a tuning object but no final model
   if (!inherits(tuning, "try-error") && !x$trained) {
-    abort("You seem to have a model with tuning parameters or a resample but not a finalized model. Did you call complete_tflow()?")
+    abort("You seem to have a model with tuning parameters or a resample but not a finalized model. Did you call complete_tflow()?") #nolintr
   }
 
   # If no tuning object is present but the model is not trained
@@ -98,7 +98,7 @@ predict.tidyflow <- function(object, new_data, type = NULL, opts = list(), ...) 
 #' @export
 predict_training <- function(object, type = NULL, opts = list(), ...) {
   if (!has_preprocessor_split(object)) {
-    rlang::abort("`predict_training` can only work when a split preprocessor has been specifid. Did you want `plug_split`?")
+    rlang::abort("`predict_training` can only work when a split preprocessor has been specifid. Did you want `plug_split`?") #nolintr
   }
 
   # No need for prep = TRUE, since predict.tidyflow already applies the bake
@@ -118,7 +118,7 @@ predict_training <- function(object, type = NULL, opts = list(), ...) {
 #' @export
 predict_testing <- function(object, type = NULL, opts = list(), ...) {
   if (!has_preprocessor_split(object)) {
-    rlang::abort("`predict_testing` can only work when a split preprocessor has been specifid. Did you want `plug_split`?")
+    rlang::abort("`predict_testing` can only work when a split preprocessor has been specifid. Did you want `plug_split`?") #nolintr
   }
 
   # No need for prep = TRUE, since predict.tidyflow already applies the bake
