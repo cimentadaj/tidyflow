@@ -5,14 +5,15 @@ Authors@R:
     c(person(given = "Jorge",
              family = "Cimentada",
              role = c("aut", "cre"),
-             email = "cimentadaj@gmail.com"),
+             email = "cimentadaj@gmail.com",
+             comment = c(ORCID = "0000-0001-5594-1156")),
       person(given = "Davis",
              family = "Vaughan",
              role = c("aut"),
              email = "davis@rstudio.com"),
       person(given = "RStudio",
              role = "cph"))
-Description: Managing a modelling flow such as data, training/testing splitting, resampling, preprocessing and statistical modelling can often be challenging. The goal of 'tidyflow' is to streamline this process by bundling your tidyflow in the same object, making it a mutable plan for exploratory modeling.
+Description: Managing a modeling flow such as data, training/testing splitting, resampling, preprocessing and statistical modelling can often be challenging. The goal of 'tidyflow' is to streamline this process by bundling your tidyflow in the same object, making it a mutable plan for exploratory modeling.
 License: MIT + file LICENSE
 URL: https://github.com/cimentadaj/tidyflow
 BugReports: https://github.com/cimentadaj/tidyflow/issues

@@ -2,7 +2,7 @@
 title: "An introduction to tidyflow"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{An introduction to tidyflow}
+  %\VignetteIndexEntry{intro_tidyflow}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

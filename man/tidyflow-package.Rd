@@ -6,7 +6,7 @@
 \alias{_PACKAGE}
 \title{tidyflow: Modeling Tidyflows}
 \description{
-Managing a modelling flow such as data, training/testing splitting, resampling, preprocessing and statistical modelling can often be challenging. The goal of 'tidyflow' is to streamline this process by bundling your tidyflow in the same object, making it a mutable plan for exploratory modeling.
+Managing a modeling flow such as data, training/testing splitting, resampling, preprocessing and statistical modelling can often be challenging. The goal of 'tidyflow' is to streamline this process by bundling your tidyflow in the same object, making it a mutable plan for exploratory modeling.
 }
 \seealso{
 Useful links:
@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jorge Cimentada \email{cimentadaj@gmail.com}
+\strong{Maintainer}: Jorge Cimentada \email{cimentadaj@gmail.com} (\href{https://orcid.org/0000-0001-5594-1156}{ORCID})
 
 Authors:
 \itemize{

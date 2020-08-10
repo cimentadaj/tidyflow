@@ -229,7 +229,7 @@ fit.tidyflow <- function(x, control = control_tidyflow(), ...) {
 # ------------------------------------------------------------------------------
 
 validate_has_minimal_components <- function(x) {
-  has_preprocessor <- has_action(x$pre, "formula") || has_action(x$pre, "recipe")
+  has_preprocessor <- has_action(x$pre, "formula") || has_action(x$pre, "recipe") #nolintr
 
   if (!has_preprocessor) {
     glubort(

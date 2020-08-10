@@ -1,0 +1,148 @@
+---
+title: "Using resampling in tidyflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{fitting-model-resampling}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+  ## eval = FALSE
+)
+```
+
+This vignette aims to exemplify how you can use resampling within a `tidyflow`.
+
+A tidyflow is a bundle of steps that allow you to bundle together your data, splitting, resampling, reprocessing, modeling, and grid search. For resampling your data, the `tidymodels` ecosystem contains the `rsample` package. `rsample` allows you to apply many different resampling methods to your data within a tidy framework. 
+
+However, you might ask, what is resampling? Resampling is a technique widely used in statistics to create random copies of your data. For example, cross-validation randomly picks a percentage of your sample and randomly assigns them into the 'training' and 'testing' set, used for evaluating the error of your modeling. Cross-validation repeats this same iteration but it makes sure that none of the observations in the testing set are included in the **next** testing set. This approach allows you to test the accuracy of your model while reducing the overfitting penalty of running the same model on the same data repeatedly.
+
+Since we're talking about cross-validation, let's perform our example with the function `vfold_cv`, responsible for cross-validation in `rsample`. Let's try it with the `mtcars` dataset:
+
+```{r}
+library(tidymodels)
+library(tidyflow)
+
+mtcars %>% vfold_cv()
+```
+
+The result is the same dataset repeated 10 times but in each iteration, the testing and training set contain different observations. `rsample` has several other functions for doing resampling and continues to add new methods. For example, it supports bootstrapping, leave-one-out cross-validation and monte-carlo cross-validation.
+
+
+```{r, echo = FALSE, message = FALSE}
+library(rsample)
+library(tune)
+library(parsnip)
+library(dials)
+library(tidyflow)
+```
+
+How do we incorporate this in our `tidyflow`? We use `plug_resample`.
+
+```{r}
+mtcars %>%
+  tidyflow(seed = 52151) %>%
+  plug_resample(vfold_cv)
+```
+
+
+`plug_resample` makes sure to add the cross-validation step to the tidyflow. `seed` makes sure that the random sample of observations carried out in `vfold_cv` is always the same. However, we usually don't do resampling this way, right? We separate the data into training and testing and apply the cross-validation to the training data. Well, in `tidyflow` its that easy:
+
+```{r}
+tflow <-
+  mtcars %>%
+  tidyflow(seed = 52151) %>%
+  plug_split(initial_split) %>% # Add train/testing split
+  plug_resample(vfold_cv)  %>% # Add cross-validation step
+  plug_formula(mpg ~ .) %>% # Add formula
+  plug_model(linear_reg() %>% set_engine('lm'))
+
+tflow
+```
+
+This specification is complete and can be executed. We are using `mtcars`, splitting the data into training/testing, applying a cross-validation resampling to the training data and running a `linear_reg` on the model `mpg ~ .` (`.` means all variables).
+
+Since we specified a cross-validation resampling, the result of this `tidyflow` will **not** be a final model. Instead, it will be $10$ models, each model fitted on the resampled data. Let's `fit` the model and look at these results:
+
+```{r}
+resample_model <- tflow %>% fit()
+resample_model %>%
+  pull_tflow_fit_tuning()
+```
+
+The result is a resampling data frame which contains the metrics associated with each of our models. For example, we could look at the summary of these metrics:
+
+```{r}
+resample_model %>%
+  pull_tflow_fit_tuning() %>%
+  collect_metrics()
+```
+
+Or we could look at these metric values across all cross-validated resamples:
+
+```{r}
+resample_model %>%
+  pull_tflow_fit_tuning() %>%
+  unnest(.metrics) %>%
+  ggplot(aes(id, .estimate, color = .metric)) +
+  geom_point() +
+  geom_line(aes(group = .metric)) +
+  labs(x = "Cross-validation set", y = "Loss function") +
+  theme_minimal()
+```
+
+Since there are no differences in terms of the model between these different cross-validated models, we can't really obtain a 'final model' out of this. You can use resampling to estimate the variance of your models. However, the superb value of resampling techniques comes in when combined with a grid search to find the most optimal combination of tuning parameters. You can read more about this in the [grid search vignette](./fitting-model-tuning.html).
+
+The `resample` package and `tidymodels` are very powerful tools for doing machine learning. In this vignette, I tried to extend their work by providing a unified interface for working with `resample` that uses the resample framework bundled together with all the other common machine learning steps.
+
+Want to see tidyflow and resample in action? The `tidymodels` team has a vignette showcasing how to use `resample` and `tidymodels` [here](https://www.tidymodels.org/start/resampling/). I've adapted their code to fully run within a `tidyflow` workflow. Here's the replication code:
+
+```{r, eval = FALSE}
+library(tidymodels) # for the rsample package, along with the rest of tidymodels
+library(tidyflow)
+library(modeldata)  # for the cells data
+
+data(cells, package = "modeldata")
+
+rf_mod <-
+  rand_forest(trees = 1000) %>%
+  set_engine("ranger") %>%
+  set_mode("classification")
+
+rf_fit <-
+  cells %>%
+  tidyflow(seed = 123) %>%
+  plug_split(initial_split, strata = "class") %>%
+  plug_formula(class ~ .) %>%
+  plug_model(rf_mod) %>%
+  fit()
+
+rf_fit_pred <-
+  bind_cols(
+    predict_training(rf_fit, type = "prob"), # probabilities
+    predict(rf_fit, pull_tflow_training(rf_fit)) # class predictions
+  )
+
+rf_fit_pred %>% roc_auc(truth = class, .pred_PS)
+rf_fit_pred %>% accuracy(truth = class, .pred_class)
+
+rf_fit_pred <-
+  bind_cols(
+    predict_testing(rf_fit, type = "prob"), # probabilities
+    predict(rf_fit, pull_tflow_testing(rf_fit)) # class predictions
+  )
+
+rf_fit_pred %>% roc_auc(truth = class, .pred_PS)
+rf_fit_pred %>% accuracy(truth = class, .pred_class)
+
+rf_fit_rs <-
+  rf_fit %>%
+  plug_resample(vfold_cv, v = 10) %>%
+  fit()
+
+rf_fit_rs
+```

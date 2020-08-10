@@ -1,0 +1,54 @@
+url: http://cimentadaj.github.io/tidyflow
+
+template:
+  params:
+    bootswatch: paper
+    ganalytics: UA-93322-5
+
+authors:
+  Jorge Cimentada:
+    href: https://cimentadaj.github.io
+
+reference:
+- title: Build a tidyflow
+  desc:  Construct your tidyflow step by step from scratch
+  contents:
+    - tidyflow
+    - plug_data
+    - plug_split
+    - plug_formula
+    - plug_recipe
+    - plug_resample
+    - plug_model
+    - plug_grid
+
+- title: Execute a tidyflow
+  desc:  Once defined, execute a tidyflow
+  contents:
+    - fit.tidyflow
+    - control_tidyflow
+
+- title: Extract results from a tidyflow
+  desc:  After the fitting process, extract results from the tidyflow
+  contents:
+    - pull_tflow_fit
+    - pull_tflow_fit_tuning
+    - pull_tflow_grid
+    - pull_tflow_mold
+    - pull_tflow_prepped_recipe
+    - pull_tflow_preprocessor
+    - pull_tflow_rawdata
+    - pull_tflow_resample
+    - pull_tflow_spec
+    - pull_tflow_split
+    - pull_tflow_testing
+    - pull_tflow_training
+    - parameters
+
+- title: Operations post-fit
+  desc:  Finalizing tuned models and predictions
+  contents:
+    - complete_tflow
+    - predict_training
+    - predict_testing
+    - predict.tidyflow

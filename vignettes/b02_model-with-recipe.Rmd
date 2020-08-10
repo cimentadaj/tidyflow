@@ -1,8 +1,8 @@
 ---
-title: "Fitting a model with a recipe"
+title: "Using recipes in tidyflow"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Fitting a model with a recipe}
+  %\VignetteIndexEntry{model-with-recipe}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
