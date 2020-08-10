@@ -6,17 +6,23 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Modeling Tidyflows • tidyflow</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Modeling Tidyflows">
-<meta property="og:description" content="Managing a modelling flow such as data, training/testing splitting, resampling, preprocessing and statistical modelling can often be challenging. The goal of tidyflow is to streamline this process by bundling your tidyflow in the same object, making it a mutable plan for exploratory modeling.">
+<meta property="og:description" content="Managing a modeling flow such as data, training/testing splitting, resampling, preprocessing and statistical modelling can often be challenging. The goal of tidyflow is to streamline this process by bundling your tidyflow in the same object, making it a mutable plan for exploratory modeling.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-93322-5"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-93322-5');
+</script>
 </head>
 <body data-spy="scroll" data-target="#toc">
     <div class="container template-home">
@@ -54,10 +60,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/intro_tidyflow.html">An introduction to tidyflow</a>
+      <a href="articles/a01_intro_tidyflow.html">An introduction to tidyflow</a>
     </li>
     <li>
-      <a href="articles/model-with-recipe.html">Fitting a model with a recipe</a>
+      <a href="articles/b02_model-with-recipe.html">Using recipes in tidyflow</a>
+    </li>
+    <li>
+      <a href="articles/c03_fitting-model-resampling.html">Using resampling in tidyflow</a>
+    </li>
+    <li>
+      <a href="articles/d04_fitting-model-tuning.html">Performing grid search in tidyflow</a>
     </li>
   </ul>
 </li>
@@ -109,7 +121,7 @@
 <a href="#example" class="anchor"></a>Example</h2>
 <p><code>tidyflow</code> builds upon the work in <code>tidymodels</code> to create an expressive workflow for doing machine learning. Let’s suppose we want to fit a linear model to the model <code>mpg ~ .</code> on the training data of <code>mtcars</code>. We can define the split (training/testing), define our formula, define the statistical model and fit the tidyflow:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/tidymodels/tidymodels">tidymodels</a></span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span>)
 </pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit">
@@ -301,7 +313,8 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Jorge Cimentada <br><small class="roles"> Author, maintainer </small>  </li>
+<li>
+<a href="https://cimentadaj.github.io">Jorge Cimentada</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-5594-1156" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Davis Vaughan <br><small class="roles"> Author </small>  </li>
 <li><a href="authors.html">All authors...</a></li>
 </ul>
@@ -319,7 +332,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Jorge Cimentada, Davis Vaughan.</p>
+  <p>Developed by <a href="https://cimentadaj.github.io">Jorge Cimentada</a>, Davis Vaughan.</p>
 </div>
 
 <div class="pkgdown">

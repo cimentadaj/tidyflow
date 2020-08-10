@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -68,6 +68,16 @@ split will need to be refit.
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-93322-5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-93322-5');
+</script>
+
 
   </head>
 
@@ -108,10 +118,16 @@ split will need to be refit.
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/intro_tidyflow.html">An introduction to tidyflow</a>
+      <a href="../articles/a01_intro_tidyflow.html">An introduction to tidyflow</a>
     </li>
     <li>
-      <a href="../articles/model-with-recipe.html">Fitting a model with a recipe</a>
+      <a href="../articles/b02_model-with-recipe.html">Using recipes in tidyflow</a>
+    </li>
+    <li>
+      <a href="../articles/c03_fitting-model-resampling.html">Using resampling in tidyflow</a>
+    </li>
+    <li>
+      <a href="../articles/d04_fitting-model-tuning.html">Performing grid search in tidyflow</a>
     </li>
   </ul>
 </li>
@@ -144,25 +160,25 @@ split will need to be refit.
     <div class="ref-description">
     
 <ul>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>plug_split()</a></code> specifies the type of splitting used in the analysis. It
+<li><p><code>plug_split()</code> specifies the type of splitting used in the analysis. It
 accepts a function <code>.f</code> that will be applied to the data. Only
 functions which return an <code>rsplit</code> object will be allowed. See
 package <code><a href='https://rsample.tidymodels.org/reference/rsample.html'>rsample</a></code> and the details section. If a model
 has been fit before adding the split, it will need to be refit.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>drop_split()</a></code> removes the split specification from the tidyflow. Note
+<li><p><code>drop_split()</code> removes the split specification from the tidyflow. Note
 that it keeps other preprocessing steps such as the recipe.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>replace_split()</a></code> first removes the split, then adds a new split
+<li><p><code>replace_split()</code> first removes the split, then adds a new split
 specification. Any model that has already been fit based on this
 split will need to be refit.</p></li>
 </ul>
 
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>plug_split</a></span>(<span class='kw'>x</span>, <span class='kw'>.f</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>plug_split</span>(<span class='kw'>x</span>, <span class='kw'>.f</span>, <span class='kw'>...</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>drop_split</a></span>(<span class='kw'>x</span>)
+<span class='fu'>drop_split</span>(<span class='kw'>x</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>replace_split</a></span>(<span class='kw'>x</span>, <span class='kw'>.f</span>, <span class='kw'>...</span>)</pre>
+<span class='fu'>replace_split</span>(<span class='kw'>x</span>, <span class='kw'>.f</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -205,8 +221,8 @@ of class <code>rsplit</code>. These are functions which come from the
 
 <span class='kw'>wf</span> <span class='op'>&lt;-</span>
  <span class='kw'>mtcars</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow.html'>tidyflow</a></span>() <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>plug_split</a></span>(<span class='kw'>initial_split</span>, prop = <span class='fl'>0.8</span>, strata = <span class='st'>"cyl"</span>)
+ <span class='fu'><a href='tidyflow.html'>tidyflow</a></span>() <span class='op'>%&gt;%</span>
+ <span class='fu'>plug_split</span>(<span class='kw'>initial_split</span>, prop = <span class='fl'>0.8</span>, strata = <span class='st'>"cyl"</span>)
 
 <span class='kw'>wf</span></div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; <span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
@@ -216,7 +232,7 @@ of class <code>rsplit</code>. These are functions which come from the
 #&gt; </span><span style='font-style: italic;'>Grid:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'>
 <span class='co'># Strata as unquoted name</span>
-<span class='kw'>wf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>replace_split</a></span>(<span class='kw'>wf</span>, <span class='kw'>initial_split</span>, prop = <span class='fl'>0.8</span>, strata = <span class='kw'>cyl</span>)
+<span class='kw'>wf</span> <span class='op'>&lt;-</span> <span class='fu'>replace_split</span>(<span class='kw'>wf</span>, <span class='kw'>initial_split</span>, prop = <span class='fl'>0.8</span>, strata = <span class='kw'>cyl</span>)
 
 <span class='kw'>wf</span></div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
@@ -225,7 +241,7 @@ of class <code>rsplit</code>. These are functions which come from the
 #&gt; </span><span style='font-style: italic;'>Resample:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Grid:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>drop_split</a></span>(<span class='kw'>wf</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='fu'>drop_split</span>(<span class='kw'>wf</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Recipe/Formula: None</span><span>
@@ -233,7 +249,7 @@ of class <code>rsplit</code>. These are functions which come from the
 #&gt; </span><span style='font-style: italic;'>Grid:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'>
 <span class='co'># New split function</span>
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>replace_split</a></span>(<span class='kw'>wf</span>, <span class='kw'>initial_time_split</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='fu'>replace_split</span>(<span class='kw'>wf</span>, <span class='kw'>initial_time_split</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> initial_time_split w/ default args
 #&gt; </span><span style='font-style: italic;'>Recipe/Formula: None</span><span>
@@ -251,7 +267,7 @@ of class <code>rsplit</code>. These are functions which come from the
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jorge Cimentada, Davis Vaughan.</p>
+  <p>Developed by <a href='https://cimentadaj.github.io'>Jorge Cimentada</a>, Davis Vaughan.</p>
 </div>
 
 <div class="pkgdown">

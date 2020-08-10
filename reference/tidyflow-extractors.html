@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -88,6 +88,16 @@ pull_tflow_fit_tuning() returns the resample result from model tuning.
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-93322-5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-93322-5');
+</script>
+
 
   </head>
 
@@ -128,10 +138,16 @@ pull_tflow_fit_tuning() returns the resample result from model tuning.
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/intro_tidyflow.html">An introduction to tidyflow</a>
+      <a href="../articles/a01_intro_tidyflow.html">An introduction to tidyflow</a>
     </li>
     <li>
-      <a href="../articles/model-with-recipe.html">Fitting a model with a recipe</a>
+      <a href="../articles/b02_model-with-recipe.html">Using recipes in tidyflow</a>
+    </li>
+    <li>
+      <a href="../articles/c03_fitting-model-resampling.html">Using resampling in tidyflow</a>
+    </li>
+    <li>
+      <a href="../articles/d04_fitting-model-tuning.html">Performing grid search in tidyflow</a>
     </li>
   </ul>
 </li>
@@ -165,62 +181,62 @@ pull_tflow_fit_tuning() returns the resample result from model tuning.
     <p>These functions extract various elements from a tidyflow object. If they do
 not exist yet, an error is thrown. <strong>Most of these steps can only be executed
 after the <code>tidyflow</code> has been fitted</strong>.</p><ul>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_rawdata()</a></code> returns the complete raw/untrained data.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_split()</a></code> returns the split object from the function specified
-in <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>plug_split</a></code>.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_training()</a></code> turns the training data from the split. Only
-works when a split has been specified with <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>plug_split</a></code>.
+<li><p><code>pull_tflow_rawdata()</code> returns the complete raw/untrained data.</p></li>
+<li><p><code>pull_tflow_split()</code> returns the split object from the function specified
+in <code><a href='plug_split.html'>plug_split</a></code>.</p></li>
+<li><p><code>pull_tflow_training()</code> turns the training data from the split. Only
+works when a split has been specified with <code><a href='plug_split.html'>plug_split</a></code>.
 If <code>prep = TRUE</code>, the preprocessing (either recipe or formula)
 is applied to the data.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_testing()</a></code> returns the testing data from the split. Only
-works when a split has been specified with <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>plug_split</a></code>
+<li><p><code>pull_tflow_testing()</code> returns the testing data from the split. Only
+works when a split has been specified with <code><a href='plug_split.html'>plug_split</a></code>
 If <code>prep = TRUE</code>, the preprocessing (either recipe or formula)
 is applied to the data.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_preprocessor()</a></code> returns either the formula or recipe used
+<li><p><code>pull_tflow_preprocessor()</code> returns either the formula or recipe used
 for preprocessing. Note that in the case of the recipe it returns the
 function that should be applied to the data to apply the recipe.
-<code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_prepped_recipe</a></code> returns the recipe already applied
+<code>pull_tflow_prepped_recipe</code> returns the recipe already applied
 to the training data.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_resample()</a></code> returns the resample object from the function
-specified in <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_resample.html'>plug_resample</a></code>. The resample object does not
+<li><p><code>pull_tflow_resample()</code> returns the resample object from the function
+specified in <code><a href='plug_resample.html'>plug_resample</a></code>. The resample object does not
 have the preprocessor applied (either formula or recipe).</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_grid()</a></code> returns the grid data frame from which the tuning
+<li><p><code>pull_tflow_grid()</code> returns the grid data frame from which the tuning
 parameter was made.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_prepped_recipe()</a></code> returns the prepped recipe. It is
-extracted from the mold object returned from <code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_mold()</a></code>.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_mold()</a></code> returns the preprocessed "mold" object returned
+<li><p><code>pull_tflow_prepped_recipe()</code> returns the prepped recipe. It is
+extracted from the mold object returned from <code>pull_tflow_mold()</code>.</p></li>
+<li><p><code>pull_tflow_mold()</code> returns the preprocessed "mold" object returned
 from <code><a href='https://rdrr.io/pkg/hardhat/man/mold.html'>hardhat::mold()</a></code>. It contains information about the preprocessing,
 including either the prepped recipe or the formula terms object.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_spec()</a></code> returns the parsnip model specification.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit()</a></code> returns the parsnip model fit.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit_tuning()</a></code> returns the resample result from model tuning.</p></li>
+<li><p><code>pull_tflow_spec()</code> returns the parsnip model specification.</p></li>
+<li><p><code>pull_tflow_fit()</code> returns the parsnip model fit.</p></li>
+<li><p><code>pull_tflow_fit_tuning()</code> returns the resample result from model tuning.</p></li>
 </ul>
 
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_rawdata</a></span>(<span class='kw'>x</span>)
+    <pre class="usage"><span class='fu'>pull_tflow_rawdata</span>(<span class='kw'>x</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_split</a></span>(<span class='kw'>x</span>)
+<span class='fu'>pull_tflow_split</span>(<span class='kw'>x</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_training</a></span>(<span class='kw'>x</span>, prep = <span class='fl'>FALSE</span>)
+<span class='fu'>pull_tflow_training</span>(<span class='kw'>x</span>, prep = <span class='fl'>FALSE</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_testing</a></span>(<span class='kw'>x</span>, prep = <span class='fl'>FALSE</span>)
+<span class='fu'>pull_tflow_testing</span>(<span class='kw'>x</span>, prep = <span class='fl'>FALSE</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_resample</a></span>(<span class='kw'>x</span>)
+<span class='fu'>pull_tflow_resample</span>(<span class='kw'>x</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_grid</a></span>(<span class='kw'>x</span>)
+<span class='fu'>pull_tflow_grid</span>(<span class='kw'>x</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_preprocessor</a></span>(<span class='kw'>x</span>)
+<span class='fu'>pull_tflow_preprocessor</span>(<span class='kw'>x</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_prepped_recipe</a></span>(<span class='kw'>x</span>)
+<span class='fu'>pull_tflow_prepped_recipe</span>(<span class='kw'>x</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_mold</a></span>(<span class='kw'>x</span>)
+<span class='fu'>pull_tflow_mold</span>(<span class='kw'>x</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_spec</a></span>(<span class='kw'>x</span>)
+<span class='fu'>pull_tflow_spec</span>(<span class='kw'>x</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit</a></span>(<span class='kw'>x</span>)
+<span class='fu'>pull_tflow_fit</span>(<span class='kw'>x</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span>(<span class='kw'>x</span>)</pre>
+<span class='fu'>pull_tflow_fit_tuning</span>(<span class='kw'>x</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -253,17 +269,17 @@ section.</p>
 
 <span class='kw'>tflow</span> <span class='op'>&lt;-</span>
  <span class='kw'>mtcars</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow.html'>tidyflow</a></span>() <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>plug_split</a></span>(<span class='kw'>initial_split</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_model.html'>plug_model</a></span>(<span class='kw'>model</span>)
+ <span class='fu'><a href='tidyflow.html'>tidyflow</a></span>() <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_split.html'>plug_split</a></span>(<span class='kw'>initial_split</span>) <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_model.html'>plug_model</a></span>(<span class='kw'>model</span>)
 
-<span class='kw'>recipe_tflow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>plug_recipe</a></span>(<span class='kw'>tflow</span>, <span class='kw'>recipe</span>)
-<span class='kw'>formula_tflow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>plug_formula</a></span>(<span class='kw'>tflow</span>, <span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>cyl</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>disp</span>))
+<span class='kw'>recipe_tflow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plug_recipe.html'>plug_recipe</a></span>(<span class='kw'>tflow</span>, <span class='kw'>recipe</span>)
+<span class='kw'>formula_tflow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plug_formula.html'>plug_formula</a></span>(<span class='kw'>tflow</span>, <span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>cyl</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>disp</span>))
 
 <span class='kw'>fit_recipe_tflow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>recipe_tflow</span>)
 <span class='kw'>fit_formula_tflow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>formula_tflow</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_rawdata</a></span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt;                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+<span class='fu'>pull_tflow_rawdata</span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt;                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
 #&gt; Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
 #&gt; Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
 #&gt; Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
@@ -295,7 +311,7 @@ section.</p>
 #&gt; Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
 #&gt; Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
 #&gt; Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
-#&gt; Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_rawdata</a></span>(<span class='kw'>fit_formula_tflow</span>)</div><div class='output co'>#&gt;                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+#&gt; Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</div><div class='input'><span class='fu'>pull_tflow_rawdata</span>(<span class='kw'>fit_formula_tflow</span>)</div><div class='output co'>#&gt;                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
 #&gt; Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
 #&gt; Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
 #&gt; Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
@@ -329,44 +345,44 @@ section.</p>
 #&gt; Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
 #&gt; Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</div><div class='input'>
 <span class='co'># The preprocessor is either the recipe function or a formula</span>
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_preprocessor</a></span>(<span class='kw'>recipe_tflow</span>)</div><div class='output co'>#&gt; &lt;lambda&gt;
+<span class='fu'>pull_tflow_preprocessor</span>(<span class='kw'>recipe_tflow</span>)</div><div class='output co'>#&gt; &lt;lambda&gt;
 #&gt; function (..., .x = ..1, .y = ..2, . = ..1) 
 #&gt; recipe(.x, mpg ~ cyl + disp) %&gt;% step_log(disp)
-#&gt; &lt;environment: 0x7fc12afb6268&gt;
+#&gt; &lt;environment: 0x7f912fe6ade0&gt;
 #&gt; attr(,"class")
-#&gt; [1] "rlang_lambda_function" "function"             </div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_preprocessor</a></span>(<span class='kw'>formula_tflow</span>)</div><div class='output co'>#&gt; mpg ~ cyl + log(disp)
-#&gt; &lt;environment: 0x7fc12afb6268&gt;</div><div class='input'>
+#&gt; [1] "rlang_lambda_function" "function"             </div><div class='input'><span class='fu'>pull_tflow_preprocessor</span>(<span class='kw'>formula_tflow</span>)</div><div class='output co'>#&gt; mpg ~ cyl + log(disp)
+#&gt; &lt;environment: 0x7f912fe6ade0&gt;</div><div class='input'>
 <span class='co'># The `spec` is the parsnip spec before it has been fit.</span>
 <span class='co'># The `fit` is the fit parsnip model.</span>
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_spec</a></span>(<span class='kw'>fit_formula_tflow</span>)</div><div class='output co'>#&gt; Linear Regression Model Specification (regression)
+<span class='fu'>pull_tflow_spec</span>(<span class='kw'>fit_formula_tflow</span>)</div><div class='output co'>#&gt; Linear Regression Model Specification (regression)
 #&gt; 
 #&gt; Computational engine: lm 
-#&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit</a></span>(<span class='kw'>fit_formula_tflow</span>)</div><div class='output co'>#&gt; parsnip model object
+#&gt; </div><div class='input'><span class='fu'>pull_tflow_fit</span>(<span class='kw'>fit_formula_tflow</span>)</div><div class='output co'>#&gt; parsnip model object
 #&gt; 
-#&gt; Fit time:  4ms 
+#&gt; Fit time:  1ms 
 #&gt; 
 #&gt; Call:
 #&gt; stats::lm(formula = ..y ~ ., data = data)
 #&gt; 
 #&gt; Coefficients:
 #&gt; (Intercept)          cyl  `log(disp)`  
-#&gt;     69.2598       0.3228      -9.7909  
+#&gt;     59.8585      -0.7974      -6.5185  
 #&gt; </div><div class='input'>
 <span class='co'># The mold is returned from `hardhat::mold()`, and contains the</span>
 <span class='co'># predictors, outcomes, and information about the preprocessing</span>
 <span class='co'># for use on new data at `predict()` time.</span>
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_mold</a></span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt; $predictors
+<span class='fu'>pull_tflow_mold</span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt; $predictors
 #&gt; <span style='color: #555555;'># A tibble: 24 x 2</span><span>
 #&gt;      cyl  disp
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span>     6  5.08
-#&gt; </span><span style='color: #555555;'> 2</span><span>     4  4.68
+#&gt; </span><span style='color: #555555;'> 2</span><span>     6  5.08
 #&gt; </span><span style='color: #555555;'> 3</span><span>     6  5.55
 #&gt; </span><span style='color: #555555;'> 4</span><span>     6  5.42
-#&gt; </span><span style='color: #555555;'> 5</span><span>     8  5.89
-#&gt; </span><span style='color: #555555;'> 6</span><span>     4  4.99
+#&gt; </span><span style='color: #555555;'> 5</span><span>     4  4.95
+#&gt; </span><span style='color: #555555;'> 6</span><span>     6  5.12
 #&gt; </span><span style='color: #555555;'> 7</span><span>     6  5.12
-#&gt; </span><span style='color: #555555;'> 8</span><span>     6  5.12
+#&gt; </span><span style='color: #555555;'> 8</span><span>     8  5.62
 #&gt; </span><span style='color: #555555;'> 9</span><span>     8  5.62
 #&gt; </span><span style='color: #555555;'>10</span><span>     8  5.62
 #&gt; </span><span style='color: #555555;'># … with 14 more rows</span><span>
@@ -376,15 +392,15 @@ section.</p>
 #&gt;      mpg
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span>  21  
-#&gt; </span><span style='color: #555555;'> 2</span><span>  22.8
+#&gt; </span><span style='color: #555555;'> 2</span><span>  21  
 #&gt; </span><span style='color: #555555;'> 3</span><span>  21.4
 #&gt; </span><span style='color: #555555;'> 4</span><span>  18.1
-#&gt; </span><span style='color: #555555;'> 5</span><span>  14.3
-#&gt; </span><span style='color: #555555;'> 6</span><span>  24.4
-#&gt; </span><span style='color: #555555;'> 7</span><span>  19.2
-#&gt; </span><span style='color: #555555;'> 8</span><span>  17.8
-#&gt; </span><span style='color: #555555;'> 9</span><span>  16.4
-#&gt; </span><span style='color: #555555;'>10</span><span>  17.3
+#&gt; </span><span style='color: #555555;'> 5</span><span>  22.8
+#&gt; </span><span style='color: #555555;'> 6</span><span>  19.2
+#&gt; </span><span style='color: #555555;'> 7</span><span>  17.8
+#&gt; </span><span style='color: #555555;'> 8</span><span>  16.4
+#&gt; </span><span style='color: #555555;'> 9</span><span>  17.3
+#&gt; </span><span style='color: #555555;'>10</span><span>  15.2
 #&gt; </span><span style='color: #555555;'># … with 14 more rows</span><span>
 #&gt; 
 #&gt; $blueprint
@@ -401,75 +417,75 @@ section.</p>
 #&gt; 
 #&gt; </div><div class='input'>
 <span class='co'># The raw training and testing</span>
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_training</a></span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt;                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+<span class='fu'>pull_tflow_training</span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt;                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
 #&gt; Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-#&gt; Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+#&gt; Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
 #&gt; Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
 #&gt; Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-#&gt; Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-#&gt; Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+#&gt; Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
 #&gt; Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
 #&gt; Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
 #&gt; Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
 #&gt; Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+#&gt; Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
 #&gt; Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
 #&gt; Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
 #&gt; Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+#&gt; Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
 #&gt; Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+#&gt; Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
 #&gt; Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
 #&gt; Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
 #&gt; AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
 #&gt; Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
-#&gt; Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
 #&gt; Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
-#&gt; Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+#&gt; Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
 #&gt; Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
-#&gt; Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
-#&gt; Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_testing</a></span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt;                    mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-#&gt; Mazda RX4 Wag     21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+#&gt; Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</div><div class='input'><span class='fu'>pull_tflow_testing</span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt;                    mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+#&gt; Datsun 710        22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
 #&gt; Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-#&gt; Merc 230          22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
-#&gt; Merc 450SLC       15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
-#&gt; Fiat 128          32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
-#&gt; Toyota Corolla    33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
-#&gt; Porsche 914-2     26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
-#&gt; Volvo 142E        21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</div><div class='input'>
+#&gt; Duster 360        14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+#&gt; Merc 240D         24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+#&gt; Pontiac Firebird  19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+#&gt; Lotus Europa      30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+#&gt; Ferrari Dino      19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+#&gt; Maserati Bora     15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8</div><div class='input'>
 <span class='co'># Or with the preprocessor (recipe/formula) applied</span>
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_training</a></span>(<span class='kw'>fit_recipe_tflow</span>, prep = <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;     mpg cyl     disp
+<span class='fu'>pull_tflow_training</span>(<span class='kw'>fit_recipe_tflow</span>, prep = <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;     mpg cyl     disp
 #&gt; 1  21.0   6 5.075174
-#&gt; 2  22.8   4 4.682131
+#&gt; 2  21.0   6 5.075174
 #&gt; 3  21.4   6 5.552960
 #&gt; 4  18.1   6 5.416100
-#&gt; 5  14.3   8 5.886104
-#&gt; 6  24.4   4 4.988390
-#&gt; 7  19.2   6 5.121580
-#&gt; 8  17.8   6 5.121580
-#&gt; 9  16.4   8 5.619676
-#&gt; 10 17.3   8 5.619676
+#&gt; 5  22.8   4 4.947340
+#&gt; 6  19.2   6 5.121580
+#&gt; 7  17.8   6 5.121580
+#&gt; 8  16.4   8 5.619676
+#&gt; 9  17.3   8 5.619676
+#&gt; 10 15.2   8 5.619676
 #&gt; 11 10.4   8 6.156979
 #&gt; 12 10.4   8 6.131226
 #&gt; 13 14.7   8 6.086775
-#&gt; 14 30.4   4 4.326778
-#&gt; 15 21.5   4 4.788325
-#&gt; 16 15.5   8 5.762051
-#&gt; 17 15.2   8 5.717028
-#&gt; 18 13.3   8 5.857933
-#&gt; 19 19.2   8 5.991465
-#&gt; 20 27.3   4 4.369448
-#&gt; 21 30.4   4 4.554929
-#&gt; 22 15.8   8 5.860786
-#&gt; 23 19.7   6 4.976734
-#&gt; 24 15.0   8 5.707110</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_testing</a></span>(<span class='kw'>fit_recipe_tflow</span>, prep = <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;    mpg cyl     disp
-#&gt; 1 21.0   6 5.075174
+#&gt; 14 32.4   4 4.365643
+#&gt; 15 30.4   4 4.326778
+#&gt; 16 33.9   4 4.264087
+#&gt; 17 21.5   4 4.788325
+#&gt; 18 15.5   8 5.762051
+#&gt; 19 15.2   8 5.717028
+#&gt; 20 13.3   8 5.857933
+#&gt; 21 27.3   4 4.369448
+#&gt; 22 26.0   4 4.789989
+#&gt; 23 15.8   8 5.860786
+#&gt; 24 21.4   4 4.795791</div><div class='input'><span class='fu'>pull_tflow_testing</span>(<span class='kw'>fit_recipe_tflow</span>, prep = <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;    mpg cyl     disp
+#&gt; 1 22.8   4 4.682131
 #&gt; 2 18.7   8 5.886104
-#&gt; 3 22.8   4 4.947340
-#&gt; 4 15.2   8 5.619676
-#&gt; 5 32.4   4 4.365643
-#&gt; 6 33.9   4 4.264087
-#&gt; 7 26.0   4 4.789989
-#&gt; 8 21.4   4 4.795791</div><div class='input'>
+#&gt; 3 14.3   8 5.886104
+#&gt; 4 24.4   4 4.988390
+#&gt; 5 19.2   8 5.991465
+#&gt; 6 30.4   4 4.554929
+#&gt; 7 19.7   6 4.976734
+#&gt; 8 15.0   8 5.707110</div><div class='input'>
 <span class='co'># A useful shortcut is to extract the prepped recipe from the tidyflow</span>
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_prepped_recipe</a></span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt; Data Recipe
+<span class='fu'>pull_tflow_prepped_recipe</span>(<span class='kw'>fit_recipe_tflow</span>)</div><div class='output co'>#&gt; Data Recipe
 #&gt; 
 #&gt; Inputs:
 #&gt; 
@@ -484,8 +500,8 @@ section.</p>
 #&gt; Log transformation on disp [trained]</div><div class='input'>
 <span class='co'># That is identical to</span>
 <span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span>(
-  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_mold</a></span>(<span class='kw'>fit_recipe_tflow</span>)<span class='op'>$</span><span class='kw'>blueprint</span><span class='op'>$</span><span class='kw'>recipe</span>,
-  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_prepped_recipe</a></span>(<span class='kw'>fit_recipe_tflow</span>)
+  <span class='fu'>pull_tflow_mold</span>(<span class='kw'>fit_recipe_tflow</span>)<span class='op'>$</span><span class='kw'>blueprint</span><span class='op'>$</span><span class='kw'>recipe</span>,
+  <span class='fu'>pull_tflow_prepped_recipe</span>(<span class='kw'>fit_recipe_tflow</span>)
 )</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -498,7 +514,7 @@ section.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jorge Cimentada, Davis Vaughan.</p>
+  <p>Developed by <a href='https://cimentadaj.github.io'>Jorge Cimentada</a>, Davis Vaughan.</p>
 </div>
 
 <div class="pkgdown">

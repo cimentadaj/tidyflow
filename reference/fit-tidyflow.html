@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -55,6 +55,16 @@
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-93322-5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-93322-5');
+</script>
+
 
   </head>
 
@@ -95,10 +105,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/intro_tidyflow.html">An introduction to tidyflow</a>
+      <a href="../articles/a01_intro_tidyflow.html">An introduction to tidyflow</a>
     </li>
     <li>
-      <a href="../articles/model-with-recipe.html">Fitting a model with a recipe</a>
+      <a href="../articles/b02_model-with-recipe.html">Using recipes in tidyflow</a>
+    </li>
+    <li>
+      <a href="../articles/c03_fitting-model-resampling.html">Using resampling in tidyflow</a>
+    </li>
+    <li>
+      <a href="../articles/d04_fitting-model-tuning.html">Performing grid search in tidyflow</a>
     </li>
   </ul>
 </li>
@@ -133,7 +149,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for tidyflow</span>
-<span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>x</span>, control = <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/control_tidyflow.html'>control_tidyflow</a></span>(), <span class='kw'>...</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>x</span>, control = <span class='fu'><a href='control_tidyflow.html'>control_tidyflow</a></span>(), <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -144,8 +160,8 @@
     </tr>
     <tr>
       <th>control</th>
-      <td><p>A <code><a href='https://rdrr.io/pkg/tidyflow/man/control_tidyflow.html'>control_tidyflow</a></code> object with the options
-for the model. See <code><a href='https://rdrr.io/pkg/tidyflow/man/control_tidyflow.html'>control_tidyflow</a></code> for all options and
+      <td><p>A <code><a href='control_tidyflow.html'>control_tidyflow</a></code> object with the options
+for the model. See <code><a href='control_tidyflow.html'>control_tidyflow</a></code> for all options and
 examples.</p></td>
     </tr>
     <tr>
@@ -159,18 +175,18 @@ examples.</p></td>
     <p><code>tidyflow</code> can return two type of results: a model object or a resamples.
 Depending on the specification of the <code>tidyflow</code> you can get either.</p>
 <p>Here are all possible results:</p><ul>
-<li><p>Any <code>tidyflow</code> <strong>without</strong> a <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_resample.html'>plug_resample</a></code> or
-<code><a href='https://rdrr.io/pkg/tidyflow/man/plug_grid.html'>plug_grid</a></code> specificiation, will always return a model. Since
+<li><p>Any <code>tidyflow</code> <strong>without</strong> a <code><a href='plug_resample.html'>plug_resample</a></code> or
+<code><a href='plug_grid.html'>plug_grid</a></code> specificiation, will always return a model. Since
 there is no grid search or resampling happening, <code>fit</code> will always return
 a tidyflow with a model. If needed, this model can be extracted with
-<code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit</a></code>.</p></li>
-<li><p>Any <code>tidyflow</code> <strong>with</strong> either a <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_resample.html'>plug_resample</a></code> or
-a combination of <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_resample.html'>plug_resample</a></code> and <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_grid.html'>plug_grid</a></code>
+<code><a href='tidyflow-extractors.html'>pull_tflow_fit</a></code>.</p></li>
+<li><p>Any <code>tidyflow</code> <strong>with</strong> either a <code><a href='plug_resample.html'>plug_resample</a></code> or
+a combination of <code><a href='plug_resample.html'>plug_resample</a></code> and <code><a href='plug_grid.html'>plug_grid</a></code>
 will always return a <code>tidyflow</code> with a resample object. The resample
-object can be extracted with <code><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit_tuning</a></code>. If a
-tuning grid is supplied with <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_grid.html'>plug_grid</a></code>, one can finalize
-the best model with <code><a href='https://rdrr.io/pkg/tidyflow/man/complete_tflow.html'>complete_tflow</a></code>. See
-<code><a href='https://rdrr.io/pkg/tidyflow/man/complete_tflow.html'>complete_tflow</a></code> for examples on how to use it.</p></li>
+object can be extracted with <code><a href='tidyflow-extractors.html'>pull_tflow_fit_tuning</a></code>. If a
+tuning grid is supplied with <code><a href='plug_grid.html'>plug_grid</a></code>, one can finalize
+the best model with <code><a href='complete_tflow.html'>complete_tflow</a></code>. See
+<code><a href='complete_tflow.html'>complete_tflow</a></code> for examples on how to use it.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -190,7 +206,7 @@ the item above, the recipe is not applied to the training data previous
 to this step.</p></li>
 <li><p>Apply the grid function to the parameters defined in the
 <code>parsnip</code> model and the <code>recipe</code>. Alternatively, extract
-the arguments defined in <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_grid.html'>plug_grid</a></code>. This generates a
+the arguments defined in <code><a href='plug_grid.html'>plug_grid</a></code>. This generates a
 grid of values to explore.</p></li>
 <li><p>Run the model/grid search/resample depending on the specification.</p></li>
 </ul></li>
@@ -216,39 +232,39 @@ be the one described above skipping any steps that are not specified.</p></li>
 
 <span class='kw'>formula_tidyflow</span> <span class='op'>&lt;-</span>
  <span class='kw'>mtcars</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow.html'>tidyflow</a></span>() <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>plug_formula</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>cyl</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>disp</span>)) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_model.html'>plug_model</a></span>(<span class='kw'>model</span>)
+ <span class='fu'><a href='tidyflow.html'>tidyflow</a></span>() <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_formula.html'>plug_formula</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>cyl</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>disp</span>)) <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_model.html'>plug_model</a></span>(<span class='kw'>model</span>)
 
 <span class='co'># The result is a model since we didn't specify any resample/grid</span>
 <span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>formula_tidyflow</span>)
 
 <span class='co'># You can extract the model fit if neede</span>
 <span class='kw'>res</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit</a></span>()
+ <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit</a></span>()
 
 <span class='co'># Alternatively, we can add a split specification and</span>
 <span class='co'># predict on the training data automatically:</span>
 <span class='kw'>formula_tidyflow</span> <span class='op'>&lt;-</span>
  <span class='kw'>formula_tidyflow</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>plug_split</a></span>(<span class='kw'>initial_split</span>)
+ <span class='fu'><a href='plug_split.html'>plug_split</a></span>(<span class='kw'>initial_split</span>)
 
 <span class='kw'>res2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>formula_tidyflow</span>)
 
 <span class='kw'>res2</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/predict-tidyflow.html'>predict_training</a></span>()
+ <span class='fu'><a href='predict-tidyflow.html'>predict_training</a></span>()
 
 <span class='co'># This has the advantage that `predict_training` or `predict_testing` will</span>
 <span class='co'># apply the recipe/formula automatically for you:</span>
 
 <span class='kw'>recipe_tidyflow</span> <span class='op'>&lt;-</span>
  <span class='kw'>formula_tidyflow</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>drop_formula</a></span>() <span class='op'>%&gt;%</span> 
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, <span class='kw'>.x</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_log.html'>step_log</a></span>(<span class='kw'>disp</span>))
+ <span class='fu'><a href='plug_formula.html'>drop_formula</a></span>() <span class='op'>%&gt;%</span> 
+ <span class='fu'><a href='plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, <span class='kw'>.x</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_log.html'>step_log</a></span>(<span class='kw'>disp</span>))
 
 <span class='kw'>res3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>recipe_tidyflow</span>)
 <span class='kw'>res3</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/predict-tidyflow.html'>predict_testing</a></span>()
+ <span class='fu'><a href='predict-tidyflow.html'>predict_testing</a></span>()
 
 <span class='co'># We can accumulate steps and add a cross-validation and tuning grid.</span>
 <span class='co'># Fit a regularized regression through a grid search.</span>
@@ -257,9 +273,9 @@ be the one described above skipping any steps that are not specified.</p></li>
                       <span class='st'>"glmnet"</span>)
 <span class='kw'>tuned_res</span> <span class='op'>&lt;-</span>
   <span class='kw'>recipe_tidyflow</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_resample.html'>plug_resample</a></span>(<span class='kw'>vfold_cv</span>, v = <span class='fl'>2</span>) <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_model.html'>replace_model</a></span>(<span class='kw'>new_mod</span>) <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_grid.html'>plug_grid</a></span>(<span class='kw'>grid_regular</span>, levels = <span class='fl'>2</span>) <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='plug_resample.html'>plug_resample</a></span>(<span class='kw'>vfold_cv</span>, v = <span class='fl'>2</span>) <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='plug_model.html'>replace_model</a></span>(<span class='kw'>new_mod</span>) <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='plug_grid.html'>plug_grid</a></span>(<span class='kw'>grid_regular</span>, levels = <span class='fl'>2</span>) <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>()
 
 <span class='co'># Since we specified a resample/grid, the result is now a `tidyflow`</span>
@@ -268,7 +284,7 @@ be the one described above skipping any steps that are not specified.</p></li>
 
 <span class='co'># If needed, we can extract that resample:</span>
 <span class='kw'>tuned_res</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span>() <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span>() <span class='op'>%&gt;%</span>
  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>()
 
 <span class='co'># When the model tuning is finished, `complete_tflow` can</span>
@@ -276,8 +292,8 @@ be the one described above skipping any steps that are not specified.</p></li>
 <span class='co'># the best model for you.</span>
 
 <span class='kw'>tuned_res</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/complete_tflow.html'>complete_tflow</a></span>(metric = <span class='st'>"rmse"</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/predict-tidyflow.html'>predict_training</a></span>()
+ <span class='fu'><a href='complete_tflow.html'>complete_tflow</a></span>(metric = <span class='st'>"rmse"</span>) <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='predict-tidyflow.html'>predict_training</a></span>()
 
 <span class='co'># `complete_tflow` is powerful as it already applied the recipe</span>
 <span class='co'># and retrained the model on the entire training data with</span>
@@ -287,12 +303,12 @@ be the one described above skipping any steps that are not specified.</p></li>
 <span class='co'># and rerun the fit:</span>
 <span class='kw'>bootstrap_res</span> <span class='op'>&lt;-</span>
  <span class='kw'>tuned_res</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_resample.html'>replace_resample</a></span>(<span class='kw'>bootstraps</span>, times = <span class='fl'>2</span>) <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_resample.html'>replace_resample</a></span>(<span class='kw'>bootstraps</span>, times = <span class='fl'>2</span>) <span class='op'>%&gt;%</span>
  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>()
 
 <span class='kw'>bootstrap_res</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/complete_tflow.html'>complete_tflow</a></span>(metric = <span class='st'>"rsq"</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/predict-tidyflow.html'>predict_training</a></span>()
+ <span class='fu'><a href='complete_tflow.html'>complete_tflow</a></span>(metric = <span class='st'>"rsq"</span>) <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='predict-tidyflow.html'>predict_training</a></span>()
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -305,7 +321,7 @@ be the one described above skipping any steps that are not specified.</p></li>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jorge Cimentada, Davis Vaughan.</p>
+  <p>Developed by <a href='https://cimentadaj.github.io'>Jorge Cimentada</a>, Davis Vaughan.</p>
 </div>
 
 <div class="pkgdown">

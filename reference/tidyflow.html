@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -61,6 +61,16 @@ plug_grid()." />
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-93322-5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-93322-5');
+</script>
+
 
   </head>
 
@@ -101,10 +111,16 @@ plug_grid()." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/intro_tidyflow.html">An introduction to tidyflow</a>
+      <a href="../articles/a01_intro_tidyflow.html">An introduction to tidyflow</a>
     </li>
     <li>
-      <a href="../articles/model-with-recipe.html">Fitting a model with a recipe</a>
+      <a href="../articles/b02_model-with-recipe.html">Using recipes in tidyflow</a>
+    </li>
+    <li>
+      <a href="../articles/c03_fitting-model-resampling.html">Using resampling in tidyflow</a>
+    </li>
+    <li>
+      <a href="../articles/d04_fitting-model-tuning.html">Performing grid search in tidyflow</a>
     </li>
   </ul>
 </li>
@@ -137,14 +153,14 @@ plug_grid()." />
     <div class="ref-description">
     <p>A <code>tidyflow</code> is a container object that aggregates information required to
 fit and predict from a model. This information might be the main dataset,
-specified through <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_data.html'>plug_data()</a></code>, a recipe used in
-preprocessing, specified through <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>plug_recipe()</a></code>, or the model specification
-to fit, specified through <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_model.html'>plug_model()</a></code>. However, it supports more
-complex workflows, such as <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>plug_split()</a></code>, <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_resample.html'>plug_resample()</a></code>,
-<code><a href='https://rdrr.io/pkg/tidyflow/man/plug_grid.html'>plug_grid()</a></code>.</p>
+specified through <code><a href='plug_data.html'>plug_data()</a></code>, a recipe used in
+preprocessing, specified through <code><a href='plug_recipe.html'>plug_recipe()</a></code>, or the model specification
+to fit, specified through <code><a href='plug_model.html'>plug_model()</a></code>. However, it supports more
+complex workflows, such as <code><a href='plug_split.html'>plug_split()</a></code>, <code><a href='plug_resample.html'>plug_resample()</a></code>,
+<code><a href='plug_grid.html'>plug_grid()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow.html'>tidyflow</a></span>(data = <span class='kw'>NULL</span>, seed = <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>tidyflow</span>(data = <span class='kw'>NULL</span>, seed = <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,7 +168,7 @@ complex workflows, such as <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_
     <tr>
       <th>data</th>
       <td><p>A data frame or tibble used to begin the tidyflow. This is
-optional as the data can be specified with <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_data.html'>plug_data()</a></code>.</p></td>
+optional as the data can be specified with <code><a href='plug_data.html'>plug_data()</a></code>.</p></td>
     </tr>
     <tr>
       <th>seed</th>
@@ -175,8 +191,8 @@ when doing random splitting, resampling and model fitting.</p></td>
 
 <span class='kw'>wflow</span> <span class='op'>&lt;-</span>
  <span class='kw'>mtcars</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow.html'>tidyflow</a></span>(seed = <span class='fl'>23113</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>cyl</span>, <span class='kw'>.x</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_log.html'>step_log</a></span>(<span class='kw'>cyl</span>))
+ <span class='fu'>tidyflow</span>(seed = <span class='fl'>23113</span>) <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>cyl</span>, <span class='kw'>.x</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_log.html'>step_log</a></span>(<span class='kw'>cyl</span>))
 
 <span class='co'># tidyflow gives a prinout of the current specification</span>
 <span class='co'># in the order of execution:</span>
@@ -190,7 +206,7 @@ when doing random splitting, resampling and model fitting.</p></td>
 <span class='co'># The minimum tidyflow is: data + recipe/formula + model</span>
 <span class='kw'>wflow</span> <span class='op'>&lt;-</span>
  <span class='kw'>wflow</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_model.html'>plug_model</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(), <span class='st'>"lm"</span>))
+ <span class='fu'><a href='plug_model.html'>plug_model</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(), <span class='st'>"lm"</span>))
 
 <span class='co'># The output shows that we have the data, the recipe and the model</span>
 <span class='kw'>wflow</span></div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
@@ -232,9 +248,9 @@ when doing random splitting, resampling and model fitting.</p></td>
 <span class='co'># workflow specification:</span>
 <span class='kw'>wflow</span> <span class='op'>&lt;-</span>
  <span class='kw'>wflow</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_split.html'>plug_split</a></span>(<span class='kw'>initial_split</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_resample.html'>plug_resample</a></span>(<span class='kw'>vfold_cv</span>, v = <span class='fl'>2</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_grid.html'>plug_grid</a></span>(<span class='kw'>grid_regular</span>)
+ <span class='fu'><a href='plug_split.html'>plug_split</a></span>(<span class='kw'>initial_split</span>) <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_resample.html'>plug_resample</a></span>(<span class='kw'>vfold_cv</span>, v = <span class='fl'>2</span>) <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_grid.html'>plug_grid</a></span>(<span class='kw'>grid_regular</span>)
 
 <span class='co'># The print out shows that we have a split/resample/grid</span>
 <span class='co'># now set correcly.</span>
@@ -260,7 +276,7 @@ when doing random splitting, resampling and model fitting.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jorge Cimentada, Davis Vaughan.</p>
+  <p>Developed by <a href='https://cimentadaj.github.io'>Jorge Cimentada</a>, Davis Vaughan.</p>
 </div>
 
 <div class="pkgdown">

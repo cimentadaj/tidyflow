@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -67,6 +67,16 @@ formula will need to be refit.
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-93322-5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-93322-5');
+</script>
+
 
   </head>
 
@@ -107,10 +117,16 @@ formula will need to be refit.
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/intro_tidyflow.html">An introduction to tidyflow</a>
+      <a href="../articles/a01_intro_tidyflow.html">An introduction to tidyflow</a>
     </li>
     <li>
-      <a href="../articles/model-with-recipe.html">Fitting a model with a recipe</a>
+      <a href="../articles/b02_model-with-recipe.html">Using recipes in tidyflow</a>
+    </li>
+    <li>
+      <a href="../articles/c03_fitting-model-resampling.html">Using resampling in tidyflow</a>
+    </li>
+    <li>
+      <a href="../articles/d04_fitting-model-tuning.html">Performing grid search in tidyflow</a>
     </li>
   </ul>
 </li>
@@ -143,24 +159,24 @@ formula will need to be refit.
     <div class="ref-description">
     
 <ul>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>plug_formula()</a></code> specifies the terms of the model through the usage of a
+<li><p><code>plug_formula()</code> specifies the terms of the model through the usage of a
 formula.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>drop_formula()</a></code> removes the formula as well as any downstream objects
+<li><p><code>drop_formula()</code> removes the formula as well as any downstream objects
 that might get created after the formula is used for preprocessing, such as
 terms. Additionally, if the model has already been fit, then the fit is
 removed.</p></li>
-<li><p><code><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>replace_formula()</a></code> first removes the formula, then replaces the previous
+<li><p><code>replace_formula()</code> first removes the formula, then replaces the previous
 formula with the new one. Any model that has already been fit based on this
 formula will need to be refit.</p></li>
 </ul>
 
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>plug_formula</a></span>(<span class='kw'>x</span>, <span class='kw'>formula</span>, <span class='kw'>...</span>, blueprint = <span class='kw'>NULL</span>)
+    <pre class="usage"><span class='fu'>plug_formula</span>(<span class='kw'>x</span>, <span class='kw'>formula</span>, <span class='kw'>...</span>, blueprint = <span class='kw'>NULL</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>drop_formula</a></span>(<span class='kw'>x</span>)
+<span class='fu'>drop_formula</span>(<span class='kw'>x</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>replace_formula</a></span>(<span class='kw'>x</span>, <span class='kw'>formula</span>, <span class='kw'>...</span>, blueprint = <span class='kw'>NULL</span>)</pre>
+<span class='fu'>replace_formula</span>(<span class='kw'>x</span>, <span class='kw'>formula</span>, <span class='kw'>...</span>, blueprint = <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -191,7 +207,7 @@ If <code>NULL</code>, <code><a href='https://rdrr.io/pkg/hardhat/man/default_for
     <p>The tidyflow <code>x</code>, updated with either a new or removed formula preprocessor.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>To fit a tidyflow, one of <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>plug_formula()</a></code> or <code><a href='https://rdrr.io/pkg/tidyflow/man/plug_recipe.html'>plug_recipe()</a></code> <em>must</em> be
+    <p>To fit a tidyflow, one of <code>plug_formula()</code> or <code><a href='plug_recipe.html'>plug_recipe()</a></code> <em>must</em> be
 specified, but not both.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -201,8 +217,8 @@ specified, but not both.</p>
 
 <span class='kw'>tflow</span> <span class='op'>&lt;-</span>
   <span class='kw'>mtcars</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/tidyflow.html'>tidyflow</a></span>(seed = <span class='fl'>652341</span>) <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>plug_formula</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>)
+  <span class='fu'><a href='tidyflow.html'>tidyflow</a></span>(seed = <span class='fl'>652341</span>) <span class='op'>%&gt;%</span> 
+  <span class='fu'>plug_formula</span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>)
 
 <span class='kw'>tflow</span></div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; <span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
@@ -211,14 +227,14 @@ specified, but not both.</p>
 #&gt; </span><span style='font-style: italic;'>Resample:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Grid:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>drop_formula</a></span>(<span class='kw'>tflow</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='fu'>drop_formula</span>(<span class='kw'>tflow</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Recipe/Formula: None</span><span>
 #&gt; </span><span style='font-style: italic;'>Resample:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Grid:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/pkg/tidyflow/man/plug_formula.html'>replace_formula</a></span>(<span class='kw'>tflow</span>, <span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>disp</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='fu'>replace_formula</span>(<span class='kw'>tflow</span>, <span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>disp</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Formula: </span><span>mpg ~ disp
@@ -236,7 +252,7 @@ specified, but not both.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jorge Cimentada, Davis Vaughan.</p>
+  <p>Developed by <a href='https://cimentadaj.github.io'>Jorge Cimentada</a>, Davis Vaughan.</p>
 </div>
 
 <div class="pkgdown">
