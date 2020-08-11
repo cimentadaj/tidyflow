@@ -95,7 +95,7 @@ resample_model %>%
   theme_minimal()
 ```
 
-Since there are no differences in terms of the model between these different cross-validated models, we can't really obtain a 'final model' out of this. You can use resampling to estimate the variance of your models. However, the superb value of resampling techniques comes in when combined with a grid search to find the most optimal combination of tuning parameters. You can read more about this in the [grid search vignette](./fitting-model-tuning.html).
+Since there are no differences in terms of the model between these different cross-validated models, we can't really obtain a 'final model' out of this. You can use resampling to estimate the variance of your models. However, the superb value of resampling techniques comes in when combined with a grid search to find the most optimal combination of tuning parameters. You can read more about this in the [grid search vignette](./d04_fitting-model-tuning.html).
 
 The `resample` package and `tidymodels` are very powerful tools for doing machine learning. In this vignette, I tried to extend their work by providing a unified interface for working with `resample` that uses the resample framework bundled together with all the other common machine learning steps.
 

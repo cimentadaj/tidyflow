@@ -30,29 +30,18 @@ The workflow in machine learning is very standard and can be summarized in these
 
 * Fit model
 
-
 Although some of these steps can be exchanged (feature engineering and preprocessing can be done before separating into training/testing), the process is somewhat fixed. For example, you cannot
 perform tuning before defining a cross-validation resample or evaluate a model without fitting it.
 
 `tidyflow` takes advantage of this fixed order to create a simple and easy interface to the `tidymodels` ecosystem. `tidyflow` works by defining steps which are directly mapped to the workflow defined above:
 
-* Separate into training/testing --> `plug_split`
-
-* Feature engineering / Preprocessing --> `plug_recipe` / `plug_formula`
-
-* Cross validation --> `plug_resample`
-
-* Tuning --> `plug_grid`
-
-* Model definition --> `plug_model`
-
-* Fit a model --> `fit`
+<img src='../man/figures/stages_arrows_plug_complete_code.png'>
 
 Let's work out a manual example.
 
 ## Example
 
-Let's construct a worklow that fits a linear model to `mtcars` but only on the training data:
+Let's construct a workflow that fits a linear model to `mtcars` but only on the training data:
 
 ```{r, message = FALSE}
 library(tidymodels)

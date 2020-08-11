@@ -19,7 +19,7 @@ This vignette aims to exemplify how you can use resampling and tuning within a `
 
 A tidyflow is a bundle of steps that allow you to bundle together your data, splitting, resampling, preprocessing, modeling, and grid search. For executing a grid search, the `tidymodels` ecosystem contains the `tune` package. `tune` allows you to run many sub-models, each one with a different combination of tuning parameters, with the aim of choosing the best final model. 
 
-[In another vignette](./fitting-model-resampling.html), we discussed the concept of resampling and how it can be used to evaluate the stability of a model. For performing a grid search, resampling is a natural step because we need to try a combination of tuning values for each parameter in a model. In other words, we will run many models with different values for the models parameters and we need a way to get random samples from the data. Resampling is thus combined with a general strategy of trying out different sub-models.
+[In another vignette](./c03_fitting-model-resampling.html), we discussed the concept of resampling and how it can be used to evaluate the stability of a model. For performing a grid search, resampling is a natural step because we need to try a combination of tuning values for each parameter in a model. In other words, we will run many models with different values for the models parameters and we need a way to get random samples from the data. Resampling is thus combined with a general strategy of trying out different sub-models.
 
 Let's define a random forest model but we want to try different values in the `trees` argument. We can signal that with the `tune()` function. This just means that the `trees` will be `tune`d.
 
