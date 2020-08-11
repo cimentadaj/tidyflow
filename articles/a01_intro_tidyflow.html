@@ -118,20 +118,13 @@
 </ul>
 <p>Although some of these steps can be exchanged (feature engineering and preprocessing can be done before separating into training/testing), the process is somewhat fixed. For example, you cannot perform tuning before defining a cross-validation resample or evaluate a model without fitting it.</p>
 <p><code>tidyflow</code> takes advantage of this fixed order to create a simple and easy interface to the <code>tidymodels</code> ecosystem. <code>tidyflow</code> works by defining steps which are directly mapped to the workflow defined above:</p>
-<ul>
-<li><p>Separate into training/testing –&gt; <code>plug_split</code></p></li>
-<li><p>Feature engineering / Preprocessing –&gt; <code>plug_recipe</code> / <code>plug_formula</code></p></li>
-<li><p>Cross validation –&gt; <code>plug_resample</code></p></li>
-<li><p>Tuning –&gt; <code>plug_grid</code></p></li>
-<li><p>Model definition –&gt; <code>plug_model</code></p></li>
-<li><p>Fit a model –&gt; <code>fit</code></p></li>
-</ul>
+<p><img src="../man/figures/stages_arrows_plug_complete_code.png"></p>
 <p>Let’s work out a manual example.</p>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<p>Let’s construct a worklow that fits a linear model to <code>mtcars</code> but only on the training data:</p>
+<p>Let’s construct a workflow that fits a linear model to <code>mtcars</code> but only on the training data:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span>)
