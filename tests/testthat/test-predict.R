@@ -191,27 +191,42 @@ test_that("predict without split but with new_data works", {
 
 
 test_that("blueprint will get passed on to hardhat::forge()", {
-  mod <- parsnip::linear_reg()
-  mod <- parsnip::set_engine(mod, "lm")
+  train <- data.frame(
+    y = c(1L, 5L, 3L, 4L),
+    x = factor(c("x", "y", "x", "y"))
+  )
 
-  # Pass formula explicitly to keep `lm()` from auto-generating an intercept
-  tidyflow <- tidyflow(mtcars)
-  tidyflow <- plug_model(tidyflow, mod, formula = mpg ~ . + 0)
+  test <- data.frame(
+    x = factor(c("x", "y", "z"))
+  )
 
-  blueprint_no_intercept <- hardhat::default_formula_blueprint(intercept = FALSE)
-  tidyflow_no_intercept <- plug_formula(tidyflow, mpg ~ hp + disp, blueprint = blueprint_no_intercept)
-  fit_no_intercept <- fit(tidyflow_no_intercept)
-  prediction_no_intercept <- predict(fit_no_intercept, mtcars)
+  spec <- parsnip::linear_reg()
+  spec <- parsnip::set_engine(spec, "lm")
 
-  blueprint_with_intercept <- hardhat::default_formula_blueprint(intercept = TRUE)
-  tidyflow_with_intercept <- plug_formula(tidyflow, mpg ~ hp + disp, blueprint = blueprint_with_intercept)
-  fit_with_intercept <- fit(tidyflow_with_intercept)
-  prediction_with_intercept <- predict(fit_with_intercept, mtcars)
+  bp1 <- hardhat::default_formula_blueprint(intercept = TRUE, allow_novel_levels = FALSE)
+  bp2 <- hardhat::default_formula_blueprint(intercept = TRUE, allow_novel_levels = TRUE)
 
-  expect_false(fit_no_intercept$pre$mold$blueprint$intercept)
-  expect_true(fit_with_intercept$pre$mold$blueprint$intercept)
+  tflow <- tidyflow(train, seed = 23151)
+  tflow <- plug_model(tflow, spec)
 
-  expect_false(identical(prediction_with_intercept, prediction_no_intercept))
+  tflow1 <- plug_formula(tflow, y ~ x, blueprint = bp1)
+  tflow2 <- plug_formula(tflow, y ~ x, blueprint = bp2)
+
+  mod1 <- fit(tflow1)
+  mod2 <- fit(tflow2)
+
+  expect_warning(pred1 <- predict(mod1, test))
+  expect_warning(pred2 <- predict(mod2, test), NA)
+
+  expect_identical(
+    pred1[[".pred"]],
+    c(2, 4.5, NA)
+  )
+
+  expect_identical(
+    pred2[[".pred"]],
+    c(2, 4.5, 2)
+  )
 })
 
 rcp <- ~ recipes::step_log(recipes::recipe(mpg ~ cyl, data = .), cyl, base = 10) #nolintr
