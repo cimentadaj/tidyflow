@@ -9,7 +9,6 @@ vignette: >
 
 
 
-
 This vignette aims to exemplify how you can use recipes within a `tidyflow`.
 
 A tidyflow is a bundle of steps that allow you to bundle together your data, splitting, resampling, preprocessing, modeling, and grid search. For preprocessing your data, the `tidymodels` ecosystem contains the `recipes` package. This package allows to create very concise and clean pipelines of transforming your data. Let's create a very simple recipe that takes the logarithm of the variable `qsec`:
@@ -319,4 +318,20 @@ flights_fit %>%
   roc_curve(truth = arr_delay, .pred_late) %>% 
   autoplot()
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
