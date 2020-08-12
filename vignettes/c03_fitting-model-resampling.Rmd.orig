@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-
 This vignette aims to exemplify how you can use resampling within a `tidyflow`.
 
 A tidyflow is a bundle of steps that allow you to bundle together your data, splitting, resampling, reprocessing, modeling, and grid search. For resampling your data, the `tidymodels` ecosystem contains the `rsample` package. `rsample` allows you to apply many different resampling methods to your data within a tidy framework. 
