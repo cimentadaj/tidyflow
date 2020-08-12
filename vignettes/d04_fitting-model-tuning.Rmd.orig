@@ -7,7 +7,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "tuning-"
+  ## eval = FALSE
+)
+```
 
 This vignette aims to exemplify how you can use resampling and tuning within a `tidyflow`.
 
@@ -18,46 +25,24 @@ A tidyflow is a bundle of steps that allow you to bundle together your data, spl
 Let's define a random forest model but we want to try different values in the `trees` argument. We can signal that with the `tune()` function. This just means that the `trees` will be `tune`d.
 
 
-
-```r
+```{r}
 library(tidymodels)
 library(tidyflow)
 
 rf <- rand_forest(mode = "regression", trees = tune()) %>% set_engine("randomForest")
 rf
-#> Random Forest Model Specification (regression)
-#> 
-#> Main Arguments:
-#>   trees = tune()
-#> 
-#> Computational engine: randomForest
 ```
 
 At this point, we haven't really 'defined' which values will be used for `trees`. It could be 3 values (such as 100, 200 and 300) or it could be 500. The package `tune` hosts a family of functions named `grid_*` which provide different approaches to sampling random number from different tuning arguments. For example, let's use `grid_regular` to obtain an evenly spaced set of values for `trees`. This is how you would do it in `tidymodels`:
 
-
-```r
+```{r}
 even_values <- grid_regular(trees(), levels = 10)
 even_values
-#> # A tibble: 10 x 1
-#>    trees
-#>    <int>
-#>  1     1
-#>  2   223
-#>  3   445
-#>  4   667
-#>  5   889
-#>  6  1111
-#>  7  1333
-#>  8  1555
-#>  9  1777
-#> 10  2000
 ```
 
 `grid_regular` already knows which 'sensible' range of values to try. `tidyflow` provides the function `plug_grid` that allows you to specify the type of grid search you want to perform. Let's divide the data into training/testing, specify a cross-validation and plug in the random forest and a `grid_regular`:
 
-
-```r
+```{r}
 tflow <-
   mtcars %>%
   tidyflow(seed = 57136) %>%
@@ -68,62 +53,26 @@ tflow <-
   plug_grid(grid_regular)
 
 tflow
-#> ══ Tidyflow ════════════════════════════════════════════════════════════════════
-#> Data: 32 rows x 11 columns
-#> Split: initial_split w/ default args
-#> Formula: mpg ~ .
-#> Resample: vfold_cv w/ default args
-#> Grid: grid_regular w/ default args
-#> Model:
-#> Random Forest Model Specification (regression)
-#> 
-#> Main Arguments:
-#>   trees = tune()
-#> 
-#> Computational engine: randomForest
 ```
 
 This grid search specification knows that `trees` is the only argument to be searched for. We can execute the grid search with just a single call to `fit`:
 
-
-```r
+```{r}
 res <- tflow %>% fit()
-#> ! Fold10: internal: A correlation computation is required, but `estimate` is const...
 res %>% pull_tflow_fit_tuning()
-#> Warning: This tuning result has notes. Example notes on model fitting include:
-#> internal: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
-#> # Tuning results
-#> # 10-fold cross-validation 
-#> # A tibble: 10 x 4
-#>    splits         id     .metrics         .notes          
-#>    <list>         <chr>  <list>           <list>          
-#>  1 <split [21/3]> Fold01 <tibble [6 × 5]> <tibble [0 × 1]>
-#>  2 <split [21/3]> Fold02 <tibble [6 × 5]> <tibble [0 × 1]>
-#>  3 <split [21/3]> Fold03 <tibble [6 × 5]> <tibble [0 × 1]>
-#>  4 <split [21/3]> Fold04 <tibble [6 × 5]> <tibble [0 × 1]>
-#>  5 <split [22/2]> Fold05 <tibble [6 × 5]> <tibble [0 × 1]>
-#>  6 <split [22/2]> Fold06 <tibble [6 × 5]> <tibble [0 × 1]>
-#>  7 <split [22/2]> Fold07 <tibble [6 × 5]> <tibble [0 × 1]>
-#>  8 <split [22/2]> Fold08 <tibble [6 × 5]> <tibble [0 × 1]>
-#>  9 <split [22/2]> Fold09 <tibble [6 × 5]> <tibble [0 × 1]>
-#> 10 <split [22/2]> Fold10 <tibble [6 × 5]> <tibble [1 × 1]>
 ```
 
 The result is a resampling object with the evaluation metrics measuring the performance of different values for `trees` across the 10 resamples. You can look at more clearly the performance of the model using different values for trees using `autoplot()` on the resampling result:
 
-
-```r
+```{r, grid_search_tuning1}
 res %>% pull_tflow_fit_tuning() %>% autoplot()
 ```
-
-![plot of chunk grid_search_tuning1](tuning-grid_search_tuning1-1.png)
 
 It seems the grid randomly chose three values for `trees` (X axis has three points on `1`, `1000` and `2000`) and as expected, as the number of trees increases, the `rsq` is higher and the `rmse` is lower.
 
 This grid search strategy is really just a quick way to get some models running. However, it allows for much more flexibility. For example, we can play around with the number of values to sample from by just providing an extra argument to `plug_grid`:
 
-
-```r
+```{r, grid_search_tuning2, message = FALSE}
 tflow <-
   mtcars %>%
   tidyflow(seed = 57136) %>%
@@ -139,12 +88,9 @@ tflow %>%
   autoplot()
 ```
 
-![plot of chunk grid_search_tuning2](tuning-grid_search_tuning2-1.png)
-
 The random grid contains now 10 values. What if we wanted to limit the range of the values used in the resampling?
 
-
-```r
+```{r, grid_search_tuning3, message = FALSE}
 tflow <-
   mtcars %>%
   tidyflow(seed = 57136) %>%
@@ -160,12 +106,9 @@ tflow %>%
   autoplot()
 ```
 
-![plot of chunk grid_search_tuning3](tuning-grid_search_tuning3-1.png)
-
 This approach works just as well with **any** of the `grid_*` functions. However, what if we simply wanted to provide the values to try? That is, we don't want any type of 'random sampling'. `plug_grid` allows the user to specify the function `expand.grid` and just provide the values to be used in the grid search. For example:
 
-
-```r
+```{r, grid_search_tuning4}
 tflow <-
   mtcars %>%
   tidyflow(seed = 57136) %>%
@@ -179,16 +122,12 @@ tflow %>%
   fit() %>%
   pull_tflow_fit_tuning() %>%
   autoplot()
-#> ! Fold10: internal: A correlation computation is required, but `estimate` is const...
 ```
-
-![plot of chunk grid_search_tuning4](tuning-grid_search_tuning4-1.png)
 
 This flexibility works just as well with any number of tuning parameters for the model. You can specify as many as parameters as you want, and even manually customize some of the parameters while the `grid_*` functions takes care of randomly sampling the others. For example, let's say we wanted to run a random forest while tuning the parameters `trees`, `min_n` and `mtry`. Suppose that on top of that we wanted to manually limit the range of `trees` to be between 5 and 20, the `min_n` to be `20` (fixed) and allow the grid sampling to sample `mtry` randomly from 'sensible' values. We do that just as we've been manually updating the parameters values in `plug_grid`:
 
 
-
-```r
+```{r, grid_search_tuning5, message = FALSE}
 rf <-
   rand_forest(mode = "regression",
               trees = tune(),
@@ -209,26 +148,15 @@ res <- fit(tflow)
 res %>% pull_tflow_fit_tuning() %>% autoplot()
 ```
 
-![plot of chunk grid_search_tuning5](tuning-grid_search_tuning5-1.png)
-
 If you want to extract the actual grid used behind the scenes, `pull_tflow_grid` returns exactly that, after the model has been fitted.
 
-
-```r
+```{r}
 res %>% pull_tflow_grid()
-#> # A tibble: 4 x 2
-#>    mtry trees
-#>   <int> <int>
-#> 1     1     5
-#> 2    10     5
-#> 3     1    20
-#> 4    10    20
 ```
 
 Once you've tuned your model you want to choose the final model. `complete_tflow` takes care of finding by the best combination of values for you. When you provide the metric of interest, it searches for the combination of parameters with the lowest error for your metric:
 
-
-```r
+```{r}
 final_mod <- res %>% complete_tflow(metric = "rmse")
 
 # Otherwise, you can provide the values manually yourself
@@ -236,68 +164,21 @@ final_mod <- res %>% complete_tflow(metric = "rmse")
 # final_mod <- res %>% complete_tflow(best_params = best)
 
 final_mod
-#> ══ Tidyflow [trained] ══════════════════════════════════════════════════════════
-#> Data: 32 rows x 11 columns
-#> Split: initial_split w/ default args
-#> Formula: mpg ~ .
-#> Resample: vfold_cv w/ default args
-#> Grid: grid_regular w/ trees = ~trees(range = c(5, 20)), levels = ~2
-#> Model:
-#> Random Forest Model Specification (regression)
-#> 
-#> Main Arguments:
-#>   mtry = 1
-#>   trees = 20
-#>   min_n = 20
-#> 
-#> Computational engine: randomForest 
-#> 
-#> ══ Results ═════════════════════════════════════════════════════════════════════
-#> 
-#> Tuning results: 
-#> 
-#> # A tibble: 5 x 4
-#>   splits         id     .metrics         .notes          
-#>   <list>         <chr>  <list>           <list>          
-#> 1 <split [21/3]> Fold01 <tibble [8 × 6]> <tibble [1 × 1]>
-#> 2 <split [21/3]> Fold02 <tibble [8 × 6]> <tibble [0 × 1]>
-#> 3 <split [21/3]> Fold03 <tibble [8 × 6]> <tibble [0 × 1]>
-#> 4 <split [21/3]> Fold04 <tibble [8 × 6]> <tibble [0 × 1]>
-#> 5 <split [22/2]> Fold05 <tibble [8 × 6]> <tibble [0 × 1]>
-#> 
-#> ... and 5 more lines.
-#> 
-#> 
-#> Fitted model:
-#> 
-#> Call:
-#>  randomForest(x = as.data.frame(x), y = y, ntree = ~20L, mtry = ~1L,      nodesize = ~20) 
-#>                Type of random forest: regression
-#>                      Number of trees: 20
-#> 
-#> ...
-#> and 4 more lines.
 ```
 
 `complete_tflow` takes care of fitting the model with the best parameters on the entire training data. Now you can predict on the training or testing data automatically with `predict_training` or `predict_testing`.
 
-
-```r
+```{r}
 final_mod %>%
   predict_training() %>%
   rsq(mpg, .pred)
-#> # A tibble: 1 x 3
-#>   .metric .estimator .estimate
-#>   <chr>   <chr>          <dbl>
-#> 1 rsq     standard       0.870
 ```
 
 The `tune` package and `tidymodels` are very powerful tools for doing machine learning. In this vignette, I tried to extend their work by providing a unified interface for working with `tune` that uses the grid search framework bundled together with all the other common machine learning steps.
 
 Want to see tidyflow and tune in action? The `tidymodels` team has a vignette showcasing how to use `tune` and `tidymodels` [here](https://www.tidymodels.org/start/case-study/). I've adapted their code to fully run within a `tidyflow` workflow. Here's the replication code:
 
-
-```r
+```{r, eval = FALSE}
 library(tidymodels)
 library(tidyflow)
 library(readr)       # for importing data
