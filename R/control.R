@@ -74,7 +74,7 @@
 control_tidyflow <- function(control_parsnip = NULL,
                              control_resamples = NULL,
                              control_grid = NULL) {
-  
+
   control_parsnip <- check_control_parsnip(control_parsnip)
   control_resamples <- check_control_resamples(control_resamples)
   control_grid <- check_control_grid(control_grid)
@@ -111,8 +111,6 @@ check_control_resamples <- function(x) {
     x <- tune::control_resamples()
   }
 
-  x <- coerce_control(x, "control_resamples")
-
   if (!inherits(x, "control_resamples")) {
     abort("`control_resamples` must be a 'control_resamples' object.")
   }
@@ -125,24 +123,9 @@ check_control_grid <- function(x) {
     x <- tune::control_grid()
   }
 
-  x <- coerce_control(x, "control_grid")
-
   if (!inherits(x, "control_grid")) {
     abort("`control_grid` must be a 'control_grid' object.")
   }
 
-  x
-}
-
-
-# TODO
-# Seems tune::control_* functions don't have yet a custom
-# control_* class. Until then, coerce them to the specific classes
-# such that it fits tidyflow.
-# https://github.com/tidymodels/tune/issues/183
-coerce_control <- function(x, cls) {
-  if (!inherits(x, cls)) {
-    class(x) <- c(cls, class(x))
-  }
   x
 }
