@@ -13,6 +13,7 @@ This vignette aims to exemplify how you can use resampling within a `tidyflow`.
 
 A tidyflow is a bundle of steps that allow you to bundle together your data, splitting, resampling, reprocessing, modeling, and grid search. For resampling your data, the `tidymodels` ecosystem contains the `rsample` package. `rsample` allows you to apply many different resampling methods to your data within a tidy framework. 
 
+
 However, you might ask, what is resampling? Resampling is a technique widely used in statistics to create random copies of your data. For example, cross-validation randomly picks a percentage of your sample and randomly assigns them into the 'training' and 'testing' set, used for evaluating the error of your modeling. Cross-validation repeats this same iteration but it makes sure that none of the observations in the testing set are included in the **next** testing set. This approach allows you to test the accuracy of your model while reducing the overfitting penalty of running the same model on the same data repeatedly.
 
 Since we're talking about cross-validation, let's perform our example with the function `vfold_cv`, responsible for cross-validation in `rsample`. Let's try it with the `mtcars` dataset:
@@ -194,3 +195,4 @@ rf_fit_rs <-
 
 rf_fit_rs
 ```
+
