@@ -139,7 +139,7 @@ fit.action_recipe <- function(object, x) {
   blueprint <- object$blueprint
   molded_data <- combine_outcome_preds(x$pre$mold)
   rcp_data <- recipe_fun(molded_data)
-  
+
   if (!is_recipe(rcp_data)) {
     abort("The recipe function `.f` should return an object of class `recipe`")
   }
@@ -147,14 +147,14 @@ fit.action_recipe <- function(object, x) {
   if (has_tune(rcp_data) && !has_preprocessor_grid(x)) {
     abort("The recipe contains parameters with `tune()` but no grid specification has been made. Did you want `plug_grid`?") #nolintr
   }
-  
+
   # Keep recipe around
   x$pre$results$recipe <- rcp_data
 
   # Only if the recipe or model has a tune, we return the unprepped data to mold
   # This is because you the prepping is done via tune_grid. This
   # is all taken care of in fit.action_model.
-  
+
   if (has_tune(rcp_data) || has_tune(pull_tflow_spec(x))) {
     var_df <- rcp_data$var_info
     y_var <- var_df[var_df$role == "outcome", "variable", drop = TRUE]

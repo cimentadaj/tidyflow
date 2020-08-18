@@ -113,7 +113,7 @@ fit.action_resample <- function(object, x) {
   has_tuning <-
     has_tune(preprocessor) ||
     has_tune(pull_tflow_spec(x))
-  
+
   has_grid <- has_preprocessor_grid(x)
 
   if (has_tuning && !has_grid) {
@@ -123,7 +123,7 @@ fit.action_resample <- function(object, x) {
   has_tunable_rcp <-
     has_preprocessor_recipe(x) &&
     has_tune(x$pre$results$recipe)
-  
+
   # There are complications when we apply the recipe to the resample
   # (the previous step to resample is the recipe) because when
   #  we pass the resample to fit_resample, the recipe is applied
@@ -135,7 +135,7 @@ fit.action_resample <- function(object, x) {
   } else {
     mold <- x$data
   }
-  
+
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)
 
@@ -152,7 +152,7 @@ fit.action_resample <- function(object, x) {
   }
 
   x$pre$results$resample <- resample_res
-  
+
   # All pre steps return the `tflow`
   x
 }
