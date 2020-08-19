@@ -25,6 +25,11 @@ plug_action_impl.action_pre <- function(x, action, name) {
   x$pre$actions <- clean_list(x$pre$actions[sacred_order])
 
   # Plugs in NULL slots for each action to store results later
+  if (any(c("formula", "recipe") %in% name)) {
+    name <- "preprocessor"
+    sacred_order <- c("split", "preprocessor", "resamples", "grid")
+  }
+
   x$pre <- plug_result_to_stage(x$pre, name)
   x$pre$results <- clean_list(x$pre$results[sacred_order])
 

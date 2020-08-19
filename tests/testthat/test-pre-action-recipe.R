@@ -32,8 +32,7 @@ test_that("Can add recipe after model fit and refit", {
   mod1_no_rcp <- fit(tflow)
   tflow <- plug_recipe(drop_formula(mod1_no_rcp), rcp)
   mod2_rcp <- fit(tflow)
-
-  expect_is(mod2_rcp$pre$results$recipe, "recipe")
+  expect_is(mod2_rcp$pre$results$preprocessor, "recipe")
   expect_true(mod2_rcp$trained)
 })
 
@@ -76,16 +75,17 @@ test_that("drop_recipe removes the action and the result", {
 
   tidyflow <- plug_recipe(tidyflow(mtcars),
                           ~ recipes::recipe(mpg ~ cyl, data = .x))
-  
+
   tidyflow <- plug_model(tidyflow, lm_model)
   mod1 <- fit(tidyflow)
   tidyflow <- drop_recipe(tidyflow)
 
   # Both are null on dropped tidyflow
-  expect_null(tidyflow$pre$results$recipe)
+  expect_null(tidyflow$pre$results$preprocessor)
   expect_null(tidyflow$pre$actions$recipe)
+
   # Both are available on fitted tidyflow
-  expect_is(mod1$pre$results$recipe, "recipe")
+  expect_is(mod1$pre$results$preprocessor, "recipe")
   expect_is(mod1$pre$actions$recipe[[1]], "function")
 })
 

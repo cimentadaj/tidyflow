@@ -148,8 +148,12 @@ fit.action_recipe <- function(object, x) {
     abort("The recipe contains parameters with `tune()` but no grid specification has been made. Did you want `plug_grid`?") #nolintr
   }
 
+  wflow_rcp <- workflows::add_recipe(workflows::workflow(),
+                                     recipe = rcp_data,
+                                     blueprint = blueprint)
+
   # Keep recipe around
-  x$pre$results$recipe <- rcp_data
+  x$pre$results$preprocessor <- workflows::pull_workflow_preprocessor(wflow_rcp)
 
   # Only if the recipe or model has a tune, we return the unprepped data to mold
   # This is because you the prepping is done via tune_grid. This
@@ -165,7 +169,6 @@ fit.action_recipe <- function(object, x) {
                                 molded_data,
                                 blueprint = blueprint)
   }
-
 
   # All pre steps return the `tidyflow`
   x

@@ -108,7 +108,7 @@ replace_resample <- function(x, .f, ...) {
 
 # ------------------------------------------------------------------------------
 fit.action_resample <- function(object, x) {
-  preprocessor <- x$pre$results$recipe %||% x$pre$actions$formula$formula
+  preprocessor <- x$pre$results$preprocessor
 
   has_tuning <-
     has_tune(preprocessor) ||
@@ -119,10 +119,6 @@ fit.action_resample <- function(object, x) {
   if (has_tuning && !has_grid) {
     abort("The recipe or model has `tune()` parameters but no grid specification. Did you want `plug_grid()`?") #nolintr
   }
-
-  has_tunable_rcp <-
-    has_preprocessor_recipe(x) &&
-    has_tune(x$pre$results$recipe)
 
   # There are complications when we apply the recipe to the resample
   # (the previous step to resample is the recipe) because when

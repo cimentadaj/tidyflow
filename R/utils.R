@@ -46,6 +46,10 @@ has_preprocessor_resample <- function(x) {
   "resample" %in% names(x$pre$actions)
 }
 
+has_preprocessor_rcp_formula <- function(x) {
+  "preprocessor" %in% names(x$pre$results)
+}
+
 has_preprocessor_recipe <- function(x) {
   "recipe" %in% names(x$pre$actions)
 }
@@ -186,11 +190,11 @@ purge_results_grid <- function(x) {
 }
 
 purge_results_formula <- function(x) {
-  purge_(x$pre$results, "formula")
+  purge_(x$pre$results, "preprocessor")
 }
 
 purge_results_recipe <- function(x) {
-  purge_(x$pre$results, "recipe")
+  purge_(x$pre$results, "preprocessor")
 }
 
 combine_outcome_preds <- function(mold) {

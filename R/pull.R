@@ -147,7 +147,7 @@ pull_tflow_training <- function(x, prep = FALSE) {
   # No need to check if there's a split or it has been fit
   # pull_tflow_split does.
   training_data <- rsample::training(pull_tflow_split(x))
-  preproc <- x$pre$actions$recipe$recipe_res %||% x$pre$results$recipe %||% x$pre$actions$formula$formula
+  preproc <- x$pre$actions$recipe$recipe_res %||% x$pre$results$preprocessor
 
   if (prep) {
     if (has_tune(preproc) && !x$trained) {
@@ -169,7 +169,7 @@ pull_tflow_testing <- function(x, prep = FALSE) {
   # No need to check if there's a split or it has been fit
   # pull_tflow_split does.
   test_data <- rsample::testing(pull_tflow_split(x))
-  preproc <- x$pre$actions$recipe$recipe_res %||% x$pre$results$recipe %||% x$pre$actions$formula$formula
+  preproc <- x$pre$actions$recipe$recipe_res %||% x$pre$results$preprocessor
 
   if (prep) {
     if (has_tune(preproc) && !x$trained) {
@@ -299,6 +299,6 @@ pull_tflow_fit_tuning <- function(x) {
 }
 
 recipe_or_formula <- function(x) {
-  rcp <- x$pre$results$recipe
-  if (!is.null(rcp)) rcp else ~1
+  preproc <- x$pre$results$preprocessor
+  if (inherits(preproc, "formula")) ~1 else preproc
 }

@@ -87,15 +87,17 @@ replace_formula <- function(x, formula, ..., blueprint = NULL) {
 fit.action_formula <- function(object, x) {
   formula <- object$formula
   blueprint <- object$blueprint
-  
-  # Strip out the formula environment because it can be heavy
-  # in some scenarios
-  environment(formula) <- NULL
+
+  wflow_form <-
+    workflows::add_formula(workflows::workflow(),
+                           formula = formula,
+                           blueprint = blueprint)
+
   x$pre$mold <- hardhat::mold(formula = formula,
                               data = x$pre$mold,
                               blueprint = blueprint)
 
-  x$pre$results$formula <- x$pre$mold
+  x$pre$results$preprocessor <- workflows::pull_workflow_preprocessor(wflow_form)
 
   # All pre steps return the `tidyflow`
   x

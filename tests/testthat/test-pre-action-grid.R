@@ -439,7 +439,7 @@ test_that("Tuning is applied with all pre steps", {
   manual_mod1 <-
     tune::tune_grid(
       object = pull_tflow_spec(mod1_grid),
-      preprocessor = mod1_grid$pre$results$recipe,
+      preprocessor = mod1_grid$pre$results$preprocessor,
       resamples = pull_tflow_resample(mod1_grid),
       grid = mod1_grid$pre$results$grid$grid
     )

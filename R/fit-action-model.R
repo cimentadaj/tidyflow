@@ -116,6 +116,8 @@ fit.action_model <- function(object, x, control, ...) {
   resample_res <- x$pre$results$resample
   grid_res <- x$pre$results$grid$grid
   param_res <- x$pre$results$grid$params
+  preproc <- x$pre$results$preprocessor
+
 
 
   if (has_tune(spec) && !has_preprocessor_grid(x)) {
@@ -125,24 +127,22 @@ fit.action_model <- function(object, x, control, ...) {
   # It means that they specified a resample and no grid
   if (!is.null(resample_res) && is.null(grid_res)) {
     control_resamples <- control$control_resamples
-    obj <- x$pre$results$recipe %||% x$pre$actions$formula$formula
-
+  
     x$fit$fit$tuning <-
       tune::fit_resamples(object = spec,
-                          preprocessor = obj,
+                          preprocessor = preproc,
                           resamples = resample_res,
                           control = control_resamples
                           )
-    
+
     return(x)
     # It means that they specified a resample AND a grid, so tuning is wanted
   } else if (!is.null(resample_res) && !is.null(grid_res)) {
     control_grid <- control$control_grid
-    obj <- x$pre$results$recipe %||% x$pre$actions$formula$formula
 
     x$fit$fit$tuning <-
       tune::tune_grid(object = spec,
-                      preprocessor = obj,
+                      preprocessor = preproc,
                       resamples = resample_res,
                       grid = grid_res,
                       control = control_grid,
