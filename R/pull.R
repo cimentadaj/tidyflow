@@ -82,8 +82,8 @@
 #' pull_tflow_rawdata(fit_formula_tflow)
 #' 
 #' # The preprocessor is either the recipe function or a formula
-#' pull_tflow_preprocessor(recipe_tflow)
-#' pull_tflow_preprocessor(formula_tflow)
+#' pull_tflow_preprocessor(fit(recipe_tflow))
+#' pull_tflow_preprocessor(fit(formula_tflow))
 #'
 #' # The `spec` is the parsnip spec before it has been fit.
 #' # The `fit` is the fit parsnip model.
@@ -217,12 +217,8 @@ pull_tflow_grid <- function(x) {
 pull_tflow_preprocessor <- function(x) {
   validate_is_tidyflow(x)
 
-  if (has_preprocessor_formula(x)) {
-    return(x$pre$actions$formula$formula)
-  }
-
-  if (has_preprocessor_recipe(x)) {
-    return(x$pre$actions$recipe$recipe)
+  if (has_preprocessor_rcp_formula(x)) {
+    return(x$pre$results$preprocessor)
   }
 
   abort("The tidyflow does not have a preprocessor.")

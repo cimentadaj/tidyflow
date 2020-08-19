@@ -112,8 +112,8 @@ pull_tflow_rawdata(fit_recipe_tflow)
 pull_tflow_rawdata(fit_formula_tflow)
 
 # The preprocessor is either the recipe function or a formula
-pull_tflow_preprocessor(recipe_tflow)
-pull_tflow_preprocessor(formula_tflow)
+pull_tflow_preprocessor(fit(recipe_tflow))
+pull_tflow_preprocessor(fit(formula_tflow))
 
 # The `spec` is the parsnip spec before it has been fit.
 # The `fit` is the fit parsnip model.

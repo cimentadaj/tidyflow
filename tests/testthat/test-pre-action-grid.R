@@ -362,9 +362,10 @@ test_that("parameters on tidyflow returns same tuning params as tuning", {
 
   fit_mod <- fit(tflow)
   all_tuning <- do.call(rbind, pull_tflow_fit_tuning(fit_mod)$`.metrics`)
+
   # All params from parameters.tidyflow are used in the tuning
   expect_true(
-    all(tune::parameters(tflow)$name %in% names(all_tuning))
+    all(parameters(fit_mod)$name %in% names(all_tuning))
   )
 
   rcp <-
@@ -378,7 +379,7 @@ test_that("parameters on tidyflow returns same tuning params as tuning", {
   fit_mod <- fit(tflow)
   all_tuning <- do.call(rbind, pull_tflow_fit_tuning(fit_mod)$`.metrics`)
   # All params from parameters.tidyflow are used in the tuning
-  expect_true(all(tune::parameters(tflow)$name %in% names(all_tuning)))
+  expect_true(all(parameters(fit_mod)$name %in% names(all_tuning)))
 })
 
 test_that("Tuning is applied with all pre steps", {

@@ -136,7 +136,7 @@ complete_tflow <- function(x,
   if (has_preprocessor_recipe(x)) {
     rec <- tidyflow::pull_tflow_preprocessor(x)
     dt <- combine_outcome_preds(pull_tflow_mold(x))
-    rec <- tune::finalize_recipe(rec(dt), best_params)
+    rec <- tune::finalize_recipe(rec, best_params)
     x$pre$actions$recipe$recipe_res <- rec
     x$pre$mold <- hardhat::mold(rec, dt)
   }

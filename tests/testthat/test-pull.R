@@ -2,8 +2,10 @@
 # pull_tflow_preprocessor()
 
 test_that("can pull a formula preprocessor", {
-  tidyflow <- tidyflow()
+  tidyflow <- tidyflow(mtcars)
   tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
+  tidyflow <- plug_model(tidyflow, set_engine(linear_reg(), "lm"))
+  tidyflow <- fit(tidyflow)
 
   expect_equal(
     pull_tflow_preprocessor(tidyflow),
@@ -14,12 +16,14 @@ test_that("can pull a formula preprocessor", {
 test_that("can pull a recipe preprocessor", {
   recipe <- ~ recipes::recipe(mpg ~ cyl, .x)
 
-  tidyflow <- tidyflow()
+  tidyflow <- tidyflow(mtcars)
   tidyflow <- plug_recipe(tidyflow, recipe)
+  tidyflow <- plug_model(tidyflow, set_engine(linear_reg(), "lm"))
+  tidyflow <- fit(tidyflow)
 
   expect_equal(
     pull_tflow_preprocessor(tidyflow),
-    rlang::as_function(recipe)
+    rlang::as_function(recipe)(mtcars)
   )
 })
 

@@ -107,11 +107,12 @@ test_that("drop_formula removes the action and the result", {
   expect_is(pull_tflow_preprocessor(mod1), "formula")
 })
 
-
 test_that("update a formula", {
-  tidyflow <- tidyflow()
+  tidyflow <- tidyflow(mtcars)
   tidyflow <- plug_formula(tidyflow, mpg ~ cyl)
   tidyflow <- replace_formula(tidyflow, mpg ~ disp)
+  tidyflow <- plug_model(tidyflow, set_engine(linear_reg(), "lm"))
+  tidyflow <- fit(tidyflow)
 
   expect_equal(pull_tflow_preprocessor(tidyflow), mpg ~ disp)
 })
@@ -129,7 +130,7 @@ test_that("update a formula after model fit", {
   # Should clear fitted model
   tidyflow <- replace_formula(tidyflow, mpg ~ disp)
 
-  expect_equal(pull_tflow_preprocessor(tidyflow), mpg ~ disp)
+  expect_equal(pull_tflow_preprocessor(fit(tidyflow)), mpg ~ disp)
 
   expect_equal(pull_tflow_spec(tidyflow), lm_model)
   expect_equal(pull_tflow_rawdata(tidyflow),
