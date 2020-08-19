@@ -1,3 +1,0 @@
-> fit(tidyflow, mtcars)
-Error: `data` must be specified to fit a tidyflow; Do you need `plug_data`?
-

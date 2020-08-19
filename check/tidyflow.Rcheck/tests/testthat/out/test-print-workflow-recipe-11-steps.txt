@@ -1,8 +1,0 @@
-> plug_recipe(tidyflow(), rcp_fun)
-== Tidyflow ====================================================================
-Data: None
-Preprocessor: Recipe
-Model: None
-
--- Preprocessor ----------------------------------------------------------------
-
