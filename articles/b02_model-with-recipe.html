@@ -108,29 +108,7 @@
 <p>A tidyflow is a bundle of steps that allow you to bundle together your data, splitting, resampling, preprocessing, modeling, and grid search. For preprocessing your data, the <code>tidymodels</code> ecosystem contains the <code>recipes</code> package. This package allows to create very concise and clean pipelines of transforming your data. Let’s create a very simple recipe that takes the logarithm of the variable <code>qsec</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span>)
-<span class="co">#&gt; ── Attaching packages ────────────────────────────────────── tidymodels 0.1.1 ──</span>
-<span class="co">#&gt; ✔ broom     0.7.0      ✔ recipes   0.1.13</span>
-<span class="co">#&gt; ✔ dials     0.0.8      ✔ rsample   0.0.7 </span>
-<span class="co">#&gt; ✔ dplyr     1.0.1      ✔ tibble    3.0.3 </span>
-<span class="co">#&gt; ✔ ggplot2   3.3.2      ✔ tidyr     1.1.1 </span>
-<span class="co">#&gt; ✔ infer     0.5.3      ✔ tune      0.1.1 </span>
-<span class="co">#&gt; ✔ modeldata 0.0.2      ✔ workflows 0.1.3 </span>
-<span class="co">#&gt; ✔ parsnip   0.1.3      ✔ yardstick 0.0.7 </span>
-<span class="co">#&gt; ✔ purrr     0.3.4</span>
-<span class="co">#&gt; ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──</span>
-<span class="co">#&gt; ✖ purrr::discard() masks scales::discard()</span>
-<span class="co">#&gt; ✖ dplyr::filter()  masks stats::filter()</span>
-<span class="co">#&gt; ✖ dplyr::lag()     masks stats::lag()</span>
-<span class="co">#&gt; ✖ recipes::step()  masks stats::step()</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span>)
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'tidyflow'</span>
-<span class="co">#&gt; The following object is masked from 'package:tune':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     parameters</span>
-<span class="co">#&gt; The following object is masked from 'package:dials':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     parameters</span>
 </pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="kw">rcp</span> <span class="op">&lt;-</span>
@@ -186,7 +164,7 @@
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit</a></span>()
 <span class="co">#&gt; parsnip model object</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Fit time:  7ms </span>
+<span class="co">#&gt; Fit time:  4ms </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; stats::lm(formula = ..y ~ ., data = data)</span>
@@ -314,7 +292,9 @@
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>()
 </pre></div>
-<p><img src="b02_model-with-recipe_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<div class="figure">
+<img src="recipes-grid_search_recipe-1.png" alt=""><p class="caption">plot of chunk grid_search_recipe</p>
+</div>
 <p>The lowest error for both the <span class="math inline">\(RMSE\)</span> and the <span class="math inline">\(R^2\)</span> seems to be a model of <code>degree = 2</code>. We can specify this directly into <code>complete_tflow</code> or just allow <code>complete_tflow</code> to determine this for you:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit">
 <span class="co"># Manual approach</span>

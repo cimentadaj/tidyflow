@@ -110,29 +110,7 @@
 <p>Let’s define a random forest model but we want to try different values in the <code>trees</code> argument. We can signal that with the <code><a href="https://tune.tidymodels.org/reference/tune.html">tune()</a></code> function. This just means that the <code>trees</code> will be <code>tune</code>d.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span>)
-<span class="co">#&gt; ── Attaching packages ────────────────────────────────────── tidymodels 0.1.1 ──</span>
-<span class="co">#&gt; ✔ broom     0.7.0      ✔ recipes   0.1.13</span>
-<span class="co">#&gt; ✔ dials     0.0.8      ✔ rsample   0.0.7 </span>
-<span class="co">#&gt; ✔ dplyr     1.0.1      ✔ tibble    3.0.3 </span>
-<span class="co">#&gt; ✔ ggplot2   3.3.2      ✔ tidyr     1.1.1 </span>
-<span class="co">#&gt; ✔ infer     0.5.3      ✔ tune      0.1.1 </span>
-<span class="co">#&gt; ✔ modeldata 0.0.2      ✔ workflows 0.1.3 </span>
-<span class="co">#&gt; ✔ parsnip   0.1.3      ✔ yardstick 0.0.7 </span>
-<span class="co">#&gt; ✔ purrr     0.3.4</span>
-<span class="co">#&gt; ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──</span>
-<span class="co">#&gt; ✖ purrr::discard() masks scales::discard()</span>
-<span class="co">#&gt; ✖ dplyr::filter()  masks stats::filter()</span>
-<span class="co">#&gt; ✖ dplyr::lag()     masks stats::lag()</span>
-<span class="co">#&gt; ✖ recipes::step()  masks stats::step()</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span>)
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'tidyflow'</span>
-<span class="co">#&gt; The following object is masked from 'package:tune':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     parameters</span>
-<span class="co">#&gt; The following object is masked from 'package:dials':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     parameters</span>
 
 <span class="kw">rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/rand_forest.html">rand_forest</a></span>(mode = <span class="st">"regression"</span>, trees = <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span>()) <span class="op">%&gt;%</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span>(<span class="st">"randomForest"</span>)
 <span class="kw">rf</span>
@@ -214,7 +192,9 @@
 <div class="sourceCode" id="cb5"><pre class="downlit">
 <span class="kw">res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>()
 </pre></div>
-<p><img src="d04_fitting-model-tuning_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<div class="figure">
+<img src="tuning-grid_search_tuning1-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning1</p>
+</div>
 <p>It seems the grid randomly chose three values for <code>trees</code> (X axis has three points on <code>1</code>, <code>1000</code> and <code>2000</code>) and as expected, as the number of trees increases, the <code>rsq</code> is higher and the <code>rmse</code> is lower.</p>
 <p>This grid search strategy is really just a quick way to get some models running. However, it allows for much more flexibility. For example, we can play around with the number of values to sample from by just providing an extra argument to <code>plug_grid</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
@@ -232,7 +212,9 @@
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>()
 </pre></div>
-<p><img src="d04_fitting-model-tuning_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<div class="figure">
+<img src="tuning-grid_search_tuning2-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning2</p>
+</div>
 <p>The random grid contains now 10 values. What if we wanted to limit the range of the values used in the resampling?</p>
 <div class="sourceCode" id="cb7"><pre class="downlit">
 <span class="kw">tflow</span> <span class="op">&lt;-</span>
@@ -249,7 +231,9 @@
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>()
 </pre></div>
-<p><img src="d04_fitting-model-tuning_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<div class="figure">
+<img src="tuning-grid_search_tuning3-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning3</p>
+</div>
 <p>This approach works just as well with <strong>any</strong> of the <code>grid_*</code> functions. However, what if we simply wanted to provide the values to try? That is, we don’t want any type of ‘random sampling’. <code>plug_grid</code> allows the user to specify the function <code>expand.grid</code> and just provide the values to be used in the grid search. For example:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit">
 <span class="kw">tflow</span> <span class="op">&lt;-</span>
@@ -267,7 +251,9 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>()
 <span class="co">#&gt; ! Fold10: internal: A correlation computation is required, but `estimate` is const...</span>
 </pre></div>
-<p><img src="d04_fitting-model-tuning_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+<div class="figure">
+<img src="tuning-grid_search_tuning4-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning4</p>
+</div>
 <p>This flexibility works just as well with any number of tuning parameters for the model. You can specify as many as parameters as you want, and even manually customize some of the parameters while the <code>grid_*</code> functions takes care of randomly sampling the others. For example, let’s say we wanted to run a random forest while tuning the parameters <code>trees</code>, <code>min_n</code> and <code>mtry</code>. Suppose that on top of that we wanted to manually limit the range of <code>trees</code> to be between 5 and 20, the <code>min_n</code> to be <code>20</code> (fixed) and allow the grid sampling to sample <code>mtry</code> randomly from ‘sensible’ values. We do that just as we’ve been manually updating the parameters values in <code>plug_grid</code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
 <span class="kw">rf</span> <span class="op">&lt;-</span>
@@ -289,7 +275,9 @@
 <span class="kw">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span>(<span class="kw">tflow</span>)
 <span class="kw">res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span>() <span class="op">%&gt;%</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>()
 </pre></div>
-<p><img src="d04_fitting-model-tuning_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<div class="figure">
+<img src="tuning-grid_search_tuning5-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning5</p>
+</div>
 <p>If you want to extract the actual grid used behind the scenes, <code>pull_tflow_grid</code> returns exactly that, after the model has been fitted.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit">
 <span class="kw">res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_grid</a></span>()
