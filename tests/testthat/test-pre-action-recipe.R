@@ -112,8 +112,10 @@ test_that("dropping a recipe and refitting gives same result", {
   tflow <- plug_recipe(tflow, ~ recipes::recipe(mpg ~ cyl, .x))
   mod2_no_rcp <- fit(tflow)
 
-  expect_equal(strip_elapsed(mod1_rcp),
-               strip_elapsed(mod2_no_rcp))
+  expect_equal(
+    object = strip_elapsed(mod1_rcp),
+    expected = strip_elapsed(mod2_no_rcp)
+  )
 })
 
 test_that("remove a recipe after model fit", {
@@ -178,20 +180,17 @@ test_that("model fit works correctly after updating recipe", {
   # Should clear fitted model
   rcp <- ~ recipes::step_log(recipes::recipe(mpg ~ disp, .x), disp, base = 10)
   tidyflow <- replace_recipe(tidyflow, rcp)
-  tidyflow <- fit(tidyflow)
+  result <- fit(tidyflow)
 
-  expect_equal(tidyflow$pre$actions$recipe$recipe,
+  expect_equal(result$pre$actions$recipe$recipe,
                rlang::as_function(rcp))
 
-  prepped_data <- combine_outcome_preds(tidyflow$pre$mold)
+  prep_data <- result$fit$fit$fit$fit$model
 
   expect_equal(
-    prepped_data$disp,
+    prep_data$disp,
     log10(mtcars$disp)
   )
-  
-  log_step <- tidyflow$pre$mold$blueprint$recipe$steps[[1]]
-  expect_true(recipes::is_trained(log_step))
 })
 
 
@@ -209,19 +208,17 @@ test_that("recipe is prepped upon `fit()`", {
 
   result <- fit(tidyflow)
 
+  prep_data <- result$fit$fit$fit$fit$model
   expect_equal(
-    result$pre$mold$outcomes$mpg,
+    prep_data[[1]],
     mtcars$mpg
   )
 
   expect_equal(
-    result$pre$mold$predictors$cyl,
+    prep_data[[2]],
     mtcars$cyl - mean(mtcars$cyl)
   )
 
-  center_step <- result$pre$mold$blueprint$recipe$steps[[1]]
-
-  expect_true(recipes::is_trained(center_step))
 })
 
 test_that("cannot add two recipe", {
@@ -253,14 +250,15 @@ test_that("can pass a blueprint through to hardhat::mold()", {
 
   tidyflow <- tidyflow(mtcars)
   tidyflow <- plug_model(tidyflow, lm_model)
-  tidyflow <- plug_recipe(tidyflow, ~ recipes::recipe(mpg ~ cyl, .x),
-                         blueprint = blueprint)
+  tidyflow <- plug_recipe(tidyflow,
+                          ~ recipes::recipe(mpg ~ cyl, .x),
+                          blueprint = blueprint)
 
-  tidyflow <- fit(tidyflow)
-
-  expect_true("(Intercept)" %in% colnames(tidyflow$pre$mold$predictors))
-  expect_equal(tidyflow$pre$actions$recipe$blueprint, blueprint)
-  expect_true(tidyflow$pre$mold$blueprint$intercept)
+  result <- fit(tidyflow)
+  wflow <- result$fit$fit$wflow
+  expect_true("(Intercept)" %in% colnames(workflows::pull_workflow_mold(wflow)$predictors))
+  expect_equal(result$pre$results$blueprint, blueprint)
+  expect_true(workflows::pull_workflow_mold(wflow)$blueprint$intercept)
 })
 
 test_that("can only use a 'recipe_blueprint' blueprint", {

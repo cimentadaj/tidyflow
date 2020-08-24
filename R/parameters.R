@@ -81,7 +81,6 @@ parameters.tidyflow <- function(x, ...) {
 
   if (has_preprocessor_recipe(x)) {
     if (has_raw_data(x)) {
-      molded_data <- combine_outcome_preds(pull_tflow_mold(x))
       recipe <- pull_tflow_preprocessor(x)
       recipe_param_data <- tune::parameters(recipe)
       param_data <- rbind(param_data, recipe_param_data)

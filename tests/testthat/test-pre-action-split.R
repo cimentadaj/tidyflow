@@ -48,8 +48,7 @@ test_that("plug_split resets model/tuning fit before adding the split", {
 
   # Fitted on the training data
   res <- fit(tflow)
-  expect_equal(nrow(pull_tflow_mold(res)$predictors), 24)
-  expect_equal(nrow(pull_tflow_mold(res)$outcomes), 24)
+  expect_equal(nrow(res$pre$mold), 24)
 
   tflow <- plug_grid(res, dials::grid_regular, levels = 2)
   tflow <- plug_resample(tflow, rsample::vfold_cv, v = 2)

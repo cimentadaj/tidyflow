@@ -83,6 +83,7 @@ test_that("tidyflow with random numbers across each pre step gives same result a
                      dials::grid_latin_hypercube,
                      size = 2)
   tflow <- plug_model(tflow, svm_mod)
+
   # Final result
   tflow <- fit(tflow)
 

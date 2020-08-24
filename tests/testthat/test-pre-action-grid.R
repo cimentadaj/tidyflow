@@ -174,7 +174,7 @@ test_that("update a recipe after model fit", {
   tidyflow <- tidyflow(mtcars)
   tidyflow <- plug_model(tidyflow, glmnet_model)
   tidyflow <- plug_resample(tidyflow, rsample::vfold_cv, v = 2)
-  tidyflow <- plug_grid(tidyflow, dials::grid_regular, levels = 1)    
+  tidyflow <- plug_grid(tidyflow, dials::grid_regular, levels = 1)
   tidyflow <- plug_recipe(tidyflow, rec)
 
   tidyflow <- fit(tidyflow)
@@ -182,15 +182,17 @@ test_that("update a recipe after model fit", {
   # Should clear fitted model
   tidyflow <- replace_recipe(tidyflow, rec2)
 
-  expect_equal(tidyflow$pre$actions$recipe$recipe,
-               rlang::as_function(rec2)
-               )
+  expect_equal(
+    tidyflow$pre$actions$recipe$recipe,
+    rlang::as_function(rec2)
+  )
 
   expect_equal(pull_tflow_spec(tidyflow), glmnet_model)
   expect_equal(
-    pull_tflow_mold(tidyflow),
+    tidyflow$pre$mold,
     pull_tflow_rawdata(tidyflow)
   )
+
 })
 
 test_that("cannot add two grid specifications", {

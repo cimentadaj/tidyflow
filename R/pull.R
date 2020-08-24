@@ -21,10 +21,8 @@
 #'    is applied to the data.
 #' 
 #' - \code{pull_tflow_preprocessor()} returns either the formula or recipe used
-#'   for preprocessing. Note that in the case of the recipe it returns the
-#'   function that should be applied to the data to apply the recipe.
-#'   \code{\link{pull_tflow_prepped_recipe}} returns the recipe already applied
-#'   to the training data.
+#'   for preprocessing. Note that if the recipe has a \code{tune()} argument,
+#'   it won't be finalized.
 #'
 #' - \code{pull_tflow_resample()} returns the resample object from the function
 #'    specified in \code{\link{plug_resample}}. The resample object does not
@@ -33,12 +31,7 @@
 #' - \code{pull_tflow_grid()} returns the grid data frame from which the tuning
 #'    parameter was made.
 #' 
-#' - \code{pull_tflow_prepped_recipe()} returns the prepped recipe. It is
-#'   extracted from the mold object returned from \code{pull_tflow_mold()}.
-#'
-#' - \code{pull_tflow_mold()} returns the preprocessed "mold" object returned
-#'   from [hardhat::mold()]. It contains information about the preprocessing,
-#'   including either the prepped recipe or the formula terms object.
+#' - \code{pull_tflow_prepped_recipe()} returns the prepped recipe.
 #'
 #' - \code{pull_tflow_spec()} returns the parsnip model specification.
 #'
@@ -90,11 +83,6 @@
 #' pull_tflow_spec(fit_formula_tflow)
 #' pull_tflow_fit(fit_formula_tflow)
 #'
-#' # The mold is returned from `hardhat::mold()`, and contains the
-#' # predictors, outcomes, and information about the preprocessing
-#' # for use on new data at `predict()` time.
-#' pull_tflow_mold(fit_recipe_tflow)
-#'
 #' # The raw training and testing
 #' pull_tflow_training(fit_recipe_tflow)
 #' pull_tflow_testing(fit_recipe_tflow)
@@ -106,11 +94,6 @@
 #' # A useful shortcut is to extract the prepped recipe from the tidyflow
 #' pull_tflow_prepped_recipe(fit_recipe_tflow)
 #'
-#' # That is identical to
-#' identical(
-#'   pull_tflow_mold(fit_recipe_tflow)$blueprint$recipe,
-#'   pull_tflow_prepped_recipe(fit_recipe_tflow)
-#' )
 #'
 NULL
 
@@ -233,21 +216,14 @@ pull_tflow_prepped_recipe <- function(x) {
     abort("The tidyflow must have a recipe preprocessor.")
   }
 
-  mold <- pull_tflow_mold(x)
+  res <- pull_tflow_preprocessor(x)
 
-  mold$blueprint$recipe
-}
-
-#' @rdname tidyflow-extractors
-#' @export
-pull_tflow_mold <- function(x) {
-  validate_is_tidyflow(x)
-
-  if (has_mold(x)) {
-    return(x$pre$mold)
+  is_rcp_or_formula <- inherits(res, "recipe") || inherits(res, "formula")
+  if (!is_rcp_or_formula) {
+    abort("The recipe/formula has been executed. Have you called `fit` yet?")
   }
 
-  abort("The tidyflow does not have a mold. Have you called `fit()` yet?")
+  recipes::prep(res)
 }
 
 #' @rdname tidyflow-extractors

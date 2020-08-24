@@ -190,11 +190,13 @@ purge_results_grid <- function(x) {
 }
 
 purge_results_formula <- function(x) {
-  purge_(x$pre$results, "preprocessor")
+  res <- purge_(x$pre$results, "preprocessor")
+  res <- purge_(res, "blueprint")
+  res
 }
 
 purge_results_recipe <- function(x) {
-  purge_(x$pre$results, "preprocessor")
+  purge_results_formula(x)
 }
 
 combine_outcome_preds <- function(mold) {
@@ -211,6 +213,8 @@ combine_outcome_preds <- function(mold) {
 # the only different thing
 strip_elapsed <- function(x) {
   x$fit$fit$fit$elapsed <- NULL
+  x$fit$fit$wflow$fit$fit$elapsed <- NULL
+
   x
 }
 

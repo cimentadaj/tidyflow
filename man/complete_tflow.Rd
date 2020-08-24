@@ -39,7 +39,7 @@ ignored.}
 \item{control}{A \code{\link{control_tidyflow}} object. The
 \code{\link[parsnip]{control_parsnip}} control object inside
 \code{\link{control_tidyflow}} is passed to
-\code{\link[parsnip]{fit}} or \code{\link[parsnip]{fit}}.}
+\code{\link[generics]{fit}}.}
 }
 \value{
 The tidyflow \code{object} updated with the fitted best model. Can be

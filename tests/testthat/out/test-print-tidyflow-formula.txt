@@ -2,7 +2,7 @@
 == Tidyflow ====================================================================
 Data: None
 Split: None
-Formula: list()
+Formula: y ~ x
 Resample: None
 Grid: None
 Model: None

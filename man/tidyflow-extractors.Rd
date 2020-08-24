@@ -10,7 +10,6 @@
 \alias{pull_tflow_grid}
 \alias{pull_tflow_preprocessor}
 \alias{pull_tflow_prepped_recipe}
-\alias{pull_tflow_mold}
 \alias{pull_tflow_spec}
 \alias{pull_tflow_fit}
 \alias{pull_tflow_fit_tuning}
@@ -31,8 +30,6 @@ pull_tflow_grid(x)
 pull_tflow_preprocessor(x)
 
 pull_tflow_prepped_recipe(x)
-
-pull_tflow_mold(x)
 
 pull_tflow_spec(x)
 
@@ -68,20 +65,14 @@ works when a split has been specified with \code{\link{plug_split}}
 If \code{prep = TRUE}, the preprocessing (either recipe or formula)
 is applied to the data.
 \item \code{pull_tflow_preprocessor()} returns either the formula or recipe used
-for preprocessing. Note that in the case of the recipe it returns the
-function that should be applied to the data to apply the recipe.
-\code{\link{pull_tflow_prepped_recipe}} returns the recipe already applied
-to the training data.
+for preprocessing. Note that if the recipe has a \code{tune()} argument,
+it won't be finalized.
 \item \code{pull_tflow_resample()} returns the resample object from the function
 specified in \code{\link{plug_resample}}. The resample object does not
 have the preprocessor applied (either formula or recipe).
 \item \code{pull_tflow_grid()} returns the grid data frame from which the tuning
 parameter was made.
-\item \code{pull_tflow_prepped_recipe()} returns the prepped recipe. It is
-extracted from the mold object returned from \code{pull_tflow_mold()}.
-\item \code{pull_tflow_mold()} returns the preprocessed "mold" object returned
-from \code{\link[hardhat:mold]{hardhat::mold()}}. It contains information about the preprocessing,
-including either the prepped recipe or the formula terms object.
+\item \code{pull_tflow_prepped_recipe()} returns the prepped recipe.
 \item \code{pull_tflow_spec()} returns the parsnip model specification.
 \item \code{pull_tflow_fit()} returns the parsnip model fit.
 \item \code{pull_tflow_fit_tuning()} returns the resample result from model tuning.
@@ -120,11 +111,6 @@ pull_tflow_preprocessor(fit(formula_tflow))
 pull_tflow_spec(fit_formula_tflow)
 pull_tflow_fit(fit_formula_tflow)
 
-# The mold is returned from `hardhat::mold()`, and contains the
-# predictors, outcomes, and information about the preprocessing
-# for use on new data at `predict()` time.
-pull_tflow_mold(fit_recipe_tflow)
-
 # The raw training and testing
 pull_tflow_training(fit_recipe_tflow)
 pull_tflow_testing(fit_recipe_tflow)
@@ -136,10 +122,5 @@ pull_tflow_testing(fit_recipe_tflow, prep = TRUE)
 # A useful shortcut is to extract the prepped recipe from the tidyflow
 pull_tflow_prepped_recipe(fit_recipe_tflow)
 
-# That is identical to
-identical(
-  pull_tflow_mold(fit_recipe_tflow)$blueprint$recipe,
-  pull_tflow_prepped_recipe(fit_recipe_tflow)
-)
 
 }
