@@ -75,6 +75,67 @@
 #' }
 predict.tidyflow <- function(object, new_data, type = NULL, opts = list(), ...) {
   x <- object
+
+  check_finalized_model(x)
+
+  predict(object = x$fit$fit$wflow,
+          new_data = new_data,
+          type = type,
+          opts = opts,
+          ...)
+}
+
+#' @rdname predict-tidyflow
+#' @export
+predict_training <- function(object, type = NULL, opts = list(), ...) {
+  x <- object
+
+  if (!has_preprocessor_split(x)) {
+    rlang::abort("`predict_training` can only work when a split preprocessor has been specifid. Did you want `plug_split`?") #nolintr
+  }
+
+  check_finalized_model(x)
+
+  # No need for prep = TRUE, since predict.workflow
+  tr_dt <- pull_tflow_training(x)
+
+  new_pred <-
+    predict(object = x$fit$fit$wflow,
+            new_data = tr_dt,
+            type = type,
+            opts = opts,
+            ...)
+
+  res <- tibble::as_tibble(cbind(tr_dt, new_pred))
+  res
+}
+
+#' @rdname predict-tidyflow
+#' @export
+predict_testing <- function(object, type = NULL, opts = list(), ...) {
+  x <- object
+  if (!has_preprocessor_split(x)) {
+    rlang::abort("`predict_testing` can only work when a split preprocessor has been specifid. Did you want `plug_split`?") #nolintr
+  }
+
+  check_finalized_model(x)
+
+  # No need for prep = TRUE, since predict.workflow already applies the bake
+  tst_dt <- pull_tflow_testing(x)
+
+  new_pred <-
+    predict(x$fit$fit$wflow,
+            new_data = tst_dt,
+            type = type,
+            opts = opts,
+            ...)
+
+  res <- tibble::as_tibble(cbind(tst_dt, new_pred))
+  res
+}
+
+
+check_finalized_model <- function(x) {
   tuning <- try(pull_tflow_fit_tuning(x), silent = TRUE)
 
   # If there's a tuning object but no final model
@@ -87,50 +148,4 @@ predict.tidyflow <- function(object, new_data, type = NULL, opts = list(), ...) 
     abort("Tidyflow has not yet been trained. Did you call fit()?")
   }
 
-  blueprint <- pull_tflow_mold(x)$blueprint
-  forged <- hardhat::forge(new_data, blueprint)
-  new_data <- forged$predictors
-  fit <- pull_tflow_fit(x)
-  predict(fit, new_data, type = type, opts = opts, ...)
-}
-
-#' @rdname predict-tidyflow
-#' @export
-predict_training <- function(object, type = NULL, opts = list(), ...) {
-  if (!has_preprocessor_split(object)) {
-    rlang::abort("`predict_training` can only work when a split preprocessor has been specifid. Did you want `plug_split`?") #nolintr
-  }
-
-  # No need for prep = TRUE, since predict.tidyflow already applies the bake
-  tr_dt <- pull_tflow_training(object)
-  res <-
-    tibble::as_tibble(
-      cbind(
-        tr_dt,
-        predict(object, new_data = tr_dt, type = type, opts = opts, ...)
-      )
-    )
-
-  res
-}
-
-#' @rdname predict-tidyflow
-#' @export
-predict_testing <- function(object, type = NULL, opts = list(), ...) {
-  if (!has_preprocessor_split(object)) {
-    rlang::abort("`predict_testing` can only work when a split preprocessor has been specifid. Did you want `plug_split`?") #nolintr
-  }
-
-  # No need for prep = TRUE, since predict.tidyflow already applies the bake
-  tst_dt <- pull_tflow_testing(object)
-
-  res <-
-    tibble::as_tibble(
-      cbind(
-        tst_dt,
-        predict(object, new_data = tst_dt, type = type, opts = opts, ...)
-      )
-    )
-
-  res
 }

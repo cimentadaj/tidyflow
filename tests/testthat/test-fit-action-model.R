@@ -72,9 +72,10 @@ test_that("remove a model after model fit", {
   tidyflow_removed_model  <- drop_model(tidyflow_with_model)
 
   expect_equal(tidyflow_no_model$fit, tidyflow_removed_model$fit)
-  # The removed tidyflow still keeps the original mold
-  expect_false(identical(tidyflow_removed_model$data,
-                         tidyflow_removed_model$pre$mold))
+
+  # The removed tidyflow matches the original data
+  expect_true(identical(tidyflow_removed_model$data,
+                        tidyflow_removed_model$pre$mold))
 })
 
 test_that("remove a model after model fit keeps all results/actions intact", {

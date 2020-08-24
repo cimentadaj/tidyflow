@@ -199,7 +199,7 @@ print_formula_recipe <- function(x) {
 
 print_formula <- function(x) {
   formula_msg <- cli::style_italic("Formula: ")
-  formula <- pull_tflow_preprocessor(x)
+  formula <- x$pre$actions$formula$formula
   formula <- rlang::expr_text(formula)
   cat_line(glue::glue(formula_msg, formula))
 }

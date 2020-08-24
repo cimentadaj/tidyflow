@@ -87,15 +87,8 @@ replace_formula <- function(x, formula, ..., blueprint = NULL) {
 fit.action_formula <- function(object, x) {
   formula <- object$formula
   blueprint <- object$blueprint
-  
-  # Strip out the formula environment because it can be heavy
-  # in some scenarios
-  environment(formula) <- NULL
-  x$pre$mold <- hardhat::mold(formula = formula,
-                              data = x$pre$mold,
-                              blueprint = blueprint)
-
-  x$pre$results$formula <- x$pre$mold
+  x$pre$results$preprocessor <- formula
+  x$pre$results$blueprint <- blueprint
 
   # All pre steps return the `tidyflow`
   x

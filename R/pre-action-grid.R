@@ -261,7 +261,16 @@ fit.action_grid <- function(object, x) {
 
   # Including recipe + model
   all_params <- tune::parameters(x)
-  dt <- pull_tflow_mold(x)$predictors
+  preproc <- pull_tflow_preprocessor(x)
+  mold <- x$pre$mold
+
+  if (inherits(preproc, "recipe")) {
+    iv_vars <- preproc$var_info$variable[preproc$var_info$role == "predictor"]
+    dt <- mold[iv_vars]
+  } else {
+    iv_vars <- attr(stats::terms(preproc, data = mold), "term.labels")
+    dt <- mold[iv_vars]
+  }
 
   # For some reason, running set seed before tune::parameters
   # does not return the same random grid as running the
@@ -294,7 +303,7 @@ fit.action_grid <- function(object, x) {
       rlang::abort("When `expand.grid` is used as the grid function, `plug_grid` arguments should not be parameter objects such as deg_free() or mixture(). They should be vectors to be expanded such as deg_free = 1:10 or mixture = 0:1") #nolintr
     }
 
-    # Focing all params to have an NA in args2 is a hack
+    # Forcing all params to have an NA in args2 is a hack
     # for update to try to update the specified params
     # into all_params. This way, at least if the user
     # specified the name of parameters wrong or is missing
@@ -319,7 +328,7 @@ fit.action_grid <- function(object, x) {
     if (!inherits(grid_res, "data.frame")) {
       abort("If `expand.grid` is specified, the function should return an object of class `data.frame`") #nolintr
     }
-    
+
   } else {
 
     if (length(parameters_names) != 0) {

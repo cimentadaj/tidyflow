@@ -137,7 +137,7 @@ replace_recipe <- function(x, .f, ..., blueprint = NULL) {
 fit.action_recipe <- function(object, x) {
   recipe_fun <- object$recipe
   blueprint <- object$blueprint
-  molded_data <- combine_outcome_preds(x$pre$mold)
+  molded_data <- x$pre$mold
   rcp_data <- recipe_fun(molded_data)
 
   if (!is_recipe(rcp_data)) {
@@ -149,23 +149,8 @@ fit.action_recipe <- function(object, x) {
   }
 
   # Keep recipe around
-  x$pre$results$recipe <- rcp_data
-
-  # Only if the recipe or model has a tune, we return the unprepped data to mold
-  # This is because you the prepping is done via tune_grid. This
-  # is all taken care of in fit.action_model.
-
-  if (has_tune(rcp_data) || has_tune(pull_tflow_spec(x))) {
-    var_df <- rcp_data$var_info
-    y_var <- var_df[var_df$role == "outcome", "variable", drop = TRUE]
-    x_vars <- var_df[var_df$role != "outcome", "variable", drop = TRUE]
-    x$pre$mold <- hardhat::mold(molded_data[x_vars], molded_data[y_var])
-  } else {
-    x$pre$mold <- hardhat::mold(rcp_data,
-                                molded_data,
-                                blueprint = blueprint)
-  }
-
+  x$pre$results$preprocessor <- rcp_data
+  x$pre$results$blueprint <- blueprint
 
   # All pre steps return the `tidyflow`
   x

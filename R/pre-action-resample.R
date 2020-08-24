@@ -108,7 +108,7 @@ replace_resample <- function(x, .f, ...) {
 
 # ------------------------------------------------------------------------------
 fit.action_resample <- function(object, x) {
-  preprocessor <- x$pre$results$recipe %||% x$pre$actions$formula$formula
+  preprocessor <- x$pre$results$preprocessor
 
   has_tuning <-
     has_tune(preprocessor) ||
@@ -120,21 +120,7 @@ fit.action_resample <- function(object, x) {
     abort("The recipe or model has `tune()` parameters but no grid specification. Did you want `plug_grid()`?") #nolintr
   }
 
-  has_tunable_rcp <-
-    has_preprocessor_recipe(x) &&
-    has_tune(x$pre$results$recipe)
-
-  # There are complications when we apply the recipe to the resample
-  # (the previous step to resample is the recipe) because when
-  #  we pass the resample to fit_resample, the recipe is applied
-  # **again** to the resample and it can raise some errors.
-  # So we always apply the resample either to the training data
-  # (if there is a split) or the complete data
-  if (has_preprocessor_split(x)) {
-    mold <- rsample::training(x$pre$results$split)
-  } else {
-    mold <- x$data
-  }
+  mold <- x$pre$mold
 
   ## object[[2]] are the arguments as quosures
   args <- lapply(object[[2]], eval_tidy)

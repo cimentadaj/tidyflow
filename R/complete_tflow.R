@@ -17,10 +17,11 @@
 #' \code{\link[tune:show_best]{select_by_one_std_err}} or
 #' \code{\link[tune:show_best]{select_by_pct_loss}}. By default, it uses
 #' \code{\link[tune:show_best]{select_best}}.
+#' 
 #' @param control A \code{\link{control_tidyflow}} object. The
 #' \code{\link[parsnip]{control_parsnip}} control object inside
 #' \code{\link{control_tidyflow}} is passed to
-#' \code{\link[parsnip]{fit}} or \code{\link[parsnip]{fit}}.
+#' \code{\link[generics]{fit}}.
 #'
 #' @details The finalized model is fitted on the training data if
 #' \code{plug_split} was specified otherwise on the complete data.
@@ -133,24 +134,29 @@ complete_tflow <- function(x,
   mod <- tune::finalize_model(mod, best_params)
   x$fit$actions$model$spec <- mod
 
+  preproc <- tidyflow::pull_tflow_preprocessor(x)
+
   if (has_preprocessor_recipe(x)) {
-    rec <- tidyflow::pull_tflow_preprocessor(x)
-    dt <- combine_outcome_preds(pull_tflow_mold(x))
-    rec <- tune::finalize_recipe(rec(dt), best_params)
-    x$pre$actions$recipe$recipe_res <- rec
-    x$pre$mold <- hardhat::mold(rec, dt)
+    preproc <- tune::finalize_recipe(preproc, best_params)
+    x$pre$actions$recipe$recipe_res <- preproc
   }
 
   form <- x$fit$actions$formula
-  mold <- x$pre$mold
-  if (is.null(form)) {
-    fit <- fit_from_xy(mod, mold, control$control_parsnip)
+
+  if (inherits(preproc, "recipe")) {
+    add_preprocessor <- workflows::add_recipe
   } else {
-    mold <- combine_outcome_preds(mold)
-    fit <- fit_from_formula(mod, mold, control$control_parsnip, form)
+    add_preprocessor <- workflows::add_formula
   }
 
-  x$fit$fit$fit <- fit
+  wflow <- add_preprocessor(workflows::workflow(), preproc)
+  wflow <- workflows::add_model(wflow, mod, formula = form)
+
+  ctrl <- workflows::control_workflow(control_parsnip = control$control_parsnip)
+  wflow_fit <- generics::fit(wflow, data = x$pre$mold, control = ctrl)
+
+  x$fit$fit$fit <- workflows::pull_workflow_fit(wflow_fit)
+  x$fit$fit$wflow <- wflow_fit
   x$trained <- TRUE
   x
 }

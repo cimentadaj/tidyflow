@@ -83,7 +83,7 @@ final_model %>%
   pull_tflow_fit()
 #> parsnip model object
 #> 
-#> Fit time:  4ms 
+#> Fit time:  3ms 
 #> 
 #> Call:
 #> stats::lm(formula = ..y ~ ., data = data)

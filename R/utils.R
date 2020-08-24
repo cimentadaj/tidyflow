@@ -46,6 +46,10 @@ has_preprocessor_resample <- function(x) {
   "resample" %in% names(x$pre$actions)
 }
 
+has_preprocessor_rcp_formula <- function(x) {
+  "preprocessor" %in% names(x$pre$results)
+}
+
 has_preprocessor_recipe <- function(x) {
   "recipe" %in% names(x$pre$actions)
 }
@@ -186,11 +190,13 @@ purge_results_grid <- function(x) {
 }
 
 purge_results_formula <- function(x) {
-  purge_(x$pre$results, "formula")
+  res <- purge_(x$pre$results, "preprocessor")
+  res <- purge_(res, "blueprint")
+  res
 }
 
 purge_results_recipe <- function(x) {
-  purge_(x$pre$results, "recipe")
+  purge_results_formula(x)
 }
 
 combine_outcome_preds <- function(mold) {
@@ -207,6 +213,8 @@ combine_outcome_preds <- function(mold) {
 # the only different thing
 strip_elapsed <- function(x) {
   x$fit$fit$fit$elapsed <- NULL
+  x$fit$fit$wflow$fit$fit$elapsed <- NULL
+
   x
 }
 

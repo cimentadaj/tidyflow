@@ -99,8 +99,10 @@ test_that("Fit resample, drop a resample and refit is the same as normal fitting
 
   # Setting the time elapsed to NULL, since there can be very minor
   # differences in time fitting the model for comparison.
-  expect_equal(strip_elapsed(mod1_no_resample),
-               strip_elapsed(mod2_no_resample))
+  expect_equal(
+    strip_elapsed(mod1_no_resample),
+    strip_elapsed(mod2_no_resample)
+  )
 })
 
 test_that("plug_resample resets model fit before adding the resample", {
@@ -287,7 +289,7 @@ test_that("Recipe is not applied to resample", {
   manual_mod1 <-
     tune::fit_resamples(
       object = pull_tflow_spec(mod1),
-      preprocessor = mod1$pre$results$recipe,
+      preprocessor = mod1$pre$results$preprocessor,
       resamples = pull_tflow_resample(mod1)
     )
 

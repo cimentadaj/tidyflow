@@ -27,7 +27,7 @@ test_that("Adding a tune in a recipe without fitting returns the tuning param", 
                                                                           )))), row.names = c(NA, -1L), class = c("parameters", 
                                                                                                                   "tbl_df", "tbl", "data.frame"))
 
-  param_correct <- parameters(tflow)
+  param_correct <- parameters(fit(tflow))
   param_correct$component_id <- ""
   expect_identical(baseline, param_correct)
 })
@@ -36,6 +36,7 @@ model <- parsnip::set_engine(parsnip::linear_reg(penalty = tune::tune(),
                                                  mixture = tune::tune()),
                              "glmnet")
 tflow <- replace_model(tflow, model)
+tflow <- fit(tflow)
 
 test_that("Adding tune in recipe + model without fitting returns the tuning params", {
   # parameters extracts both the tuning parameters from the recipe and
@@ -49,7 +50,7 @@ test_that("Adding tune in recipe + model without fitting returns the tuning para
 })
 
 test_that("Tune inside recipe + model after fitting returns the tuning params", {
-  correct_param <- parameters(fit(tflow))
+  correct_param <- parameters(tflow)
   expect_equal(ncol(correct_param), 6)
   expect_equal(nrow(correct_param), 3)
   expect_named(correct_param)

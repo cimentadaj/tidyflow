@@ -174,7 +174,7 @@ test_that("update a recipe after model fit", {
   tidyflow <- tidyflow(mtcars)
   tidyflow <- plug_model(tidyflow, glmnet_model)
   tidyflow <- plug_resample(tidyflow, rsample::vfold_cv, v = 2)
-  tidyflow <- plug_grid(tidyflow, dials::grid_regular, levels = 1)    
+  tidyflow <- plug_grid(tidyflow, dials::grid_regular, levels = 1)
   tidyflow <- plug_recipe(tidyflow, rec)
 
   tidyflow <- fit(tidyflow)
@@ -182,15 +182,17 @@ test_that("update a recipe after model fit", {
   # Should clear fitted model
   tidyflow <- replace_recipe(tidyflow, rec2)
 
-  expect_equal(tidyflow$pre$actions$recipe$recipe,
-               rlang::as_function(rec2)
-               )
+  expect_equal(
+    tidyflow$pre$actions$recipe$recipe,
+    rlang::as_function(rec2)
+  )
 
   expect_equal(pull_tflow_spec(tidyflow), glmnet_model)
   expect_equal(
-    pull_tflow_mold(tidyflow),
+    tidyflow$pre$mold,
     pull_tflow_rawdata(tidyflow)
   )
+
 })
 
 test_that("cannot add two grid specifications", {
@@ -362,9 +364,10 @@ test_that("parameters on tidyflow returns same tuning params as tuning", {
 
   fit_mod <- fit(tflow)
   all_tuning <- do.call(rbind, pull_tflow_fit_tuning(fit_mod)$`.metrics`)
+
   # All params from parameters.tidyflow are used in the tuning
   expect_true(
-    all(tune::parameters(tflow)$name %in% names(all_tuning))
+    all(parameters(fit_mod)$name %in% names(all_tuning))
   )
 
   rcp <-
@@ -378,7 +381,7 @@ test_that("parameters on tidyflow returns same tuning params as tuning", {
   fit_mod <- fit(tflow)
   all_tuning <- do.call(rbind, pull_tflow_fit_tuning(fit_mod)$`.metrics`)
   # All params from parameters.tidyflow are used in the tuning
-  expect_true(all(tune::parameters(tflow)$name %in% names(all_tuning)))
+  expect_true(all(parameters(fit_mod)$name %in% names(all_tuning)))
 })
 
 test_that("Tuning is applied with all pre steps", {
@@ -439,7 +442,7 @@ test_that("Tuning is applied with all pre steps", {
   manual_mod1 <-
     tune::tune_grid(
       object = pull_tflow_spec(mod1_grid),
-      preprocessor = mod1_grid$pre$results$recipe,
+      preprocessor = mod1_grid$pre$results$preprocessor,
       resamples = pull_tflow_resample(mod1_grid),
       grid = mod1_grid$pre$results$grid$grid
     )

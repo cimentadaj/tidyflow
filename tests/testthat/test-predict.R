@@ -292,16 +292,15 @@ test_that("predict_training/testing works as expected", {
 
   expect_error(
     predict_training(fit_tflow),
-    "`predict_training` can only work when a split preprocessor has been specifid. Did you want `plug_split`?",
+    "`predict_training` can only work when a split preprocessor has been specifid. Did you want `plug_split`?", #nolintr
     fixed = TRUE
   )
 
   expect_error(
     predict_testing(fit_tflow),
-    "`predict_testing` can only work when a split preprocessor has been specifid. Did you want `plug_split`?",
+    "`predict_testing` can only work when a split preprocessor has been specifid. Did you want `plug_split`?", #nolintr
     fixed = TRUE
   )
-
 
   tflow <- plug_split(tflow, rsample::initial_split)
   res_tr <- predict_training(fit(tflow))

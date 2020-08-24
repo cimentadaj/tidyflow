@@ -111,12 +111,25 @@ replace_model <- function(x, spec, formula = NULL) {
 # ------------------------------------------------------------------------------
 fit.action_model <- function(object, x, control, ...) {
   control_parsnip <- control$control_parsnip
+  blueprint <- x$pre$results$blueprint
   spec <- object$spec
   formula <- object$formula
   resample_res <- x$pre$results$resample
   grid_res <- x$pre$results$grid$grid
   param_res <- x$pre$results$grid$params
+  preproc <- x$pre$results$preprocessor
 
+  if (inherits(preproc, "recipe")) {
+    add_preprocessor <- workflows::add_recipe
+  } else {
+    add_preprocessor <- workflows::add_formula
+  }
+
+  wflow <- add_preprocessor(x = workflows::workflow(),
+                            preproc,
+                            blueprint = blueprint)
+
+  wflow <- workflows::add_model(wflow, spec, formula = formula)
 
   if (has_tune(spec) && !has_preprocessor_grid(x)) {
     abort("The model contains parameters with `tune()` but no grid specification has been made. Did you want `plug_grid`?") #nolintr
@@ -125,24 +138,20 @@ fit.action_model <- function(object, x, control, ...) {
   # It means that they specified a resample and no grid
   if (!is.null(resample_res) && is.null(grid_res)) {
     control_resamples <- control$control_resamples
-    obj <- x$pre$results$recipe %||% x$pre$actions$formula$formula
 
     x$fit$fit$tuning <-
-      tune::fit_resamples(object = spec,
-                          preprocessor = obj,
+      tune::fit_resamples(object = wflow,
                           resamples = resample_res,
                           control = control_resamples
                           )
-    
+
     return(x)
     # It means that they specified a resample AND a grid, so tuning is wanted
   } else if (!is.null(resample_res) && !is.null(grid_res)) {
     control_grid <- control$control_grid
-    obj <- x$pre$results$recipe %||% x$pre$actions$formula$formula
 
     x$fit$fit$tuning <-
-      tune::tune_grid(object = spec,
-                      preprocessor = obj,
+      tune::tune_grid(object = wflow,
                       resamples = resample_res,
                       grid = grid_res,
                       control = control_grid,
@@ -151,31 +160,14 @@ fit.action_model <- function(object, x, control, ...) {
     return(x)
   }
 
-  mold <- x$pre$mold
+  ctrl <- workflows::control_workflow(control_parsnip = control_parsnip)
+  wflow_fit <- generics::fit(wflow, data = x$pre$mold, control = ctrl)
 
-  if (is.null(mold)) {
-    abort("Internal error: No mold exists. `tidyflow` pre stage has not been run.")
-  }
-
-  if (is.null(formula)) {
-    fit <- fit_from_xy(spec, mold, control_parsnip)
-  } else {
-    mold <- combine_outcome_preds(mold)
-    fit <- fit_from_formula(spec, mold, control_parsnip, formula)
-  }
-
-  x$fit$fit$fit <- fit
+  x$fit$fit$fit <- workflows::pull_workflow_fit(wflow_fit)
+  x$fit$fit$wflow <- wflow_fit
 
   # Only the tidyflow is returned
   x
-}
-
-fit_from_xy <- function(spec, mold, control_parsnip) {
-  fit_xy(spec, x = mold$predictors, y = mold$outcomes, control = control_parsnip)
-}
-
-fit_from_formula <- function(spec, mold, control_parsnip, formula) {
-  fit(spec, formula = formula, data = mold, control = control_parsnip)
 }
 
 # ------------------------------------------------------------------------------
