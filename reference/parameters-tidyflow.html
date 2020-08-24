@@ -214,10 +214,10 @@ model and after the model fit.</p>
 <span class='kw'>tflow</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='plug_formula.html'>drop_formula</a></span>() <span class='op'>%&gt;%</span> 
   <span class='fu'><a href='plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, data = <span class='kw'>.</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span>(<span class='kw'>hp</span>, deg_free = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>())) <span class='op'>%&gt;%</span>
-  <span class='kw'>tidyflow</span>::<span class='fu'>parameters</span>()</div><div class='output co'>#&gt; Collection of 1 parameters for tuning
+  <span class='kw'>tidyflow</span>::<span class='fu'>parameters</span>()</div><div class='output co'>#&gt; Collection of 0 parameters for tuning
 #&gt; 
-#&gt;        id parameter type object class
-#&gt;  deg_free       deg_free    nparam[+]
+#&gt; [1] id             parameter type object class  
+#&gt; &lt;0 rows&gt; (or 0-length row.names)
 #&gt; </div><div class='input'>
 <span class='co'># parameters extracts both the tuning parameters from the recipe and</span>
 <span class='co'># model:</span>
@@ -227,12 +227,11 @@ model and after the model fit.</p>
   <span class='fu'><a href='plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, data = <span class='kw'>.</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span>(<span class='kw'>hp</span>, deg_free = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>())) <span class='op'>%&gt;%</span>
   <span class='fu'><a href='plug_model.html'>replace_model</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>(), mixture = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>()), <span class='st'>"glmnet"</span>))
 
-<span class='kw'>tidyflow</span>::<span class='fu'>parameters</span>(<span class='kw'>tflow</span>)</div><div class='output co'>#&gt; Collection of 3 parameters for tuning
+<span class='kw'>tidyflow</span>::<span class='fu'>parameters</span>(<span class='kw'>tflow</span>)</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
 #&gt; 
-#&gt;        id parameter type object class
-#&gt;   penalty        penalty    nparam[+]
-#&gt;   mixture        mixture    nparam[+]
-#&gt;  deg_free       deg_free    nparam[+]
+#&gt;       id parameter type object class
+#&gt;  penalty        penalty    nparam[+]
+#&gt;  mixture        mixture    nparam[+]
 #&gt; </div><div class='input'>
 <span class='co'># This can serve well to refresh your memory on which tuning</span>
 <span class='co'># parameters are present and then override the custom values</span>
