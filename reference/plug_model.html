@@ -216,7 +216,8 @@ used for those purposes.</p></td>
   <span class='fu'><a href='plug_formula.html'>plug_formula</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>) <span class='op'>%&gt;%</span> 
   <span class='fu'>plug_model</span>(<span class='kw'>lm_model</span>)
 
-<span class='kw'>wf</span></div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='kw'>wf</span>
+</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; <span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Formula: </span><span>mpg ~ .
@@ -229,7 +230,8 @@ used for those purposes.</p></td>
 #&gt; </div><div class='input'>
 <span class='co'># We can drop the model at any time and the remaining steps</span>
 <span class='co'># are intact</span>
-<span class='fu'>drop_model</span>(<span class='kw'>wf</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='fu'>drop_model</span>(<span class='kw'>wf</span>)
+</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Formula: </span><span>mpg ~ .
@@ -241,9 +243,10 @@ used for those purposes.</p></td>
 
 <span class='co'># Extract the model if needed:</span>
 <span class='kw'>fitted</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit</a></span>()</div><div class='output co'>#&gt; parsnip model object
+  <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit</a></span>()
+</div><div class='output co'>#&gt; parsnip model object
 #&gt; 
-#&gt; Fit time:  4ms 
+#&gt; Fit time:  5ms 
 #&gt; 
 #&gt; Call:
 #&gt; stats::lm(formula = ..y ~ ., data = data)
@@ -256,7 +259,8 @@ used for those purposes.</p></td>
 #&gt; </div><div class='input'>
 <span class='co'># If we remove the model from the fitted `tidyflow`,</span>
 <span class='co'># the fit is dropped:</span>
-<span class='fu'>drop_model</span>(<span class='kw'>fitted</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='fu'>drop_model</span>(<span class='kw'>fitted</span>)
+</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Formula: </span><span>mpg ~ .
@@ -275,9 +279,10 @@ used for those purposes.</p></td>
   <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>()
 
 <span class='kw'>reg_fitted</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit</a></span>()</div><div class='output co'>#&gt; parsnip model object
+  <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit</a></span>()
+</div><div class='output co'>#&gt; parsnip model object
 #&gt; 
-#&gt; Fit time:  20ms 
+#&gt; Fit time:  17ms 
 #&gt; 
 #&gt; Call:  glmnet::glmnet(x = as.matrix(x), y = y, family = "gaussian") 
 #&gt; 
@@ -360,7 +365,8 @@ used for those purposes.</p></td>
 #&gt; 76 10 86.89 0.0048
 #&gt; 77 10 86.89 0.0044
 #&gt; 78 10 86.90 0.0040
-#&gt; 79 10 86.90 0.0036</div><div class='input'></div></span></pre>
+#&gt; 79 10 86.90 0.0036</div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -224,7 +224,8 @@ of class <code>rsplit</code>. These are functions which come from the
  <span class='fu'><a href='tidyflow.html'>tidyflow</a></span>() <span class='op'>%&gt;%</span>
  <span class='fu'>plug_split</span>(<span class='kw'>initial_split</span>, prop = <span class='fl'>0.8</span>, strata = <span class='st'>"cyl"</span>)
 
-<span class='kw'>wf</span></div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='kw'>wf</span>
+</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; <span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> initial_split w/ prop = ~0.8, strata = ~"cyl"
 #&gt; </span><span style='font-style: italic;'>Recipe/Formula: None</span><span>
@@ -234,14 +235,16 @@ of class <code>rsplit</code>. These are functions which come from the
 <span class='co'># Strata as unquoted name</span>
 <span class='kw'>wf</span> <span class='op'>&lt;-</span> <span class='fu'>replace_split</span>(<span class='kw'>wf</span>, <span class='kw'>initial_split</span>, prop = <span class='fl'>0.8</span>, strata = <span class='kw'>cyl</span>)
 
-<span class='kw'>wf</span></div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='kw'>wf</span>
+</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> initial_split w/ prop = ~0.8, strata = ~cyl
 #&gt; </span><span style='font-style: italic;'>Recipe/Formula: None</span><span>
 #&gt; </span><span style='font-style: italic;'>Resample:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Grid:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'>
-<span class='fu'>drop_split</span>(<span class='kw'>wf</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='fu'>drop_split</span>(<span class='kw'>wf</span>)
+</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Recipe/Formula: None</span><span>
@@ -249,13 +252,15 @@ of class <code>rsplit</code>. These are functions which come from the
 #&gt; </span><span style='font-style: italic;'>Grid:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'>
 <span class='co'># New split function</span>
-<span class='fu'>replace_split</span>(<span class='kw'>wf</span>, <span class='kw'>initial_time_split</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='fu'>replace_split</span>(<span class='kw'>wf</span>, <span class='kw'>initial_time_split</span>)
+</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> initial_time_split w/ default args
 #&gt; </span><span style='font-style: italic;'>Recipe/Formula: None</span><span>
 #&gt; </span><span style='font-style: italic;'>Resample:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Grid:</span><span> None
-#&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'></div></span></pre>
+#&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -220,21 +220,24 @@ specified, but not both.</p>
   <span class='fu'><a href='tidyflow.html'>tidyflow</a></span>(seed = <span class='fl'>652341</span>) <span class='op'>%&gt;%</span> 
   <span class='fu'>plug_formula</span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>)
 
-<span class='kw'>tflow</span></div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='kw'>tflow</span>
+</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; <span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Formula: </span><span>mpg ~ .
 #&gt; </span><span style='font-style: italic;'>Resample:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Grid:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'>
-<span class='fu'>drop_formula</span>(<span class='kw'>tflow</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='fu'>drop_formula</span>(<span class='kw'>tflow</span>)
+</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Recipe/Formula: None</span><span>
 #&gt; </span><span style='font-style: italic;'>Resample:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Grid:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'>
-<span class='fu'>replace_formula</span>(<span class='kw'>tflow</span>, <span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>disp</span>)</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
+<span class='fu'>replace_formula</span>(<span class='kw'>tflow</span>, <span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>disp</span>)
+</div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Formula: </span><span>mpg ~ disp
