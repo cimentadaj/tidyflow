@@ -125,3 +125,11 @@ test_that("can `fit()` regardless of order", {
   expect_equal(rsplit2df(result),
                rsplit2df(result2))
 })
+
+test_that("Can replace model and fit without error", {
+  lm_model <- parsnip::set_engine(parsnip::linear_reg(), "lm")
+  regularized_model <- parsnip::set_engine(parsnip::linear_reg(), "glmnet")
+  tflow <- plug_formula(tidyflow(mtcars), mpg ~ .)
+  lm_mod <- fit(plug_model(tflow, lm_model))
+  expect_type(fit(replace_model(lm_mod, regularized_model)), "list")
+})
