@@ -209,6 +209,28 @@ If <code>NULL</code>, <code><a href='https://rdrr.io/pkg/hardhat/man/default_for
 
     <p>To fit a tidyflow, one of <code>plug_formula()</code> or <code><a href='plug_recipe.html'>plug_recipe()</a></code> <em>must</em> be
 specified, but not both.</p>
+<p>By default <code>tidyflow</code> leaves <code>workflows</code> to figure out which
+type of factor transformation to happen (either leave factor as is,
+transform to N-1 dummies or use a one-hot encoding approach of N dummy columns).
+These transformations depend on the specific model supplied in <code>plug_model</code>.
+See <code><a href='https://workflows.tidymodels.org//reference/add_formula.html'>add_formula</a></code> for more details on how transformations
+are handled.</p>
+<p>However, <code>plug_formula</code> allows to override the type of transformation
+using the blueprint. For example, by passing
+<code>default_formula_blueprint(intercept = TRUE, indicators = "none")</code> to
+the blueprint argument of <code>plug_formula</code> you can
+enforce that the factor is left without transforming. You can also use
+<code>default_formula_blueprint(intercept = TRUE, indicators = "traditional")</code> and
+<code>default_formula_blueprint(intercept = TRUE, indicators = "one_hot")</code> to
+transform factors to N-1 dummies or N dummies respectively.</p>
+<p>For example, to transform all factors to one-hot encoding, you can pass
+the blueprint to <code>plug_formula</code>:<div class="r"></p><pre><span class='kw'>bp</span> <span class='op'>&lt;-</span> <span class='fu'>default_formula_blueprint</span>(intercept = <span class='fl'>TRUE</span>, indicators = <span class='st'>"one_hot"</span>)
+<span class='kw'>iris</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='tidyflow.html'>tidyflow</a></span>(seed = <span class='fl'>21315</span>)
+  <span class='fu'>plug_formula</span>(<span class='kw'>Sepal.Length</span> <span class='op'>~</span> <span class='kw'>Species</span>, blueprint = <span class='kw'>bp</span>) <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='plug_model.html'>plug_model</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='kw'>parsnip</span>::<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(), <span class='st'>"lm"</span>)) <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>()
+</pre><p></div></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
