@@ -151,7 +151,7 @@ test_that("error if no mold", {
 
   expect_error(
     pull_tflow_prepped_recipe(tidyflow),
-    "The recipe/formula has been executed. Have you called `fit` yet?"
+    "The recipe/formula hasn't been executed. Have you called `fit` yet?"
   )
 })
 

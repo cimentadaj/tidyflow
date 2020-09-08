@@ -220,7 +220,7 @@ pull_tflow_prepped_recipe <- function(x) {
 
   is_rcp_or_formula <- inherits(res, "recipe") || inherits(res, "formula")
   if (!is_rcp_or_formula) {
-    abort("The recipe/formula has been executed. Have you called `fit` yet?")
+    abort("The recipe/formula hasn't been executed. Have you called `fit` yet?")
   }
 
   recipes::prep(res)
