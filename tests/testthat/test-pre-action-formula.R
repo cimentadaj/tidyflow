@@ -186,36 +186,42 @@ test_that("Formula works with plug_split", {
   )
 })
 
-test_that("Blueprints can overrid formula molds", {
-  # Leave factor AS IS
-  bp1 <- hardhat::default_formula_blueprint(intercept = TRUE, indicators = 'none')
-  # Convert factor to N-1 columns. Default in lm
-  bp2 <- hardhat::default_formula_blueprint(intercept = TRUE, indicators = 'traditional')
-  # Convert factor into N columns
-  bp3 <- hardhat::default_formula_blueprint(intercept = TRUE, indicators = 'one_hot')
-  mod <- parsnip::set_engine(parsnip::linear_reg(), "lm")
+test_onehot <- function(dt, type) {
+  test_that(paste0("Blueprints can override formula molds for ", type), {
+    # Leave type AS IS
+    bp1 <- hardhat::default_formula_blueprint(intercept = TRUE, indicators = 'none')
+    # Convert type to N-1 columns. Default in lm
+    bp2 <- hardhat::default_formula_blueprint(intercept = TRUE, indicators = 'traditional')
+    # Convert type into N columns
+    bp3 <- hardhat::default_formula_blueprint(intercept = TRUE, indicators = 'one_hot')
+    mod <- parsnip::set_engine(parsnip::linear_reg(), "lm")
 
-  tflow <- tidyflow(iris)
-  tflow <- plug_formula(tflow, Sepal.Length ~ Species, blueprint = bp1)
-  tflow <- plug_model(tflow, mod)
-  mold <- workflows::pull_workflow_mold(fit(tflow)$fit$fit$wflow)$predictors
+    tflow <- tidyflow(dt)
+    tflow <- plug_formula(tflow, Sepal.Length ~ Species, blueprint = bp1)
+    tflow <- plug_model(tflow, mod)
+    mold <- workflows::pull_workflow_mold(fit(tflow)$fit$fit$wflow)$predictors
 
-  # Leaves factors as is
-  expect_length(mold, 2)
-  expect_true(all(c("(Intercept)", "Species") %in% names(mold)))
+    # Leaves factors as is
+    expect_length(mold, 2)
+    expect_true(all(c("(Intercept)", "Species") %in% names(mold)))
 
-  # Forces N-1 columns
-  tflow <- replace_formula(tflow, Sepal.Length ~ Species, blueprint = bp2)
-  mold <- workflows::pull_workflow_mold(fit(tflow)$fit$fit$wflow)$predictors
-  expect_length(mold, 3)
-  nm <- c("(Intercept)", "Speciesversicolor", "Speciesvirginica")
-  expect_true(all(nm %in% names(mold)))
+    # Forces N-1 columns
+    tflow <- replace_formula(tflow, Sepal.Length ~ Species, blueprint = bp2)
+    mold <- workflows::pull_workflow_mold(fit(tflow)$fit$fit$wflow)$predictors
+    expect_length(mold, 3)
+    nm <- c("(Intercept)", "Speciesversicolor", "Speciesvirginica")
+    expect_true(all(nm %in% names(mold)))
 
-  # Forces N columns (one_hot)
-  tflow <- replace_formula(tflow, Sepal.Length ~ Species, blueprint = bp3)
-  mold <- workflows::pull_workflow_mold(fit(tflow)$fit$fit$wflow)$predictors
-  expect_length(mold, 4)
-  nm <- c("(Intercept)", "Speciessetosa", "Speciesversicolor", "Speciesvirginica")
-  expect_true(all(nm %in% names(mold)))
+    # Forces N columns (one_hot)
+    tflow <- replace_formula(tflow, Sepal.Length ~ Species, blueprint = bp3)
+    mold <- workflows::pull_workflow_mold(fit(tflow)$fit$fit$wflow)$predictors
+    expect_length(mold, 4)
+    nm <- c("(Intercept)", "Speciessetosa", "Speciesversicolor", "Speciesvirginica")
+    expect_true(all(nm %in% names(mold)))
+  })
+}
 
-})
+test_onehot(iris, "factor")
+iris$Species <- as.character(iris$Species)
+test_onehot(iris, "character")
+

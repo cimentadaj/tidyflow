@@ -45,7 +45,7 @@ To fit a tidyflow, one of \code{plug_formula()} or \code{plug_recipe()} \emph{mu
 specified, but not both.
 
 By default \code{tidyflow} leaves \code{workflows} to figure out which
-type of factor transformation to happen (either leave factor as is,
+type of factor/character transformation to happen (either leave factor as is,
 transform to N-1 dummies or use a one-hot encoding approach of N dummy columns).
 These transformations depend on the specific model supplied in \code{plug_model}.
 See \code{\link[workflows]{add_formula}} for more details on how transformations
@@ -55,12 +55,12 @@ However, \code{plug_formula} allows to override the type of transformation
 using the blueprint. For example, by passing
 \code{default_formula_blueprint(intercept = TRUE, indicators = "none")} to
 the blueprint argument of \code{plug_formula} you can
-enforce that the factor is left without transforming. You can also use
+enforce that all factors/characters area left without transforming. You can also use
 \code{default_formula_blueprint(intercept = TRUE, indicators = "traditional")} and
 \code{default_formula_blueprint(intercept = TRUE, indicators = "one_hot")} to
-transform factors to N-1 dummies or N dummies respectively.
+transform all factors/characters to N-1 dummies or N dummies respectively.
 
-For example, to transform all factors to one-hot encoding, you can pass
+For example, to transform all factors/characters to one-hot encoding, you can pass
 the blueprint to \code{plug_formula}:\if{html}{\out{<div class="r">}}\preformatted{bp <- default_formula_blueprint(intercept = TRUE, indicators = "one_hot")
 iris \%>\%
   tidyflow(seed = 21315)
@@ -68,6 +68,12 @@ iris \%>\%
   plug_model(set_engine(parsnip::linear_reg(), "lm")) \%>\%
   fit()
 }\if{html}{\out{</div>}}
+
+For custom transformations between types (for example, applying one-hot on
+factors and not on characters), the user can provide a \code{\link[recipes]{recipe}}
+with a \code{\link[recipes]{step_dummy}} step to \code{\link{plug_recipe}}. See
+\href{https://recipes.tidymodels.org/articles/Dummies.html}{this vignette}
+for more details
 }
 \examples{
 
