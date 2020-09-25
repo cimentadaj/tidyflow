@@ -3,7 +3,9 @@
 
 * Create a new folder with the name of the presentation. 
 
-* Put the `Rmd` file inside and `knit` the presentation to produce an `html`. 
+* Put the `Rmd` file inside the folder and change the name of the `Rmd` to have a `_` in front (this makes sure that `build_site` ignores it; we don't want it to be rebuilt)
+
+* `knit` the presentation to produce an `html`. 
 
 * Once you have your final `html`, open the `html` in Chrome/Chromium and press `CTRL-SHIT-p`. This prompts you to save the presentation as `pdf`. Save the presentation with the same name but `.pdf`
 

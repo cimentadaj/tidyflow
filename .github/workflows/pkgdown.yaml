@@ -40,7 +40,7 @@ jobs:
           install.packages("remotes")
           remotes::install_deps(dependencies = TRUE)
           remotes::install_dev("pkgdown")
-          install.packages("xaringan")
+          install.packages(c(xaringan", "xaringathemer))
         shell: Rscript {0}
 
       - name: Install package
