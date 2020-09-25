@@ -7,7 +7,7 @@
 
 * `knit` the presentation to produce an `html`. 
 
-* Once you have your final `html`, open the `html` in Chrome/Chromium and press `CTRL-SHIT-p`. This prompts you to save the presentation as `pdf`. Save the presentation with the same name but `.pdf`
+* Once you have your final `html`, open the `html` in Chrome/Chromium and press `CTRL-SHIT-p`. This prompts you to save the presentation as `pdf`. Save the presentation but as a `.pdf`. Note that this doesn't have to have the `_` in front.
 
 * Add an option to the `Rmd` file to `eval = FALSE` all of the code chunks. This makes sure that if the presentation takes long, it's not knitted every time we run `pkgdown`. In any case, the website will only grab all `pdf` files, so it doesn't matter that it rewrites the `html` file.
 
