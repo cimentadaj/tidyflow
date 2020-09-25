@@ -48,5 +48,5 @@ jobs:
 
       - name: Deploy package
         run: |
-          echo "If this step fails, it's probably related `pkgdown` changing some of the unexported functions used in `deploy_to_branch2`. Look at the source of pkgdown::deploy_to_branch and read the comments in the gist below to debug."
           Rscript -e "source('https://gist.githubusercontent.com/cimentadaj/baa138ae62db002425268cafd057ac84/raw/58698b5afda9a73213b52070b9e8746ad39c7f65/deploy.R'); deploy_to_branch2(new_process = FALSE)"
+          echo "If this step fails, it's probably related `pkgdown` changing some of the unexported functions used in `deploy_to_branch2`. Look at the source of pkgdown::deploy_to_branch and read the comments in the gist below to debug."
