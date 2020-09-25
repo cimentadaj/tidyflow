@@ -89,16 +89,22 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+  <a href=".././index.html">
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../reference/index.html">
+    <span class="fa fa-gears"></span>
+     
+    Reference
+  </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-graduation-cap"></span>
+     
     Articles
      
     <span class="caret"></span>
@@ -114,7 +120,21 @@
       <a href="../articles/c03_fitting-model-resampling.html">Using resampling in tidyflow</a>
     </li>
     <li>
-      <a href="../articles/d04_fitting-model-tuning.html">Performing grid search in tidyflow</a>
+      <a href="../articles/d04_fitting-model-tuning.html">Grid search in tidyflow</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-file-powerpoint"></span>
+     
+    Presentations
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/berlinrug_202009.pdf">Berlin RUG September 2020</a>
     </li>
   </ul>
 </li>
@@ -149,7 +169,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for tidyflow</span>
-<span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>x</span>, control = <span class='fu'><a href='control_tidyflow.html'>control_tidyflow</a></span>(), <span class='kw'>...</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>x</span>, control <span class='op'>=</span> <span class='fu'><a href='control_tidyflow.html'>control_tidyflow</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -220,80 +240,80 @@ be the one described above skipping any steps that are not specified.</p></li>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://parsnip.tidymodels.org'>parsnip</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/tidymodels/recipes'>recipes</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/tidymodels/tune'>tune</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/dials'>dials</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://rsample.tidymodels.org'>rsample</a></span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://parsnip.tidymodels.org'>parsnip</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/recipes'>recipes</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/tune'>tune</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dials.tidymodels.org'>dials</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://rsample.tidymodels.org'>rsample</a></span><span class='op'>)</span>
 
 <span class='co'># Fit a simple linear model</span>
-<span class='kw'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(), <span class='st'>"lm"</span>)
+<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"lm"</span><span class='op'>)</span>
 
-<span class='kw'>formula_tidyflow</span> <span class='op'>&lt;-</span>
- <span class='kw'>mtcars</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='tidyflow.html'>tidyflow</a></span>() <span class='op'>%&gt;%</span>
- <span class='fu'><a href='plug_formula.html'>plug_formula</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>cyl</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>disp</span>)) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='plug_model.html'>plug_model</a></span>(<span class='kw'>model</span>)
+<span class='va'>formula_tidyflow</span> <span class='op'>&lt;-</span>
+ <span class='va'>mtcars</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='tidyflow.html'>tidyflow</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_formula.html'>plug_formula</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>cyl</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>disp</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_model.html'>plug_model</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>
 
 <span class='co'># The result is a model since we didn't specify any resample/grid</span>
-<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>formula_tidyflow</span>)
+<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>formula_tidyflow</span><span class='op'>)</span>
 
 <span class='co'># You can extract the model fit if neede</span>
-<span class='kw'>res</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit</a></span>()
+<span class='va'>res</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># Alternatively, we can add a split specification and</span>
 <span class='co'># predict on the training data automatically:</span>
-<span class='kw'>formula_tidyflow</span> <span class='op'>&lt;-</span>
- <span class='kw'>formula_tidyflow</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='plug_split.html'>plug_split</a></span>(<span class='kw'>initial_split</span>)
+<span class='va'>formula_tidyflow</span> <span class='op'>&lt;-</span>
+ <span class='va'>formula_tidyflow</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_split.html'>plug_split</a></span><span class='op'>(</span><span class='va'>initial_split</span><span class='op'>)</span>
 
-<span class='kw'>res2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>formula_tidyflow</span>)
+<span class='va'>res2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>formula_tidyflow</span><span class='op'>)</span>
 
-<span class='kw'>res2</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='predict-tidyflow.html'>predict_training</a></span>()
+<span class='va'>res2</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='predict-tidyflow.html'>predict_training</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># This has the advantage that `predict_training` or `predict_testing` will</span>
 <span class='co'># apply the recipe/formula automatically for you:</span>
 
-<span class='kw'>recipe_tidyflow</span> <span class='op'>&lt;-</span>
- <span class='kw'>formula_tidyflow</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='plug_formula.html'>drop_formula</a></span>() <span class='op'>%&gt;%</span> 
- <span class='fu'><a href='plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>, <span class='kw'>.x</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_log.html'>step_log</a></span>(<span class='kw'>disp</span>))
+<span class='va'>recipe_tidyflow</span> <span class='op'>&lt;-</span>
+ <span class='va'>formula_tidyflow</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_formula.html'>drop_formula</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+ <span class='fu'><a href='plug_recipe.html'>plug_recipe</a></span><span class='op'>(</span><span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, <span class='va'>.x</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_log.html'>step_log</a></span><span class='op'>(</span><span class='va'>disp</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='kw'>res3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>recipe_tidyflow</span>)
-<span class='kw'>res3</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='predict-tidyflow.html'>predict_testing</a></span>()
+<span class='va'>res3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>recipe_tidyflow</span><span class='op'>)</span>
+<span class='va'>res3</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='predict-tidyflow.html'>predict_testing</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># We can accumulate steps and add a cross-validation and tuning grid.</span>
 <span class='co'># Fit a regularized regression through a grid search.</span>
 <span class='co'># Do this by updating the already defined model:</span>
-<span class='kw'>new_mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>(), mixture = <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span>()),
-                      <span class='st'>"glmnet"</span>)
-<span class='kw'>tuned_res</span> <span class='op'>&lt;-</span>
-  <span class='kw'>recipe_tidyflow</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='plug_resample.html'>plug_resample</a></span>(<span class='kw'>vfold_cv</span>, v = <span class='fl'>2</span>) <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='plug_model.html'>replace_model</a></span>(<span class='kw'>new_mod</span>) <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='plug_grid.html'>plug_grid</a></span>(<span class='kw'>grid_regular</span>, levels = <span class='fl'>2</span>) <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>()
+<span class='va'>new_mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span><span class='op'>(</span>penalty <span class='op'>=</span> <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span>, mixture <span class='op'>=</span> <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>,
+                      <span class='st'>"glmnet"</span><span class='op'>)</span>
+<span class='va'>tuned_res</span> <span class='op'>&lt;-</span>
+  <span class='va'>recipe_tidyflow</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='plug_resample.html'>plug_resample</a></span><span class='op'>(</span><span class='va'>vfold_cv</span>, v <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='plug_model.html'>replace_model</a></span><span class='op'>(</span><span class='va'>new_mod</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='plug_grid.html'>plug_grid</a></span><span class='op'>(</span><span class='va'>grid_regular</span>, levels <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># Since we specified a resample/grid, the result is now a `tidyflow`</span>
 <span class='co'># with a resample object</span>
-<span class='kw'>tuned_res</span>
+<span class='va'>tuned_res</span>
 
 <span class='co'># If needed, we can extract that resample:</span>
-<span class='kw'>tuned_res</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span>() <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>()
+<span class='va'>tuned_res</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># When the model tuning is finished, `complete_tflow` can</span>
 <span class='co'># finalize the model with the best model. It can pick</span>
 <span class='co'># the best model for you.</span>
 
-<span class='kw'>tuned_res</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='complete_tflow.html'>complete_tflow</a></span>(metric = <span class='st'>"rmse"</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='predict-tidyflow.html'>predict_training</a></span>()
+<span class='va'>tuned_res</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='complete_tflow.html'>complete_tflow</a></span><span class='op'>(</span>metric <span class='op'>=</span> <span class='st'>"rmse"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='predict-tidyflow.html'>predict_training</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># `complete_tflow` is powerful as it already applied the recipe</span>
 <span class='co'># and retrained the model on the entire training data with</span>
@@ -301,15 +321,15 @@ be the one described above skipping any steps that are not specified.</p></li>
 
 <span class='co'># The power of this model building is that you can replace any step</span>
 <span class='co'># and rerun the fit:</span>
-<span class='kw'>bootstrap_res</span> <span class='op'>&lt;-</span>
- <span class='kw'>tuned_res</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='plug_resample.html'>replace_resample</a></span>(<span class='kw'>bootstraps</span>, times = <span class='fl'>2</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>()
+<span class='va'>bootstrap_res</span> <span class='op'>&lt;-</span>
+ <span class='va'>tuned_res</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_resample.html'>replace_resample</a></span><span class='op'>(</span><span class='va'>bootstraps</span>, times <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='kw'>bootstrap_res</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='complete_tflow.html'>complete_tflow</a></span>(metric = <span class='st'>"rsq"</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='predict-tidyflow.html'>predict_training</a></span>()
-}
+<span class='va'>bootstrap_res</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='complete_tflow.html'>complete_tflow</a></span><span class='op'>(</span>metric <span class='op'>=</span> <span class='st'>"rsq"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='predict-tidyflow.html'>predict_training</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>}</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -326,7 +346,7 @@ be the one described above skipping any steps that are not specified.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

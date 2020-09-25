@@ -95,16 +95,22 @@ plug_grid()." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+  <a href=".././index.html">
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../reference/index.html">
+    <span class="fa fa-gears"></span>
+     
+    Reference
+  </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-graduation-cap"></span>
+     
     Articles
      
     <span class="caret"></span>
@@ -120,7 +126,21 @@ plug_grid()." />
       <a href="../articles/c03_fitting-model-resampling.html">Using resampling in tidyflow</a>
     </li>
     <li>
-      <a href="../articles/d04_fitting-model-tuning.html">Performing grid search in tidyflow</a>
+      <a href="../articles/d04_fitting-model-tuning.html">Grid search in tidyflow</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-file-powerpoint"></span>
+     
+    Presentations
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/berlinrug_202009.pdf">Berlin RUG September 2020</a>
     </li>
   </ul>
 </li>
@@ -160,7 +180,7 @@ complex workflows, such as <code><a href='plug_split.html'>plug_split()</a></cod
 <code><a href='plug_grid.html'>plug_grid()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tidyflow</span>(data = <span class='kw'>NULL</span>, seed = <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>tidyflow</span><span class='op'>(</span>data <span class='op'>=</span> <span class='cn'>NULL</span>, seed <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -183,20 +203,20 @@ when doing random splitting, resampling and model fitting.</p></td>
     <p>A new <code>tidyflow</code> object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/tidymodels/recipes'>recipes</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://rsample.tidymodels.org'>rsample</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://tidymodels.github.io/dials'>dials</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://parsnip.tidymodels.org'>parsnip</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/tidymodels/tune'>tune</a></span>)
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/recipes'>recipes</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://rsample.tidymodels.org'>rsample</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dials.tidymodels.org'>dials</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://parsnip.tidymodels.org'>parsnip</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/tune'>tune</a></span><span class='op'>)</span>
 
-<span class='kw'>wflow</span> <span class='op'>&lt;-</span>
- <span class='kw'>mtcars</span> <span class='op'>%&gt;%</span>
- <span class='fu'>tidyflow</span>(seed = <span class='fl'>23113</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='plug_recipe.html'>plug_recipe</a></span>(<span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>cyl</span>, <span class='kw'>.x</span>) <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_log.html'>step_log</a></span>(<span class='kw'>cyl</span>))
+<span class='va'>wflow</span> <span class='op'>&lt;-</span>
+ <span class='va'>mtcars</span> <span class='op'>%&gt;%</span>
+ <span class='fu'>tidyflow</span><span class='op'>(</span>seed <span class='op'>=</span> <span class='fl'>23113</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_recipe.html'>plug_recipe</a></span><span class='op'>(</span><span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>cyl</span>, <span class='va'>.x</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_log.html'>step_log</a></span><span class='op'>(</span><span class='va'>cyl</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># tidyflow gives a prinout of the current specification</span>
 <span class='co'># in the order of execution:</span>
-<span class='kw'>wflow</span>
+<span class='va'>wflow</span>
 </div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; <span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
@@ -205,12 +225,12 @@ when doing random splitting, resampling and model fitting.</p></td>
 #&gt; </span><span style='font-style: italic;'>Grid:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'>
 <span class='co'># The minimum tidyflow is: data + recipe/formula + model</span>
-<span class='kw'>wflow</span> <span class='op'>&lt;-</span>
- <span class='kw'>wflow</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='plug_model.html'>plug_model</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(), <span class='st'>"lm"</span>))
+<span class='va'>wflow</span> <span class='op'>&lt;-</span>
+ <span class='va'>wflow</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_model.html'>plug_model</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"lm"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># The output shows that we have the data, the recipe and the model</span>
-<span class='kw'>wflow</span>
+<span class='va'>wflow</span>
 </div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
@@ -223,7 +243,7 @@ when doing random splitting, resampling and model fitting.</p></td>
 #&gt; Computational engine: lm 
 #&gt; </div><div class='input'>
 <span class='co'># We can fit that model and we get a brief print out of the model:</span>
-<span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>wflow</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>wflow</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; ══ Tidyflow [trained] ══════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> None
@@ -249,15 +269,15 @@ when doing random splitting, resampling and model fitting.</p></td>
 #&gt; and 3 more lines.</div><div class='input'>
 <span class='co'># We can add further steps and the print out will tell you the</span>
 <span class='co'># workflow specification:</span>
-<span class='kw'>wflow</span> <span class='op'>&lt;-</span>
- <span class='kw'>wflow</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='plug_split.html'>plug_split</a></span>(<span class='kw'>initial_split</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='plug_resample.html'>plug_resample</a></span>(<span class='kw'>vfold_cv</span>, v = <span class='fl'>2</span>) <span class='op'>%&gt;%</span>
- <span class='fu'><a href='plug_grid.html'>plug_grid</a></span>(<span class='kw'>grid_regular</span>)
+<span class='va'>wflow</span> <span class='op'>&lt;-</span>
+ <span class='va'>wflow</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_split.html'>plug_split</a></span><span class='op'>(</span><span class='va'>initial_split</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_resample.html'>plug_resample</a></span><span class='op'>(</span><span class='va'>vfold_cv</span>, v <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='plug_grid.html'>plug_grid</a></span><span class='op'>(</span><span class='va'>grid_regular</span><span class='op'>)</span>
 
 <span class='co'># The print out shows that we have a split/resample/grid</span>
 <span class='co'># now set correcly.</span>
-<span class='kw'>wflow</span>
+<span class='va'>wflow</span>
 </div><div class='output co'>#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════
 #&gt; </span><span style='font-style: italic;'>Data:</span><span> 32 rows x 11 columns
 #&gt; </span><span style='font-style: italic;'>Split:</span><span> initial_split w/ default args
@@ -285,7 +305,7 @@ when doing random splitting, resampling and model fitting.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

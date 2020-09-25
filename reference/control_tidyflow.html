@@ -91,16 +91,22 @@ and grid." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+  <a href=".././index.html">
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../reference/index.html">
+    <span class="fa fa-gears"></span>
+     
+    Reference
+  </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-graduation-cap"></span>
+     
     Articles
      
     <span class="caret"></span>
@@ -116,7 +122,21 @@ and grid." />
       <a href="../articles/c03_fitting-model-resampling.html">Using resampling in tidyflow</a>
     </li>
     <li>
-      <a href="../articles/d04_fitting-model-tuning.html">Performing grid search in tidyflow</a>
+      <a href="../articles/d04_fitting-model-tuning.html">Grid search in tidyflow</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-file-powerpoint"></span>
+     
+    Presentations
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/berlinrug_202009.pdf">Berlin RUG September 2020</a>
     </li>
   </ul>
 </li>
@@ -152,11 +172,11 @@ It allows you to specify control options for <code>parsnip</code>, <code>resampl
 and <code>grid</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>control_tidyflow</span>(
-  control_parsnip = <span class='kw'>NULL</span>,
-  control_resamples = <span class='kw'>NULL</span>,
-  control_grid = <span class='kw'>NULL</span>
-)</pre>
+    <pre class="usage"><span class='fu'>control_tidyflow</span><span class='op'>(</span>
+  control_parsnip <span class='op'>=</span> <span class='cn'>NULL</span>,
+  control_resamples <span class='op'>=</span> <span class='cn'>NULL</span>,
+  control_grid <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -183,59 +203,59 @@ argument is constructed from <code><a href='https://tune.tidymodels.org/referenc
     <p>A <code>control_tidyflow</code> object for tweaking the tidyflow fitting/tuning process.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://parsnip.tidymodels.org'>parsnip</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://rsample.tidymodels.org'>rsample</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/tidymodels/tune'>tune</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/cimentadaj/tidyflow'>tidyflow</a></span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://parsnip.tidymodels.org'>parsnip</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://rsample.tidymodels.org'>rsample</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/tune'>tune</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/cimentadaj/tidyflow'>tidyflow</a></span><span class='op'>)</span>
 
 <span class='co'># Build tidyflow</span>
-<span class='kw'>tflow</span> <span class='op'>&lt;-</span>
-  <span class='kw'>mtcars</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='tidyflow.html'>tidyflow</a></span>() <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='plug_split.html'>plug_split</a></span>(<span class='kw'>initial_split</span>) <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='plug_formula.html'>plug_formula</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>.</span>) <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='plug_resample.html'>plug_resample</a></span>(<span class='kw'>vfold_cv</span>, v = <span class='fl'>2</span>) <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='plug_model.html'>plug_model</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(), <span class='st'>"lm"</span>))
+<span class='va'>tflow</span> <span class='op'>&lt;-</span>
+  <span class='va'>mtcars</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='tidyflow.html'>tidyflow</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='plug_split.html'>plug_split</a></span><span class='op'>(</span><span class='va'>initial_split</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='plug_formula.html'>plug_formula</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='plug_resample.html'>plug_resample</a></span><span class='op'>(</span><span class='va'>vfold_cv</span>, v <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='plug_model.html'>plug_model</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"lm"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># For each resample object, we want the predictions</span>
-<span class='kw'>ct</span> <span class='op'>&lt;-</span> <span class='fu'>control_tidyflow</span>(control_resample = <span class='fu'><a href='https://tune.tidymodels.org/reference/control_grid.html'>control_resamples</a></span>(save_pred = <span class='fl'>TRUE</span>,
-                                                            verbose = <span class='fl'>TRUE</span>))
+<span class='va'>ct</span> <span class='op'>&lt;-</span> <span class='fu'>control_tidyflow</span><span class='op'>(</span>control_resample <span class='op'>=</span> <span class='fu'><a href='https://tune.tidymodels.org/reference/control_grid.html'>control_resamples</a></span><span class='op'>(</span>save_pred <span class='op'>=</span> <span class='cn'>TRUE</span>,
+                                                            verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Specify the control object</span>
-<span class='kw'>fit_m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>tflow</span>, control = <span class='kw'>ct</span>)
-<span class='kw'>fit_m</span>
+<span class='va'>fit_m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>tflow</span>, control <span class='op'>=</span> <span class='va'>ct</span><span class='op'>)</span>
+<span class='va'>fit_m</span>
 
 <span class='co'># Extract the predictions</span>
-<span class='kw'>fit_m</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span>() <span class='op'>%&gt;%</span>
-  <span class='kw'>.</span>[[<span class='st'>".predictions"</span>]]
+<span class='va'>fit_m</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='va'>.</span><span class='op'>[[</span><span class='st'>".predictions"</span><span class='op'>]</span><span class='op'>]</span>
 
 <span class='co'># `control_resamples` is only used when there is a resample but not</span>
 <span class='co'># grid. When there is a resample and a grid, `control_grid` should be</span>
 <span class='co'># used.</span>
-<span class='kw'>ct</span> <span class='op'>&lt;-</span> <span class='fu'>control_tidyflow</span>(control_grid = <span class='fu'><a href='https://tune.tidymodels.org/reference/control_grid.html'>control_grid</a></span>(verbose = <span class='fl'>TRUE</span>,
-                                                   save_pred = <span class='fl'>TRUE</span>))
+<span class='va'>ct</span> <span class='op'>&lt;-</span> <span class='fu'>control_tidyflow</span><span class='op'>(</span>control_grid <span class='op'>=</span> <span class='fu'><a href='https://tune.tidymodels.org/reference/control_grid.html'>control_grid</a></span><span class='op'>(</span>verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+                                                   save_pred <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Since there is no grid specification, this is ignored.</span>
 <span class='co'># No messages should be printed nor a new .predictions</span>
 <span class='co'># columns in the result</span>
-<span class='kw'>fit_m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(<span class='kw'>tflow</span>, control = <span class='kw'>ct</span>)
-<span class='kw'>fit_m</span>
+<span class='va'>fit_m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>tflow</span>, control <span class='op'>=</span> <span class='va'>ct</span><span class='op'>)</span>
+<span class='va'>fit_m</span>
 
 <span class='co'># control_parsnip controls the options of the model</span>
 <span class='co'># For example, verbosity controls the messags of the model</span>
-<span class='kw'>ct</span> <span class='op'>&lt;-</span> <span class='fu'>control_tidyflow</span>(control_parsnip = <span class='fu'><a href='https://parsnip.tidymodels.org/reference/control_parsnip.html'>control_parsnip</a></span>(verbosity = <span class='fl'>2</span>))
+<span class='va'>ct</span> <span class='op'>&lt;-</span> <span class='fu'>control_tidyflow</span><span class='op'>(</span>control_parsnip <span class='op'>=</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/control_parsnip.html'>control_parsnip</a></span><span class='op'>(</span>verbosity <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Run a regularized regression with only one independent variable.</span>
 <span class='co'># This is not possible, it will raise an error and we will see it</span>
 <span class='co'># because of verbosity</span>
-<span class='kw'>res</span> <span class='op'>&lt;-</span>
-  <span class='kw'>tflow</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='plug_model.html'>replace_model</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>(penalty = <span class='fl'>0</span>, mixture = <span class='fl'>1</span>), <span class='st'>"glmnet"</span>)) <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='plug_formula.html'>replace_formula</a></span>(<span class='kw'>mpg</span> <span class='op'>~</span> <span class='kw'>cyl</span>) <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span>(control = <span class='kw'>ct</span>)
-}
+<span class='va'>res</span> <span class='op'>&lt;-</span>
+  <span class='va'>tflow</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='plug_model.html'>replace_model</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span><span class='op'>(</span>penalty <span class='op'>=</span> <span class='fl'>0</span>, mixture <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>, <span class='st'>"glmnet"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='plug_formula.html'>replace_formula</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>cyl</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span>control <span class='op'>=</span> <span class='va'>ct</span><span class='op'>)</span>
+<span class='op'>}</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -252,7 +272,7 @@ argument is constructed from <code><a href='https://tune.tidymodels.org/referenc
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>
