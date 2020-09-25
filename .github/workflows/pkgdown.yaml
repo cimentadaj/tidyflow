@@ -1,6 +1,11 @@
 on:
   push:
-    branches: master
+    branches:
+      master
+    schedule:
+    # * is a special character in YAML so you have to quote this string
+     - cron: "0 4 * * *"
+
 
 name: pkgdown
 
@@ -41,4 +46,4 @@ jobs:
         run: R CMD INSTALL .
 
       - name: Deploy package
-        run: Rscript -e "source('https://https://gist.githubusercontent.com/cimentadaj/baa138ae62db002425268cafd057ac84/raw/d3b9b0a7a2a7439ed1b4a0a5ef62214877c6c364/deploy.R'); deploy_to_branch2(new_process = FALSE)"
+        run: Rscript -e "source('https://gist.githubusercontent.com/cimentadaj/baa138ae62db002425268cafd057ac84/raw/d3b9b0a7a2a7439ed1b4a0a5ef62214877c6c364/deploy.R'); deploy_to_branch2(new_process = FALSE)"

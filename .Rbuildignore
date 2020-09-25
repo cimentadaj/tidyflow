@@ -13,4 +13,5 @@
 ^CODE_OF_CONDUCT\.md$
 ^docs$
 ^pkgdown$
-./vignettes/presentations/*
+^vignettes/presentations/$
+^vignettes/presentations$
