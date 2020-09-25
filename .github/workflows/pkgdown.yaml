@@ -37,10 +37,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages("remotes")
+          install.packages(c("remotes", "xaringan"))
           remotes::install_deps(dependencies = TRUE)
           remotes::install_dev("pkgdown")
-          install.packages(c(xaringan", "xaringathemer"))
+          remotes::install_github('gadenbuie/xaringanthemer')
         shell: Rscript {0}
 
       - name: Install package
