@@ -141,7 +141,7 @@ resample_model %>%
   theme_minimal()
 ```
 
-![plot of chunk grid_search_resampling](resampling-grid_search_resampling-1.png)
+![plot of chunk grid_search_resampling](figures/resampling-grid_search_resampling-1.png)
 
 Since there are no differences in terms of the model between these different cross-validated models, we can't really obtain a 'final model' out of this. You can use resampling to estimate the variance of your models. However, the superb value of resampling techniques comes in when combined with a grid search to find the most optimal combination of tuning parameters. You can read more about this in the [grid search vignette](./d04_fitting-model-tuning.html).
 
@@ -195,4 +195,3 @@ rf_fit_rs <-
 
 rf_fit_rs
 ```
-

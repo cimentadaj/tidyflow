@@ -11,6 +11,6 @@
 ^test.R$
 ^\.github$
 ^CODE_OF_CONDUCT\.md$
-
 ^docs$
 ^pkgdown$
+./vignettes/presentations/*

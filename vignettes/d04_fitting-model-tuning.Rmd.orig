@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "tuning-"
+  fig.path = "figures/tuning-"
   ## eval = FALSE
 )
 ```

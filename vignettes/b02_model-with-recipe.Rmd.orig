@@ -11,8 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "recipes-"
-  ## eval = FALSE
+  fig.path = "figures/recipes-"
 )
 ```
 
@@ -198,20 +197,4 @@ flights_fit %>%
   roc_curve(truth = arr_delay, .pred_late) %>% 
   autoplot()
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -187,6 +187,13 @@ res4 <-
   plug_grid(grid_regular) %>%
   replace_model(linear_reg(penalty = tune(), mixture = tune()) %>% set_engine("glmnet")) %>%
   fit()
+#> Loading required package: Matrix
+#> 
+#> Attaching package: 'Matrix'
+#> The following objects are masked from 'package:tidyr':
+#> 
+#>     expand, pack, unpack
+#> Loaded glmnet 4.0-2
 
 res4
 #> ══ Tidyflow [tuned] ════════════════════════════════════════════════════════════

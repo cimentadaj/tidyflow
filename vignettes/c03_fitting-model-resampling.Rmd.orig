@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "resampling-"
+  fig.path = "figures/resampling-"
   ## eval = FALSE
 )
 ```
@@ -148,4 +148,3 @@ rf_fit_rs <-
 
 rf_fit_rs
 ```
-

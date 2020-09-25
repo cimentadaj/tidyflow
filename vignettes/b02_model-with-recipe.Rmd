@@ -227,7 +227,7 @@ final_model %>%
   autoplot()
 ```
 
-![plot of chunk grid_search_recipe](recipes-grid_search_recipe-1.png)
+![plot of chunk grid_search_recipe](figures/recipes-grid_search_recipe-1.png)
 
 The lowest error for both the $RMSE$ and the $R^2$ seems to be a model of `degree = 2`. We can specify this directly into `complete_tflow` or just allow `complete_tflow` to determine this for you:
 
@@ -318,20 +318,4 @@ flights_fit %>%
   roc_curve(truth = arr_delay, .pred_late) %>% 
   autoplot()
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

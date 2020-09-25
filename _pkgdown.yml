@@ -34,7 +34,6 @@ reference:
     - pull_tflow_fit
     - pull_tflow_fit_tuning
     - pull_tflow_grid
-    - pull_tflow_mold
     - pull_tflow_prepped_recipe
     - pull_tflow_preprocessor
     - pull_tflow_rawdata
@@ -52,3 +51,27 @@ reference:
     - predict_training
     - predict_testing
     - predict.tidyflow
+
+navbar:
+  left:
+    - icon: fa-home
+      href: ./index.html
+    - text: "Reference"
+      icon: fa-gears
+      href: reference/index.html
+    - text: "Articles"
+      icon: fa-graduation-cap
+      menu:
+        - text: "An introduction to tidyflow"
+          href: articles/a01_intro_tidyflow.html
+        - text: "Using recipes in tidyflow"
+          href: articles/b02_model-with-recipe.html
+        - text: "Using resampling in tidyflow"
+          href: articles/c03_fitting-model-resampling.html
+        - text: "Grid search in tidyflow"
+          href: articles/d04_fitting-model-tuning.html
+    - text: "Presentations"
+      icon: fa-file-powerpoint
+      menu:
+        - text: "Berlin RUG September 2020"
+          href: articles/berlinrug_202009.pdf
