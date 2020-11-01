@@ -257,7 +257,7 @@ and "pred_int". Default value is <code>FALSE</code>.</p></li>
  <span class='fu'><a href='plug_model.html'>plug_model</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
  <span class='fu'><a href='plug_recipe.html'>plug_recipe</a></span><span class='op'>(</span><span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>cyl</span> <span class='op'>+</span> <span class='va'>disp</span>, <span class='va'>.</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_log.html'>step_log</a></span><span class='op'>(</span><span class='va'>disp</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='va'>tflow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>tflow</span><span class='op'>)</span>
+<span class='va'>tflow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>tflow</span><span class='op'>)</span>
 
 <span class='co'># This will automatically `bake()` the recipe on `new_data`,</span>
 <span class='co'># applying the log step to `disp`, and then fit the regression.</span>
@@ -278,7 +278,7 @@ and "pred_int". Default value is <code>FALSE</code>.</p></li>
  <span class='fu'><a href='plug_recipe.html'>replace_recipe</a></span><span class='op'>(</span><span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>.</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>hp</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
  <span class='fu'><a href='plug_resample.html'>plug_resample</a></span><span class='op'>(</span><span class='va'>vfold_cv</span>, v <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
  <span class='fu'><a href='plug_grid.html'>plug_grid</a></span><span class='op'>(</span><span class='va'>grid_regular</span>, levels <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
+ <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># We can complete the tidyflow by fitting the best model</span>
 <span class='co'># based on the RMSE metric and then predict:</span>

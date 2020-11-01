@@ -170,7 +170,7 @@
 <span class="co">#&gt; Computational engine: lm</span></pre></div>
 <p>The output of <code>tflow</code> describes the current workflow definition. You might be wondering, what are these <code>initial_split</code> or <code><a href="https://parsnip.tidymodels.org/reference/linear_reg.html">linear_reg()</a></code> expressions. <code>tidyflow</code> is built upon <code>tidymodels</code> so it works with the core functions of this ecosystem. <code>initial_split</code> is the function that separates the data into training/testing and <code><a href="https://parsnip.tidymodels.org/reference/linear_reg.html">linear_reg()</a></code> is the model definition. With this definition, we can just <code>fit</code> the model:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span>
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span>
 <span class="va">res</span>
 <span class="co">#&gt; ══ Tidyflow [trained] ══════════════════════════════════════════════════════════</span>
 <span class="co">#&gt; Data: 32 rows x 11 columns</span>
@@ -213,7 +213,7 @@
   <span class="va">tflow</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_formula.html">drop_formula</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">.x</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_scale.html">step_scale</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit</a></span><span class="op">(</span><span class="va">res2</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span>
 <span class="co">#&gt; </span>
@@ -230,7 +230,7 @@
 <span class="va">res3</span> <span class="op">&lt;-</span>
   <span class="va">res2</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span>, v <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="va">res3</span><span class="op">)</span>
 <span class="co">#&gt; # Resampling results</span>
@@ -267,7 +267,7 @@
   <span class="va">res3</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_model.html">replace_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: Matrix</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'Matrix'</span>
@@ -410,7 +410,7 @@
 
 <span class="va">final_model</span> <span class="op">&lt;-</span>
   <span class="va">tflow</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span>
 
 <span class="va">final_model</span> <span class="op">%&gt;%</span>

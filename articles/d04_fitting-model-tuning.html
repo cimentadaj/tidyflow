@@ -185,7 +185,7 @@
 <span class="co">#&gt; Computational engine: randomForest</span></pre></div>
 <p>This grid search specification knows that <code>trees</code> is the only argument to be searched for. We can execute the grid search with just a single call to <code>fit</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; randomForest 4.6-14</span>
 <span class="co">#&gt; Type rfNews() to see new features/changes/bug fixes.</span>
 <span class="co">#&gt; </span>
@@ -234,7 +234,7 @@
   <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span>, levels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 
 <span class="va">tflow</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 <div class="figure">
@@ -252,7 +252,7 @@
   <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span>, trees <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/trees.html">trees</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 
 <span class="va">tflow</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 <div class="figure">
@@ -270,7 +270,7 @@
   <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">expand.grid</span>, trees <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">tflow</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Duplicate rows in grid of tuning combinations found and removed.</span>
@@ -296,7 +296,7 @@
   <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span>, trees <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/trees.html">trees</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span>
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span>
 <span class="va">res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 <div class="figure">
 <img src="figures/tuning-grid_search_tuning5-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning5</p>
@@ -408,7 +408,7 @@
   <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">lr_mod</span><span class="op">)</span>
 
 <span class="va">cntrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control_tidyflow.html">control_tidyflow</a></span><span class="op">(</span>control_grid <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/control_grid.html">control_grid</a></span><span class="op">(</span>save_pred <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-<span class="va">p_res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">cntrl</span><span class="op">)</span>
+<span class="va">p_res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">cntrl</span><span class="op">)</span>
 
 <span class="va">p_res</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -458,7 +458,7 @@
   <span class="fu"><a href="../reference/plug_model.html">replace_model</a></span><span class="op">(</span><span class="va">rf_mod</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_grid.html">replace_grid</a></span><span class="op">(</span><span class="va">grid_latin_hypercube</span>, size <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>
 
-<span class="va">rf_res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">cntrl</span><span class="op">)</span>
+<span class="va">rf_res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">cntrl</span><span class="op">)</span>
 
 <span class="va">rf_res</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>

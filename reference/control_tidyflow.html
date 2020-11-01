@@ -223,7 +223,7 @@ argument is constructed from <code><a href='https://tune.tidymodels.org/referenc
                                                             verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Specify the control object</span>
-<span class='va'>fit_m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>tflow</span>, control <span class='op'>=</span> <span class='va'>ct</span><span class='op'>)</span>
+<span class='va'>fit_m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>tflow</span>, control <span class='op'>=</span> <span class='va'>ct</span><span class='op'>)</span>
 <span class='va'>fit_m</span>
 
 <span class='co'># Extract the predictions</span>
@@ -240,7 +240,7 @@ argument is constructed from <code><a href='https://tune.tidymodels.org/referenc
 <span class='co'># Since there is no grid specification, this is ignored.</span>
 <span class='co'># No messages should be printed nor a new .predictions</span>
 <span class='co'># columns in the result</span>
-<span class='va'>fit_m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>tflow</span>, control <span class='op'>=</span> <span class='va'>ct</span><span class='op'>)</span>
+<span class='va'>fit_m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>tflow</span>, control <span class='op'>=</span> <span class='va'>ct</span><span class='op'>)</span>
 <span class='va'>fit_m</span>
 
 <span class='co'># control_parsnip controls the options of the model</span>
@@ -254,7 +254,7 @@ argument is constructed from <code><a href='https://tune.tidymodels.org/referenc
   <span class='va'>tflow</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='plug_model.html'>replace_model</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span><span class='op'>(</span>penalty <span class='op'>=</span> <span class='fl'>0</span>, mixture <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>, <span class='st'>"glmnet"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='plug_formula.html'>replace_formula</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>cyl</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span>control <span class='op'>=</span> <span class='va'>ct</span><span class='op'>)</span>
+  <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span>control <span class='op'>=</span> <span class='va'>ct</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

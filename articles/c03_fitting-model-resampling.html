@@ -185,7 +185,7 @@
 <p>This specification is complete and can be executed. We are using <code>mtcars</code>, splitting the data into training/testing, applying a cross-validation resampling to the training data and running a <code>linear_reg</code> on the model <code>mpg ~ .</code> (<code>.</code> means all variables).</p>
 <p>Since we specified a cross-validation resampling, the result of this <code>tidyflow</code> will <strong>not</strong> be a final model. Instead, it will be <span class="math inline">\(10\)</span> models, each model fitted on the resampled data. Let’s <code>fit</code> the model and look at these results:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">resample_model</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">resample_model</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">resample_model</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; # Resampling results</span>
@@ -247,7 +247,7 @@
   <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span>, strata <span class="op">=</span> <span class="st">"class"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">rf_mod</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="va">rf_fit_pred</span> <span class="op">&lt;-</span>
   <span class="fu">bind_cols</span><span class="op">(</span>
@@ -270,7 +270,7 @@
 <span class="va">rf_fit_rs</span> <span class="op">&lt;-</span>
   <span class="va">rf_fit</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span>, v <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="va">rf_fit_rs</span></pre></div>
   </div>

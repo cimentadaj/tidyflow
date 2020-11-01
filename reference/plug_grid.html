@@ -306,7 +306,7 @@ the custom name. See the example section for a concrete example.</p>
   <span class='fu'><a href='plug_model.html'>plug_model</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span><span class='op'>(</span>penalty <span class='op'>=</span> <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span>, mixture <span class='op'>=</span> <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>, <span class='st'>"glmnet"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>plug_grid</span><span class='op'>(</span><span class='va'>grid_regular</span>, levels <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
 
-<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
+<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
 
 <span class='co'># See the grid that was generated after the fit:</span>
 <span class='va'>res</span> <span class='op'>%&gt;%</span>
@@ -333,7 +333,7 @@ the custom name. See the example section for a concrete example.</p>
 <span class='va'>res2</span> <span class='op'>&lt;-</span>
   <span class='va'>mod</span> <span class='op'>%&gt;%</span>
   <span class='fu'>replace_grid</span><span class='op'>(</span><span class='va'>grid_regular</span>, penalty <span class='op'>=</span> <span class='fu'><a href='https://dials.tidymodels.org/reference/penalty.html'>penalty</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span><span class='op'>)</span>, levels <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
+  <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='va'>res2</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
@@ -352,7 +352,7 @@ the custom name. See the example section for a concrete example.</p>
   <span class='va'>mod</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='plug_model.html'>replace_model</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span> <span class='op'>%&gt;%</span>   
   <span class='fu'>replace_grid</span><span class='op'>(</span><span class='va'>grid_regular</span>, my_penalty <span class='op'>=</span> <span class='fu'><a href='https://dials.tidymodels.org/reference/penalty.html'>penalty</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span><span class='op'>)</span>, levels <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
+  <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='va'>res3</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
@@ -366,7 +366,7 @@ the custom name. See the example section for a concrete example.</p>
  <span class='fu'>replace_grid</span><span class='op'>(</span><span class='va'>expand.grid</span>,
               penalty <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.02</span>, <span class='fl'>0.005</span><span class='op'>)</span>,
               mixture <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
+ <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># The resulting grid is all of the possible combinations</span>
 <span class='co'># from the values defined above:</span>
@@ -384,7 +384,7 @@ the custom name. See the example section for a concrete example.</p>
   <span class='va'>res3</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='plug_formula.html'>drop_formula</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
   <span class='fu'><a href='plug_recipe.html'>plug_recipe</a></span><span class='op'>(</span><span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>.</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>hp</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='https://tune.tidymodels.org/reference/tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
+  <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='va'>res5</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit_tuning</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>

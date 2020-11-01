@@ -249,7 +249,7 @@ the blueprint to <code>plug_formula</code>:<div class="r"></p><pre><span class='
   <span class='fu'><a href='tidyflow.html'>tidyflow</a></span><span class='op'>(</span>seed <span class='op'>=</span> <span class='fl'>21315</span><span class='op'>)</span>
   <span class='fu'>plug_formula</span><span class='op'>(</span><span class='va'>Sepal.Length</span> <span class='op'>~</span> <span class='va'>Species</span>, blueprint <span class='op'>=</span> <span class='va'>bp</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='plug_model.html'>plug_model</a></span><span class='op'>(</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='fu'>parsnip</span><span class='fu'>::</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"lm"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
+  <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
 </pre><p></div></p>
 <p>For custom transformations between types (for example, applying one-hot on
 factors and not on characters), the user can provide a <code><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></code>

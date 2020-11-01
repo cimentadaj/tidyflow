@@ -169,7 +169,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for tidyflow</span>
-<span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>x</span>, control <span class='op'>=</span> <span class='fu'><a href='control_tidyflow.html'>control_tidyflow</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>x</span>, control <span class='op'>=</span> <span class='fu'><a href='control_tidyflow.html'>control_tidyflow</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -257,7 +257,7 @@ be the one described above skipping any steps that are not specified.</p></li>
  <span class='fu'><a href='plug_model.html'>plug_model</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>
 
 <span class='co'># The result is a model since we didn't specify any resample/grid</span>
-<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>formula_tidyflow</span><span class='op'>)</span>
+<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>formula_tidyflow</span><span class='op'>)</span>
 
 <span class='co'># You can extract the model fit if neede</span>
 <span class='va'>res</span> <span class='op'>%&gt;%</span>
@@ -269,7 +269,7 @@ be the one described above skipping any steps that are not specified.</p></li>
  <span class='va'>formula_tidyflow</span> <span class='op'>%&gt;%</span>
  <span class='fu'><a href='plug_split.html'>plug_split</a></span><span class='op'>(</span><span class='va'>initial_split</span><span class='op'>)</span>
 
-<span class='va'>res2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>formula_tidyflow</span><span class='op'>)</span>
+<span class='va'>res2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>formula_tidyflow</span><span class='op'>)</span>
 
 <span class='va'>res2</span> <span class='op'>%&gt;%</span>
  <span class='fu'><a href='predict-tidyflow.html'>predict_training</a></span><span class='op'>(</span><span class='op'>)</span>
@@ -282,7 +282,7 @@ be the one described above skipping any steps that are not specified.</p></li>
  <span class='fu'><a href='plug_formula.html'>drop_formula</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
  <span class='fu'><a href='plug_recipe.html'>plug_recipe</a></span><span class='op'>(</span><span class='op'>~</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, <span class='va'>.x</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_log.html'>step_log</a></span><span class='op'>(</span><span class='va'>disp</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='va'>res3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>recipe_tidyflow</span><span class='op'>)</span>
+<span class='va'>res3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>recipe_tidyflow</span><span class='op'>)</span>
 <span class='va'>res3</span> <span class='op'>%&gt;%</span>
  <span class='fu'><a href='predict-tidyflow.html'>predict_testing</a></span><span class='op'>(</span><span class='op'>)</span>
 
@@ -296,7 +296,7 @@ be the one described above skipping any steps that are not specified.</p></li>
   <span class='fu'><a href='plug_resample.html'>plug_resample</a></span><span class='op'>(</span><span class='va'>vfold_cv</span>, v <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
   <span class='fu'><a href='plug_model.html'>replace_model</a></span><span class='op'>(</span><span class='va'>new_mod</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='plug_grid.html'>plug_grid</a></span><span class='op'>(</span><span class='va'>grid_regular</span>, levels <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
+  <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># Since we specified a resample/grid, the result is now a `tidyflow`</span>
 <span class='co'># with a resample object</span>
@@ -324,7 +324,7 @@ be the one described above skipping any steps that are not specified.</p></li>
 <span class='va'>bootstrap_res</span> <span class='op'>&lt;-</span>
  <span class='va'>tuned_res</span> <span class='op'>%&gt;%</span>
  <span class='fu'><a href='plug_resample.html'>replace_resample</a></span><span class='op'>(</span><span class='va'>bootstraps</span>, times <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
+ <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='va'>bootstrap_res</span> <span class='op'>%&gt;%</span>
  <span class='fu'><a href='complete_tflow.html'>complete_tflow</a></span><span class='op'>(</span>metric <span class='op'>=</span> <span class='st'>"rsq"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>

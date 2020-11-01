@@ -259,7 +259,7 @@ used for those purposes.</p></td>
 #&gt; </span><span style='font-style: italic;'>Grid:</span><span> None
 #&gt; </span><span style='font-style: italic;'>Model: None</span><span></div><div class='input'>
 <span class='co'># We can fit the model with `fit`:</span>
-<span class='va'>fitted</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>wf</span><span class='op'>)</span>
+<span class='va'>fitted</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='va'>wf</span><span class='op'>)</span>
 
 <span class='co'># Extract the model if needed:</span>
 <span class='va'>fitted</span> <span class='op'>%&gt;%</span>
@@ -296,13 +296,13 @@ used for those purposes.</p></td>
 <span class='va'>reg_fitted</span> <span class='op'>&lt;-</span>
   <span class='va'>wf</span> <span class='op'>%&gt;%</span>
   <span class='fu'>replace_model</span><span class='op'>(</span><span class='va'>regularized_model</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/generics/man/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
+  <span class='fu'><a href='https://generics.r-lib.org/reference/fit.html'>fit</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='va'>reg_fitted</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='tidyflow-extractors.html'>pull_tflow_fit</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; parsnip model object
 #&gt; 
-#&gt; Fit time:  13ms 
+#&gt; Fit time:  12ms 
 #&gt; 
 #&gt; Call:  glmnet::glmnet(x = maybe_matrix(x), y = y, family = "gaussian") 
 #&gt; 
