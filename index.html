@@ -133,19 +133,19 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"cimentadaj/tidyflow"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"cimentadaj/tidyflow"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p><code>tidyflow</code> builds upon the work in <code>tidymodels</code> to create an expressive workflow for doing machine learning. Let’s suppose we want to fit a linear model to the model <code>mpg ~ .</code> on the training data of <code>mtcars</code>. We can define the split (training/testing), define our formula, define the statistical model and fit the tidyflow:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span><span class="op">)</span></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="co"># Build tidyflow</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Build tidyflow</span>
 <span class="va">tflow</span> <span class="op">&lt;-</span>
   <span class="va">mtcars</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/tidyflow.html">tidyflow</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -179,10 +179,10 @@
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ...</span>
-<span class="co">#&gt; and 5 more lines.</span></pre></div>
+<span class="co">#&gt; and 5 more lines.</span></code></pre></div>
 <p><code>tidyflow</code> will execute this order of steps: data -&gt; split training/testing -&gt; apply the formula and model to the training data. With this final model we can use the <code>predict_training</code> function to automatically predict on the training data:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="co"># Predict on testing</span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Predict on testing</span>
 <span class="va">fit_m</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/predict-tidyflow.html">predict_training</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 24 x 12</span>
@@ -198,11 +198,11 @@
 <span class="co">#&gt;  8  17.8     6  168.   123  3.92  3.44  18.9     1     0     4     4  19.1</span>
 <span class="co">#&gt;  9  17.3     8  276.   180  3.07  3.73  17.6     0     0     3     3  15.2</span>
 <span class="co">#&gt; 10  15.2     8  276.   180  3.07  3.78  18       0     0     3     3  15.3</span>
-<span class="co">#&gt; # … with 14 more rows</span></pre></div>
+<span class="co">#&gt; # … with 14 more rows</span></code></pre></div>
 <p>Similarly, you can use <code>predict_testing</code> for predicting on the testing data.</p>
 <p>However, the usefulness of <code>tidyflow</code> is clearer when we perform more complex modelling. Let’s extend the previous model to include a cross-validation resample and to perform a grid search for a regularized regression:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="co"># Grid search will be performed on the penalty and mixture arguments</span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Grid search will be performed on the penalty and mixture arguments</span>
 <span class="va">regularized_mod</span> <span class="op">&lt;-</span> <span class="fu">linear_reg</span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span>
 
 <span class="co"># Build tidyflow</span>
@@ -246,17 +246,17 @@
 <span class="co">#&gt; 4 &lt;split [21/3]&gt; Fold04 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
 <span class="co">#&gt; 5 &lt;split [22/2]&gt; Fold05 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ... and 5 more lines.</span></pre></div>
+<span class="co">#&gt; ... and 5 more lines.</span></code></pre></div>
 <p>The result is <strong>not</strong> a final model as before, but rather a grid search result. We can extract that and visualize it:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="co"># Extract tuning grid</span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Extract tuning grid</span>
 <span class="va">fit_m</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">autoplot</span><span class="op">(</span><span class="op">)</span></pre></div>
+  <span class="fu">autoplot</span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-8-1.png" width="100%"></p>
 <p>You can finalize the <code>tidyflow</code> with <code>complete_tflow</code> which will select the best tuning parameters and train the model on the entire training data. This final model can be used for predicting on the training data and on the testing data automatically:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="co"># Fit best model on the entire training data</span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Fit best model on the entire training data</span>
 <span class="va">final_m</span> <span class="op">&lt;-</span>
   <span class="va">fit_m</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span>
@@ -292,7 +292,7 @@
 <span class="co">#&gt; 5  13.3     8 350     245  3.73  3.84  15.4     0     0     3     4  14.0</span>
 <span class="co">#&gt; 6  19.2     8 400     175  3.08  3.84  17.0     0     0     3     2  15.5</span>
 <span class="co">#&gt; 7  27.3     4  79      66  4.08  1.94  18.9     1     1     4     1  28.4</span>
-<span class="co">#&gt; 8  30.4     4  95.1   113  3.77  1.51  16.9     1     1     5     2  27.3</span></pre></div>
+<span class="co">#&gt; 8  30.4     4  95.1   113  3.77  1.51  16.9     1     1     5     2  27.3</span></code></pre></div>
 </div>
 <div id="code-of-conduct" class="section level2">
 <h2 class="hasAnchor">

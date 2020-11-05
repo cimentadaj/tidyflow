@@ -128,8 +128,8 @@
 <p>A tidyflow is a bundle of steps that allow you to bundle together your data, splitting, resampling, preprocessing, modeling, and grid search. For executing a grid search, the <code>tidymodels</code> ecosystem contains the <code>tune</code> package. <code>tune</code> allows you to run many sub-models, each one with a different combination of tuning parameters, with the aim of choosing the best final model.</p>
 <p><a href="./c03_fitting-model-resampling.html">In another vignette</a>, we discussed the concept of resampling and how it can be used to evaluate the stability of a model. For performing a grid search, resampling is a natural step because we need to try a combination of tuning values for each parameter in a model. In other words, we will run many models with different values for the models parameters and we need a way to get random samples from the data. Resampling is thus combined with a general strategy of trying out different sub-models.</p>
 <p>Let’s define a random forest model but we want to try different values in the <code>trees</code> argument. We can signal that with the <code><a href="https://tune.tidymodels.org/reference/tune.html">tune()</a></code> function. This just means that the <code>trees</code> will be <code>tune</code>d.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span><span class="op">)</span>
 
 <span class="va">rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/rand_forest.html">rand_forest</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"regression"</span>, trees <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">"randomForest"</span><span class="op">)</span>
@@ -139,10 +139,10 @@
 <span class="co">#&gt; Main Arguments:</span>
 <span class="co">#&gt;   trees = tune()</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Computational engine: randomForest</span></pre></div>
+<span class="co">#&gt; Computational engine: randomForest</span></code></pre></div>
 <p>At this point, we haven’t really ‘defined’ which values will be used for <code>trees</code>. It could be 3 values (such as 100, 200 and 300) or it could be 500. The package <code>tune</code> hosts a family of functions named <code>grid_*</code> which provide different approaches to sampling random number from different tuning arguments. For example, let’s use <code>grid_regular</code> to obtain an evenly spaced set of values for <code>trees</code>. This is how you would do it in <code>tidymodels</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">even_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_regular.html">grid_regular</a></span><span class="op">(</span><span class="fu"><a href="https://dials.tidymodels.org/reference/trees.html">trees</a></span><span class="op">(</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">even_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_regular.html">grid_regular</a></span><span class="op">(</span><span class="fu"><a href="https://dials.tidymodels.org/reference/trees.html">trees</a></span><span class="op">(</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 <span class="va">even_values</span>
 <span class="co">#&gt; # A tibble: 10 x 1</span>
 <span class="co">#&gt;    trees</span>
@@ -156,10 +156,10 @@
 <span class="co">#&gt;  7  1333</span>
 <span class="co">#&gt;  8  1555</span>
 <span class="co">#&gt;  9  1777</span>
-<span class="co">#&gt; 10  2000</span></pre></div>
+<span class="co">#&gt; 10  2000</span></code></pre></div>
 <p><code>grid_regular</code> already knows which ‘sensible’ range of values to try. <code>tidyflow</code> provides the function <code>plug_grid</code> that allows you to specify the type of grid search you want to perform. Let’s divide the data into training/testing, specify a cross-validation and plug in the random forest and a <code>grid_regular</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">tflow</span> <span class="op">&lt;-</span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tflow</span> <span class="op">&lt;-</span>
   <span class="va">mtcars</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -181,10 +181,10 @@
 <span class="co">#&gt; Main Arguments:</span>
 <span class="co">#&gt;   trees = tune()</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Computational engine: randomForest</span></pre></div>
+<span class="co">#&gt; Computational engine: randomForest</span></code></pre></div>
 <p>This grid search specification knows that <code>trees</code> is the only argument to be searched for. We can execute the grid search with just a single call to <code>fit</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; randomForest 4.6-14</span>
 <span class="co">#&gt; Type rfNews() to see new features/changes/bug fixes.</span>
 <span class="co">#&gt; </span>
@@ -213,17 +213,17 @@
 <span class="co">#&gt;  7 &lt;split [22/2]&gt; Fold07 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
 <span class="co">#&gt;  8 &lt;split [22/2]&gt; Fold08 &lt;tibble [6 × 5]&gt; &lt;tibble [1 × 1]&gt;</span>
 <span class="co">#&gt;  9 &lt;split [22/2]&gt; Fold09 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 10 &lt;split [22/2]&gt; Fold10 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></pre></div>
+<span class="co">#&gt; 10 &lt;split [22/2]&gt; Fold10 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></code></pre></div>
 <p>The result is a resampling object with the evaluation metrics measuring the performance of different values for <code>trees</code> across the 10 resamples. You can look at more clearly the performance of the model using different values for trees using <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot()</a></code> on the resampling result:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="va">res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="figures/tuning-grid_search_tuning1-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning1</p>
 </div>
 <p>It seems the grid randomly chose three values for <code>trees</code> (X axis has three points on <code>1</code>, <code>1000</code> and <code>2000</code>) and as expected, as the number of trees increases, the <code>rsq</code> is higher and the <code>rmse</code> is lower.</p>
 <p>This grid search strategy is really just a quick way to get some models running. However, it allows for much more flexibility. For example, we can play around with the number of values to sample from by just providing an extra argument to <code>plug_grid</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="va">tflow</span> <span class="op">&lt;-</span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tflow</span> <span class="op">&lt;-</span>
   <span class="va">mtcars</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -235,13 +235,13 @@
 <span class="va">tflow</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="figures/tuning-grid_search_tuning2-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning2</p>
 </div>
 <p>The random grid contains now 10 values. What if we wanted to limit the range of the values used in the resampling?</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="va">tflow</span> <span class="op">&lt;-</span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tflow</span> <span class="op">&lt;-</span>
   <span class="va">mtcars</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -253,13 +253,13 @@
 <span class="va">tflow</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="figures/tuning-grid_search_tuning3-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning3</p>
 </div>
 <p>This approach works just as well with <strong>any</strong> of the <code>grid_*</code> functions. However, what if we simply wanted to provide the values to try? That is, we don’t want any type of ‘random sampling’. <code>plug_grid</code> allows the user to specify the function <code>expand.grid</code> and just provide the values to be used in the grid search. For example:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="va">tflow</span> <span class="op">&lt;-</span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tflow</span> <span class="op">&lt;-</span>
   <span class="va">mtcars</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -273,13 +273,13 @@
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Duplicate rows in grid of tuning combinations found and removed.</span>
-<span class="co">#&gt; ! Fold08: internal: A correlation computation is required, but `estimate` is const...</span></pre></div>
+<span class="co">#&gt; ! Fold08: internal: A correlation computation is required, but `estimate` is const...</span></code></pre></div>
 <div class="figure">
 <img src="figures/tuning-grid_search_tuning4-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning4</p>
 </div>
 <p>This flexibility works just as well with any number of tuning parameters for the model. You can specify as many as parameters as you want, and even manually customize some of the parameters while the <code>grid_*</code> functions takes care of randomly sampling the others. For example, let’s say we wanted to run a random forest while tuning the parameters <code>trees</code>, <code>min_n</code> and <code>mtry</code>. Suppose that on top of that we wanted to manually limit the range of <code>trees</code> to be between 5 and 20, the <code>min_n</code> to be <code>20</code> (fixed) and allow the grid sampling to sample <code>mtry</code> randomly from ‘sensible’ values. We do that just as we’ve been manually updating the parameters values in <code>plug_grid</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">rf</span> <span class="op">&lt;-</span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">rf</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://parsnip.tidymodels.org/reference/rand_forest.html">rand_forest</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"regression"</span>,
               trees <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>,
               min_n <span class="op">=</span> <span class="fl">20</span>,
@@ -296,23 +296,23 @@
   <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span>, trees <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/trees.html">trees</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 
 <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span>
-<span class="va">res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<span class="va">res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="figures/tuning-grid_search_tuning5-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning5</p>
 </div>
 <p>If you want to extract the actual grid used behind the scenes, <code>pull_tflow_grid</code> returns exactly that, after the model has been fitted.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_grid</a></span><span class="op">(</span><span class="op">)</span>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_grid</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 4 x 2</span>
 <span class="co">#&gt;    mtry trees</span>
 <span class="co">#&gt;   &lt;int&gt; &lt;int&gt;</span>
 <span class="co">#&gt; 1     1     5</span>
 <span class="co">#&gt; 2    10     5</span>
 <span class="co">#&gt; 3     1    20</span>
-<span class="co">#&gt; 4    10    20</span></pre></div>
+<span class="co">#&gt; 4    10    20</span></code></pre></div>
 <p>Once you’ve tuned your model you want to choose the final model. <code>complete_tflow</code> takes care of finding by the best combination of values for you. When you provide the metric of interest, it searches for the combination of parameters with the lowest error for your metric:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="va">final_mod</span> <span class="op">&lt;-</span> <span class="va">res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">final_mod</span> <span class="op">&lt;-</span> <span class="va">res</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span>
 
 <span class="co"># Otherwise, you can provide the values manually yourself</span>
 <span class="co"># best &lt;- data.frame(trees = 10, min_n = 20, mtry = 5)</span>
@@ -359,20 +359,20 @@
 <span class="co">#&gt;                      Number of trees: 20</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ...</span>
-<span class="co">#&gt; and 4 more lines.</span></pre></div>
+<span class="co">#&gt; and 4 more lines.</span></code></pre></div>
 <p><code>complete_tflow</code> takes care of fitting the model with the best parameters on the entire training data. Now you can predict on the training or testing data automatically with <code>predict_training</code> or <code>predict_testing</code>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="va">final_mod</span> <span class="op">%&gt;%</span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">final_mod</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">rsq</span><span class="op">(</span><span class="va">mpg</span>, <span class="va">.pred</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 3</span>
 <span class="co">#&gt;   .metric .estimator .estimate</span>
 <span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 rsq     standard       0.875</span></pre></div>
+<span class="co">#&gt; 1 rsq     standard       0.875</span></code></pre></div>
 <p>The <code>tune</code> package and <code>tidymodels</code> are very powerful tools for doing machine learning. In this vignette, I tried to extend their work by providing a unified interface for working with <code>tune</code> that uses the grid search framework bundled together with all the other common machine learning steps.</p>
 <p>Want to see tidyflow and tune in action? The <code>tidymodels</code> team has a vignette showcasing how to use <code>tune</code> and <code>tidymodels</code> <a href="https://www.tidymodels.org/start/case-study/">here</a>. I’ve adapted their code to fully run within a <code>tidyflow</code> workflow. Here’s the replication code:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">readr</span><span class="op">)</span>       <span class="co"># for importing data</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">vip</span><span class="op">)</span>         <span class="co"># for variable importance plots</span>
@@ -490,7 +490,7 @@
 <span class="va">final_res</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/predict-tidyflow.html">predict_testing</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">roc_curve</span><span class="op">(</span><span class="va">children</span>, <span class="va">.pred_children</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
