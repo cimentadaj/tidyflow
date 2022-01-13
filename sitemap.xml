@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://cimentadaj.github.io/tidyflow/404.html</loc>
+  </url>
+  <url>
+    <loc>http://cimentadaj.github.io/tidyflow/CODE_OF_CONDUCT.html</loc>
+  </url>
+  <url>
+    <loc>http://cimentadaj.github.io/tidyflow/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>http://cimentadaj.github.io/tidyflow/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>http://cimentadaj.github.io/tidyflow/articles/a01_intro_tidyflow.html</loc>
+  </url>
+  <url>
+    <loc>http://cimentadaj.github.io/tidyflow/articles/b02_model-with-recipe.html</loc>
+  </url>
+  <url>
+    <loc>http://cimentadaj.github.io/tidyflow/articles/c03_fitting-model-resampling.html</loc>
+  </url>
+  <url>
+    <loc>http://cimentadaj.github.io/tidyflow/articles/d04_fitting-model-tuning.html</loc>
+  </url>
+  <url>
+    <loc>http://cimentadaj.github.io/tidyflow/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>http://cimentadaj.github.io/tidyflow/articles/intro_tidyflow.html</loc>
+  </url>
+  <url>
+    <loc>http://cimentadaj.github.io/tidyflow/articles/model-with-recipe.html</loc>
+  </url>
+  <url>
+    <loc>http://cimentadaj.github.io/tidyflow/authors.html</loc>
+  </url>
+  <url>
     <loc>http://cimentadaj.github.io/tidyflow/index.html</loc>
   </url>
   <url>
@@ -11,6 +47,9 @@
   </url>
   <url>
     <loc>http://cimentadaj.github.io/tidyflow/reference/fit-tidyflow.html</loc>
+  </url>
+  <url>
+    <loc>http://cimentadaj.github.io/tidyflow/reference/index.html</loc>
   </url>
   <url>
     <loc>http://cimentadaj.github.io/tidyflow/reference/parameters-tidyflow.html</loc>
@@ -50,17 +89,5 @@
   </url>
   <url>
     <loc>http://cimentadaj.github.io/tidyflow/reference/tidyflows-internals.html</loc>
-  </url>
-  <url>
-    <loc>http://cimentadaj.github.io/tidyflow/articles/a01_intro_tidyflow.html</loc>
-  </url>
-  <url>
-    <loc>http://cimentadaj.github.io/tidyflow/articles/b02_model-with-recipe.html</loc>
-  </url>
-  <url>
-    <loc>http://cimentadaj.github.io/tidyflow/articles/c03_fitting-model-resampling.html</loc>
-  </url>
-  <url>
-    <loc>http://cimentadaj.github.io/tidyflow/articles/d04_fitting-model-tuning.html</loc>
   </url>
 </urlset>

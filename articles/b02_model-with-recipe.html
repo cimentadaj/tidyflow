@@ -25,6 +25,8 @@
 </script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -37,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tidyflow</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9000</span>
       </span>
     </div>
 
@@ -45,20 +47,20 @@
       <ul class="nav navbar-nav">
 <li>
   <a href=".././index.html">
-    <span class="fas fa-home"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fas fa-gears"></span>
+    <span class="fa fa-gears"></span>
      
     Reference
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fas fa-graduation-cap"></span>
+    <span class="fa fa-graduation-cap"></span>
      
     Articles
      
@@ -81,7 +83,7 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fas fa-file-powerpoint"></span>
+    <span class="fa fa-file-powerpoint"></span>
      
     Presentations
      
@@ -96,7 +98,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/cimentadaj/tidyflow/">
+  <a href="https://github.com/cimentadaj/tidyflow/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -117,7 +119,7 @@
       <h1 data-toc-skip>Using recipes in tidyflow</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/cimentadaj/tidyflow/blob/master/vignettes/b02_model-with-recipe.Rmd"><code>vignettes/b02_model-with-recipe.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cimentadaj/tidyflow/blob/HEAD/vignettes/b02_model-with-recipe.Rmd" class="external-link"><code>vignettes/b02_model-with-recipe.Rmd</code></a></small>
       <div class="hidden name"><code>b02_model-with-recipe.Rmd</code></div>
 
     </div>
@@ -127,13 +129,13 @@
 <p>This vignette aims to exemplify how you can use recipes within a <code>tidyflow</code>.</p>
 <p>A tidyflow is a bundle of steps that allow you to bundle together your data, splitting, resampling, preprocessing, modeling, and grid search. For preprocessing your data, the <code>tidymodels</code> ecosystem contains the <code>recipes</code> package. This package allows to create very concise and clean pipelines of transforming your data. Let’s create a very simple recipe that takes the logarithm of the variable <code>qsec</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow" class="external-link">tidyflow</a></span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rcp</span> <span class="op">&lt;-</span>
-  <span class="va">mtcars</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html">step_log</a></span><span class="op">(</span><span class="va">qsec</span><span class="op">)</span>
+  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html" class="external-link">step_log</a></span><span class="op">(</span><span class="va">qsec</span><span class="op">)</span>
   
 <span class="va">rcp</span>
 <span class="co">#&gt; Data Recipe</span>
@@ -147,16 +149,16 @@
 <span class="co">#&gt; Operations:</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Log transformation on qsec</span></code></pre></div>
-<p>The recipe contains the model formula (<code>mpg ~ .</code>) and a preprocessing step <code><a href="https://recipes.tidymodels.org/reference/step_log.html">step_log(qsec)</a></code>. How do we incorporate this in our <code>tidyflow</code>? We use <code>plug_recipe</code> but we need to change this recipe to be a formula:</p>
+<p>The recipe contains the model formula (<code>mpg ~ .</code>) and a preprocessing step <code>step_log(qsec)</code>. How do we incorporate this in our <code>tidyflow</code>? We use <code>plug_recipe</code> but we need to change this recipe to be a formula:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rcp</span> <span class="op">&lt;-</span>
-  <span class="op">~</span> <span class="va">.x</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html">step_log</a></span><span class="op">(</span><span class="va">qsec</span><span class="op">)</span>
+  <span class="op">~</span> <span class="va">.x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html" class="external-link">step_log</a></span><span class="op">(</span><span class="va">qsec</span><span class="op">)</span>
 
 <span class="va">tflow</span> <span class="op">&lt;-</span>
-  <span class="va">mtcars</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">5131</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">5131</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="va">rcp</span><span class="op">)</span>
 
 <span class="va">tflow</span>
@@ -167,17 +169,17 @@
 <span class="co">#&gt; Resample: None</span>
 <span class="co">#&gt; Grid: None</span>
 <span class="co">#&gt; Model: None</span></code></pre></div>
-<p>Did you notice that we replace <code>mtcars</code> with <code>.x</code> and that <code>.x</code> has a <code><a href="https://rdrr.io/r/base/tilde.html">~</a></code> in front of it? Those are the only two things that changes from our previous recipe. <code>tidyflow</code> already knows that <code>.x</code> will be the placeholder for the data and will figure out where to place the recipe in the order of execution.</p>
+<p>Did you notice that we replace <code>mtcars</code> with <code>.x</code> and that <code>.x</code> has a <code>~</code> in front of it? Those are the only two things that changes from our previous recipe. <code>tidyflow</code> already knows that <code>.x</code> will be the placeholder for the data and will figure out where to place the recipe in the order of execution.</p>
 <p>Having said this, there’s no need to specify a formula for the model definition: the recipe already contains this formula! So let’s split the data into training and testing and fit a linear regression:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tflow</span> <span class="op">&lt;-</span>
-  <span class="va">tflow</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html">linear_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span><span class="op">)</span>
 
-<span class="va">final_model</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">final_model</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span>
 
-<span class="va">final_model</span> <span class="op">%&gt;%</span>
+<span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; parsnip model object</span>
 <span class="co">#&gt; </span>
@@ -193,7 +195,7 @@
 <span class="co">#&gt;   19.316946     0.767142     3.789040     0.074718    -0.278102</span></code></pre></div>
 <p>Defining your preprocessing steps in the recipe has several advantages among which are that the <code>tidyflow</code> takes care of applying these preprocessing steps in the training/testing data automatically. You can automatically predict on the training data and expect the <code>tidyflow</code> to calculate the log of <code>qsec</code> automatically:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">final_model</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 24 x 12</span>
 <span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span>
@@ -211,7 +213,7 @@
 <span class="co">#&gt; # … with 14 more rows</span></code></pre></div>
 <p>Note that the <code>qsec</code> column here is untransformed but the model used to predict on the new <code>.pred</code> column was indeed logged. How can you be sure? You can extract the transformed training data with <code>pull_tflow_training</code> with <code>prep = TRUE</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">final_model</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_training</a></span><span class="op">(</span>prep <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt;     mpg cyl  disp  hp drat    wt     qsec vs am gear carb</span>
 <span class="co">#&gt; 1  21.0   6 160.0 110 3.90 2.620 2.800933  0  1    4    4</span>
@@ -240,7 +242,7 @@
 <span class="co">#&gt; 24 21.4   4 121.0 109 4.11 2.780 2.923162  1  1    4    2</span></code></pre></div>
 <p>One drawback from the print out of the <code>tidyflow</code> is that you can really see the type of preprocessing that was used for fitting the model. <code>pull_tflow_prepped_recipe</code> returns the fitted recipe on the final model and contains all the steps used in the recipe:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">final_model</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_prepped_recipe</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Data Recipe</span>
 <span class="co">#&gt; </span>
@@ -261,16 +263,16 @@
 <span class="co"># degree here means the polynomial degree.</span>
 <span class="co"># For example, qsec^2, qsec^3, etc...</span>
 <span class="va">rcp</span> <span class="op">&lt;-</span>
-  <span class="op">~</span> <span class="va">.x</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_poly.html">step_poly</a></span><span class="op">(</span><span class="va">qsec</span>, degree <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">~</span> <span class="va">.x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_poly.html" class="external-link">step_poly</a></span><span class="op">(</span><span class="va">qsec</span>, degree <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">final_model</span> <span class="op">&lt;-</span>
-  <span class="va">tflow</span> <span class="op">%&gt;%</span> <span class="co"># Reuse the same tidyflow from before</span>
-  <span class="fu"><a href="../reference/plug_recipe.html">replace_recipe</a></span><span class="op">(</span><span class="va">rcp</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># Replace the recipe with the new one</span>
-  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># Plug in the cross-validation for grid search</span>
-  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># Plug in the type of grid search</span>
-  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># Reuse the same tidyflow from before</span>
+  <span class="fu"><a href="../reference/plug_recipe.html">replace_recipe</a></span><span class="op">(</span><span class="va">rcp</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># Replace the recipe with the new one</span>
+  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># Plug in the cross-validation for grid search</span>
+  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># Plug in the type of grid search</span>
+  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="va">final_model</span>
 <span class="co">#&gt; ══ Tidyflow [tuned] ════════════════════════════════════════════════════════════</span>
@@ -300,21 +302,21 @@
 <span class="co">#&gt; ... and 5 more lines.</span></code></pre></div>
 <p>The result is now a tuning grid and <strong>not</strong> a final model. As expected, this is because <code>tidyflow</code> already fit many models using different values for <code>degree</code>. We can explore the performance of the model with this model.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">final_model</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="figures/recipes-grid_search_recipe-1.png" alt=""><p class="caption">plot of chunk grid_search_recipe</p>
 </div>
 <p>The lowest error for both the <span class="math inline">\(RMSE\)</span> and the <span class="math inline">\(R^2\)</span> seems to be a model of <code>degree = 2</code>. We can specify this directly into <code>complete_tflow</code> or just allow <code>complete_tflow</code> to determine this for you:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Manual approach</span>
-<span class="va">best_model</span> <span class="op">&lt;-</span> <span class="va">final_model</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>best_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>degree <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="va">best_model</span> <span class="op">&lt;-</span> <span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>best_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>degree <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># Allow `complete_tflow` to determine this for you</span>
-<span class="va">best_model</span> <span class="op">&lt;-</span> <span class="va">final_model</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span>
+<span class="va">best_model</span> <span class="op">&lt;-</span> <span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span>
 
-<span class="va">best_model</span> <span class="op">%&gt;%</span>
+<span class="va">best_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 24 x 12</span>
 <span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span>
@@ -331,62 +333,62 @@
 <span class="co">#&gt; 10  17.3     8  276.   180  3.07  3.73  17.6     0     0     3     3  16.8</span>
 <span class="co">#&gt; # … with 14 more rows</span></code></pre></div>
 <p>The <code>recipes</code> package and <code>tidymodels</code> and very powerful tools for doing machine learning. In this vignette, I tried to extend their work by providing a unified interface for working with <code>tidymodels</code> that uses the recipe framework bundled together with all the other common machine learning steps.</p>
-<p>Want to see tidyflow and recipes in action? The <code>tidymodels</code> team has a vignette showcasing how to use <code>recipes</code> and <code>tidymodels</code> <a href="https://www.tidymodels.org/start/recipes/">here</a>. I’ve adapted their code to fully run within a <code>tidyflow</code> workflow. Here’s the replication code:</p>
+<p>Want to see tidyflow and recipes in action? The <code>tidymodels</code> team has a vignette showcasing how to use <code>recipes</code> and <code>tidymodels</code> <a href="https://www.tidymodels.org/start/recipes/" class="external-link">here</a>. I’ve adapted their code to fully run within a <code>tidyflow</code> workflow. Here’s the replication code:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow">tidyflow</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://github.com/hadley/nycflights13">nycflights13</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow" class="external-link">tidyflow</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/nycflights13" class="external-link">nycflights13</a></span><span class="op">)</span>
 
 <span class="co">## Start initial preprocessing</span>
 <span class="va">flight_data</span> <span class="op">&lt;-</span> 
-  <span class="va">flights</span> <span class="op">%&gt;%</span> 
-  <span class="fu">mutate</span><span class="op">(</span>
+  <span class="va">flights</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>
     <span class="co"># Convert the arrival delay to a factor</span>
-    arr_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">arr_delay</span> <span class="op">&gt;=</span> <span class="fl">30</span>, <span class="st">"late"</span>, <span class="st">"on_time"</span><span class="op">)</span>,
-    arr_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">arr_delay</span><span class="op">)</span>,
+    arr_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">arr_delay</span> <span class="op">&gt;=</span> <span class="fl">30</span>, <span class="st">"late"</span>, <span class="st">"on_time"</span><span class="op">)</span>,
+    arr_delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">arr_delay</span><span class="op">)</span>,
     <span class="co"># We will use the date (not date-time) in the recipe below</span>
-    date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="va">time_hour</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span> 
+    date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="va">time_hour</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="co"># Include the weather data</span>
-  <span class="fu">inner_join</span><span class="op">(</span><span class="va">weather</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"origin"</span>, <span class="st">"time_hour"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">weather</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"origin"</span>, <span class="st">"time_hour"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="co"># Only retain the specific columns we will use</span>
-  <span class="fu">select</span><span class="op">(</span><span class="va">dep_time</span>, <span class="va">flight</span>, <span class="va">origin</span>, <span class="va">dest</span>, <span class="va">air_time</span>, <span class="va">distance</span>, 
-         <span class="va">carrier</span>, <span class="va">date</span>, <span class="va">arr_delay</span>, <span class="va">time_hour</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">dep_time</span>, <span class="va">flight</span>, <span class="va">origin</span>, <span class="va">dest</span>, <span class="va">air_time</span>, <span class="va">distance</span>, 
+         <span class="va">carrier</span>, <span class="va">date</span>, <span class="va">arr_delay</span>, <span class="va">time_hour</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="co"># Exclude missing data</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="co"># For creating models, it is better to have qualitative columns</span>
   <span class="co"># encoded as factors (instead of character strings)</span>
-  <span class="fu">mutate_if</span><span class="op">(</span><span class="va">is.character</span>, <span class="va">as.factor</span><span class="op">)</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate_all.html" class="external-link">mutate_if</a></span><span class="op">(</span><span class="va">is.character</span>, <span class="va">as.factor</span><span class="op">)</span>
 
 <span class="co">## End initial preprocessing</span>
 
 <span class="co"># Model formula and recipe preprocessing</span>
 <span class="va">flight_rec</span> <span class="op">&lt;-</span>
-  <span class="op">~</span> <span class="va">.x</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span><span class="op">(</span><span class="va">arr_delay</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/roles.html">update_role</a></span><span class="op">(</span><span class="va">flight</span>, <span class="va">time_hour</span>, new_role <span class="op">=</span> <span class="st">"ID"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_date.html">step_date</a></span><span class="op">(</span><span class="va">date</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"dow"</span>, <span class="st">"month"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_holiday.html">step_holiday</a></span><span class="op">(</span><span class="va">date</span>, holidays <span class="op">=</span> <span class="fu">timeDate</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/timeDate/man/holiday-Listing.html">listHolidays</a></span><span class="op">(</span><span class="st">"US"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_rm.html">step_rm</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_dummy.html">step_dummy</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_nominal</a></span><span class="op">(</span><span class="op">)</span>, <span class="op">-</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_outcomes</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_zv.html">step_zv</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">~</span> <span class="va">.x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">arr_delay</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/roles.html" class="external-link">update_role</a></span><span class="op">(</span><span class="va">flight</span>, <span class="va">time_hour</span>, new_role <span class="op">=</span> <span class="st">"ID"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_date.html" class="external-link">step_date</a></span><span class="op">(</span><span class="va">date</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dow"</span>, <span class="st">"month"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_holiday.html" class="external-link">step_holiday</a></span><span class="op">(</span><span class="va">date</span>, holidays <span class="op">=</span> <span class="fu">timeDate</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/timeDate/man/holiday-Listing.html" class="external-link">listHolidays</a></span><span class="op">(</span><span class="st">"US"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_rm.html" class="external-link">step_rm</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_dummy.html" class="external-link">step_dummy</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_nominal</a></span><span class="op">(</span><span class="op">)</span>, <span class="op">-</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_outcomes</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_zv.html" class="external-link">step_zv</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># tidyflow preparation with the recipe</span>
 <span class="va">tflow</span> <span class="op">&lt;-</span>
-  <span class="va">flight_data</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">555</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span>, prop <span class="op">=</span> <span class="fl">3</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="va">flight_rec</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/logistic_reg.html">logistic_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">"glm"</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">flight_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">555</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span>, prop <span class="op">=</span> <span class="fl">3</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="va">flight_rec</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/logistic_reg.html" class="external-link">logistic_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"glm"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># Fit final model</span>
-<span class="va">flights_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span>
+<span class="va">flights_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span>
 
 <span class="co"># Predict on testing and evaluate a `roc_curve`</span>
-<span class="va">flights_fit</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_testing</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">roc_curve</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">arr_delay</span>, <span class="va">.pred_late</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<span class="va">flights_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_testing</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu">roc_curve</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">arr_delay</span>, <span class="va">.pred_late</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -398,11 +400,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="https://cimentadaj.github.io">Jorge Cimentada</a>, Davis Vaughan.</p>
+  <p></p>
+<p>Developed by <a href="https://cimentadaj.github.io" class="external-link">Jorge Cimentada</a>, Davis Vaughan.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer>
@@ -410,6 +414,8 @@
 
   
 
+
+  
 
   </body>
 </html>
