@@ -6,7 +6,7 @@ articles:
   b02_model-with-recipe: b02_model-with-recipe.html
   c03_fitting-model-resampling: c03_fitting-model-resampling.html
   d04_fitting-model-tuning: d04_fitting-model-tuning.html
-last_built: 2022-04-16T04:26Z
+last_built: 2022-04-17T04:26Z
 urls:
   reference: http://cimentadaj.github.io/tidyflow/reference
   article: http://cimentadaj.github.io/tidyflow/articles
