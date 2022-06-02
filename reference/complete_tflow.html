@@ -111,40 +111,23 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>x</dt>
-<dd><p>A tidyflow</p></dd>
-<dt>metric</dt>
-<dd><p>The metric of reference from which to pick the best model</p></dd>
-<dt>...</dt>
-<dd><p>Extra arguments passed to
-<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_by_one_std_err</a></code> or
-<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_by_pct_loss</a></code></p></dd>
-<dt>best_params</dt>
-<dd><p>A 1 row tibble with the best parameters to fit the final
-model. Should have the same format as the result of
-<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_best</a></code>,
-<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_by_one_std_err</a></code> or
-<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_by_pct_loss</a></code>. If <code>best_params</code> is
-specified, the <code>method</code>, <code>metric</code> and <code>...</code> arguments are
-ignored.</p></dd>
-<dt>method</dt>
-<dd><p>which method to use. The possible values are
-<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_best</a></code>,
-<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_by_one_std_err</a></code> or
-<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_by_pct_loss</a></code>. By default, it uses
-<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_best</a></code>.</p></dd>
-<dt>control</dt>
-<dd><p>A <code><a href="control_tidyflow.html">control_tidyflow</a></code> object. The
-<code><a href="https://parsnip.tidymodels.org/reference/control_parsnip.html" class="external-link">control_parsnip</a></code> control object inside
-<code><a href="control_tidyflow.html">control_tidyflow</a></code> is passed to
-<code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></code>.</p></dd>
-</dl></div>
+    <p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+    </div>
     <div id="value">
     <h2>Value</h2>
-    <p>The tidyflow <code>object</code> updated with the fitted best model. Can be
+    
+
+<p>The tidyflow <code>object</code> updated with the fitted best model. Can be
 extracted with <code><a href="tidyflow-extractors.html">pull_tflow_fit</a></code> and used to predict on the
 training or test data with <code><a href="predict-tidyflow.html">predict_training</a></code> or
 <code><a href="predict-tidyflow.html">predict_testing</a></code></p>
+
+
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -161,7 +144,7 @@ training or test data with <code><a href="predict-tidyflow.html">predict_trainin
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org" class="external-link">rsample</a></span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Fit a regularized regression through a grid search.</span></span>
-<span class="r-in"><span class="va">reg_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in"><span class="va">reg_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span class="r-in">                      <span class="st">"glmnet"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">tuned_res</span> <span class="op">&lt;-</span></span>
 <span class="r-in"> <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>

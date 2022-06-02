@@ -119,45 +119,17 @@ the training and testing data.</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>object</dt>
-<dd><p>A tidyflow that has been fitted by <code><a href="fit-tidyflow.html">fit.tidyflow()</a></code></p></dd>
-<dt>new_data</dt>
-<dd><p>A data frame containing the new predictors to preprocess
-and predict on. Usually, this would be extracted from the tidyflow
-with <code><a href="tidyflow-extractors.html">pull_tflow_testing</a></code> or
-<code><a href="tidyflow-extractors.html">pull_tflow_training</a></code>. Note that <code>predict.tidyflow</code>
-already applies the recipe or formula automatically. It is not advised to
-preprocess the <code>newdata</code> before passing it to <code>predict.tidyflow</code>.</p></dd>
-<dt>type</dt>
-<dd><p>A single character value or <code>NULL</code>. Possible values
-are "numeric", "class", "prob", "conf_int", "pred_int", "quantile",
-or "raw". When <code>NULL</code>, <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> will choose an appropriate value
-based on the model's mode.</p></dd>
-<dt>opts</dt>
-<dd><p>A list of optional arguments to the underlying
-predict function that will be used when <code>type = "raw"</code>. The
-list should not include options for the model object or the
-new data being predicted.</p></dd>
-<dt>...</dt>
-<dd><p>Arguments to the underlying model's prediction
-function cannot be passed here (see <code>opts</code>). There are some
-<code>parsnip</code> related options that can be passed, depending on the
-value of <code>type</code>. Possible arguments are:</p><ul><li><p><code>level</code>: for <code>type</code>s of "conf_int" and "pred_int" this
-is the parameter for the tail area of the intervals
-(e.g. confidence level for confidence intervals).
-Default value is 0.95.</p></li>
-<li><p><code>std_error</code>: add the standard error of fit or prediction (on
-the scale of the linear predictors) for <code>type</code>s of "conf_int"
-and "pred_int". Default value is <code>FALSE</code>.</p></li>
-<li><p><code>quantile</code>: the quantile(s) for quantile regression
-(not implemented yet)</p></li>
-<li><p><code>time</code>: the time(s) for hazard probability estimates
-(not implemented yet)</p></li>
-</ul></dd>
-</dl></div>
+    <p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+    </div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame of model predictions, with as many rows as <code>new_data</code> has.</p>
+    
+
+<p>A data frame of model predictions, with as many rows as <code>new_data</code> has.</p>
     </div>
 
     <div id="ref-examples">
@@ -196,7 +168,7 @@ and "pred_int". Default value is <code>FALSE</code>.</p></li>
 <span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span></span>
 <span class="r-in"> <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span class="r-in"> <span class="co"># Adds a grid search for the polynomials of qsec</span></span>
-<span class="r-in"> <span class="fu"><a href="plug_recipe.html">replace_recipe</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">hp</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span class="r-in"> <span class="fu"><a href="plug_recipe.html">replace_recipe</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">hp</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span class="r-in"> <span class="fu"><a href="plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span>, v <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span class="r-in"> <span class="fu"><a href="plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span>, levels <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span class="r-in"> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>

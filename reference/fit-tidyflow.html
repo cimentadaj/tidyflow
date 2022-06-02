@@ -105,20 +105,19 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>x</dt>
-<dd><p>A tidyflow object</p></dd>
-<dt>control</dt>
-<dd><p>A <code><a href="control_tidyflow.html">control_tidyflow</a></code> object with the options
-for the model. See <code><a href="control_tidyflow.html">control_tidyflow</a></code> for all options and
-examples.</p></dd>
-<dt>...</dt>
-<dd><p>Not used right now</p></dd>
-</dl></div>
+    <p></p>
+<p></p>
+<p></p>
+    </div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>tidyflow</code> can return two type of results: a model object or a resamples.
-Depending on the specification of the <code>tidyflow</code> you can get either.
-Here are all possible results:</p><ul><li><p>Any <code>tidyflow</code> <strong>without</strong> a <code><a href="plug_resample.html">plug_resample</a></code> or
+    
+
+<p><code>tidyflow</code> can return two type of results: a model object or a resamples.
+Depending on the specification of the <code>tidyflow</code> you can get either.</p>
+
+
+<p>Here are all possible results:</p><ul><li><p>Any <code>tidyflow</code> <strong>without</strong> a <code><a href="plug_resample.html">plug_resample</a></code> or
 <code><a href="plug_grid.html">plug_grid</a></code> specificiation, will always return a model. Since
 there is no grid search or resampling happening, <code>fit</code> will always return
 a tidyflow with a model. If needed, this model can be extracted with
@@ -209,7 +208,7 @@ be the one described above skipping any steps that are not specified.</p></li>
 <span class="r-in"><span class="co"># We can accumulate steps and add a cross-validation and tuning grid.</span></span>
 <span class="r-in"><span class="co"># Fit a regularized regression through a grid search.</span></span>
 <span class="r-in"><span class="co"># Do this by updating the already defined model:</span></span>
-<span class="r-in"><span class="va">new_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in"><span class="va">new_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span class="r-in">                      <span class="st">"glmnet"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">tuned_res</span> <span class="op">&lt;-</span></span>
 <span class="r-in">  <span class="va">recipe_tidyflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
