@@ -111,13 +111,45 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <p></p>
-<p></p>
-<p></p>
-<p></p>
-<p></p>
-<p></p>
-    </div>
+    <dl><dt>x</dt>
+<dd><p>A tidyflow</p></dd>
+
+
+<dt>metric</dt>
+<dd><p>The metric of reference from which to pick the best model</p></dd>
+
+
+<dt>...</dt>
+<dd><p>Extra arguments passed to
+<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_by_one_std_err</a></code> or
+<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_by_pct_loss</a></code></p></dd>
+
+
+<dt>best_params</dt>
+<dd><p>A 1 row tibble with the best parameters to fit the final
+model. Should have the same format as the result of
+<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_best</a></code>,
+<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_by_one_std_err</a></code> or
+<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_by_pct_loss</a></code>. If <code>best_params</code> is
+specified, the <code>method</code>, <code>metric</code> and <code>...</code> arguments are
+ignored.</p></dd>
+
+
+<dt>method</dt>
+<dd><p>which method to use. The possible values are
+<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_best</a></code>,
+<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_by_one_std_err</a></code> or
+<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_by_pct_loss</a></code>. By default, it uses
+<code><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_best</a></code>.</p></dd>
+
+
+<dt>control</dt>
+<dd><p>A <code><a href="control_tidyflow.html">control_tidyflow</a></code> object. The
+<code><a href="https://parsnip.tidymodels.org/reference/control_parsnip.html" class="external-link">control_parsnip</a></code> control object inside
+<code><a href="control_tidyflow.html">control_tidyflow</a></code> is passed to
+<code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></code>.</p></dd>
+
+</dl></div>
     <div id="value">
     <h2>Value</h2>
     

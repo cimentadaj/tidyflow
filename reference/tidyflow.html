@@ -116,9 +116,17 @@ complex workflows, such as <code><a href="plug_split.html">plug_split()</a></cod
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <p></p>
-<p></p>
-    </div>
+    <dl><dt>data</dt>
+<dd><p>A data frame or tibble used to begin the tidyflow. This is
+optional as the data can be specified with <code><a href="plug_data.html">plug_data()</a></code>.</p></dd>
+
+
+<dt>seed</dt>
+<dd><p>A seed to be used for reproducibility across the complete
+workflow. This seed is used for every step, to ensure the same result
+when doing random splitting, resampling and model fitting.</p></dd>
+
+</dl></div>
     <div id="value">
     <h2>Value</h2>
     

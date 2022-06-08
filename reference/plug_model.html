@@ -123,10 +123,24 @@ the tidyflow.</p></li>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <p></p>
-<p></p>
-<p></p>
-    </div>
+    <dl><dt>x</dt>
+<dd><p>A tidyflow.</p></dd>
+
+
+<dt>spec</dt>
+<dd><p>A parsnip model specification.</p></dd>
+
+
+<dt>formula</dt>
+<dd><p>An optional formula override to specify the terms of the
+model. Typically, the terms are extracted from the formula or recipe
+preprocessing methods. However, some models (like survival and bayesian
+models) use the formula not to preprocess, but to specify the structure
+of the model. In those cases, a formula specifying the model structure
+must be passed unchanged into the model call itself. This argument is
+used for those purposes.</p></dd>
+
+</dl></div>
     <div id="value">
     <h2>Value</h2>
     

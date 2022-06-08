@@ -135,10 +135,33 @@ split will need to be refit.</p></li>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <p></p>
-<p></p>
-<p></p>
-    </div>
+    <dl><dt>x</dt>
+<dd><p>A tidyflow</p></dd>
+
+
+<dt>.f</dt>
+<dd><p>A function which will be passed to the tuned arguments from the model
+and recipe. There are two type of functions that can be used here. For
+generating random grids, <code>.f</code> must return an object of class
+<code>data.frame</code>. In particular, the user doesn't need to specified the
+parameters in <code>...</code> since they are extracted and passed directly to
+the grid function. See package <code><a href="https://dials.tidymodels.org/reference/dials-package.html" class="external-link">dials</a></code> for all related
+<code>grid_*</code> functions. The other type of function that can be used is
+<code>expand.grid</code>. In particular, if <code>.f</code> is <code>expand.grid</code> all tuning
+arguments should be specified in <code>...</code>. This does not support parameter
+objects like <code><a href="https://dials.tidymodels.org/reference/mixture.html" class="external-link">mixture</a></code> but rather the raw values to be
+expanded by <code>expand.grid</code>. For example, instead of
+<code>mixture = dials::mixture()</code> it should be <code>mixture = c(0, 0.5, 1)</code>.
+See the details section and example section for a more thorough description.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>arguments passed to <code>.f</code>. The processing of <code>...</code>
+respects the quotation rules from <code>.f</code>. In other words, if the function
+allows variables as strings <strong>and</strong> as names, the user can specify both.
+See the example section.</p></dd>
+
+</dl></div>
     <div id="value">
     <h2>Value</h2>
     

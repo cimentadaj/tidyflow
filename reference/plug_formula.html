@@ -129,11 +129,25 @@ formula will need to be refit.</p></li>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <p></p>
-<p></p>
-<p></p>
-<p></p>
-    </div>
+    <dl><dt>x</dt>
+<dd><p>A tidyflow</p></dd>
+
+
+<dt>formula</dt>
+<dd><p>A formula specifying the terms of the model. It is advised to
+not do preprocessing in the formula, and instead use a recipe if that is
+required.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>Not used.</p></dd>
+
+
+<dt>blueprint</dt>
+<dd><p>A hardhat blueprint used for fine tuning the preprocessing.
+If <code>NULL</code>, <code><a href="https://hardhat.tidymodels.org/reference/default_formula_blueprint.html" class="external-link">hardhat::default_formula_blueprint()</a></code> is used.</p></dd>
+
+</dl></div>
     <div id="value">
     <h2>Value</h2>
     

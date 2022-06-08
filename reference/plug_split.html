@@ -131,10 +131,23 @@ split will need to be refit.</p></li>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <p></p>
-<p></p>
-<p></p>
-    </div>
+    <dl><dt>x</dt>
+<dd><p>A tidyflow</p></dd>
+
+
+<dt>.f</dt>
+<dd><p>A function to be applied to the dataset in the tidyflow. Must
+return an object of class <code>rsplit</code>. See package
+<code><a href="https://rsample.tidymodels.org/reference/rsample.html" class="external-link">rsample</a></code>.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>arguments passed to <code>.f</code>. These arguments must be named.
+The processing of <code>...</code> respects the quotation rules from <code>.f</code>.
+In other words, if the function allows variables as strings <strong>and</strong>
+as names, the user can specify both. See the example sections.</p></dd>
+
+</dl></div>
     <div id="value">
     <h2>Value</h2>
     
