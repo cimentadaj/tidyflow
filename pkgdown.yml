@@ -1,12 +1,12 @@
 pandoc: 2.7.3
 pkgdown: 2.0.4.9000
-pkgdown_sha: af84e66bf7bf1fb6fbab8698f8dcd883d634f93a
+pkgdown_sha: 5203a63f002405e99b8510debe809ff3d9f18b02
 articles:
   a01_intro_tidyflow: a01_intro_tidyflow.html
   b02_model-with-recipe: b02_model-with-recipe.html
   c03_fitting-model-resampling: c03_fitting-model-resampling.html
   d04_fitting-model-tuning: d04_fitting-model-tuning.html
-last_built: 2022-06-16T04:35Z
+last_built: 2022-06-17T04:34Z
 urls:
   reference: http://cimentadaj.github.io/tidyflow/reference
   article: http://cimentadaj.github.io/tidyflow/articles
