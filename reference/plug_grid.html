@@ -126,11 +126,11 @@ split will need to be refit.</p></li>
 </ul></div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plug_grid</span><span class="op">(</span><span class="va">x</span>, <span class="va">.f</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">drop_grid</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="fu">replace_grid</span><span class="op">(</span><span class="va">x</span>, <span class="va">.f</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plug_grid</span><span class="op">(</span><span class="va">x</span>, <span class="va">.f</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">drop_grid</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">replace_grid</span><span class="op">(</span><span class="va">x</span>, <span class="va">.f</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -211,114 +211,114 @@ the custom name. See the example section for a concrete example.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org" class="external-link">rsample</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tune.tidymodels.org/" class="external-link">tune</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dials.tidymodels.org" class="external-link">dials</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/recipes" class="external-link">recipes</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Grid search:</span></span>
-<span class="r-in"><span class="co"># No need to define the values of the tuning parameters</span></span>
-<span class="r-in"><span class="co"># as they have defaults. For example, see the output of dials::penalty()</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># `plug_grid` defines the grid. You can pass all of the arguments of</span></span>
-<span class="r-in"><span class="co"># `grid_regular`:</span></span>
-<span class="r-in"><span class="va">mod</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="tidyflow.html">tidyflow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu"><a href="plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="st">"glmnet"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu">plug_grid</span><span class="op">(</span><span class="va">grid_regular</span>, levels <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># See the grid that was generated after the fit:</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_grid</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># The argument `levels = 5` tells it to generate 5 x 5 combination</span></span>
-<span class="r-in"><span class="co"># of all possible vaues. That's why you have 25 rows.</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># You can extract the result from `plug_grid` with `pull_tflow_fit_tuning`:</span></span>
-<span class="r-in"><span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Visualize it:</span></span>
-<span class="r-in"><span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># And explore it:</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html" class="external-link">collect_metrics</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># If you want to specify tuning values, you can do so with</span></span>
-<span class="r-in"><span class="co"># `plug_grid` or `replace_grid` but they must have the same</span></span>
-<span class="r-in"><span class="co"># name as the tuning parameter</span></span>
-<span class="r-in"><span class="va">res2</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="va">mod</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu">replace_grid</span><span class="op">(</span><span class="va">grid_regular</span>, penalty <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/penalty.html" class="external-link">penalty</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">res2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">show_best</a></span><span class="op">(</span><span class="st">"rsq"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># If tune assigns a name, then `plug_grid` or `replace_grid` must</span></span>
-<span class="r-in"><span class="co"># use that name to replace it</span></span>
-<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"my_penalty"</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"my_mixture"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="st">"glmnet"</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># You must use `my_penalty`</span></span>
-<span class="r-in"><span class="va">res3</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="va">mod</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="plug_model.html">replace_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>   </span>
-<span class="r-in">  <span class="fu">replace_grid</span><span class="op">(</span><span class="va">grid_regular</span>, my_penalty <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/penalty.html" class="external-link">penalty</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">res3</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">show_best</a></span><span class="op">(</span><span class="st">"rsq"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># If you want to create a grid of all possible combination of the tuning</span></span>
-<span class="r-in"><span class="co"># parameters, you must use only `expand.grid` and name every single</span></span>
-<span class="r-in"><span class="co"># model parameter:</span></span>
-<span class="r-in"><span class="va">res4</span> <span class="op">&lt;-</span></span>
-<span class="r-in"> <span class="va">mod</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu">replace_grid</span><span class="op">(</span><span class="va">expand.grid</span>,</span>
-<span class="r-in">              penalty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.02</span>, <span class="fl">0.005</span><span class="op">)</span>,</span>
-<span class="r-in">              mixture <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># The resulting grid is all of the possible combinations</span></span>
-<span class="r-in"><span class="co"># from the values defined above:</span></span>
-<span class="r-in"><span class="va">res4</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_grid</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># See how they values are not random, but rather</span></span>
-<span class="r-in"><span class="co"># all combination of the supplied values</span></span>
-<span class="r-in"><span class="va">res4</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html" class="external-link">collect_metrics</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># You can also tune values from a recipe directly</span></span>
-<span class="r-in"><span class="va">res5</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="va">res3</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="plug_formula.html">drop_formula</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu"><a href="plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">hp</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">res5</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">show_best</a></span><span class="op">(</span><span class="st">"rsq"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org" class="external-link">rsample</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tune.tidymodels.org/" class="external-link">tune</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dials.tidymodels.org" class="external-link">dials</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/recipes" class="external-link">recipes</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Grid search:</span></span></span>
+<span class="r-in"><span><span class="co"># No need to define the values of the tuning parameters</span></span></span>
+<span class="r-in"><span><span class="co"># as they have defaults. For example, see the output of dials::penalty()</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># `plug_grid` defines the grid. You can pass all of the arguments of</span></span></span>
+<span class="r-in"><span><span class="co"># `grid_regular`:</span></span></span>
+<span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="tidyflow.html">tidyflow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="st">"glmnet"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">plug_grid</span><span class="op">(</span><span class="va">grid_regular</span>, levels <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># See the grid that was generated after the fit:</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_grid</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The argument `levels = 5` tells it to generate 5 x 5 combination</span></span></span>
+<span class="r-in"><span><span class="co"># of all possible vaues. That's why you have 25 rows.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># You can extract the result from `plug_grid` with `pull_tflow_fit_tuning`:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Visualize it:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># And explore it:</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html" class="external-link">collect_metrics</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If you want to specify tuning values, you can do so with</span></span></span>
+<span class="r-in"><span><span class="co"># `plug_grid` or `replace_grid` but they must have the same</span></span></span>
+<span class="r-in"><span><span class="co"># name as the tuning parameter</span></span></span>
+<span class="r-in"><span><span class="va">res2</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">mod</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">replace_grid</span><span class="op">(</span><span class="va">grid_regular</span>, penalty <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/penalty.html" class="external-link">penalty</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">res2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">show_best</a></span><span class="op">(</span><span class="st">"rsq"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If tune assigns a name, then `plug_grid` or `replace_grid` must</span></span></span>
+<span class="r-in"><span><span class="co"># use that name to replace it</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"my_penalty"</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"my_mixture"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"glmnet"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># You must use `my_penalty`</span></span></span>
+<span class="r-in"><span><span class="va">res3</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">mod</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_model.html">replace_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>   </span></span>
+<span class="r-in"><span>  <span class="fu">replace_grid</span><span class="op">(</span><span class="va">grid_regular</span>, my_penalty <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/penalty.html" class="external-link">penalty</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">res3</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">show_best</a></span><span class="op">(</span><span class="st">"rsq"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If you want to create a grid of all possible combination of the tuning</span></span></span>
+<span class="r-in"><span><span class="co"># parameters, you must use only `expand.grid` and name every single</span></span></span>
+<span class="r-in"><span><span class="co"># model parameter:</span></span></span>
+<span class="r-in"><span><span class="va">res4</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span> <span class="va">mod</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu">replace_grid</span><span class="op">(</span><span class="va">expand.grid</span>,</span></span>
+<span class="r-in"><span>              penalty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.02</span>, <span class="fl">0.005</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              mixture <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The resulting grid is all of the possible combinations</span></span></span>
+<span class="r-in"><span><span class="co"># from the values defined above:</span></span></span>
+<span class="r-in"><span><span class="va">res4</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_grid</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># See how they values are not random, but rather</span></span></span>
+<span class="r-in"><span><span class="co"># all combination of the supplied values</span></span></span>
+<span class="r-in"><span><span class="va">res4</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html" class="external-link">collect_metrics</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># You can also tune values from a recipe directly</span></span></span>
+<span class="r-in"><span><span class="va">res5</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">res3</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_formula.html">drop_formula</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">hp</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">res5</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">show_best</a></span><span class="op">(</span><span class="st">"rsq"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

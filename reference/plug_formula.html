@@ -120,11 +120,11 @@ formula will need to be refit.</p></li>
 </ul></div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plug_formula</span><span class="op">(</span><span class="va">x</span>, <span class="va">formula</span>, <span class="va">...</span>, blueprint <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="fu">drop_formula</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="fu">replace_formula</span><span class="op">(</span><span class="va">x</span>, <span class="va">formula</span>, <span class="va">...</span>, blueprint <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plug_formula</span><span class="op">(</span><span class="va">x</span>, <span class="va">formula</span>, <span class="va">...</span>, blueprint <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">drop_formula</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">replace_formula</span><span class="op">(</span><span class="va">x</span>, <span class="va">formula</span>, <span class="va">...</span>, blueprint <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -173,12 +173,12 @@ enforce that all factors/characters area left without transforming. You can also
 <code>default_formula_blueprint(intercept = TRUE, indicators = "one_hot")</code> to
 transform all factors/characters to N-1 dummies or N dummies respectively.</p>
 <p>For example, to transform all factors/characters to one-hot encoding, you can pass
-the blueprint to <code>plug_formula</code>:</p><div class="r"><div class="sourceCode"><pre><code><span class="va">bp</span> <span class="op">&lt;-</span> <span class="fu">default_formula_blueprint</span><span class="op">(</span>intercept <span class="op">=</span> <span class="cn">TRUE</span>, indicators <span class="op">=</span> <span class="st">"one_hot"</span><span class="op">)</span>
-<span class="va">iris</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">21315</span><span class="op">)</span>
-  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">Sepal.Length</span> <span class="op">~</span> <span class="va">Species</span>, blueprint <span class="op">=</span> <span class="va">bp</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu">parsnip</span><span class="fu">::</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"lm"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+the blueprint to <code>plug_formula</code>:</p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">bp</span> <span class="op">&lt;-</span> <span class="fu">default_formula_blueprint</span><span class="op">(</span>intercept <span class="op">=</span> <span class="cn">TRUE</span>, indicators <span class="op">=</span> <span class="st">"one_hot"</span><span class="op">)</span></span>
+<span><span class="va">iris</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">21315</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">Sepal.Length</span> <span class="op">~</span> <span class="va">Species</span>, blueprint <span class="op">=</span> <span class="va">bp</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu">parsnip</span><span class="fu">::</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"lm"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 <p>For custom transformations between types (for example, applying one-hot on
 factors and not on characters), the user can provide a <code><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></code>
 with a <code><a href="https://recipes.tidymodels.org/reference/step_dummy.html" class="external-link">step_dummy</a></code> step to <code><a href="plug_recipe.html">plug_recipe</a></code>. See
@@ -188,16 +188,16 @@ for more details</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># Just for the pipe: %&gt;%</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">tflow</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">652341</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu">plug_formula</span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">tflow</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Just for the pipe: %&gt;%</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">tflow</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">652341</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu">plug_formula</span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">tflow</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>
@@ -205,8 +205,8 @@ for more details</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Resample:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Grid:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Model: None</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">drop_formula</span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">drop_formula</span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>
@@ -214,8 +214,8 @@ for more details</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Resample:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Grid:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Model: None</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">replace_formula</span><span class="op">(</span><span class="va">tflow</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">disp</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">replace_formula</span><span class="op">(</span><span class="va">tflow</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">disp</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>

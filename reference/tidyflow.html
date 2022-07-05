@@ -111,7 +111,7 @@ complex workflows, such as <code><a href="plug_split.html">plug_split()</a></cod
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">tidyflow</span><span class="op">(</span>data <span class="op">=</span> <span class="cn">NULL</span>, seed <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tidyflow</span><span class="op">(</span>data <span class="op">=</span> <span class="cn">NULL</span>, seed <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -136,20 +136,20 @@ when doing random splitting, resampling and model fitting.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/recipes" class="external-link">recipes</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org" class="external-link">rsample</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dials.tidymodels.org" class="external-link">dials</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tune.tidymodels.org/" class="external-link">tune</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">wflow</span> <span class="op">&lt;-</span></span>
-<span class="r-in"> <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu">tidyflow</span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">23113</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">cyl</span>, <span class="va">.x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html" class="external-link">step_log</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># tidyflow gives a prinout of the current specification</span></span>
-<span class="r-in"><span class="co"># in the order of execution:</span></span>
-<span class="r-in"><span class="va">wflow</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/recipes" class="external-link">recipes</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org" class="external-link">rsample</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dials.tidymodels.org" class="external-link">dials</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tune.tidymodels.org/" class="external-link">tune</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">wflow</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span> <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu">tidyflow</span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">23113</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">cyl</span>, <span class="va">.x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html" class="external-link">step_log</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># tidyflow gives a prinout of the current specification</span></span></span>
+<span class="r-in"><span><span class="co"># in the order of execution:</span></span></span>
+<span class="r-in"><span><span class="va">wflow</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>
@@ -157,14 +157,14 @@ when doing random splitting, resampling and model fitting.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Resample:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Grid:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Model: None</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># The minimum tidyflow is: data + recipe/formula + model</span></span>
-<span class="r-in"><span class="va">wflow</span> <span class="op">&lt;-</span></span>
-<span class="r-in"> <span class="va">wflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"lm"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># The output shows that we have the data, the recipe and the model</span></span>
-<span class="r-in"><span class="va">wflow</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The minimum tidyflow is: data + recipe/formula + model</span></span></span>
+<span class="r-in"><span><span class="va">wflow</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span> <span class="va">wflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"lm"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The output shows that we have the data, the recipe and the model</span></span></span>
+<span class="r-in"><span><span class="va">wflow</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>
@@ -176,9 +176,9 @@ when doing random splitting, resampling and model fitting.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Computational engine: lm </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># We can fit that model and we get a brief print out of the model:</span></span>
-<span class="r-in"><span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">wflow</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We can fit that model and we get a brief print out of the model:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">wflow</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow [trained] ══════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>
@@ -202,18 +202,18 @@ when doing random splitting, resampling and model fitting.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> and 3 more lines.</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># We can add further steps and the print out will tell you the</span></span>
-<span class="r-in"><span class="co"># workflow specification:</span></span>
-<span class="r-in"><span class="va">wflow</span> <span class="op">&lt;-</span></span>
-<span class="r-in"> <span class="va">wflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span>, v <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># The print out shows that we have a split/resample/grid</span></span>
-<span class="r-in"><span class="co"># now set correcly.</span></span>
-<span class="r-in"><span class="va">wflow</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We can add further steps and the print out will tell you the</span></span></span>
+<span class="r-in"><span><span class="co"># workflow specification:</span></span></span>
+<span class="r-in"><span><span class="va">wflow</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span> <span class="va">wflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span>, v <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The print out shows that we have a split/resample/grid</span></span></span>
+<span class="r-in"><span><span class="co"># now set correcly.</span></span></span>
+<span class="r-in"><span><span class="va">wflow</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> initial_split w/ default args</span>
@@ -225,7 +225,7 @@ when doing random splitting, resampling and model fitting.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Computational engine: lm </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

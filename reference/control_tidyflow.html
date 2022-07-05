@@ -103,11 +103,11 @@ and <code>grid</code>.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">control_tidyflow</span><span class="op">(</span>
-  control_parsnip <span class="op">=</span> <span class="cn">NULL</span>,
-  control_resamples <span class="op">=</span> <span class="cn">NULL</span>,
-  control_grid <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">control_tidyflow</span><span class="op">(</span></span>
+<span>  control_parsnip <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  control_resamples <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  control_grid <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -136,59 +136,59 @@ argument is constructed from <code><a href="https://tune.tidymodels.org/referenc
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org" class="external-link">rsample</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tune.tidymodels.org/" class="external-link">tune</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow" class="external-link">tidyflow</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Build tidyflow</span></span>
-<span class="r-in"><span class="va">tflow</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="tidyflow.html">tidyflow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span>, v <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu"><a href="plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"lm"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># For each resample object, we want the predictions</span></span>
-<span class="r-in"><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">control_tidyflow</span><span class="op">(</span>control_resample <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/control_grid.html" class="external-link">control_resamples</a></span><span class="op">(</span>save_pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">                                                            verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Specify the control object</span></span>
-<span class="r-in"><span class="va">fit_m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">tflow</span>, control <span class="op">=</span> <span class="va">ct</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">fit_m</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Extract the predictions</span></span>
-<span class="r-in"><span class="va">fit_m</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="va">.</span><span class="op">[[</span><span class="st">".predictions"</span><span class="op">]</span><span class="op">]</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># `control_resamples` is only used when there is a resample but not</span></span>
-<span class="r-in"><span class="co"># grid. When there is a resample and a grid, `control_grid` should be</span></span>
-<span class="r-in"><span class="co"># used.</span></span>
-<span class="r-in"><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">control_tidyflow</span><span class="op">(</span>control_grid <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/control_grid.html" class="external-link">control_grid</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">                                                   save_pred <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Since there is no grid specification, this is ignored.</span></span>
-<span class="r-in"><span class="co"># No messages should be printed nor a new .predictions</span></span>
-<span class="r-in"><span class="co"># columns in the result</span></span>
-<span class="r-in"><span class="va">fit_m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">tflow</span>, control <span class="op">=</span> <span class="va">ct</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">fit_m</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># control_parsnip controls the options of the model</span></span>
-<span class="r-in"><span class="co"># For example, verbosity controls the messags of the model</span></span>
-<span class="r-in"><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">control_tidyflow</span><span class="op">(</span>control_parsnip <span class="op">=</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/control_parsnip.html" class="external-link">control_parsnip</a></span><span class="op">(</span>verbosity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Run a regularized regression with only one independent variable.</span></span>
-<span class="r-in"><span class="co"># This is not possible, it will raise an error and we will see it</span></span>
-<span class="r-in"><span class="co"># because of verbosity</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="plug_model.html">replace_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fl">0</span>, mixture <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="st">"glmnet"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="plug_formula.html">replace_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">cyl</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">ct</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org" class="external-link">rsample</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tune.tidymodels.org/" class="external-link">tune</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow" class="external-link">tidyflow</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Build tidyflow</span></span></span>
+<span class="r-in"><span><span class="va">tflow</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="tidyflow.html">tidyflow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span>, v <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"lm"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># For each resample object, we want the predictions</span></span></span>
+<span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">control_tidyflow</span><span class="op">(</span>control_resample <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/control_grid.html" class="external-link">control_resamples</a></span><span class="op">(</span>save_pred <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                                                            verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Specify the control object</span></span></span>
+<span class="r-in"><span><span class="va">fit_m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">tflow</span>, control <span class="op">=</span> <span class="va">ct</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit_m</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Extract the predictions</span></span></span>
+<span class="r-in"><span><span class="va">fit_m</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="va">.</span><span class="op">[[</span><span class="st">".predictions"</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># `control_resamples` is only used when there is a resample but not</span></span></span>
+<span class="r-in"><span><span class="co"># grid. When there is a resample and a grid, `control_grid` should be</span></span></span>
+<span class="r-in"><span><span class="co"># used.</span></span></span>
+<span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">control_tidyflow</span><span class="op">(</span>control_grid <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/control_grid.html" class="external-link">control_grid</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                                                   save_pred <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Since there is no grid specification, this is ignored.</span></span></span>
+<span class="r-in"><span><span class="co"># No messages should be printed nor a new .predictions</span></span></span>
+<span class="r-in"><span><span class="co"># columns in the result</span></span></span>
+<span class="r-in"><span><span class="va">fit_m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">tflow</span>, control <span class="op">=</span> <span class="va">ct</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit_m</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># control_parsnip controls the options of the model</span></span></span>
+<span class="r-in"><span><span class="co"># For example, verbosity controls the messags of the model</span></span></span>
+<span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu">control_tidyflow</span><span class="op">(</span>control_parsnip <span class="op">=</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/control_parsnip.html" class="external-link">control_parsnip</a></span><span class="op">(</span>verbosity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run a regularized regression with only one independent variable.</span></span></span>
+<span class="r-in"><span><span class="co"># This is not possible, it will raise an error and we will see it</span></span></span>
+<span class="r-in"><span><span class="co"># because of verbosity</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_model.html">replace_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fl">0</span>, mixture <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="st">"glmnet"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_formula.html">replace_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">cyl</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">ct</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>

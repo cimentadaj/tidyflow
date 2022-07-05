@@ -112,7 +112,7 @@ split will need to be refit.
 <ul><li><p><code>plug_split()</code> specifies the type of splitting used in the analysis. It
 accepts a function <code>.f</code> that will be applied to the data. Only
 functions which return an <code>rsplit</code> object will be allowed. See
-package <code><a href="https://rsample.tidymodels.org/reference/rsample.html" class="external-link">rsample</a></code> and the details section. If a model
+package <code><a href="https://rsample.tidymodels.org/reference/rsample-package.html" class="external-link">rsample</a></code> and the details section. If a model
 has been fit before adding the split, it will need to be refit.</p></li>
 <li><p><code>drop_split()</code> removes the split specification from the tidyflow. Note
 that it keeps other preprocessing steps such as the recipe.</p></li>
@@ -122,11 +122,11 @@ split will need to be refit.</p></li>
 </ul></div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plug_split</span><span class="op">(</span><span class="va">x</span>, <span class="va">.f</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">drop_split</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="fu">replace_split</span><span class="op">(</span><span class="va">x</span>, <span class="va">.f</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plug_split</span><span class="op">(</span><span class="va">x</span>, <span class="va">.f</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">drop_split</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">replace_split</span><span class="op">(</span><span class="va">x</span>, <span class="va">.f</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -138,7 +138,7 @@ split will need to be refit.</p></li>
 <dt>.f</dt>
 <dd><p>A function to be applied to the dataset in the tidyflow. Must
 return an object of class <code>rsplit</code>. See package
-<code><a href="https://rsample.tidymodels.org/reference/rsample.html" class="external-link">rsample</a></code>.</p></dd>
+<code><a href="https://rsample.tidymodels.org/reference/rsample-package.html" class="external-link">rsample</a></code>.</p></dd>
 
 
 <dt>...</dt>
@@ -161,21 +161,21 @@ dataframe, prepare a recipe and fit the model without splitting into
 training/testing.</p>
 <p>When applied to the data, the function <code>.f</code> must return an object
 of class <code>rsplit</code>. These are functions which come from the
-<code><a href="https://rsample.tidymodels.org/reference/rsample.html" class="external-link">rsample</a></code> package such as
+<code><a href="https://rsample.tidymodels.org/reference/rsample-package.html" class="external-link">rsample</a></code> package such as
 <code><a href="https://rsample.tidymodels.org/reference/initial_split.html" class="external-link">initial_split</a></code>.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org" class="external-link">rsample</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">wf</span> <span class="op">&lt;-</span></span>
-<span class="r-in"> <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="tidyflow.html">tidyflow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu">plug_split</span><span class="op">(</span><span class="va">initial_split</span>, prop <span class="op">=</span> <span class="fl">0.8</span>, strata <span class="op">=</span> <span class="st">"cyl"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">wf</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org" class="external-link">rsample</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">wf</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span> <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="tidyflow.html">tidyflow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span> <span class="fu">plug_split</span><span class="op">(</span><span class="va">initial_split</span>, prop <span class="op">=</span> <span class="fl">0.8</span>, strata <span class="op">=</span> <span class="st">"cyl"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">wf</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> initial_split w/ prop = ~0.8, strata = ~"cyl"</span>
@@ -183,11 +183,11 @@ of class <code>rsplit</code>. These are functions which come from the
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Resample:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Grid:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Model: None</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Strata as unquoted name</span></span>
-<span class="r-in"><span class="va">wf</span> <span class="op">&lt;-</span> <span class="fu">replace_split</span><span class="op">(</span><span class="va">wf</span>, <span class="va">initial_split</span>, prop <span class="op">=</span> <span class="fl">0.8</span>, strata <span class="op">=</span> <span class="va">cyl</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">wf</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Strata as unquoted name</span></span></span>
+<span class="r-in"><span><span class="va">wf</span> <span class="op">&lt;-</span> <span class="fu">replace_split</span><span class="op">(</span><span class="va">wf</span>, <span class="va">initial_split</span>, prop <span class="op">=</span> <span class="fl">0.8</span>, strata <span class="op">=</span> <span class="va">cyl</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">wf</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> initial_split w/ prop = ~0.8, strata = ~cyl</span>
@@ -195,8 +195,8 @@ of class <code>rsplit</code>. These are functions which come from the
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Resample:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Grid:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Model: None</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">drop_split</span><span class="op">(</span><span class="va">wf</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">drop_split</span><span class="op">(</span><span class="va">wf</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>
@@ -204,9 +204,9 @@ of class <code>rsplit</code>. These are functions which come from the
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Resample:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Grid:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Model: None</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># New split function</span></span>
-<span class="r-in"><span class="fu">replace_split</span><span class="op">(</span><span class="va">wf</span>, <span class="va">initial_time_split</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># New split function</span></span></span>
+<span class="r-in"><span><span class="fu">replace_split</span><span class="op">(</span><span class="va">wf</span>, <span class="va">initial_time_split</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> initial_time_split w/ default args</span>
@@ -214,7 +214,7 @@ of class <code>rsplit</code>. These are functions which come from the
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Resample:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Grid:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Model: None</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

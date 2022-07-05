@@ -114,11 +114,11 @@ the tidyflow.</p></li>
 </ul></div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plug_model</span><span class="op">(</span><span class="va">x</span>, <span class="va">spec</span>, formula <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="fu">drop_model</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="fu">replace_model</span><span class="op">(</span><span class="va">x</span>, <span class="va">spec</span>, formula <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plug_model</span><span class="op">(</span><span class="va">x</span>, <span class="va">spec</span>, formula <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">drop_model</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">replace_model</span><span class="op">(</span><span class="va">x</span>, <span class="va">spec</span>, formula <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -154,20 +154,20 @@ used for those purposes.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Define two competing model:</span></span>
-<span class="r-in"><span class="va">lm_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"lm"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">regularized_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="va">lm_model</span>, <span class="st">"glmnet"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Define a minimal tidyflow: data + formula + model</span></span>
-<span class="r-in"><span class="va">wf</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="tidyflow.html">tidyflow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu">plug_model</span><span class="op">(</span><span class="va">lm_model</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">wf</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Define two competing model:</span></span></span>
+<span class="r-in"><span><span class="va">lm_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"lm"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">regularized_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="va">lm_model</span>, <span class="st">"glmnet"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Define a minimal tidyflow: data + formula + model</span></span></span>
+<span class="r-in"><span><span class="va">wf</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="tidyflow.html">tidyflow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu">plug_model</span><span class="op">(</span><span class="va">lm_model</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">wf</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>
@@ -179,10 +179,10 @@ used for those purposes.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Computational engine: lm </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># We can drop the model at any time and the remaining steps</span></span>
-<span class="r-in"><span class="co"># are intact</span></span>
-<span class="r-in"><span class="fu">drop_model</span><span class="op">(</span><span class="va">wf</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We can drop the model at any time and the remaining steps</span></span></span>
+<span class="r-in"><span><span class="co"># are intact</span></span></span>
+<span class="r-in"><span><span class="fu">drop_model</span><span class="op">(</span><span class="va">wf</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>
@@ -190,13 +190,13 @@ used for those purposes.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Resample:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Grid:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Model: None</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># We can fit the model with `fit`:</span></span>
-<span class="r-in"><span class="va">fitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">wf</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Extract the model if needed:</span></span>
-<span class="r-in"><span class="va">fitted</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We can fit the model with `fit`:</span></span></span>
+<span class="r-in"><span><span class="va">fitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">wf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Extract the model if needed:</span></span></span>
+<span class="r-in"><span><span class="va">fitted</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> parsnip model object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -209,10 +209,10 @@ used for those purposes.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        qsec           vs           am         gear         carb  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0.82104      0.31776      2.52023      0.65541     -0.19942  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># If we remove the model from the fitted `tidyflow`,</span></span>
-<span class="r-in"><span class="co"># the fit is dropped:</span></span>
-<span class="r-in"><span class="fu">drop_model</span><span class="op">(</span><span class="va">fitted</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If we remove the model from the fitted `tidyflow`,</span></span></span>
+<span class="r-in"><span><span class="co"># the fit is dropped:</span></span></span>
+<span class="r-in"><span><span class="fu">drop_model</span><span class="op">(</span><span class="va">fitted</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>
@@ -220,26 +220,26 @@ used for those purposes.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Resample:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Grid:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Model: None</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># We could replace the model from the initial tidyflow with</span></span>
-<span class="r-in"><span class="co"># the regularized model with `replace_model`</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## TODO: when https://github.com/cimentadaj/tidyflow/issues/4 is fixed</span></span>
-<span class="r-in"><span class="co">## replace wf with fitted here.</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">reg_fitted</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="va">wf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu">replace_model</span><span class="op">(</span><span class="va">regularized_model</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We could replace the model from the initial tidyflow with</span></span></span>
+<span class="r-in"><span><span class="co"># the regularized model with `replace_model`</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## TODO: when https://github.com/cimentadaj/tidyflow/issues/4 is fixed</span></span></span>
+<span class="r-in"><span><span class="co">## replace wf with fitted here.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">reg_fitted</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">wf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">replace_model</span><span class="op">(</span><span class="va">regularized_model</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .check_glmnet_penalty_fit(x):</span> For the glmnet engine, `penalty` must be a single number (or a value of `tune()`).</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> There are 0 values for `penalty`.</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> To try multiple values for total regularization, use the tune package.</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> To predict multiple penalties, use `multi_predict()`</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">reg_fitted</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">reg_fitted</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="tidyflow-extractors.html">pull_tflow_fit</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is_tidyflow(x):</span> object 'reg_fitted' not found</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

@@ -148,288 +148,288 @@
 </h2>
 <p>Let’s construct a workflow that fits a linear model to <code>mtcars</code> but only on the training data:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow" class="external-link">tidyflow</a></span><span class="op">)</span>
-
-<span class="va">tflow</span> <span class="op">&lt;-</span>
-  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">52131</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">tflow</span>
-<span class="co">#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
-<span class="co">#&gt; Data: 32 rows x 11 columns</span>
-<span class="co">#&gt; Split: initial_split w/ default args</span>
-<span class="co">#&gt; Formula: mpg ~ .</span>
-<span class="co">#&gt; Resample: None</span>
-<span class="co">#&gt; Grid: None</span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt; Linear Regression Model Specification (regression)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Computational engine: lm</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow" class="external-link">tidyflow</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tflow</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">52131</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tflow</span></span>
+<span><span class="co">#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════</span></span>
+<span><span class="co">#&gt; Data: 32 rows x 11 columns</span></span>
+<span><span class="co">#&gt; Split: initial_split w/ default args</span></span>
+<span><span class="co">#&gt; Formula: mpg ~ .</span></span>
+<span><span class="co">#&gt; Resample: None</span></span>
+<span><span class="co">#&gt; Grid: None</span></span>
+<span><span class="co">#&gt; Model:</span></span>
+<span><span class="co">#&gt; Linear Regression Model Specification (regression)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computational engine: lm</span></span></code></pre></div>
 <p>The output of <code>tflow</code> describes the current workflow definition. You might be wondering, what are these <code>initial_split</code> or <code><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg()</a></code> expressions. <code>tidyflow</code> is built upon <code>tidymodels</code> so it works with the core functions of this ecosystem. <code>initial_split</code> is the function that separates the data into training/testing and <code><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg()</a></code> is the model definition. With this definition, we can just <code>fit</code> the model:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span>
-<span class="va">res</span>
-<span class="co">#&gt; ══ Tidyflow [trained] ══════════════════════════════════════════════════════════</span>
-<span class="co">#&gt; Data: 32 rows x 11 columns</span>
-<span class="co">#&gt; Split: initial_split w/ default args</span>
-<span class="co">#&gt; Formula: mpg ~ .</span>
-<span class="co">#&gt; Resample: None</span>
-<span class="co">#&gt; Grid: None</span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt; Linear Regression Model Specification (regression)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Computational engine: lm </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fitted model:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; stats::lm(formula = ..y ~ ., data = data)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ...</span>
-<span class="co">#&gt; and 5 more lines.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span></span>
+<span><span class="va">res</span></span>
+<span><span class="co">#&gt; ══ Tidyflow [trained] ══════════════════════════════════════════════════════════</span></span>
+<span><span class="co">#&gt; Data: 32 rows x 11 columns</span></span>
+<span><span class="co">#&gt; Split: initial_split w/ default args</span></span>
+<span><span class="co">#&gt; Formula: mpg ~ .</span></span>
+<span><span class="co">#&gt; Resample: None</span></span>
+<span><span class="co">#&gt; Grid: None</span></span>
+<span><span class="co">#&gt; Model:</span></span>
+<span><span class="co">#&gt; Linear Regression Model Specification (regression)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computational engine: lm </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Fitted model:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; stats::lm(formula = ..y ~ ., data = data)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ...</span></span>
+<span><span class="co">#&gt; and 5 more lines.</span></span></code></pre></div>
 <p>The result of <code>fit</code> is the same <code>tflow</code> but with a fitted model. You might see some of the lines of the output at the bottom of the printout. We can extract the model with <code>pull_tflow_fit</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; stats::lm(formula = ..y ~ ., data = data)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt; (Intercept)          cyl         disp           hp         drat           wt  </span>
-<span class="co">#&gt;  -3.835e+01    8.429e-01    5.648e-03    6.885e-04    2.681e+00   -4.479e+00  </span>
-<span class="co">#&gt;        qsec           vs           am         gear         carb  </span>
-<span class="co">#&gt;   3.047e+00   -4.109e+00    2.135e+00    1.200e+00   -3.165e-01</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; stats::lm(formula = ..y ~ ., data = data)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt; (Intercept)          cyl         disp           hp         drat           wt  </span></span>
+<span><span class="co">#&gt;  -3.835e+01    8.429e-01    5.648e-03    6.885e-04    2.681e+00   -4.479e+00  </span></span>
+<span><span class="co">#&gt;        qsec           vs           am         gear         carb  </span></span>
+<span><span class="co">#&gt;   3.047e+00   -4.109e+00    2.135e+00    1.200e+00   -3.165e-01</span></span></code></pre></div>
 <p>Suppose that after looking at the results you want to go back and normalize all variables. You can reuse the entire <code>tidyflow</code> and just replace the formula with a recipe. Let’s add a preprocessing step where we normalize all variables:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res2</span> <span class="op">&lt;-</span>
-  <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_formula.html">drop_formula</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">.x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_scale.html" class="external-link">step_scale</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit</a></span><span class="op">(</span><span class="va">res2</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; stats::lm(formula = ..y ~ ., data = data)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt; (Intercept)          cyl         disp           hp         drat           wt  </span>
-<span class="co">#&gt;   -38.34680      1.44751      0.75908      0.05288      1.45206     -4.62467  </span>
-<span class="co">#&gt;        qsec           vs           am         gear         carb  </span>
-<span class="co">#&gt;     5.32065     -2.09136      1.08653      0.88467     -0.56773</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res2</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_formula.html">drop_formula</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">.x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_scale.html" class="external-link">step_scale</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit</a></span><span class="op">(</span><span class="va">res2</span><span class="op">)</span><span class="op">$</span><span class="va">fit</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; stats::lm(formula = ..y ~ ., data = data)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt; (Intercept)          cyl         disp           hp         drat           wt  </span></span>
+<span><span class="co">#&gt;   -38.34680      1.44751      0.75908      0.05288      1.45206     -4.62467  </span></span>
+<span><span class="co">#&gt;        qsec           vs           am         gear         carb  </span></span>
+<span><span class="co">#&gt;     5.32065     -2.09136      1.08653      0.88467     -0.56773</span></span></code></pre></div>
 <p><code>tidyflow</code> allows you to recycle the entire flow and drop/replace any parts that you want to. Why did we drop the formula before adding a recipe? Because <code>tidyflow</code> the ‘preprocessing’ step only accepts either a formula or a recipe. For simpler models, a formula might be enough, but if you want to add additional preprocessing step, the recipe can be handy. Let’s now add a cross-validation step and fit the model:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res3</span> <span class="op">&lt;-</span>
-  <span class="va">res2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span>, v <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="va">res3</span><span class="op">)</span>
-<span class="co">#&gt; # Resampling results</span>
-<span class="co">#&gt; # 10-fold cross-validation </span>
-<span class="co">#&gt; # A tibble: 10 x 4</span>
-<span class="co">#&gt;    splits         id     .metrics         .notes          </span>
-<span class="co">#&gt;    &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;           &lt;list&gt;          </span>
-<span class="co">#&gt;  1 &lt;split [21/3]&gt; Fold01 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  2 &lt;split [21/3]&gt; Fold02 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  3 &lt;split [21/3]&gt; Fold03 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  4 &lt;split [21/3]&gt; Fold04 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  5 &lt;split [22/2]&gt; Fold05 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  6 &lt;split [22/2]&gt; Fold06 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  7 &lt;split [22/2]&gt; Fold07 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  8 &lt;split [22/2]&gt; Fold08 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  9 &lt;split [22/2]&gt; Fold09 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 10 &lt;split [22/2]&gt; Fold10 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res3</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">res2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span>, v <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="va">res3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # Resampling results</span></span>
+<span><span class="co">#&gt; # 10-fold cross-validation </span></span>
+<span><span class="co">#&gt; # A tibble: 10 x 4</span></span>
+<span><span class="co">#&gt;    splits         id     .metrics         .notes          </span></span>
+<span><span class="co">#&gt;    &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;           &lt;list&gt;          </span></span>
+<span><span class="co">#&gt;  1 &lt;split [21/3]&gt; Fold01 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  2 &lt;split [21/3]&gt; Fold02 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  3 &lt;split [21/3]&gt; Fold03 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  4 &lt;split [21/3]&gt; Fold04 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  5 &lt;split [22/2]&gt; Fold05 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  6 &lt;split [22/2]&gt; Fold06 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  7 &lt;split [22/2]&gt; Fold07 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  8 &lt;split [22/2]&gt; Fold08 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  9 &lt;split [22/2]&gt; Fold09 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 10 &lt;split [22/2]&gt; Fold10 &lt;tibble [2 × 3]&gt; &lt;tibble [0 × 1]&gt;</span></span></code></pre></div>
 <p>When a resample has been specified, the final result of <code>fit</code> cannot be a single model as before because the model has been fitted 10 times. Instead it returns the resample object that is usually returned in <code>tidymodels</code>. In the same spirit of <code>pull_tflow_fit</code>, to extract the resample objects, we used <code>pull_tflow_fit_tuning</code>.</p>
 <p><code>fit</code> will always return either a model object or a tune/resamples object depending on the <code>tidyflow</code> specification. The rules for what to expect are simple: if there’s a resample specification or a resample specification with tuning parameters, the result will be a resample dataframe, otherwise it will be a model.</p>
 <p>All <code>tidymodels</code> helpers to work with resample objects work just as well. For example:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res3</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html" class="external-link">collect_metrics</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 2 x 5</span>
-<span class="co">#&gt;   .metric .estimator  mean     n std_err</span>
-<span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 rmse    standard   4.02     10  0.925 </span>
-<span class="co">#&gt; 2 rsq     standard   0.965    10  0.0200</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res3</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html" class="external-link">collect_metrics</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 2 x 5</span></span>
+<span><span class="co">#&gt;   .metric .estimator  mean     n std_err</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 rmse    standard   4.02     10  0.925 </span></span>
+<span><span class="co">#&gt; 2 rsq     standard   0.965    10  0.0200</span></span></code></pre></div>
 <p>Resampling is often used within a grid search context, where we want to find the most optimal value for predicting the data. <code>plug_grid</code> allows you to specify the type of grid that you want to use. For example, let’s replace our linear model with a regularized regression, find the most optimal <code>penalty</code> and <code>mixture</code> values using a regular spaced grid of values:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">res4</span> <span class="op">&lt;-</span>
-  <span class="va">res3</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_model.html">replace_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; Loading required package: Matrix</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'Matrix'</span>
-<span class="co">#&gt; The following objects are masked from 'package:tidyr':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     expand, pack, unpack</span>
-<span class="co">#&gt; Loaded glmnet 4.0-2</span>
-
-<span class="va">res4</span>
-<span class="co">#&gt; ══ Tidyflow [tuned] ════════════════════════════════════════════════════════════</span>
-<span class="co">#&gt; Data: 32 rows x 11 columns</span>
-<span class="co">#&gt; Split: initial_split w/ default args</span>
-<span class="co">#&gt; Recipe: available</span>
-<span class="co">#&gt; Resample: vfold_cv w/ v = ~10</span>
-<span class="co">#&gt; Grid: grid_regular w/ default args</span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt; Linear Regression Model Specification (regression)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Main Arguments:</span>
-<span class="co">#&gt;   penalty = tune()</span>
-<span class="co">#&gt;   mixture = tune()</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Computational engine: glmnet </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Tuning results: </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; # A tibble: 5 x 4</span>
-<span class="co">#&gt;   splits         id     .metrics          .notes          </span>
-<span class="co">#&gt;   &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;            &lt;list&gt;          </span>
-<span class="co">#&gt; 1 &lt;split [21/3]&gt; Fold01 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 2 &lt;split [21/3]&gt; Fold02 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 3 &lt;split [21/3]&gt; Fold03 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 4 &lt;split [21/3]&gt; Fold04 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 5 &lt;split [22/2]&gt; Fold05 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ... and 5 more lines.</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="va">res4</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">res3</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_model.html">replace_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: Matrix</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'Matrix'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:tidyr':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     expand, pack, unpack</span></span>
+<span><span class="co">#&gt; Loaded glmnet 4.0-2</span></span>
+<span></span>
+<span><span class="va">res4</span></span>
+<span><span class="co">#&gt; ══ Tidyflow [tuned] ════════════════════════════════════════════════════════════</span></span>
+<span><span class="co">#&gt; Data: 32 rows x 11 columns</span></span>
+<span><span class="co">#&gt; Split: initial_split w/ default args</span></span>
+<span><span class="co">#&gt; Recipe: available</span></span>
+<span><span class="co">#&gt; Resample: vfold_cv w/ v = ~10</span></span>
+<span><span class="co">#&gt; Grid: grid_regular w/ default args</span></span>
+<span><span class="co">#&gt; Model:</span></span>
+<span><span class="co">#&gt; Linear Regression Model Specification (regression)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Main Arguments:</span></span>
+<span><span class="co">#&gt;   penalty = tune()</span></span>
+<span><span class="co">#&gt;   mixture = tune()</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computational engine: glmnet </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Tuning results: </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; # A tibble: 5 x 4</span></span>
+<span><span class="co">#&gt;   splits         id     .metrics          .notes          </span></span>
+<span><span class="co">#&gt;   &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;            &lt;list&gt;          </span></span>
+<span><span class="co">#&gt; 1 &lt;split [21/3]&gt; Fold01 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 2 &lt;split [21/3]&gt; Fold02 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 3 &lt;split [21/3]&gt; Fold03 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 4 &lt;split [21/3]&gt; Fold04 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 5 &lt;split [22/2]&gt; Fold05 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ... and 5 more lines.</span></span></code></pre></div>
 <p>Since we specified a cross-validating resampling with a grid search, the result will be a resample/tuning object. We can extract it with <code>pull_tflow_fit_tuning</code> and check which are the best tuning values:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">res4</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_best</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 1 x 3</span>
-<span class="co">#&gt;   penalty mixture .config</span>
-<span class="co">#&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  </span>
-<span class="co">#&gt; 1       1   0.525 Model6</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="va">res4</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_best</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 1 x 3</span></span>
+<span><span class="co">#&gt;   penalty mixture .config</span></span>
+<span><span class="co">#&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt; 1       1   0.525 Model6</span></span></code></pre></div>
 <p>At this point, we need to <em>finalize</em> our <code>tidyflow</code>. This means that after figuring out which are the best tuning parameters, we want to train the model with these tuning values on the entire training data. <code>complete_tflow</code> figures out the best tuning values from the resamples object and train the model for you:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">final_model</span> <span class="op">&lt;-</span>
-  <span class="va">res4</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span>
-
-<span class="va">final_model</span>
-<span class="co">#&gt; ══ Tidyflow [trained] ══════════════════════════════════════════════════════════</span>
-<span class="co">#&gt; Data: 32 rows x 11 columns</span>
-<span class="co">#&gt; Split: initial_split w/ default args</span>
-<span class="co">#&gt; Recipe: available</span>
-<span class="co">#&gt; Resample: vfold_cv w/ v = ~10</span>
-<span class="co">#&gt; Grid: grid_regular w/ default args</span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt; Linear Regression Model Specification (regression)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Main Arguments:</span>
-<span class="co">#&gt;   penalty = 1</span>
-<span class="co">#&gt;   mixture = 0.525</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Computational engine: glmnet </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Tuning results: </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; # A tibble: 5 x 4</span>
-<span class="co">#&gt;   splits         id     .metrics          .notes          </span>
-<span class="co">#&gt;   &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;            &lt;list&gt;          </span>
-<span class="co">#&gt; 1 &lt;split [21/3]&gt; Fold01 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 2 &lt;split [21/3]&gt; Fold02 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 3 &lt;split [21/3]&gt; Fold03 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 4 &lt;split [21/3]&gt; Fold04 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 5 &lt;split [22/2]&gt; Fold05 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ... and 5 more lines.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fitted model:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:  glmnet::glmnet(x = as.matrix(x), y = y, family = "gaussian",      alpha = ~0.525) </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;    Df  %Dev  Lambda</span>
-<span class="co">#&gt; 1   0  0.00 10.1100</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ...</span>
-<span class="co">#&gt; and 86 more lines.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">final_model</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">res4</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">final_model</span></span>
+<span><span class="co">#&gt; ══ Tidyflow [trained] ══════════════════════════════════════════════════════════</span></span>
+<span><span class="co">#&gt; Data: 32 rows x 11 columns</span></span>
+<span><span class="co">#&gt; Split: initial_split w/ default args</span></span>
+<span><span class="co">#&gt; Recipe: available</span></span>
+<span><span class="co">#&gt; Resample: vfold_cv w/ v = ~10</span></span>
+<span><span class="co">#&gt; Grid: grid_regular w/ default args</span></span>
+<span><span class="co">#&gt; Model:</span></span>
+<span><span class="co">#&gt; Linear Regression Model Specification (regression)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Main Arguments:</span></span>
+<span><span class="co">#&gt;   penalty = 1</span></span>
+<span><span class="co">#&gt;   mixture = 0.525</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computational engine: glmnet </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Tuning results: </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; # A tibble: 5 x 4</span></span>
+<span><span class="co">#&gt;   splits         id     .metrics          .notes          </span></span>
+<span><span class="co">#&gt;   &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;            &lt;list&gt;          </span></span>
+<span><span class="co">#&gt; 1 &lt;split [21/3]&gt; Fold01 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 2 &lt;split [21/3]&gt; Fold02 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 3 &lt;split [21/3]&gt; Fold03 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 4 &lt;split [21/3]&gt; Fold04 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 5 &lt;split [22/2]&gt; Fold05 &lt;tibble [18 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ... and 5 more lines.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Fitted model:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:  glmnet::glmnet(x = as.matrix(x), y = y, family = "gaussian",      alpha = ~0.525) </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;    Df  %Dev  Lambda</span></span>
+<span><span class="co">#&gt; 1   0  0.00 10.1100</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ...</span></span>
+<span><span class="co">#&gt; and 86 more lines.</span></span></code></pre></div>
 <p>One of the advantages of <code>tidyflow</code> is that it was built to work well within the machine learning workflow. To use this model to predict on the training data, you only have to call <code>predict_training</code>:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 24 x 12</span>
-<span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span>
-<span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt;  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4  22.5</span>
-<span class="co">#&gt;  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4  22.1</span>
-<span class="co">#&gt;  3  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  21.0</span>
-<span class="co">#&gt;  4  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2  17.8</span>
-<span class="co">#&gt;  5  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1  20.5</span>
-<span class="co">#&gt;  6  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4  15.5</span>
-<span class="co">#&gt;  7  24.4     4  147.    62  3.69  3.19  20       1     0     4     2  22.9</span>
-<span class="co">#&gt;  8  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4  19.5</span>
-<span class="co">#&gt;  9  17.8     6  168.   123  3.92  3.44  18.9     1     0     4     4  19.6</span>
-<span class="co">#&gt; 10  10.4     8  472    205  2.93  5.25  18.0     0     0     3     4  12.6</span>
-<span class="co">#&gt; # … with 14 more rows</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 24 x 12</span></span>
+<span><span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span></span>
+<span><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4  22.5</span></span>
+<span><span class="co">#&gt;  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4  22.1</span></span>
+<span><span class="co">#&gt;  3  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  21.0</span></span>
+<span><span class="co">#&gt;  4  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2  17.8</span></span>
+<span><span class="co">#&gt;  5  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1  20.5</span></span>
+<span><span class="co">#&gt;  6  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4  15.5</span></span>
+<span><span class="co">#&gt;  7  24.4     4  147.    62  3.69  3.19  20       1     0     4     2  22.9</span></span>
+<span><span class="co">#&gt;  8  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4  19.5</span></span>
+<span><span class="co">#&gt;  9  17.8     6  168.   123  3.92  3.44  18.9     1     0     4     4  19.6</span></span>
+<span><span class="co">#&gt; 10  10.4     8  472    205  2.93  5.25  18.0     0     0     3     4  12.6</span></span>
+<span><span class="co">#&gt; # … with 14 more rows</span></span></code></pre></div>
 <p>Similarly, you can use <code>predict_testing</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_testing</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 8 x 12</span>
-<span class="co">#&gt;     mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span>
-<span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt; 1  22.8     4 108      93  3.85  2.32  18.6     1     1     4     1  26.0</span>
-<span class="co">#&gt; 2  22.8     4 141.     95  3.92  3.15  22.9     1     0     4     2  22.7</span>
-<span class="co">#&gt; 3  16.4     8 276.    180  3.07  4.07  17.4     0     0     3     3  16.2</span>
-<span class="co">#&gt; 4  17.3     8 276.    180  3.07  3.73  17.6     0     0     3     3  16.9</span>
-<span class="co">#&gt; 5  15.2     8 276.    180  3.07  3.78  18       0     0     3     3  16.8</span>
-<span class="co">#&gt; 6  15.5     8 318     150  2.76  3.52  16.9     0     0     3     2  17.9</span>
-<span class="co">#&gt; 7  15.2     8 304     150  3.15  3.44  17.3     0     0     3     2  18.3</span>
-<span class="co">#&gt; 8  30.4     4  95.1   113  3.77  1.51  16.9     1     1     5     2  26.7</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_testing</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 8 x 12</span></span>
+<span><span class="co">#&gt;     mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span></span>
+<span><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1  22.8     4 108      93  3.85  2.32  18.6     1     1     4     1  26.0</span></span>
+<span><span class="co">#&gt; 2  22.8     4 141.     95  3.92  3.15  22.9     1     0     4     2  22.7</span></span>
+<span><span class="co">#&gt; 3  16.4     8 276.    180  3.07  4.07  17.4     0     0     3     3  16.2</span></span>
+<span><span class="co">#&gt; 4  17.3     8 276.    180  3.07  3.73  17.6     0     0     3     3  16.9</span></span>
+<span><span class="co">#&gt; 5  15.2     8 276.    180  3.07  3.78  18       0     0     3     3  16.8</span></span>
+<span><span class="co">#&gt; 6  15.5     8 318     150  2.76  3.52  16.9     0     0     3     2  17.9</span></span>
+<span><span class="co">#&gt; 7  15.2     8 304     150  3.15  3.44  17.3     0     0     3     2  18.3</span></span>
+<span><span class="co">#&gt; 8  30.4     4  95.1   113  3.77  1.51  16.9     1     1     5     2  26.7</span></span></code></pre></div>
 <p>These functions are useful because they’re safe: it’s not rare that you mistakenly predict on the testing data thinking it was the training data or that you forget to apply all of the preprocessing on the testing data. The <code>predict_*</code> functions take care of applying all of your preprocessing on either the training or testing data, freeing the user of having to remember all these different things.</p>
 <p>Although this brief tutorial walked you through a <code>tidyflow</code> step by step, the richness of <code>tidyflow</code> is that it allows you to express this pipeline very quickly and to iterate as quickly as possible. For example, we can summarize the entire steps from before in a quick and readable expression:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tflow</span> <span class="op">&lt;-</span>
-  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">52131</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">.x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_scale.html" class="external-link">step_scale</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">final_model</span> <span class="op">&lt;-</span>
-  <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span>
-
-<span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 24 x 12</span>
-<span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span>
-<span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt;  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4  22.5</span>
-<span class="co">#&gt;  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4  22.1</span>
-<span class="co">#&gt;  3  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  21.0</span>
-<span class="co">#&gt;  4  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2  17.8</span>
-<span class="co">#&gt;  5  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1  20.5</span>
-<span class="co">#&gt;  6  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4  15.5</span>
-<span class="co">#&gt;  7  24.4     4  147.    62  3.69  3.19  20       1     0     4     2  22.9</span>
-<span class="co">#&gt;  8  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4  19.5</span>
-<span class="co">#&gt;  9  17.8     6  168.   123  3.92  3.44  18.9     1     0     4     4  19.6</span>
-<span class="co">#&gt; 10  10.4     8  472    205  2.93  5.25  18.0     0     0     3     4  12.6</span>
-<span class="co">#&gt; # … with 14 more rows</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">tflow</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">52131</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">.x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_scale.html" class="external-link">step_scale</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">final_model</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">final_model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 24 x 12</span></span>
+<span><span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb .pred</span></span>
+<span><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4  22.5</span></span>
+<span><span class="co">#&gt;  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4  22.1</span></span>
+<span><span class="co">#&gt;  3  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1  21.0</span></span>
+<span><span class="co">#&gt;  4  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2  17.8</span></span>
+<span><span class="co">#&gt;  5  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1  20.5</span></span>
+<span><span class="co">#&gt;  6  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4  15.5</span></span>
+<span><span class="co">#&gt;  7  24.4     4  147.    62  3.69  3.19  20       1     0     4     2  22.9</span></span>
+<span><span class="co">#&gt;  8  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4  19.5</span></span>
+<span><span class="co">#&gt;  9  17.8     6  168.   123  3.92  3.44  18.9     1     0     4     4  19.6</span></span>
+<span><span class="co">#&gt; 10  10.4     8  472    205  2.93  5.25  18.0     0     0     3     4  12.6</span></span>
+<span><span class="co">#&gt; # … with 14 more rows</span></span></code></pre></div>
 <p><code>tidyflow</code> has several advantages:</p>
 <ul>
 <li><p>You only specify the data once (no need to pass it to the recipe, the split, the cross-validation, the final fitting, prediction, etc…)</p></li>

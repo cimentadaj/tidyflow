@@ -114,11 +114,11 @@ data will need to be refit.</p></li>
 </ul></div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plug_data</span><span class="op">(</span><span class="va">x</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">drop_data</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="fu">replace_data</span><span class="op">(</span><span class="va">x</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plug_data</span><span class="op">(</span><span class="va">x</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">drop_data</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">replace_data</span><span class="op">(</span><span class="va">x</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -152,10 +152,10 @@ model/grid/resample/split.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="va">wf</span> <span class="op">&lt;-</span> <span class="fu"><a href="tidyflow.html">tidyflow</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">wf</span> <span class="op">&lt;-</span> <span class="fu">plug_data</span><span class="op">(</span><span class="va">wf</span>, <span class="va">mtcars</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">wf</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">wf</span> <span class="op">&lt;-</span> <span class="fu"><a href="tidyflow.html">tidyflow</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wf</span> <span class="op">&lt;-</span> <span class="fu">plug_data</span><span class="op">(</span><span class="va">wf</span>, <span class="va">mtcars</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wf</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 32 rows x 11 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>
@@ -163,8 +163,8 @@ model/grid/resample/split.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Resample:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Grid:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Model: None</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">drop_data</span><span class="op">(</span><span class="va">wf</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">drop_data</span><span class="op">(</span><span class="va">wf</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>
@@ -172,8 +172,8 @@ model/grid/resample/split.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Resample:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Grid:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Model: None</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">replace_data</span><span class="op">(</span><span class="va">wf</span>, <span class="va">iris</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">replace_data</span><span class="op">(</span><span class="va">wf</span>, <span class="va">iris</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Data:</span> 150 rows x 5 columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Split:</span> None</span>
@@ -181,7 +181,7 @@ model/grid/resample/split.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Resample:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Grid:</span> None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-style: italic;">Model: None</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

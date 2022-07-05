@@ -131,368 +131,368 @@
 <p><a href="./c03_fitting-model-resampling.html">In another vignette</a>, we discussed the concept of resampling and how it can be used to evaluate the stability of a model. For performing a grid search, resampling is a natural step because we need to try a combination of tuning values for each parameter in a model. In other words, we will run many models with different values for the models parameters and we need a way to get random samples from the data. Resampling is thus combined with a general strategy of trying out different sub-models.</p>
 <p>Let’s define a random forest model but we want to try different values in the <code>trees</code> argument. We can signal that with the <code><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a></code> function. This just means that the <code>trees</code> will be <code>tune</code>d.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow" class="external-link">tidyflow</a></span><span class="op">)</span>
-
-<span class="va">rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/rand_forest.html" class="external-link">rand_forest</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"regression"</span>, trees <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"randomForest"</span><span class="op">)</span>
-<span class="va">rf</span>
-<span class="co">#&gt; Random Forest Model Specification (regression)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Main Arguments:</span>
-<span class="co">#&gt;   trees = tune()</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Computational engine: randomForest</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow" class="external-link">tidyflow</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/rand_forest.html" class="external-link">rand_forest</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"regression"</span>, trees <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"randomForest"</span><span class="op">)</span></span>
+<span><span class="va">rf</span></span>
+<span><span class="co">#&gt; Random Forest Model Specification (regression)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Main Arguments:</span></span>
+<span><span class="co">#&gt;   trees = tune()</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computational engine: randomForest</span></span></code></pre></div>
 <p>At this point, we haven’t really ‘defined’ which values will be used for <code>trees</code>. It could be 3 values (such as 100, 200 and 300) or it could be 500. The package <code>tune</code> hosts a family of functions named <code>grid_*</code> which provide different approaches to sampling random number from different tuning arguments. For example, let’s use <code>grid_regular</code> to obtain an evenly spaced set of values for <code>trees</code>. This is how you would do it in <code>tidymodels</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">even_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_regular.html" class="external-link">grid_regular</a></span><span class="op">(</span><span class="fu"><a href="https://dials.tidymodels.org/reference/trees.html" class="external-link">trees</a></span><span class="op">(</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="va">even_values</span>
-<span class="co">#&gt; # A tibble: 10 x 1</span>
-<span class="co">#&gt;    trees</span>
-<span class="co">#&gt;    &lt;int&gt;</span>
-<span class="co">#&gt;  1     1</span>
-<span class="co">#&gt;  2   223</span>
-<span class="co">#&gt;  3   445</span>
-<span class="co">#&gt;  4   667</span>
-<span class="co">#&gt;  5   889</span>
-<span class="co">#&gt;  6  1111</span>
-<span class="co">#&gt;  7  1333</span>
-<span class="co">#&gt;  8  1555</span>
-<span class="co">#&gt;  9  1777</span>
-<span class="co">#&gt; 10  2000</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">even_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_regular.html" class="external-link">grid_regular</a></span><span class="op">(</span><span class="fu"><a href="https://dials.tidymodels.org/reference/trees.html" class="external-link">trees</a></span><span class="op">(</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">even_values</span></span>
+<span><span class="co">#&gt; # A tibble: 10 x 1</span></span>
+<span><span class="co">#&gt;    trees</span></span>
+<span><span class="co">#&gt;    &lt;int&gt;</span></span>
+<span><span class="co">#&gt;  1     1</span></span>
+<span><span class="co">#&gt;  2   223</span></span>
+<span><span class="co">#&gt;  3   445</span></span>
+<span><span class="co">#&gt;  4   667</span></span>
+<span><span class="co">#&gt;  5   889</span></span>
+<span><span class="co">#&gt;  6  1111</span></span>
+<span><span class="co">#&gt;  7  1333</span></span>
+<span><span class="co">#&gt;  8  1555</span></span>
+<span><span class="co">#&gt;  9  1777</span></span>
+<span><span class="co">#&gt; 10  2000</span></span></code></pre></div>
 <p><code>grid_regular</code> already knows which ‘sensible’ range of values to try. <code>tidyflow</code> provides the function <code>plug_grid</code> that allows you to specify the type of grid search you want to perform. Let’s divide the data into training/testing, specify a cross-validation and plug in the random forest and a <code>grid_regular</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tflow</span> <span class="op">&lt;-</span>
-  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span><span class="op">)</span>
-
-<span class="va">tflow</span>
-<span class="co">#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════</span>
-<span class="co">#&gt; Data: 32 rows x 11 columns</span>
-<span class="co">#&gt; Split: initial_split w/ default args</span>
-<span class="co">#&gt; Formula: mpg ~ .</span>
-<span class="co">#&gt; Resample: vfold_cv w/ default args</span>
-<span class="co">#&gt; Grid: grid_regular w/ default args</span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt; Random Forest Model Specification (regression)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Main Arguments:</span>
-<span class="co">#&gt;   trees = tune()</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Computational engine: randomForest</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">tflow</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tflow</span></span>
+<span><span class="co">#&gt; ══ Tidyflow ════════════════════════════════════════════════════════════════════</span></span>
+<span><span class="co">#&gt; Data: 32 rows x 11 columns</span></span>
+<span><span class="co">#&gt; Split: initial_split w/ default args</span></span>
+<span><span class="co">#&gt; Formula: mpg ~ .</span></span>
+<span><span class="co">#&gt; Resample: vfold_cv w/ default args</span></span>
+<span><span class="co">#&gt; Grid: grid_regular w/ default args</span></span>
+<span><span class="co">#&gt; Model:</span></span>
+<span><span class="co">#&gt; Random Forest Model Specification (regression)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Main Arguments:</span></span>
+<span><span class="co">#&gt;   trees = tune()</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computational engine: randomForest</span></span></code></pre></div>
 <p>This grid search specification knows that <code>trees</code> is the only argument to be searched for. We can execute the grid search with just a single call to <code>fit</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; randomForest 4.6-14</span>
-<span class="co">#&gt; Type rfNews() to see new features/changes/bug fixes.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'randomForest'</span>
-<span class="co">#&gt; The following object is masked from 'package:ggplot2':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     margin</span>
-<span class="co">#&gt; The following object is masked from 'package:dplyr':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     combine</span>
-<span class="co">#&gt; ! Fold08: internal: A correlation computation is required, but `estimate` is const...</span>
-<span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; Warning: This tuning result has notes. Example notes on model fitting include:</span>
-<span class="co">#&gt; internal: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.</span>
-<span class="co">#&gt; # Tuning results</span>
-<span class="co">#&gt; # 10-fold cross-validation </span>
-<span class="co">#&gt; # A tibble: 10 x 4</span>
-<span class="co">#&gt;    splits         id     .metrics         .notes          </span>
-<span class="co">#&gt;    &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;           &lt;list&gt;          </span>
-<span class="co">#&gt;  1 &lt;split [21/3]&gt; Fold01 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  2 &lt;split [21/3]&gt; Fold02 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  3 &lt;split [21/3]&gt; Fold03 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  4 &lt;split [21/3]&gt; Fold04 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  5 &lt;split [22/2]&gt; Fold05 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  6 &lt;split [22/2]&gt; Fold06 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  7 &lt;split [22/2]&gt; Fold07 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  8 &lt;split [22/2]&gt; Fold08 &lt;tibble [6 × 5]&gt; &lt;tibble [1 × 1]&gt;</span>
-<span class="co">#&gt;  9 &lt;split [22/2]&gt; Fold09 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 10 &lt;split [22/2]&gt; Fold10 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; randomForest 4.6-14</span></span>
+<span><span class="co">#&gt; Type rfNews() to see new features/changes/bug fixes.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'randomForest'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:ggplot2':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     margin</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:dplyr':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     combine</span></span>
+<span><span class="co">#&gt; ! Fold08: internal: A correlation computation is required, but `estimate` is const...</span></span>
+<span><span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: This tuning result has notes. Example notes on model fitting include:</span></span>
+<span><span class="co">#&gt; internal: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.</span></span>
+<span><span class="co">#&gt; # Tuning results</span></span>
+<span><span class="co">#&gt; # 10-fold cross-validation </span></span>
+<span><span class="co">#&gt; # A tibble: 10 x 4</span></span>
+<span><span class="co">#&gt;    splits         id     .metrics         .notes          </span></span>
+<span><span class="co">#&gt;    &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;           &lt;list&gt;          </span></span>
+<span><span class="co">#&gt;  1 &lt;split [21/3]&gt; Fold01 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  2 &lt;split [21/3]&gt; Fold02 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  3 &lt;split [21/3]&gt; Fold03 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  4 &lt;split [21/3]&gt; Fold04 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  5 &lt;split [22/2]&gt; Fold05 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  6 &lt;split [22/2]&gt; Fold06 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  7 &lt;split [22/2]&gt; Fold07 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  8 &lt;split [22/2]&gt; Fold08 &lt;tibble [6 × 5]&gt; &lt;tibble [1 × 1]&gt;</span></span>
+<span><span class="co">#&gt;  9 &lt;split [22/2]&gt; Fold09 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 10 &lt;split [22/2]&gt; Fold10 &lt;tibble [6 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></span></code></pre></div>
 <p>The result is a resampling object with the evaluation metrics measuring the performance of different values for <code>trees</code> across the 10 resamples. You can look at more clearly the performance of the model using different values for trees using <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> on the resampling result:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="figures/tuning-grid_search_tuning1-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning1</p>
 </div>
 <p>It seems the grid randomly chose three values for <code>trees</code> (X axis has three points on <code>1</code>, <code>1000</code> and <code>2000</code>) and as expected, as the number of trees increases, the <code>rsq</code> is higher and the <code>rmse</code> is lower.</p>
 <p>This grid search strategy is really just a quick way to get some models running. However, it allows for much more flexibility. For example, we can play around with the number of values to sample from by just providing an extra argument to <code>plug_grid</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tflow</span> <span class="op">&lt;-</span>
-  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span>, levels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-
-<span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">tflow</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span>, levels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="figures/tuning-grid_search_tuning2-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning2</p>
 </div>
 <p>The random grid contains now 10 values. What if we wanted to limit the range of the values used in the resampling?</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tflow</span> <span class="op">&lt;-</span>
-  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span>, trees <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/trees.html" class="external-link">trees</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-
-<span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">tflow</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span>, trees <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/trees.html" class="external-link">trees</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="figures/tuning-grid_search_tuning3-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning3</p>
 </div>
 <p>This approach works just as well with <strong>any</strong> of the <code>grid_*</code> functions. However, what if we simply wanted to provide the values to try? That is, we don’t want any type of ‘random sampling’. <code>plug_grid</code> allows the user to specify the function <code>expand.grid</code> and just provide the values to be used in the grid search. For example:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tflow</span> <span class="op">&lt;-</span>
-  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">expand.grid</span>, trees <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; Warning: Duplicate rows in grid of tuning combinations found and removed.</span>
-<span class="co">#&gt; ! Fold08: internal: A correlation computation is required, but `estimate` is const...</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">tflow</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">expand.grid</span>, trees <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Duplicate rows in grid of tuning combinations found and removed.</span></span>
+<span><span class="co">#&gt; ! Fold08: internal: A correlation computation is required, but `estimate` is const...</span></span></code></pre></div>
 <div class="figure">
 <img src="figures/tuning-grid_search_tuning4-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning4</p>
 </div>
 <p>This flexibility works just as well with any number of tuning parameters for the model. You can specify as many as parameters as you want, and even manually customize some of the parameters while the <code>grid_*</code> functions takes care of randomly sampling the others. For example, let’s say we wanted to run a random forest while tuning the parameters <code>trees</code>, <code>min_n</code> and <code>mtry</code>. Suppose that on top of that we wanted to manually limit the range of <code>trees</code> to be between 5 and 20, the <code>min_n</code> to be <code>20</code> (fixed) and allow the grid sampling to sample <code>mtry</code> randomly from ‘sensible’ values. We do that just as we’ve been manually updating the parameters values in <code>plug_grid</code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">rf</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/rand_forest.html" class="external-link">rand_forest</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"regression"</span>,
-              trees <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>,
-              min_n <span class="op">=</span> <span class="fl">20</span>,
-              mtry <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"randomForest"</span><span class="op">)</span>
-
-<span class="va">tflow</span> <span class="op">&lt;-</span>
-  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span>, trees <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/trees.html" class="external-link">trees</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span>
-<span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">rf</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/rand_forest.html" class="external-link">rand_forest</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"regression"</span>,</span>
+<span>              trees <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>              min_n <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>              mtry <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"randomForest"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tflow</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">57136</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_formula.html">plug_formula</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">vfold_cv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">grid_regular</span>, trees <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/trees.html" class="external-link">trees</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">tflow</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="figures/tuning-grid_search_tuning5-1.png" alt=""><p class="caption">plot of chunk grid_search_tuning5</p>
 </div>
 <p>If you want to extract the actual grid used behind the scenes, <code>pull_tflow_grid</code> returns exactly that, after the model has been fitted.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_grid</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 4 x 2</span>
-<span class="co">#&gt;    mtry trees</span>
-<span class="co">#&gt;   &lt;int&gt; &lt;int&gt;</span>
-<span class="co">#&gt; 1     1     5</span>
-<span class="co">#&gt; 2    10     5</span>
-<span class="co">#&gt; 3     1    20</span>
-<span class="co">#&gt; 4    10    20</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_grid</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 4 x 2</span></span>
+<span><span class="co">#&gt;    mtry trees</span></span>
+<span><span class="co">#&gt;   &lt;int&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1     1     5</span></span>
+<span><span class="co">#&gt; 2    10     5</span></span>
+<span><span class="co">#&gt; 3     1    20</span></span>
+<span><span class="co">#&gt; 4    10    20</span></span></code></pre></div>
 <p>Once you’ve tuned your model you want to choose the final model. <code>complete_tflow</code> takes care of finding by the best combination of values for you. When you provide the metric of interest, it searches for the combination of parameters with the lowest error for your metric:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">final_mod</span> <span class="op">&lt;-</span> <span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span>
-
-<span class="co"># Otherwise, you can provide the values manually yourself</span>
-<span class="co"># best &lt;- data.frame(trees = 10, min_n = 20, mtry = 5)</span>
-<span class="co"># final_mod &lt;- res %&gt;% complete_tflow(best_params = best)</span>
-
-<span class="va">final_mod</span>
-<span class="co">#&gt; ══ Tidyflow [trained] ══════════════════════════════════════════════════════════</span>
-<span class="co">#&gt; Data: 32 rows x 11 columns</span>
-<span class="co">#&gt; Split: initial_split w/ default args</span>
-<span class="co">#&gt; Formula: mpg ~ .</span>
-<span class="co">#&gt; Resample: vfold_cv w/ default args</span>
-<span class="co">#&gt; Grid: grid_regular w/ trees = ~trees(range = c(5, 20)), levels = ~2</span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt; Random Forest Model Specification (regression)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Main Arguments:</span>
-<span class="co">#&gt;   mtry = 10</span>
-<span class="co">#&gt;   trees = 20</span>
-<span class="co">#&gt;   min_n = 20</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Computational engine: randomForest </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Tuning results: </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; # A tibble: 5 x 4</span>
-<span class="co">#&gt;   splits         id     .metrics         .notes          </span>
-<span class="co">#&gt;   &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;           &lt;list&gt;          </span>
-<span class="co">#&gt; 1 &lt;split [21/3]&gt; Fold01 &lt;tibble [8 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 2 &lt;split [21/3]&gt; Fold02 &lt;tibble [8 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 3 &lt;split [21/3]&gt; Fold03 &lt;tibble [8 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 4 &lt;split [21/3]&gt; Fold04 &lt;tibble [8 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 5 &lt;split [22/2]&gt; Fold05 &lt;tibble [8 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ... and 5 more lines.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fitted model:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt;  randomForest(x = as.data.frame(x), y = y, ntree = ~20L, mtry = ~10L,      nodesize = ~20) </span>
-<span class="co">#&gt;                Type of random forest: regression</span>
-<span class="co">#&gt;                      Number of trees: 20</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ...</span>
-<span class="co">#&gt; and 4 more lines.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">final_mod</span> <span class="op">&lt;-</span> <span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Otherwise, you can provide the values manually yourself</span></span>
+<span><span class="co"># best &lt;- data.frame(trees = 10, min_n = 20, mtry = 5)</span></span>
+<span><span class="co"># final_mod &lt;- res %&gt;% complete_tflow(best_params = best)</span></span>
+<span></span>
+<span><span class="va">final_mod</span></span>
+<span><span class="co">#&gt; ══ Tidyflow [trained] ══════════════════════════════════════════════════════════</span></span>
+<span><span class="co">#&gt; Data: 32 rows x 11 columns</span></span>
+<span><span class="co">#&gt; Split: initial_split w/ default args</span></span>
+<span><span class="co">#&gt; Formula: mpg ~ .</span></span>
+<span><span class="co">#&gt; Resample: vfold_cv w/ default args</span></span>
+<span><span class="co">#&gt; Grid: grid_regular w/ trees = ~trees(range = c(5, 20)), levels = ~2</span></span>
+<span><span class="co">#&gt; Model:</span></span>
+<span><span class="co">#&gt; Random Forest Model Specification (regression)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Main Arguments:</span></span>
+<span><span class="co">#&gt;   mtry = 10</span></span>
+<span><span class="co">#&gt;   trees = 20</span></span>
+<span><span class="co">#&gt;   min_n = 20</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computational engine: randomForest </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Tuning results: </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; # A tibble: 5 x 4</span></span>
+<span><span class="co">#&gt;   splits         id     .metrics         .notes          </span></span>
+<span><span class="co">#&gt;   &lt;list&gt;         &lt;chr&gt;  &lt;list&gt;           &lt;list&gt;          </span></span>
+<span><span class="co">#&gt; 1 &lt;split [21/3]&gt; Fold01 &lt;tibble [8 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 2 &lt;split [21/3]&gt; Fold02 &lt;tibble [8 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 3 &lt;split [21/3]&gt; Fold03 &lt;tibble [8 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 4 &lt;split [21/3]&gt; Fold04 &lt;tibble [8 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 5 &lt;split [22/2]&gt; Fold05 &lt;tibble [8 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ... and 5 more lines.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Fitted model:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt;  randomForest(x = as.data.frame(x), y = y, ntree = ~20L, mtry = ~10L,      nodesize = ~20) </span></span>
+<span><span class="co">#&gt;                Type of random forest: regression</span></span>
+<span><span class="co">#&gt;                      Number of trees: 20</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ...</span></span>
+<span><span class="co">#&gt; and 4 more lines.</span></span></code></pre></div>
 <p><code>complete_tflow</code> takes care of fitting the model with the best parameters on the entire training data. Now you can predict on the training or testing data automatically with <code>predict_training</code> or <code>predict_testing</code>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">final_mod</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu">rsq</span><span class="op">(</span><span class="va">mpg</span>, <span class="va">.pred</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 1 x 3</span>
-<span class="co">#&gt;   .metric .estimator .estimate</span>
-<span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 rsq     standard       0.875</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">final_mod</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_training</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">rsq</span><span class="op">(</span><span class="va">mpg</span>, <span class="va">.pred</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 1 x 3</span></span>
+<span><span class="co">#&gt;   .metric .estimator .estimate</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 rsq     standard       0.875</span></span></code></pre></div>
 <p>The <code>tune</code> package and <code>tidymodels</code> are very powerful tools for doing machine learning. In this vignette, I tried to extend their work by providing a unified interface for working with <code>tune</code> that uses the grid search framework bundled together with all the other common machine learning steps.</p>
 <p>Want to see tidyflow and tune in action? The <code>tidymodels</code> team has a vignette showcasing how to use <code>tune</code> and <code>tidymodels</code> <a href="https://www.tidymodels.org/start/case-study/" class="external-link">here</a>. I’ve adapted their code to fully run within a <code>tidyflow</code> workflow. Here’s the replication code:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow" class="external-link">tidyflow</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span>       <span class="co"># for importing data</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/koalaverse/vip/" class="external-link">vip</a></span><span class="op">)</span>         <span class="co"># for variable importance plots</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span>
-
-<span class="va">hotels</span> <span class="op">&lt;-</span>
-  <span class="fu">read_csv</span><span class="op">(</span><span class="st">"https://tidymodels.org/start/case-study/hotels.csv"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate_all.html" class="external-link">mutate_if</a></span><span class="op">(</span><span class="va">is.character</span>, <span class="va">as.factor</span><span class="op">)</span>
-
-<span class="va">lr_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/logistic_reg.html" class="external-link">logistic_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span>
-
-<span class="va">holidays</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AllSouls"</span>, <span class="st">"AshWednesday"</span>, <span class="st">"ChristmasEve"</span>, <span class="st">"Easter"</span>,
-              <span class="st">"ChristmasDay"</span>, <span class="st">"GoodFriday"</span>, <span class="st">"NewYearsDay"</span>, <span class="st">"PalmSunday"</span><span class="op">)</span>
-
-<span class="va">lr_recipe</span> <span class="op">&lt;-</span>
-  <span class="op">~</span> <span class="va">.x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">children</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_date.html" class="external-link">step_date</a></span><span class="op">(</span><span class="va">arrival_date</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_holiday.html" class="external-link">step_holiday</a></span><span class="op">(</span><span class="va">arrival_date</span>, holidays <span class="op">=</span> <span class="va">holidays</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_rm.html" class="external-link">step_rm</a></span><span class="op">(</span><span class="va">arrival_date</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_dummy.html" class="external-link">step_dummy</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_nominal</a></span><span class="op">(</span><span class="op">)</span>, <span class="op">-</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_outcomes</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_zv.html" class="external-link">step_zv</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_normalize.html" class="external-link">step_normalize</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">tflow</span> <span class="op">&lt;-</span>
-  <span class="va">hotels</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">123</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span>, strata <span class="op">=</span> <span class="st">"children"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">validation_split</span>, strata <span class="op">=</span> <span class="st">"children"</span>, prop <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="va">lr_recipe</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">expand.grid</span>, penalty <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="op">-</span><span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">lr_mod</span><span class="op">)</span>
-
-<span class="va">cntrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control_tidyflow.html">control_tidyflow</a></span><span class="op">(</span>control_grid <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/control_grid.html" class="external-link">control_grid</a></span><span class="op">(</span>save_pred <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-<span class="va">p_res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">cntrl</span><span class="op">)</span>
-
-<span class="va">p_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html" class="external-link">collect_metrics</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">.metric</span> <span class="op">==</span> <span class="st">"roc_auc"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">penalty</span>, y <span class="op">=</span> <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">ylab</span><span class="op">(</span><span class="st">"Area under the ROC Curve"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">scale_x_log10</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">top_models</span> <span class="op">&lt;-</span>
-  <span class="va">p_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">show_best</a></span><span class="op">(</span><span class="st">"roc_auc"</span>, n <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">penalty</span><span class="op">)</span>
-
-<span class="va">lr_best</span> <span class="op">&lt;-</span> <span class="va">top_models</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span>
-
-<span class="va">lr_auc</span> <span class="op">&lt;-</span>
-  <span class="va">p_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html" class="external-link">collect_predictions</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">lr_best</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu">roc_curve</span><span class="op">(</span><span class="va">children</span>, <span class="va">.pred_children</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"Logistic Regression"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">lr_auc</span><span class="op">)</span>
-
-<span class="co"># Let's run in parallel</span>
-<span class="va">cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span>
-
-<span class="va">rf_mod</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/rand_forest.html" class="external-link">rand_forest</a></span><span class="op">(</span>mtry <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, min_n <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, trees <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"randomForest"</span>, num.threads <span class="op">=</span> <span class="va">cores</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html" class="external-link">set_mode</a></span><span class="op">(</span><span class="st">"classification"</span><span class="op">)</span>
-
-<span class="va">rf_recipe</span> <span class="op">&lt;-</span>
-  <span class="op">~</span> <span class="va">.x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">children</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_date.html" class="external-link">step_date</a></span><span class="op">(</span><span class="va">arrival_date</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_holiday.html" class="external-link">step_holiday</a></span><span class="op">(</span><span class="va">arrival_date</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_rm.html" class="external-link">step_rm</a></span><span class="op">(</span><span class="va">arrival_date</span><span class="op">)</span>
-
-<span class="va">tflow</span> <span class="op">&lt;-</span>
-  <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_recipe.html">replace_recipe</a></span><span class="op">(</span><span class="va">rf_recipe</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_model.html">replace_model</a></span><span class="op">(</span><span class="va">rf_mod</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/plug_grid.html">replace_grid</a></span><span class="op">(</span><span class="va">grid_latin_hypercube</span>, size <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>
-
-<span class="va">rf_res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">cntrl</span><span class="op">)</span>
-
-<span class="va">rf_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.88</span>, <span class="fl">0.93</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">rf_best</span> <span class="op">&lt;-</span>
-  <span class="va">rf_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_best</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"roc_auc"</span><span class="op">)</span>
-
-<span class="va">rf_auc</span> <span class="op">&lt;-</span>
-  <span class="va">rf_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html" class="external-link">collect_predictions</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">rf_best</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu">roc_curve</span><span class="op">(</span><span class="va">children</span>, <span class="va">.pred_children</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"Random Forest"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">rf_auc</span>, <span class="va">lr_auc</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">specificity</span>, y <span class="op">=</span> <span class="va">sensitivity</span>, col <span class="op">=</span> <span class="va">model</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_path</span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">1.5</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_abline</span><span class="op">(</span>lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">coord_equal</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">scale_color_viridis_d</span><span class="op">(</span>option <span class="op">=</span> <span class="st">"plasma"</span>, end <span class="op">=</span> <span class="fl">.6</span><span class="op">)</span>
-
-<span class="va">final_res</span> <span class="op">&lt;-</span>
-  <span class="va">rf_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"roc_auc"</span><span class="op">)</span>
-
-<span class="va">final_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_testing</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu">roc_curve</span><span class="op">(</span><span class="va">children</span>, <span class="va">.pred_children</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cimentadaj/tidyflow" class="external-link">tidyflow</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span>       <span class="co"># for importing data</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/koalaverse/vip/" class="external-link">vip</a></span><span class="op">)</span>         <span class="co"># for variable importance plots</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">hotels</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu">read_csv</span><span class="op">(</span><span class="st">"https://tidymodels.org/start/case-study/hotels.csv"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate_all.html" class="external-link">mutate_if</a></span><span class="op">(</span><span class="va">is.character</span>, <span class="va">as.factor</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lr_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/logistic_reg.html" class="external-link">logistic_reg</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, mixture <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">holidays</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AllSouls"</span>, <span class="st">"AshWednesday"</span>, <span class="st">"ChristmasEve"</span>, <span class="st">"Easter"</span>,</span>
+<span>              <span class="st">"ChristmasDay"</span>, <span class="st">"GoodFriday"</span>, <span class="st">"NewYearsDay"</span>, <span class="st">"PalmSunday"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lr_recipe</span> <span class="op">&lt;-</span></span>
+<span>  <span class="op">~</span> <span class="va">.x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">children</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_date.html" class="external-link">step_date</a></span><span class="op">(</span><span class="va">arrival_date</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_holiday.html" class="external-link">step_holiday</a></span><span class="op">(</span><span class="va">arrival_date</span>, holidays <span class="op">=</span> <span class="va">holidays</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_rm.html" class="external-link">step_rm</a></span><span class="op">(</span><span class="va">arrival_date</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_dummy.html" class="external-link">step_dummy</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_nominal</a></span><span class="op">(</span><span class="op">)</span>, <span class="op">-</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_outcomes</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_zv.html" class="external-link">step_zv</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_normalize.html" class="external-link">step_normalize</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tflow</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">hotels</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow.html">tidyflow</a></span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">123</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_split.html">plug_split</a></span><span class="op">(</span><span class="va">initial_split</span>, strata <span class="op">=</span> <span class="st">"children"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_resample.html">plug_resample</a></span><span class="op">(</span><span class="va">validation_split</span>, strata <span class="op">=</span> <span class="st">"children"</span>, prop <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_recipe.html">plug_recipe</a></span><span class="op">(</span><span class="va">lr_recipe</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_grid.html">plug_grid</a></span><span class="op">(</span><span class="va">expand.grid</span>, penalty <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="op">-</span><span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_model.html">plug_model</a></span><span class="op">(</span><span class="va">lr_mod</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cntrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/control_tidyflow.html">control_tidyflow</a></span><span class="op">(</span>control_grid <span class="op">=</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/control_grid.html" class="external-link">control_grid</a></span><span class="op">(</span>save_pred <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">p_res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">cntrl</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html" class="external-link">collect_metrics</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">.metric</span> <span class="op">==</span> <span class="st">"roc_auc"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">penalty</span>, y <span class="op">=</span> <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"Area under the ROC Curve"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_x_log10</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">top_models</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">p_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">show_best</a></span><span class="op">(</span><span class="st">"roc_auc"</span>, n <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">penalty</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lr_best</span> <span class="op">&lt;-</span> <span class="va">top_models</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lr_auc</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">p_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html" class="external-link">collect_predictions</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">lr_best</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">roc_curve</span><span class="op">(</span><span class="va">children</span>, <span class="va">.pred_children</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"Logistic Regression"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">lr_auc</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Let's run in parallel</span></span>
+<span><span class="va">cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span></span>
+<span></span>
+<span><span class="va">rf_mod</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/rand_forest.html" class="external-link">rand_forest</a></span><span class="op">(</span>mtry <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, min_n <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, trees <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"randomForest"</span>, num.threads <span class="op">=</span> <span class="va">cores</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html" class="external-link">set_mode</a></span><span class="op">(</span><span class="st">"classification"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rf_recipe</span> <span class="op">&lt;-</span></span>
+<span>  <span class="op">~</span> <span class="va">.x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">children</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_date.html" class="external-link">step_date</a></span><span class="op">(</span><span class="va">arrival_date</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_holiday.html" class="external-link">step_holiday</a></span><span class="op">(</span><span class="va">arrival_date</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_rm.html" class="external-link">step_rm</a></span><span class="op">(</span><span class="va">arrival_date</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tflow</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_recipe.html">replace_recipe</a></span><span class="op">(</span><span class="va">rf_recipe</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_model.html">replace_model</a></span><span class="op">(</span><span class="va">rf_mod</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/plug_grid.html">replace_grid</a></span><span class="op">(</span><span class="va">grid_latin_hypercube</span>, size <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rf_res</span> <span class="op">&lt;-</span> <span class="va">tflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">cntrl</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rf_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ylim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.88</span>, <span class="fl">0.93</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rf_best</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">rf_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html" class="external-link">select_best</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"roc_auc"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rf_auc</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">rf_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/tidyflow-extractors.html">pull_tflow_fit_tuning</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html" class="external-link">collect_predictions</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="va">rf_best</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">roc_curve</span><span class="op">(</span><span class="va">children</span>, <span class="va">.pred_children</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"Random Forest"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">rf_auc</span>, <span class="va">lr_auc</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">specificity</span>, y <span class="op">=</span> <span class="va">sensitivity</span>, col <span class="op">=</span> <span class="va">model</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_path</span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">1.5</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_abline</span><span class="op">(</span>lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">coord_equal</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_color_viridis_d</span><span class="op">(</span>option <span class="op">=</span> <span class="st">"plasma"</span>, end <span class="op">=</span> <span class="fl">.6</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">final_res</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">rf_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/complete_tflow.html">complete_tflow</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"roc_auc"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">final_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/predict-tidyflow.html">predict_testing</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">roc_curve</span><span class="op">(</span><span class="va">children</span>, <span class="va">.pred_children</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
