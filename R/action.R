@@ -19,7 +19,7 @@ plug_action_impl <- function(x, action, name) {
 }
 
 plug_action_impl.action_pre <- function(x, action, name) {
-  sacred_order <- c("split", "formula", "recipe", "resample", "grid")
+  sacred_order <- c("split", "formula", "recipe", "resample", "grid", "tune")
   check_singleton(x$pre$actions, name)
   x$pre <- plug_action_to_stage(x$pre, action, name)
   x$pre$actions <- clean_list(x$pre$actions[sacred_order])
@@ -27,7 +27,7 @@ plug_action_impl.action_pre <- function(x, action, name) {
   # Plugs in NULL slots for each action to store results later
   if (any(c("formula", "recipe") %in% name)) {
     name <- "preprocessor"
-    sacred_order <- c("split", "preprocessor", "resamples", "grid")
+    sacred_order <- c("split", "preprocessor", "resamples", "grid", "tune")
   }
 
   x$pre <- plug_result_to_stage(x$pre, name)
