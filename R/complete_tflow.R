@@ -155,7 +155,7 @@ complete_tflow <- function(x,
   ctrl <- workflows::control_workflow(control_parsnip = control$control_parsnip)
   wflow_fit <- generics::fit(wflow, data = x$pre$mold, control = ctrl)
 
-  x$fit$fit$fit <- workflows::pull_workflow_fit(wflow_fit)
+  x$fit$fit$fit <- workflows::extract_fit_parsnip(wflow_fit)
   x$fit$fit$wflow <- wflow_fit
   x$trained <- TRUE
   x

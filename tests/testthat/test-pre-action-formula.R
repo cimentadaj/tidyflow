@@ -33,12 +33,12 @@ test_that("formula preprocessing is executed upon `fit()`", {
   result <- fit(tidyflow)
 
   expect_equal(
-    workflows::pull_workflow_mold(result$fit$fit$wflow)$outcomes$mpg,
+    workflows::extract_mold(result$fit$fit$wflow)$outcomes$mpg,
     mtcars$mpg
   )
 
   expect_equal(
-    workflows::pull_workflow_mold(result$fit$fit$wflow)$predictors$`log(cyl)`,
+    workflows::extract_mold(result$fit$fit$wflow)$predictors$`log(cyl)`,
     log(mtcars$cyl)
   )
 
@@ -143,7 +143,7 @@ test_that("can pass a blueprint through to hardhat::mold()", {
 
   tidyflow <- fit(tidyflow)
 
-  mold <- workflows::pull_workflow_mold(tidyflow$fit$fit$wflow)
+  mold <- workflows::extract_mold(tidyflow$fit$fit$wflow)
 
   expect_true("(Intercept)" %in% colnames(mold$predictors))
   expect_equal(tidyflow$pre$results$blueprint, blueprint)
@@ -173,7 +173,7 @@ test_that("Formula works with plug_split", {
 
   # This makes sure that the final model is fit on the splitted sample
 
-  mold <- workflows::pull_workflow_mold(result$fit$fit$wflow)
+  mold <- workflows::extract_mold(result$fit$fit$wflow)
 
   expect_equal(
     mold$outcomes$mpg,
@@ -199,7 +199,7 @@ test_onehot <- function(dt, type) {
     tflow <- tidyflow(dt)
     tflow <- plug_formula(tflow, Sepal.Length ~ Species, blueprint = bp1)
     tflow <- plug_model(tflow, mod)
-    mold <- workflows::pull_workflow_mold(fit(tflow)$fit$fit$wflow)$predictors
+    mold <- workflows::extract_mold(fit(tflow)$fit$fit$wflow)$predictors
 
     # Leaves factors as is
     expect_length(mold, 2)
@@ -207,14 +207,14 @@ test_onehot <- function(dt, type) {
 
     # Forces N-1 columns
     tflow <- replace_formula(tflow, Sepal.Length ~ Species, blueprint = bp2)
-    mold <- workflows::pull_workflow_mold(fit(tflow)$fit$fit$wflow)$predictors
+    mold <- workflows::extract_mold(fit(tflow)$fit$fit$wflow)$predictors
     expect_length(mold, 3)
     nm <- c("(Intercept)", "Speciesversicolor", "Speciesvirginica")
     expect_true(all(nm %in% names(mold)))
 
     # Forces N columns (one_hot)
     tflow <- replace_formula(tflow, Sepal.Length ~ Species, blueprint = bp3)
-    mold <- workflows::pull_workflow_mold(fit(tflow)$fit$fit$wflow)$predictors
+    mold <- workflows::extract_mold(fit(tflow)$fit$fit$wflow)$predictors
     expect_length(mold, 4)
     nm <- c("(Intercept)", "Speciessetosa", "Speciesversicolor", "Speciesvirginica")
     expect_true(all(nm %in% names(mold)))
