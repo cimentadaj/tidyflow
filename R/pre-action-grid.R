@@ -260,7 +260,7 @@ fit.action_grid <- function(object, x) {
   }
 
   # Including recipe + model
-  all_params <- tune::parameters(x)
+  all_params <- parameters(x)
   preproc <- pull_tflow_preprocessor(x)
   mold <- x$pre$mold
 
