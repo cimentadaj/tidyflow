@@ -256,9 +256,9 @@ test_that("can pass a blueprint through to hardhat::mold()", {
 
   result <- fit(tidyflow)
   wflow <- result$fit$fit$wflow
-  expect_true("(Intercept)" %in% colnames(workflows::pull_workflow_mold(wflow)$predictors))
+  expect_true("(Intercept)" %in% colnames(workflows::extract_mold(wflow)$predictors))
   expect_equal(result$pre$results$blueprint, blueprint)
-  expect_true(workflows::pull_workflow_mold(wflow)$blueprint$intercept)
+  expect_true(workflows::extract_mold(wflow)$blueprint$intercept)
 })
 
 test_that("can only use a 'recipe_blueprint' blueprint", {

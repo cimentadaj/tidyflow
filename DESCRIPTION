@@ -17,8 +17,8 @@ Description: Managing a modeling flow such as data, training/testing splitting, 
 License: MIT + file LICENSE
 URL: https://github.com/cimentadaj/tidyflow
 BugReports: https://github.com/cimentadaj/tidyflow/issues
-Depends: 
-    R (>= 3.2)
+Depends:
+    R (>= 4.1)
 Imports: 
     cli (>= 2.0.0),
     ellipsis (>= 0.2.0),
@@ -31,7 +31,7 @@ Imports:
     rsample (>= 0.0.6),
     dials (>= 0.0.6),
     tibble (>= 3.0.1),
-    workflows (>= 0.1.3)
+    workflows (>= 1.0.0)
 Suggests: 
     covr,
     knitr,
