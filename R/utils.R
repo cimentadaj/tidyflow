@@ -7,7 +7,7 @@ is_uniquely_named <- function(x) {
 }
 
 glubort <- function (..., .sep = "", .envir = parent.frame()) {
-  abort(glue::glue(..., .sep = .sep, .envir = .envir))
+  cli::cli_abort(glue::glue(..., .sep = .sep, .envir = .envir))
 }
 
 is_model_fit <- function(x) {
@@ -20,9 +20,10 @@ is_model_spec <- function(x) {
 
 validate_recipes_available <- function() {
   if (!requireNamespace("recipes", quietly = TRUE)) {
-    abort(
-      "The `recipes` package must be available to add a recipe."
-    )
+    cli::cli_abort(c(
+      "The {.pkg recipes} package must be installed to add a recipe.",
+      "i" = "Install it with {.code install.packages(\"recipes\")}"
+    ))
   }
   invisible()
 }
@@ -31,7 +32,10 @@ validate_recipes_available <- function() {
 
 validate_is_tidyflow <- function(x, arg = "`x`") {
   if (!is_tidyflow(x)) {
-    glubort("{arg} must be a tidyflow, not a {class(x)[[1]]}.")
+    cli::cli_abort(c(
+      "{arg} must be a tidyflow.",
+      "x" = "You provided a {.cls {class(x)[[1]]}} object."
+    ))
   }
 
   invisible(x)

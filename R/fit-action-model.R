@@ -148,15 +148,50 @@ fit.action_model <- function(object, x, control, ...) {
     return(x)
     # It means that they specified a resample AND a grid, so tuning is wanted
   } else if (!is.null(resample_res) && !is.null(grid_res)) {
-    control_grid <- control$control_grid
+    # Check if a specific tune method was specified via plug_tune()
+    tune_method_res <- x$pre$results$tune
 
-    x$fit$fit$tuning <-
-      tune::tune_grid(object = wflow,
-                      resamples = resample_res,
-                      grid = grid_res,
-                      control = control_grid,
-                      param_info = param_res
-                      )
+    if (!is.null(tune_method_res)) {
+      # Use the specified tune method (e.g., tune_bayes, tune_sim_anneal)
+      tune_fn <- tune_method_res$method
+      tune_args <- tune_method_res$args
+      method_name <- tune_method_res$method_name
+
+      # Build base arguments
+      base_args <- list(
+        object = wflow,
+        resamples = resample_res,
+        param_info = param_res
+      )
+
+      # Add grid/initial based on method type
+      # Iterative methods (bayes, anneal) use 'initial' instead of 'grid'
+      if (grepl("bayes|anneal", method_name, ignore.case = TRUE)) {
+        base_args$initial <- grid_res
+        base_args$control <- control$control_bayes %||% tune::control_bayes()
+      } else {
+        base_args$grid <- grid_res
+        base_args$control <- control$control_grid
+      }
+
+      # Merge with user-provided args (user args take precedence)
+      all_args <- c(base_args, tune_args)
+      # Remove duplicates, keeping the last occurrence (user args)
+      all_args <- all_args[!duplicated(names(all_args), fromLast = TRUE)]
+
+      x$fit$fit$tuning <- rlang::exec(tune_fn, !!!all_args)
+    } else {
+      # Default: use tune_grid
+      control_grid <- control$control_grid
+
+      x$fit$fit$tuning <-
+        tune::tune_grid(object = wflow,
+                        resamples = resample_res,
+                        grid = grid_res,
+                        control = control_grid,
+                        param_info = param_res
+                        )
+    }
     return(x)
   }
 

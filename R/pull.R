@@ -5,12 +5,16 @@
 #' not exist yet, an error is thrown. **Most of these steps can only be executed
 #' after the \code{tidyflow} has been fitted**.
 #'
+#' For tidymodels-consistent naming, see also \code{\link{tidyflow-extract}} for
+#' the `extract_*` family of methods (e.g., \code{extract_fit_parsnip()},
+#' \code{extract_spec_parsnip()}, \code{extract_preprocessor()}).
+#'
 #' - \code{pull_tflow_rawdata()} returns the complete raw/untrained data.
 #'
 #' - \code{pull_tflow_split()} returns the split object from the function specified
 #'    in \code{\link{plug_split}}.
 #'
-#' - \code{pull_tflow_training()} turns the training data from the split. Only
+#' - \code{pull_tflow_training()} returns the training data from the split. Only
 #'    works when a split has been specified with \code{\link{plug_split}}.
 #'    If \code{prep = TRUE}, the preprocessing (either recipe or formula)
 #'    is applied to the data.
@@ -19,7 +23,7 @@
 #'    works when a split has been specified with \code{\link{plug_split}}
 #'    If \code{prep = TRUE}, the preprocessing (either recipe or formula)
 #'    is applied to the data.
-#' 
+#'
 #' - \code{pull_tflow_preprocessor()} returns either the formula or recipe used
 #'   for preprocessing. Note that if the recipe has a \code{tune()} argument,
 #'   it won't be finalized.
@@ -30,7 +34,7 @@
 #'
 #' - \code{pull_tflow_grid()} returns the grid data frame from which the tuning
 #'    parameter was made.
-#' 
+#'
 #' - \code{pull_tflow_prepped_recipe()} returns the prepped recipe.
 #'
 #' - \code{pull_tflow_spec()} returns the parsnip model specification.
@@ -106,18 +110,30 @@ pull_tflow_rawdata <- function(x) {
     return(x$data)
   }
 
-  abort("The tidyflow does not have data.")
+  cli::cli_abort(c(
+    "Cannot extract data from tidyflow.",
+    "x" = "No data has been added to this tidyflow.",
+    "i" = "Use {.fn plug_data} or {.fn tidyflow} with a data frame."
+  ))
 }
 
 #' @rdname tidyflow-extractors
 #' @export
 pull_tflow_split <- function(x) {
   if (!(has_fit(x) || has_fit_tuning(x))) {
-    abort("Tidyflow has not yet been trained. Do you need to call `fit()`?")
+    cli::cli_abort(c(
+      "Cannot extract split from tidyflow.",
+      "x" = "The tidyflow has not been fitted yet.",
+      "i" = "Use {.fn fit} to fit the tidyflow first."
+    ))
   }
 
   if (!has_preprocessor_split(x)) {
-    abort("The tidyflow must have a split preprocessor.")
+    cli::cli_abort(c(
+      "Cannot extract split from tidyflow.",
+      "x" = "No split has been specified.",
+      "i" = "Use {.fn plug_split} to add a data split."
+    ))
   }
 
   x$pre$results$split
@@ -134,13 +150,17 @@ pull_tflow_training <- function(x, prep = FALSE) {
 
   if (prep) {
     if (has_tune(preproc) && !x$trained) {
-      abort("You seem to have a recipe with tuning parameters but not a finalized model. Did you call complete_tflow()?")
+      cli::cli_abort(c(
+        "Cannot prep training data with unfinalized tuning parameters.",
+        "x" = "The recipe has {.fn tune} parameters but the model is not finalized.",
+        "i" = "Use {.fn complete_tflow} to finalize the model first."
+      ))
     } else {
       training_data <- hardhat::mold(preproc, training_data)
       training_data <- combine_outcome_preds(training_data)
     }
   }
-  
+
   training_data
 
 }
@@ -156,7 +176,11 @@ pull_tflow_testing <- function(x, prep = FALSE) {
 
   if (prep) {
     if (has_tune(preproc) && !x$trained) {
-      abort("You seem to have a recipe with tuning parameters but not a finalized model. Did you call complete_tflow()?")
+      cli::cli_abort(c(
+        "Cannot prep testing data with unfinalized tuning parameters.",
+        "x" = "The recipe has {.fn tune} parameters but the model is not finalized.",
+        "i" = "Use {.fn complete_tflow} to finalize the model first."
+      ))
     } else {
       test_data <- hardhat::mold(preproc, test_data)
       test_data <- combine_outcome_preds(test_data)
@@ -170,11 +194,19 @@ pull_tflow_testing <- function(x, prep = FALSE) {
 #' @export
 pull_tflow_resample <- function(x) {
   if (!(has_fit(x) || has_fit_tuning(x))) {
-    abort("Tidyflow has not yet been trained. Do you need to call `fit()`?")
+    cli::cli_abort(c(
+      "Cannot extract resample from tidyflow.",
+      "x" = "The tidyflow has not been fitted yet.",
+      "i" = "Use {.fn fit} to fit the tidyflow first."
+    ))
   }
 
   if (!has_preprocessor_resample(x)) {
-    abort("The tidyflow must have a resample preprocessor.")
+    cli::cli_abort(c(
+      "Cannot extract resample from tidyflow.",
+      "x" = "No resample has been specified.",
+      "i" = "Use {.fn plug_resample} to add resampling."
+    ))
   }
 
   x$pre$results$resample
@@ -184,11 +216,19 @@ pull_tflow_resample <- function(x) {
 #' @export
 pull_tflow_grid <- function(x) {
   if (!has_fit_tuning(x)) {
-    abort("Tidyflow has not yet been trained. Do you need to call `fit()`?")
+    cli::cli_abort(c(
+      "Cannot extract grid from tidyflow.",
+      "x" = "The tidyflow has not been fitted with tuning yet.",
+      "i" = "Use {.fn fit} to fit the tidyflow first."
+    ))
   }
 
   if (!has_preprocessor_grid(x)) {
-    abort("The tidyflow must have a grid preprocessor.")
+    cli::cli_abort(c(
+      "Cannot extract grid from tidyflow.",
+      "x" = "No grid has been specified.",
+      "i" = "Use {.fn plug_grid} to add a tuning grid."
+    ))
   }
 
   x$pre$results$grid$grid
@@ -204,7 +244,11 @@ pull_tflow_preprocessor <- function(x) {
     return(x$pre$results$preprocessor)
   }
 
-  abort("The tidyflow does not have a preprocessor.")
+  cli::cli_abort(c(
+    "Cannot extract preprocessor from tidyflow.",
+    "x" = "No preprocessor (formula or recipe) has been specified.",
+    "i" = "Use {.fn plug_formula} or {.fn plug_recipe} to add a preprocessor."
+  ))
 }
 
 #' @rdname tidyflow-extractors
@@ -213,14 +257,22 @@ pull_tflow_prepped_recipe <- function(x) {
   validate_is_tidyflow(x)
 
   if (!has_preprocessor_recipe(x)) {
-    abort("The tidyflow must have a recipe preprocessor.")
+    cli::cli_abort(c(
+      "Cannot extract prepped recipe from tidyflow.",
+      "x" = "No recipe has been specified.",
+      "i" = "Use {.fn plug_recipe} to add a recipe."
+    ))
   }
 
   res <- pull_tflow_preprocessor(x)
 
   is_rcp_or_formula <- inherits(res, "recipe") || inherits(res, "formula")
   if (!is_rcp_or_formula) {
-    abort("The recipe/formula hasn't been executed. Have you called `fit` yet?")
+    cli::cli_abort(c(
+      "Cannot extract prepped recipe from tidyflow.",
+      "x" = "The recipe has not been executed yet.",
+      "i" = "Use {.fn fit} to fit the tidyflow first."
+    ))
   }
 
   recipes::prep(res)
@@ -235,7 +287,11 @@ pull_tflow_spec <- function(x) {
     return(x$fit$actions$model$spec)
   }
 
-  abort("The tidyflow does not have a model spec.")
+  cli::cli_abort(c(
+    "Cannot extract model spec from tidyflow.",
+    "x" = "No model has been specified.",
+    "i" = "Use {.fn plug_model} to add a model specification."
+  ))
 }
 
 #' @rdname tidyflow-extractors
@@ -248,10 +304,18 @@ pull_tflow_fit <- function(x) {
   }
 
   if (has_fit_tuning(x)) {
-    abort("The tidyflow does not have a model fit but a tuning resample. Did you want to finalize the model with `complete_tflow`?") #nolintr
+    cli::cli_abort(c(
+      "Cannot extract model fit from tidyflow.",
+      "x" = "The tidyflow has tuning results but no finalized model.",
+      "i" = "Use {.fn complete_tflow} to finalize the best model."
+    ))
   }
 
-  abort("The tidyflow does not have a model fit. Have you called `fit()` yet?")
+  cli::cli_abort(c(
+    "Cannot extract model fit from tidyflow.",
+    "x" = "The tidyflow has not been fitted yet.",
+    "i" = "Use {.fn fit} to fit the tidyflow first."
+  ))
 }
 
 #' @rdname tidyflow-extractors
@@ -264,10 +328,18 @@ pull_tflow_fit_tuning <- function(x) {
   }
 
   if (has_fit(x)) {
-    abort("The tidyflow does not have a tuning resample but a model fit. Did you want `pull_tflow_fit`?") #nolintr
+    cli::cli_abort(c(
+      "Cannot extract tuning results from tidyflow.",
+      "x" = "The tidyflow has a model fit but no tuning results.",
+      "i" = "Did you mean {.fn pull_tflow_fit}?"
+    ))
   }
 
-  abort("The tidyflow does not have a tuning fit. Have you called `fit()` yet?")
+  cli::cli_abort(c(
+    "Cannot extract tuning results from tidyflow.",
+    "x" = "The tidyflow has not been fitted yet.",
+    "i" = "Use {.fn fit} to fit the tidyflow first."
+  ))
 }
 
 recipe_or_formula <- function(x) {

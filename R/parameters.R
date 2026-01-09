@@ -76,13 +76,13 @@ parameters.tidyflow <- function(x, ...) {
   if (inherits(model, "try-error")) {
     param_data <- dials::parameters(list())
   } else {
-    param_data <- tune::parameters(model)
+    param_data <- hardhat::extract_parameter_set_dials(model)
   }
 
   if (has_preprocessor_recipe(x)) {
     if (has_raw_data(x)) {
       recipe <- pull_tflow_preprocessor(x)
-      recipe_param_data <- tune::parameters(recipe)
+      recipe_param_data <- hardhat::extract_parameter_set_dials(recipe)
       param_data <- rbind(param_data, recipe_param_data)
     } else {
       rlang::abort("The raw data must be specified to extract the parameters of the recipe. Did you want `plug_data`?") #nolintr

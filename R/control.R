@@ -1,8 +1,8 @@
 #' Control object for a tidyflow
 #'
 #' `control_tidyflow()` holds the control parameters for a tidyflow.
-#' It allows you to specify control options for `parsnip`, `resamples`
-#' and `grid`.
+#' It allows you to specify control options for `parsnip`, `resamples`,
+#' `grid`, and `bayes` (for Bayesian optimization).
 #'
 #' @param control_parsnip A parsnip control object. If `NULL`, a default control
 #'   argument is constructed from \code{\link[parsnip]{control_parsnip}}.
@@ -12,6 +12,10 @@
 #'
 #' @param control_grid A grid control object. If `NULL`, a default control
 #'   argument is constructed from \code{\link[tune]{control_grid}}.
+#'
+#' @param control_bayes A Bayesian optimization control object. If `NULL`, a default
+#'   control argument is constructed from \code{\link[tune]{control_bayes}} when
+#'   using \code{\link{plug_tune}} with \code{tune_bayes}.
 #' 
 #' @return
 #' A `control_tidyflow` object for tweaking the tidyflow fitting/tuning process.
@@ -73,16 +77,19 @@
 #' }
 control_tidyflow <- function(control_parsnip = NULL,
                              control_resamples = NULL,
-                             control_grid = NULL) {
+                             control_grid = NULL,
+                             control_bayes = NULL) {
 
   control_parsnip <- check_control_parsnip(control_parsnip)
   control_resamples <- check_control_resamples(control_resamples)
   control_grid <- check_control_grid(control_grid)
+  control_bayes <- check_control_bayes(control_bayes)
 
   data <- list(
     control_parsnip = control_parsnip,
     control_resamples = control_resamples,
-    control_grid = control_grid
+    control_grid = control_grid,
+    control_bayes = control_bayes
   )
 
   structure(data, class = "control_tidyflow")
@@ -124,7 +131,28 @@ check_control_grid <- function(x) {
   }
 
   if (!inherits(x, "control_grid")) {
-    abort("`control_grid` must be a 'control_grid' object.")
+    cli::cli_abort(c(
+      "Invalid control object.",
+      "x" = "{.arg control_grid} must be a {.cls control_grid} object.",
+      "i" = "Use {.fn tune::control_grid} to create one."
+    ))
+  }
+
+  x
+}
+
+check_control_bayes <- function(x) {
+  if (is.null(x)) {
+    # Return NULL - will be created lazily when needed
+    return(NULL)
+  }
+
+  if (!inherits(x, "control_bayes")) {
+    cli::cli_abort(c(
+      "Invalid control object.",
+      "x" = "{.arg control_bayes} must be a {.cls control_bayes} object.",
+      "i" = "Use {.fn tune::control_bayes} to create one."
+    ))
   }
 
   x

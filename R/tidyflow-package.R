@@ -13,5 +13,9 @@
 #'
 #' @importFrom stats predict
 #'
+#' @importFrom hardhat extract_fit_parsnip extract_spec_parsnip
+#'   extract_preprocessor extract_mold extract_recipe
+#'   extract_parameter_set_dials
+#'
 ## usethis namespace: end
 NULL
